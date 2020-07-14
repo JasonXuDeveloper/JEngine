@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 3263697702
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: fbe8122b0561ea893175f8b488508ba6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 96cdb51e4196c3be78758e41f2bb9d75
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 7882bd278763c45f49cef7deeae496e5, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/Dependencies/XAsset/ScriptableObjects/Manifest.asset
+Dependencies: []

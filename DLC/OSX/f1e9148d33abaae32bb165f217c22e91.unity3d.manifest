@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 4074644416
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6964eb0db9af7f80628bc4dea5318f5f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5ad585dd02dfb5016c0dad519eab8f49
+HashAppended: 0
+ClassTypes:
+- Class: 49
+  Script: {instanceID: 0}
+Assets:
+- Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
+Dependencies: []

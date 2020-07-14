@@ -20,7 +20,7 @@ MonoBehaviour:
   searchPatternPrefab: '*.prefab'
   searchPatternScene: '*.unity'
   searchPatternText: '*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt,*.ttf'
-  version: 4
+  version: 1
   scenes: []
   rules:
   - searchPath: Assets/HotUpdateResources/Controller

@@ -123,19 +123,7 @@ Please clone this framework into your project and keep this directory structure
 
 ## JEngine logics
 
-```flow
-st=>start: Game launch in Init scene
-op=>operation: XAsset loads version from server
-up=>operation: XAsset will download the latest updates
-cond=>condition: Latest version?
-silrt=>operation: Initialize ILRuntime, loads hot-update codes
-ed=>end: Hot-update game launches
-
-st->op->cond
-cond(yes)->silrt
-cond(no)->up
-up->silrt->ed
-```
+![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
 
 
 
@@ -211,6 +199,20 @@ up->silrt->ed
   > Just do what it asked you to add into **Scripts/Init.cs,  'InitializeILRuntime()' Method**
   >
   > ![bug1](https://s1.ax1x.com/2020/07/14/Ut2RoD.png)
+
+
+
+## Development Environment
+
+- Debuging Unity Engine Version: 2019.3.13f1
+
+  > Should supports Unity Engine From 2018 LTS til the latest
+
+- .net Environment: .net 2.0 standard
+
+- Operating System: MacOS 10.15.5
+
+  > Should also supports windows
 
 
 
