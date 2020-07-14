@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7882bd278763c45f49cef7deeae496e5, type: 3}
+  m_Name: Manifest
+  m_EditorClassIdentifier: 
+  activeVariants: []
+  assets:
+  - bundle: 1
+    dir: 0
+    name: HotUpdateScripts.bytes
+  - bundle: 0
+    dir: 1
+    name: Game.unity
+  bundles:
+  - deps: 
+    hash: eda78a84d39baa81fcf5290686455a23
+    id: 0
+    len: 9035
+    name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
+  - deps: 
+    hash: 636c3e11f2c358236b400a74fa85fe47
+    id: 1
+    len: 3823
+    name: f1e9148d33abaae32bb165f217c22e91.unity3d
+  dirs:
+  - Assets/HotUpdateResources/Dll
+  - Assets/HotUpdateResources/Scene
+  searchDirs:
+  - Assets/HotUpdateResources/Controller
+  - Assets/HotUpdateResources/Dll
+  - Assets/HotUpdateResources/Material
+  - Assets/HotUpdateResources/Other
+  - Assets/HotUpdateResources/Prefab
+  - Assets/HotUpdateResources/Scene
+  - Assets/HotUpdateResources/ScriptableObject
+  - Assets/HotUpdateResources/TextAsset
+  - Assets/HotUpdateResources/UI

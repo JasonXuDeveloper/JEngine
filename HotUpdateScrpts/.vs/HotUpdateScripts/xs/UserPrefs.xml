@@ -1,0 +1,26 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/Sample.cs">
+    <Files>
+      <File FileName="HotUpdateScripts/Sample.cs" Line="49" Column="64" />
+      <File FileName="HotUpdateScripts/Program.cs" Line="26" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="HotUpdateScripts" expanded="True">
+            <Node name="HotUpdateScripts" expanded="True">
+              <Node name="References" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|anycpu" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <AuthorInfo Name="JasonXuDeveloper（傑）" Email="jasonxudeveloper@gmail.com" Copyright="JEngine" Company="" Trademark="" />
+</Properties>
