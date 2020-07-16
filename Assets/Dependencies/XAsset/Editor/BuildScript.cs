@@ -207,25 +207,23 @@ namespace libx
             }
         }
 
-        private static string[] GetLevelsFromBuildSettings()
+        private static string[] GetLevelsFromBuildSettings ()
         {
-            List<string> scenes = new List<string>();
-            foreach (var item in GetBuildRules().scenes)
-            {
-                var path = AssetDatabase.GetAssetPath(item);
-                if (!string.IsNullOrEmpty(path))
-                {
-                    scenes.Add(path);
+            List<string> scenes = new List<string> ();
+            foreach (var item in GetBuildRules().scenesInBuild) {
+                var path = AssetDatabase.GetAssetPath (item);
+                if (!string.IsNullOrEmpty (path)) {
+                    scenes.Add (path);
                 }
             }
 
-            return scenes.ToArray();
+            return scenes.ToArray ();
         }
 
-        private static string GetAssetBundleManifestFilePath()
+        private static string GetAssetBundleManifestFilePath ()
         {
-            var relativeAssetBundlesOutputPathForPlatform = Path.Combine("Asset", GetPlatformName());
-            return Path.Combine(relativeAssetBundlesOutputPathForPlatform, GetPlatformName()) + ".manifest";
+            var relativeAssetBundlesOutputPathForPlatform = Path.Combine ("Asset", GetPlatformName ());
+            return Path.Combine (relativeAssetBundlesOutputPathForPlatform, GetPlatformName ()) + ".manifest";
         }
 
         public static void BuildStandalonePlayer()
@@ -272,105 +270,84 @@ namespace libx
             return outputPath;
         }
 
-        public static void BuildAssetBundles()
-        {
-            // Choose the output path according to the build target.
-            var rules = GetBuildRules();
-            var builds = rules.GetBuilds();
-            var outputPath = CreateAssetBundleDirectory();
-            const BuildAssetBundleOptions options = BuildAssetBundleOptions.ChunkBasedCompression;
-            var targetPlatform = EditorUserBuildSettings.activeBuildTarget;
-            var assetBundleManifest = BuildPipeline.BuildAssetBundles(outputPath, builds, options, targetPlatform);
-            if (assetBundleManifest == null)
-            {
-                return;
-            }
+        public static void BuildAssetBundles ()
+		{
+			// Choose the output path according to the build target.
+			var outputPath = CreateAssetBundleDirectory ();
+			const BuildAssetBundleOptions options = BuildAssetBundleOptions.ChunkBasedCompression;
+			var targetPlatform = EditorUserBuildSettings.activeBuildTarget;
+			var rules = GetBuildRules ();
+			var builds = rules.GetBuilds ();
+			var assetBundleManifest = BuildPipeline.BuildAssetBundles (outputPath, builds, options, targetPlatform);
+			if (assetBundleManifest == null) {
+				return;
+			}
 
-            var manifest = GetManifest();
-            var dirs = new List<string>();
-            var assets = new List<AssetRef>();
-            var bundles = assetBundleManifest.GetAllAssetBundles();
-            var bundle2Ids = new Dictionary<string, int>();
-            for (var index = 0; index < bundles.Length; index++)
-            {
-                var bundle = bundles[index];
-                bundle2Ids[bundle] = index;
-            }
+			var manifest = GetManifest ();
+			var dirs = new List<string> ();
+			var assets = new List<AssetRef> ();
+			var bundles = assetBundleManifest.GetAllAssetBundles ();
+			var bundle2Ids = new Dictionary<string, int> ();
+			for (var index = 0; index < bundles.Length; index++) {
+				var bundle = bundles [index];
+				bundle2Ids [bundle] = index;
+			}
 
-            var bundleRefs = new List<BundleRef>();
-            for (var index = 0; index < bundles.Length; index++)
-            {
-                var bundle = bundles[index];
-                var deps = assetBundleManifest.GetAllDependencies(bundle);
-                var path = string.Format("{0}/{1}", outputPath, bundle);
-                if (File.Exists(path))
-                {
-                    using (var stream = File.OpenRead(path))
-                    {
-                        bundleRefs.Add(new BundleRef
-                        {
-                            name = bundle,
-                            id = index,
-                            deps = Array.ConvertAll(deps, input => bundle2Ids[input]),
-                            len = stream.Length,
-                            hash = assetBundleManifest.GetAssetBundleHash(bundle).ToString(),
-                        });
-                    }
-                }
-                else
-                {
-                    Log.PrintError(path + " file not exsit.");
-                }
-            }
+			var bundleRefs = new List<BundleRef> ();
+			for (var index = 0; index < bundles.Length; index++) {
+				var bundle = bundles [index];
+				var deps = assetBundleManifest.GetAllDependencies (bundle);
+				var path = string.Format ("{0}/{1}", outputPath, bundle);
+				if (File.Exists (path)) {
+					using (var stream = File.OpenRead (path)) {
+						bundleRefs.Add (new BundleRef {
+							name = bundle,
+							id = index,
+							deps = Array.ConvertAll (deps, input => bundle2Ids [input]),
+							len = stream.Length,
+							hash = assetBundleManifest.GetAssetBundleHash (bundle).ToString (),
+						});
+					}
+				} else {
+					Debug.LogError (path + " file not exsit.");
+				}
+			}
 
-            for (var i = 0; i < rules.ruleAssets.Length; i++)
-            {
-                var item = rules.ruleAssets[i];
-                var path = item.path;
-                var dir = Path.GetDirectoryName(path).Replace("\\", "/");
-                var index = dirs.FindIndex(o => o.Equals(dir));
-                if (index == -1)
-                {
-                    index = dirs.Count;
-                    dirs.Add(dir);
-                }
+			for (var i = 0; i < rules.ruleAssets.Length; i++) {
+				var item = rules.ruleAssets [i];
+				var path = item.path;
+				var dir = Path.GetDirectoryName (path).Replace("\\", "/");
+				var index = dirs.FindIndex (o => o.Equals (dir));
+				if (index == -1) {
+					index = dirs.Count;
+					dirs.Add (dir);
+				}
 
-                try
-                {
-                    var asset = new AssetRef
-                        {bundle = bundle2Ids[item.bundle], dir = index, name = Path.GetFileName(path)};
-                    assets.Add(asset);
-                }
-                catch
-                {
-                    Log.PrintWarning("资源打包出错，重试中");
-                    BuildAssetBundles();
-                    return;
-                }
-            }
+				var asset = new AssetRef { bundle = bundle2Ids [item.bundle], dir = index, name = Path.GetFileName (path) };
+				assets.Add (asset);
+			}
 
-            manifest.searchDirs = Array.ConvertAll(rules.rules, input => input.searchPath);
-            manifest.dirs = dirs.ToArray();
-            manifest.assets = assets.ToArray();
-            manifest.bundles = bundleRefs.ToArray();
+			manifest.dirs = dirs.ToArray ();
+			manifest.assets = assets.ToArray ();
+			manifest.bundles = bundleRefs.ToArray ();
 
-            EditorUtility.SetDirty(manifest);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+			EditorUtility.SetDirty (manifest);
+			AssetDatabase.SaveAssets ();
+			AssetDatabase.Refresh ();
 
-            var manifestBundleName = "manifest.unity3d";
-            builds = new[] {
-                new AssetBundleBuild {
-                    assetNames = new[] { AssetDatabase.GetAssetPath (manifest), },
-                    assetBundleName = manifestBundleName
-                }
-            };
+			var manifestBundleName = "manifest.unity3d";
+			builds = new[] {
+				new AssetBundleBuild {
+					assetNames = new[] { AssetDatabase.GetAssetPath (manifest), },
+					assetBundleName = manifestBundleName
+				}
+			};
 
-            BuildPipeline.BuildAssetBundles(outputPath, builds, options, targetPlatform);
-            ArrayUtility.Add(ref bundles, manifestBundleName);
+			BuildPipeline.BuildAssetBundles (outputPath, builds, options, targetPlatform);
+			ArrayUtility.Add (ref bundles, manifestBundleName);  
 
-            Versions.BuildVersions(outputPath, bundles, GetBuildRules().AddVersion());
-        }
+			Versions.BuildVersions (outputPath, bundles, GetBuildRules ().AddVersion ());
+		}
 
         private static string GetBuildTargetName(BuildTarget target)
         {

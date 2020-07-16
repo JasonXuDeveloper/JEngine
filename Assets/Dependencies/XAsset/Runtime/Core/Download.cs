@@ -143,7 +143,7 @@ namespace libx
                 _request.SetRequestHeader("Range", "bytes=" + position + "-");
                 _request.downloadHandler = this;
                 _request.SendWebRequest();
-                Debug.Log("Start Download：" + url);
+                // Debug.Log("Start Download：" + url);
             }
             else
             {
@@ -187,7 +187,7 @@ namespace libx
                 {
                     File.Copy(tempPath, savePath, true);
                     File.Delete(tempPath);
-                    Debug.Log("Complete Download：" + url);
+                    // Debug.Log("Complete Download：" + url);
                     if (completed == null) return;
                     completed.Invoke(this);
                     completed = null;

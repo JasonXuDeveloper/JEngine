@@ -41,7 +41,7 @@ namespace libx
         public static readonly string ManifestAsset = "Assets/Manifest.asset";
         public static readonly string Extension = ".unity3d";
 
-        public static bool runtimeMode = false;
+        public static bool runtimeMode = true;
         public static Func<string, Type, Object> loadDelegate = null;
         private const string TAG = "[Assets]";
 
@@ -70,11 +70,6 @@ namespace libx
 
         public static void AddSearchPath(string path)
         {
-            if (!path.EndsWith("/"))
-            {
-                path += "/";
-            }
-
             _searchPaths.Add(path);
         }
 
@@ -206,8 +201,7 @@ namespace libx
 
         internal static void OnLoadManifest(Manifest manifest)
         {
-            _activeVariants.AddRange(manifest.activeVariants);
-            _searchPaths.AddRange(manifest.searchDirs);
+            _activeVariants.AddRange(manifest.activeVariants); 
 
             var assets = manifest.assets;
             var dirs = manifest.dirs;
@@ -337,7 +331,7 @@ namespace libx
 
         #region Paths
 
-        private static List<string> _searchPaths = new List<string>();
+        public static List<string> _searchPaths = new List<string>();
 
         private static string GetExistPath(string path)
         {

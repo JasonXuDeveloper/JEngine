@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -36,9 +37,38 @@ namespace libx
         private static void OnInitialize()
         {
             var settings = BuildScript.GetSettings();
-            Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
-            Assets.runtimeMode = settings.runtimeMode;
+			Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
+            // #if UNITY_EDITOR
+            // Assets.runtimeMode = settings.runtimeMode;
+            // #endif
             Assets.loadDelegate = AssetDatabase.LoadAssetAtPath;
+
+            var assets = new List<string>();
+            var rules = BuildScript.GetBuildRules();
+            foreach (var asset in rules.scenesInBuild)
+            {
+                var path = AssetDatabase.GetAssetPath(asset);
+                if (string.IsNullOrEmpty(path))
+                {
+                    continue;
+                }
+                assets.Add(path); 
+            } 
+            foreach (var rule in rules.rules)
+            {
+                if (rule.searchPattern.Contains("*.unity"))
+                {
+                    assets.AddRange(rule.GetAssets());
+                }
+            }  
+            var scenes = new EditorBuildSettingsScene[assets.Count+1];
+            scenes[0] = new EditorBuildSettingsScene("Assets/Init.unity", true);
+            for (var index = 1; index < assets.Count+1; index++)
+            {
+                var asset = assets[index-1]; 
+                scenes[index] = new EditorBuildSettingsScene(asset, true);
+            }
+            EditorBuildSettings.scenes = scenes;
         }
 
         [InitializeOnLoadMethod]

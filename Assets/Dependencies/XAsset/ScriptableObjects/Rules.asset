@@ -19,55 +19,9 @@ MonoBehaviour:
   searchPatternPng: '*.png'
   searchPatternPrefab: '*.prefab'
   searchPatternScene: '*.unity'
-  searchPatternText: '*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt,*.ttf'
-  version: 1
-  scenes: []
-  rules:
-  - searchPath: Assets/HotUpdateResources/Controller
-    searchPattern: '*.controller'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/Dll
-    searchPattern: '*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt,*.ttf'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/Material
-    searchPattern: '*.mat'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/Other
-    searchPattern: '*'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/Prefab
-    searchPattern: '*.prefab'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/Scene
-    searchPattern: '*.unity'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/ScriptableObject
-    searchPattern: '*.asset'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/TextAsset
-    searchPattern: '*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt,*.ttf'
-    nameBy: 1
-    assetBundleName: 
-  - searchPath: Assets/HotUpdateResources/UI
-    searchPattern: '*.png'
-    nameBy: 1
-    assetBundleName: 
-  ruleAssets:
-  - bundle: f1e9148d33abaae32bb165f217c22e91.unity3d
-    path: Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
-  - bundle: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
-    path: Assets/HotUpdateResources/Scene/Game.unity
-  ruleBundles:
-  - name: f1e9148d33abaae32bb165f217c22e91.unity3d
-    assets:
-    - Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
-  - name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
-    assets:
-    - Assets/HotUpdateResources/Scene/Game.unity
+  searchPatternText: '*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt'
+  version: 0
+  scenesInBuild: []
+  rules: []
+  ruleAssets: []
+  ruleBundles: []

@@ -27,9 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace libx
 {
@@ -100,20 +100,23 @@ namespace libx
         private readonly Dictionary<string, string[]> _conflicted = new Dictionary<string, string[]>();
         private readonly List<string> _duplicated = new List<string>();
         private readonly Dictionary<string, HashSet<string>> _tracker = new Dictionary<string, HashSet<string>>();
-        [Header("Patterns")] public string searchPatternAsset = "*.asset";
-        public string searchPatternController = "*.controller";
-        public string searchPatternDir = "*";
-        public string searchPatternMaterial = "*.mat";
-        public string searchPatternPng = "*.png";
-        public string searchPatternPrefab = "*.prefab";
-        public string searchPatternScene = "*.unity";
-        public string searchPatternText = "*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt,*.ttf";
-        [Tooltip("构建的版本号")] [Header("Builds")] public int version;
-        [Tooltip("BuildPlayer 的时候被打包的场景")] public UnityEngine.Object[] scenes = new UnityEngine.Object[0];
-        public BuildRule[] rules = new BuildRule[0];
-        [Header("Assets")] public RuleAsset[] ruleAssets = new RuleAsset[0];
-        public RuleBundle[] ruleBundles = new RuleBundle[0];
-
+		[Header("Patterns")]
+		public string searchPatternAsset = "*.asset";
+		public string searchPatternController = "*.controller";
+		public string searchPatternDir = "*";
+		public string searchPatternMaterial = "*.mat";
+		public string searchPatternPng = "*.png";
+		public string searchPatternPrefab = "*.prefab";
+		public string searchPatternScene = "*.unity";
+		public string searchPatternText = "*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt";
+		[Tooltip("构建的版本号")]
+		[Header("Builds")] 
+        public int version;
+        [Tooltip("BuildPlayer 的时候被打包的场景")] public SceneAsset[] scenesInBuild = new SceneAsset[0]; 
+        public BuildRule[] rules = new BuildRule[0]; 
+		[Header("Assets")]
+		[HideInInspector]public RuleAsset[] ruleAssets = new RuleAsset[0];
+        [HideInInspector]public RuleBundle[] ruleBundles = new RuleBundle[0];
         #region API
 
         public int AddVersion()
@@ -157,8 +160,7 @@ namespace libx
             if (!asset.StartsWith("Assets/")) return false;
 
             var ext = Path.GetExtension(asset).ToLower();
-            
-            return ext != ".dll"  && ext != ".cs" && ext != ".meta" && ext != ".js" && ext != ".boo";
+            return ext != ".dll" && ext != ".cs" && ext != ".meta" && ext != ".js" && ext != ".boo";
         }
 
         private static bool IsScene(string asset)
@@ -315,7 +317,7 @@ namespace libx
 
         private void ApplyRule(BuildRule rule)
         {
-            var assets =  rule.GetAssets();
+            var assets = rule.GetAssets();
             switch (rule.nameBy)
             {
                 case NameBy.Explicit:

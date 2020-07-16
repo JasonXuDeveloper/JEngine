@@ -1,8 +1,16 @@
-# JENGINE v0.1
+# JENGINE v0.2
 
 JEngine is a streamlined and easy-to-use framework base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
 
 [中文请点这里](#中文说明)
+
+
+
+## Latest Features
+
+- Supports development mode which **loads dll and resources from local**
+- Automatically **clean up unnecessary dlls, pdbs, etc.** in DLL Resource Directory
+- Automatically **convert dll into bytes** in Editor
 
 
 
@@ -11,20 +19,20 @@ JEngine is a streamlined and easy-to-use framework base on [XAsset](https://gith
 - Automatically generate **Update Resources**
 - Automatically handle **Hot-update DLL**
 - Update [Hot-update](#What-is-Hot-update) codes and resources from server (Base on XAsset & ILRuntime)
-- Supports local hot-update code development in Unity Editor via dll in Asstes/HotUpdateResources/Dll/HotUpdateScripts.dll
+- Supports development mode which **loads dll and resources from local**
 
 
 
 ## Future Features
 
-- Supports local hot-update resources development in Unity Editor
+- ~~Supports local hot-update resources development in Unity Editor~~
 - Encrypt Hot-update DLL and decrypt in runtime
 - Optiimize logics which can improve process speed
 - *Unity Editor FTP Tool (Maybe)*
 
 
 
-## What is Hot-update
+## What is Hot update
 
 As we acknowledged, when developers update their apps/games, users will have to download the latest version from app stores, this is what we called "cold-update". Hot-update, sounds like a antonym of normal update process, it is a way which developers upload their newest codes & resources into their web server, and since users open their apps/games, they automatically download the latest codes and resources from the server, and those codes and resources reloads, overrides the old versions.
 
@@ -63,7 +71,8 @@ Please clone this framework into your project and keep this directory structure
 │   │   │   ├── Generated
 │   │   │   └── ILRuntime
 │   │   ├── JEngine
-│   │   │   └── Core
+│   │   │   ├── Core
+│   │   │   └── Editor
 │   │   ├── LitJson
 │   │   └── XAsset
 │   │       ├── Editor
@@ -149,7 +158,7 @@ Please clone this framework into your project and keep this directory structure
 
 5. Once it has built, upload your the whole **DLC** directory into your server (If you don't know how to do it, google search how to build a web server)
 
-6. Go to Init scene in Unity, choose **Updater** in hierarchy
+6. Go to **Init scene** in Unity, choose **Updater** in hierarchy
 
    <img src="https://s1.ax1x.com/2020/07/14/UtcuOf.png" alt="hierarchy" style="width:50%;margin-left:25%" />
 
@@ -157,7 +166,7 @@ Please clone this framework into your project and keep this directory structure
 
    > Format: http://your-ip:your-port/DLC/ or http://your-domain/DLC/
    >
-   > <img src="https://s1.ax1x.com/2020/07/14/UtcGfs.png" alt="inspector" style="width:50%;margin-left:25%" />
+   > <img src="https://s1.ax1x.com/2020/07/16/UBC5uD.png" alt="inspector" style="width:50%;margin-left:25%" />
 
 8. Now, run your game, and you will feel how hot-update works!
 
@@ -184,11 +193,11 @@ Please clone this framework into your project and keep this directory structure
 
 1. Go to Unity Editor, open **Init scene**
 
-2. Choose **HotFixCode** from inspector
+2. Choose **Updater** from inspector
 
-3. **Enable local test** in Init script section
+3. **Enable development mode** in Updater script section
 
-   <img src="https://s1.ax1x.com/2020/07/14/UtRqj1.png" alt="guide1" style="width:50%;margin-left:25%" />
+   <img src="https://s1.ax1x.com/2020/07/16/UBC5uD.png" alt="guide1" style="width:50%;margin-left:25%" />
 
 
 

@@ -21,21 +21,29 @@ public class Init : MonoBehaviour
     AppDomain appdomain;
     System.IO.MemoryStream fs;
 
-    [Header("本地测DLL")]public bool LocalTest;
     void Start()
     {
         Instance = this;
         LoadHotFixAssembly();
+        Application.targetFrameRate = 30;
     }
 
     void LoadHotFixAssembly()
     {
         appdomain = new ILRuntime.Runtime.Enviorment.AppDomain();
 
-        if (LocalTest)
+        var dllAsset = Assets.LoadAssetAsync("HotUpdateScripts.bytes",typeof(TextAsset));
+        dllAsset.completed += delegate
         {
-            var dll = FileToByte("Assets/HotUpdateResources/Dll/HotUpdateScripts.dll");
-            fs = new MemoryStream(dll);
+            if (dllAsset.error != null)
+            {
+                Log.PrintError(dllAsset.error);
+                return;
+            }
+
+            var dll = (TextAsset)dllAsset.asset;
+            
+            fs = new MemoryStream(dll.bytes);
             
             try
             {
@@ -46,39 +54,84 @@ public class Init : MonoBehaviour
                 Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
             }
             
+            
             InitializeILRuntime();
             OnHotFixLoaded();
-        }
-        else
-        {
-            var dllAsset = Assets.LoadAssetAsync("HotUpdateScripts.bytes",typeof(TextAsset));
-            dllAsset.completed += delegate
-            {
-                if (dllAsset.error != null)
-                {
-                    Log.PrintError(dllAsset.error);
-                    return;
-                }
-
-                var dll = (TextAsset)dllAsset.asset;
-            
-                fs = new MemoryStream(dll.bytes);
-            
-                try
-                {
-                    appdomain.LoadAssembly(fs, null, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
-                }
-                catch(Exception e)
-                {
-                    Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
-                }
-            
-            
-                InitializeILRuntime();
-                OnHotFixLoaded();
-            };
-        }
+        };
     }
+
+    unsafe void InitializeILRuntime()
+    {
+#if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
+        //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
+        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        appdomain.DebugService.StartDebugService(56000);
+#endif
+
+        #region 这里添加ILRuntime的注册 HERE TO ADD ILRuntime Registerations
+        
+        appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
+        appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
+        appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
+        appdomain.DelegateManager.RegisterFunctionDelegate<System.Text.RegularExpressions.Match, System.String>();
+        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
+        appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
+        appdomain.DelegateManager.RegisterFunctionDelegate<bool>();
+        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
+        // appdomain.DelegateManager.RegisterMethodDelegate<SocketIO.SocketIOEvent>();
+        appdomain.DelegateManager.RegisterDelegateConvertor<System.Text.RegularExpressions.MatchEvaluator>((act) =>
+        {
+            return new System.Text.RegularExpressions.MatchEvaluator((match) => ((Func<System.Text.RegularExpressions.Match, System.String>)act)(match));
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
+        {
+            return new Action<JsonData>((a) =>
+            {
+                ((System.Action<JsonData>)action)(a);
+            });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction>((act) =>
+        {
+            return new UnityEngine.Events.UnityAction(async () =>
+            {
+                ((Action)act)();
+            });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.ThreadStart>((act) =>
+        {
+            return new System.Threading.ThreadStart(() =>
+            {
+                ((Action)act)();
+            });
+        });
+        
+        //添加MonoBehaviour核心方法
+        var arr = typeof(GameObject).GetMethods();
+        foreach (var i in arr)
+        {
+            if (i.Name == "AddComponent" && i.GetGenericArguments().Length == 1)
+            {
+                appdomain.RegisterCLRMethodRedirection(i, AddComponent);
+            }
+        }
+        foreach (var i in arr)
+        {
+            if (i.Name == "GetComponent" && i.GetGenericArguments().Length == 1)
+            {
+                appdomain.RegisterCLRMethodRedirection(i, GetComponent);
+            }
+        }
+        
+        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);//绑定LitJson
+        ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);//CLR绑定
+        #endregion
+    }
+
+    unsafe void OnHotFixLoaded()
+    {
+        appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
+    }
+    
     
     /// <summary>
     /// 将文件转换成byte[]数组
@@ -101,77 +154,7 @@ public class Init : MonoBehaviour
             return null;
         }
     }
-
-
-    unsafe void InitializeILRuntime()
-    {
-#if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
-        //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
-        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
-        appdomain.DebugService.StartDebugService(56000);
-#endif
-
-        #region 这里添加ILRuntime的注册
-        
-        appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Text.RegularExpressions.Match, System.String>();
-        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<bool>();
-        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
-        appdomain.DelegateManager.RegisterDelegateConvertor<System.Text.RegularExpressions.MatchEvaluator>((act) =>
-        {
-            return new System.Text.RegularExpressions.MatchEvaluator((match) => ((Func<System.Text.RegularExpressions.Match, System.String>)act)(match));
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
-        {
-            return new Action<JsonData>((a) =>
-            {
-                ((System.Action<JsonData>)action)(a);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction>((act) =>
-        {
-            return new UnityEngine.Events.UnityAction(async () =>
-            {
-                ((Action)act)();
-            });
-        });
-        
-        #endregion
-        
-        ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);
-
-        var arr = typeof(GameObject).GetMethods();
-        foreach (var i in arr)
-        {
-            if (i.Name == "AddComponent" && i.GetGenericArguments().Length == 1)
-            {
-                appdomain.RegisterCLRMethodRedirection(i, AddComponent);
-            }
-        }
-        foreach (var i in arr)
-        {
-            if (i.Name == "GetComponent" && i.GetGenericArguments().Length == 1)
-            {
-                appdomain.RegisterCLRMethodRedirection(i, GetComponent);
-            }
-        }
-        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
-    }
-
-    unsafe void OnHotFixLoaded()
-    {
-        appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
-    }
-
-    public void DoCoroutine(IEnumerator coroutine)
-    {
-        StartCoroutine(coroutine);
-    }
-
+    
     private void OnDestroy()
     {
         if (fs != null)

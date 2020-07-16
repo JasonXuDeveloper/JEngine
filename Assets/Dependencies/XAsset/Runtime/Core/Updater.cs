@@ -57,8 +57,10 @@ namespace libx
         [SerializeField] private string baseURL = "http://127.0.0.1:7888/";
 
         private IEnumerator checking;
-        [SerializeField] private bool enableVFS;
+        private bool enableVFS;
         [Tooltip("游戏主Scene")][SerializeField] private string gameScene = "Game.unity";
+        [SerializeField] private bool developmentMode = false;
+        
         public IUpdater listener { get; set; }
 
         public void OnMessage(string msg)
@@ -100,22 +102,24 @@ namespace libx
 
         private void Start()
         {
-            _downloader = gameObject.AddComponent<Downloader>();
+            _downloader = gameObject.GetComponent<Downloader>();
             _downloader.onUpdate = OnUpdate;
             _downloader.onFinished = OnComplete;
 
             _savePath = Application.persistentDataPath + '/';
             Assets.updatePath = _savePath;
+
 #if UNITY_EDITOR//编辑器下platform矫正
-#if UNITY_IPHONE
+    #if UNITY_IPHONE
             _platform = GetPlatformForAssetBundles(RuntimePlatform.IPhonePlayer);
-#elif UNITY_ANDROID
+    #elif UNITY_ANDROID
             _platform = GetPlatformForAssetBundles(RuntimePlatform.Android);
-#else
-            _platform = GetPlatformForAssetBundles(Application.platform);
-#endif
+    #else
+             _platform = GetPlatformForAssetBundles(Application.platform);
+    #endif
 #else//打包出来后platform就没问题了
             _platform = GetPlatformForAssetBundles(Application.platform);
+            developmentMode = false;
 #endif
         }
 
@@ -148,6 +152,14 @@ namespace libx
 
         public void StartUpdate()
         {
+            #if UNITY_EDITOR
+            if (developmentMode)
+            {
+                StartCoroutine(LoadGameScene());
+                return;
+            }
+            #endif
+            
             OnStart();
 
             if (checking != null) StopCoroutine(checking);
@@ -215,7 +227,11 @@ namespace libx
         private IEnumerator Checking()
         {
             if (!Directory.Exists(_savePath)) Directory.CreateDirectory(_savePath);
+            #if UNITY_IOS
+            enableVFS = false;
+            #else
             enableVFS = true;
+            #endif
             yield return RequestCopy();
             yield return RequestVersions();
             if (_versions.Count > 0)
@@ -226,12 +242,16 @@ namespace libx
                 if (totalSize > 0)
                 {
                     var tips = string.Format("发现内容更新，总计需要下载 {0} 内容", Downloader.GetDisplaySize(totalSize));
-                    var mb = MessageBox.Show("提示", tips, "下载", "跳过");
+                    var mb = MessageBox.Show("提示", tips, "[下载]", "[退出游戏]");
                     yield return mb;
                     if (mb.isOk)
                     {
                         _downloader.StartDownload();
                         yield break;
+                    }
+                    else
+                    {
+                        Quit();
                     }
                 }
             }
@@ -247,7 +267,7 @@ namespace libx
             yield return request.SendWebRequest();
             if (!string.IsNullOrEmpty(request.error))
             {
-                var mb = MessageBox.Show("提示", string.Format("获取服务器版本失败：{0}", request.error), "重试", "退出");
+                var mb = MessageBox.Show("提示", string.Format("获取服务器版本失败：{0}", request.error), "[重试]", "[退出]");
                 yield return mb;
                 if (mb.isOk)
                 {
@@ -299,7 +319,7 @@ namespace libx
                 var v2 = Versions.LoadVersion(path);
                 if (v2 > v1)
                 {
-                    var mb = MessageBox.Show("提示", "是否将资源解压到本地？", "解压", "跳过");
+                    var mb = MessageBox.Show("提示", "是否将资源解压到本地？", "[解压]", "[跳过]");
                     yield return mb;
                     if (mb.isOk)
                     {
@@ -375,7 +395,7 @@ namespace libx
             OnProgress(1);
             OnMessage("更新完成");
             var version = Versions.LoadVersion(_savePath + Versions.Filename);
-            if (version > 0) OnVersion("资源版本号: v"+version.ToString());
+            if (version > 0) OnVersion("资源版本号: v"+Application.version+"res"+version.ToString());
 
             StartCoroutine(LoadGameScene());
         }
@@ -383,20 +403,40 @@ namespace libx
         private IEnumerator LoadGameScene()
         {
             OnMessage("正在初始化");
-            Assets.runtimeMode = true;
+            Assets.runtimeMode = !developmentMode;
             var init = Assets.Initialize();
             yield return init;
+            
             if (string.IsNullOrEmpty(init.error))
             {
                 init.Release();
+                
+                Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
+                Assets.AddSearchPath("Assets/HotUpdateResources/Dll");
+                Assets.AddSearchPath("Assets/HotUpdateResources/Material");
+                Assets.AddSearchPath("Assets/HotUpdateResources/Other");
+                Assets.AddSearchPath("Assets/HotUpdateResources/Prefab");
+                Assets.AddSearchPath("Assets/HotUpdateResources/Scene");
+                Assets.AddSearchPath("Assets/HotUpdateResources/ScriptableObject");
+                Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
+                Assets.AddSearchPath("Assets/HotUpdateResources/UI");
+                
+                // foreach (var s in Assets._searchPaths)
+                // {
+                //     Debug.Log("Assets._searchPaths: "+s);
+                // }
+                
+                
                 OnProgress(0);
                 OnMessage("加载游戏场景");
 
+                //获取不到全部资源路径...
                 // var ss = Assets.GetAllAssetPaths();
                 // foreach (var s in ss)
                 // {
-                //     print(s);
+                //     print("从资源包里找到路径: "+s);
                 // }
+                // Debug.Log("资源包有"+ss.Length+"资源");
                 
                 var scene = Assets.LoadSceneAsync(gameScene, false);
                 scene.completed+= (AssetRequest request) =>

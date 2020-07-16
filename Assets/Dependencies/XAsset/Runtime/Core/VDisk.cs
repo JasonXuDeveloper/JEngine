@@ -195,7 +195,7 @@ namespace libx
                     var path = string.Format("{0}/{1}", dir, item.name);
                     WriteFile(path, writer);
                     File.Delete(path);
-                    Debug.Log("Delete:" + path);
+                    // Debug.Log("Delete:" + path);
                 }
             }
         }

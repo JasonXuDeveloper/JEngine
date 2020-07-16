@@ -41,7 +41,7 @@ namespace libx
         {
             try
             {
-                version.text =  "资源版本号: v"+Versions.LoadVersion(Application.persistentDataPath + '/' + Versions.Filename);
+                version.text =  "资源版本号: v"+Application.version+"res"+Versions.LoadVersion(Application.persistentDataPath + '/' + Versions.Filename);
             }
             catch(Exception e)
             {
