@@ -1,10 +1,10 @@
 ﻿using System;
+using UnityEngine;
 
 namespace MyAPI
 {
-    public class API1{
-        public void API1Method1(){
-            
-        }
+    public class ExampleAPI :MonoBehaviour
+    {
+        
     }
 }

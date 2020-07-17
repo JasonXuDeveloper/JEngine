@@ -927,6 +927,11 @@ namespace ILRuntime.Runtime.Intepreter
             return Delegate == dele;
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override string ToString()
         {
             return method.ToString();
@@ -961,7 +966,7 @@ namespace ILRuntime.Runtime.Intepreter
             bool isByRef;
             if (method.ReturnType.Name != "Void" || method.ParameterCount > 0)
             {
-                sb.AppendLine(", Please add following code into Assets/Scripts/Init.cs 'InitializeILRuntime()' Method:");
+                sb.AppendLine(", Please add following code:");
                 if (method.ReturnType.Name == "Void")
                 {
                     sb.Append("appdomain.DelegateManager.RegisterMethodDelegate<");

@@ -27,29 +27,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using JEngine.LifeCycle;
 
 namespace HotUpdateScripts
 {
-    public class Sample : MonoBehaviour
+    public class Sample : JUIBehaviour
     {
         public Text HelloText;
 
-        private void Start()
+        public int times;
+
+        public override void Init()
         {
             HelloText = GameObject.Find("Canvas/Text").GetComponent<Text>();
-            StartCoroutine(Count());
+            times = 0;
         }
 
-
-        IEnumerator Count()
+        public override void Run()
         {
-            int times = 0;
-            while (true)
-            {
-                HelloText.text = "HELLO JEngine * " + times +" times";
-                times++;
-                yield return new WaitForSeconds(1);
-            }
+            //Here in run method, we set up the frequency and mode of loop.
+
+            frame = false;// Not loop in frame, but in milliseconds
+            frequency = 1000;//Loop in 1000ms => 1 second
+
+            /* OR:
+             * frame = true;// Loop in frame
+             * frequency = 10;//Loop in every 10 frames
+             */
+        }
+
+        public override void Loop()
+        {
+            HelloText.text = "HELLO JEngine * " + times + " times";
+            times++;
         }
     }
 }

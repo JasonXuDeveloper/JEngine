@@ -31,12 +31,15 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
         var instance = clr.ILInstance;
         if (instance != null)
         {
-            EditorGUILayout.LabelField("类名", clr.ILInstance.Type.Name);
+            EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
+            
+            int index = 0;
             foreach (var i in instance.Type.FieldMapping)
             {
                 //这里是取的所有字段，没有处理不是public的
                 var name = i.Key;
-                var type = instance.Type.FieldTypes[i.Value];
+                var type = instance.Type.FieldTypes[index];
+                index++;
 
                 var cType = type.TypeForCLR;
                 if (cType.IsPrimitive) //如果是基础类型

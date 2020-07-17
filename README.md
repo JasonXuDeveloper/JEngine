@@ -1,4 +1,4 @@
-# JENGINE v0.2
+# JENGINE v0.3
 
 JEngine is a streamlined and easy-to-use framework base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
 
@@ -8,9 +8,9 @@ JEngine is a streamlined and easy-to-use framework base on [XAsset](https://gith
 
 ## Latest Features
 
-- Supports development mode which **loads dll and resources from local**
-- Automatically **clean up unnecessary dlls, pdbs, etc.** in DLL Resource Directory
-- Automatically **convert dll into bytes** in Editor
+- Update **ILRuntime** to v1.6.3 which fixes heaps of bugs in the dependency
+- **JEngine Lifecyle** is now included, it is **only a prototype** and will be extended in the future with more base codes.
+- **JUIBehaviour** is coming, it is a behaviour base on MonoBehaviour but more friendly to manage UI components' lifecycles which are not require to change that frequently, **and runs better**, you can use less codes to implement more
 
 
 
@@ -27,7 +27,7 @@ JEngine is a streamlined and easy-to-use framework base on [XAsset](https://gith
 
 - ~~Supports local hot-update resources development in Unity Editor~~
 - Encrypt Hot-update DLL and decrypt in runtime
-- Optiimize logics which can improve process speed
+- Optiimize logics which can improve process speed (As always)
 - *Unity Editor FTP Tool (Maybe)*
 
 
@@ -126,6 +126,7 @@ Please clone this framework into your project and keep this directory structure
 - **DLC** - Generated hot-update resources will be store here, all you need to do is to put the whole DLC directory and files include, into your web server
 - **HotUpdateScripts** - Your hot-update scripts will be store here
   - **HotUpdateScripts/Program.cs** - Initialization for hot-update code, **you can change it but do not delete it, keep the RunGame method in Program.cs**
+  - **HotUpdateScripts/JEngine** - **Do not delete this file as JEngine codes are in it**
 - **ProjectSettings** - Some project settings here, eg. allow unsafe code
 
 
@@ -211,6 +212,93 @@ Please clone this framework into your project and keep this directory structure
 
 
 
+## Using JEngine Features in Hot Updatable Scripts
+
+> JEngine now contains a **new behaviour** base on MonoBehaviour but **runs better**
+>
+> Why choose JUIBehaviour?
+>
+> - Simple lifecycle
+> - Less codes to implement loops
+> - Uses coroutine rather than methods to do updates
+
+1. In your Hot Update Solution, and in your c# file:
+
+   Add import at the top:
+
+   ```c#
+   using JEngine.LifeCycle;
+   ```
+
+2. Inherit **JUIBehaviour** in your class
+
+   ```c#
+   namespace HotUpdateScripts
+   {
+       public class Sample : JUIBehaviour
+       {
+       	//ToDo
+       }
+   }
+   ```
+
+3. There are four main methods in **JUIBehaviour**
+
+   - Init => When this class has been added to an Unity GameObject
+   - Run => This method will be called after Init
+   - Loop => This method will loop in specific mode and specific frequency
+   - End => Will be called when the GameObject with this class has been destoryed
+
+4. Example Showcase:
+
+   ```c#
+   using UnityEngine;
+   using UnityEngine.UI;
+   using JEngine.LifeCycle;
+   
+   namespace HotUpdateScripts
+   {
+       public class Sample : JUIBehaviour
+       {
+           public Text HelloText;
+   
+           public int times;
+   
+           public override void Init()
+           {
+               HelloText = GameObject.Find("Canvas/Text").GetComponent<Text>();
+               times = 0;
+           }
+   
+           public override void Run()
+           {
+               //Here in run method, we set up the frequency and mode of loop.
+   
+               frame = false;// Not loop in frame, but in milliseconds
+               frequency = 1000;//Loop in 1000ms => 1 second
+   
+               /* OR:
+                * frame = true;// Loop in frame
+                * frequency = 10;//Loop in every 10 frames
+                */
+           }
+   
+           public override void Loop()
+           {
+               HelloText.text = "HELLO JEngine * " + times + " times";
+               times++;
+           }
+       }
+   }
+   ```
+
+5. As you might see, in **Run** method, there is an assignment of **frame and frequency** variable, these variables controls **loop** method.
+
+   - frame: **bool**, when it is true, loop runs in **frames**; or loop runs in **milliseconds** 
+   - frequency: **int**, it holds the **interval of frames or milliseconds** which calls loop method
+
+
+
 ## Development Environment
 
 - Debuging Unity Engine Version: 2019.3.13f1
@@ -229,4 +317,4 @@ Please clone this framework into your project and keep this directory structure
 
 ## 中文说明
 
-> 将在v0.3更新中补充
+> 将在v0.4更新中补充

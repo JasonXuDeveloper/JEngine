@@ -48,7 +48,7 @@ namespace LitJson
         private int                  indentation;
         private int                  indent_value;
         private StringBuilder        inst_string_builder;
-        private bool                 pretty_print = true;
+        private bool                 pretty_print;
         private bool                 validate;
         private TextWriter           writer;
         #endregion
@@ -365,7 +365,6 @@ namespace LitJson
             context.ExpectingValue = false;
         }
 
-        [CLSCompliant(false)]
         public void Write (ulong number)
         {
             DoValidation (Condition.Value);

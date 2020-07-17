@@ -4,11 +4,10 @@ using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
-
 [System.Reflection.Obfuscation(Exclude = true)]
 public class ILRuntimeCLRBinding
 {
-   [MenuItem("JEngine/ILRuntime/Generate CLR Binding Code by Analysis")]
+    [MenuItem("JEngine/ILRuntime/通过自动分析热更DLL生成CLR绑定")]
     static void GenerateCLRBindingByAnalysis()
     {
         //用新的分析热更dll调用引用来生成绑定代码
@@ -19,7 +18,7 @@ public class ILRuntimeCLRBinding
 
             //Crossbind Adapter is needed to generate the correct binding code
             InitILRuntime(domain);
-            ILRuntime.Runtime.CLRBinding.BindingCodeGenerator.GenerateBindingCode(domain, "Assets/ILRuntime/Generated");
+            ILRuntime.Runtime.CLRBinding.BindingCodeGenerator.GenerateBindingCode(domain, "Assets/Dependencies/ILRuntime/Generated");
         }
 
         AssetDatabase.Refresh();
@@ -30,7 +29,6 @@ public class ILRuntimeCLRBinding
         //这里需要注册所有热更DLL中用到的跨域继承Adapter，否则无法正确抓取引用
         domain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         domain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
-        domain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
     }
 }
 #endif

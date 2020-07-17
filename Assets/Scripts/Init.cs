@@ -73,16 +73,9 @@ public class Init : MonoBehaviour
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
         appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Text.RegularExpressions.Match, System.String>();
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<bool>();
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
-        // appdomain.DelegateManager.RegisterMethodDelegate<SocketIO.SocketIOEvent>();
-        appdomain.DelegateManager.RegisterDelegateConvertor<System.Text.RegularExpressions.MatchEvaluator>((act) =>
-        {
-            return new System.Text.RegularExpressions.MatchEvaluator((match) => ((Func<System.Text.RegularExpressions.Match, System.String>)act)(match));
-        });
         appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
         {
             return new Action<JsonData>((a) =>
