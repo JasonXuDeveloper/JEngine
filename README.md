@@ -1,6 +1,6 @@
 # JENGINE v0.3.1
 
-JEngine is a streamlined and easy-to-use framework.
+JEngine is a streamlined and easy-to-use framework in Unity.
 
 JEngine has its own behaviour based on MonoBehaviour but much more friendly to manage lifecycle. (You can make loop easier using JEngine).
 
