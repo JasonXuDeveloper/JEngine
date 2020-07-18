@@ -1,5 +1,5 @@
 ﻿//
-// EmptyClass.cs
+// JUIShowcase.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,43 +23,56 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using JEngine.UI;
 using UnityEngine;
 using UnityEngine.UI;
-using JEngine.LifeCycle;
 
 namespace HotUpdateScripts
 {
-    public class Sample : JUIBehaviour
+    public class Data
     {
-        public Text HelloText;
+        public int a = 0;
+        public float b = 0f;
+    }
 
-        public int times;
+    /// <summary>
+    /// This showcase shows how JUI works if an UI needs to update frequently
+    /// </summary>
+    public class JUIShowcase : MonoBehaviour
+    {
+        #region NORMAL WAY TO UPDATE UI
+        Data data;
+        Text a;
+        Text b;
 
-        public override void Init()
+        public void Awake()
         {
-            HelloText = GameObject.Find("Canvas/Text").GetComponent<Text>();
-            times = 0;
+            data = new Data();
+            a = GameObject.Find("Canvas/A").GetComponent<Text>();
         }
 
-        public override void Run()
+        public void Update()
         {
-            //Here in run method, we set up the frequency and mode of loop.
-
-            frame = false;// Not loop in frame, but in milliseconds
-            frequency = 1000;//Loop in 1000ms => 1 second
-
-            /* OR:
-             * frame = true;// Loop in frame
-             * frequency = 10;//Loop in every 10 frames
-             */
+            data.a++;
+            a.text = "(Without JUI)a="+data.a.ToString();
         }
+        #endregion
 
-        public override void Loop()
+        #region USE JUI TO UPDATE UI
+        public void Start()
         {
-            HelloText.text = "HELLO JEngine * " + times + " times";
-            times++;
+            data = new Data();
+            b = GameObject.Find("Canvas/B").GetComponent<Text>();
+
+            b.gameObject.AddComponent<JUIText>()
+                .onLoop(t1 =>
+                {
+                    data.b ++;
+                    t1.Text.text = "(With JUI)b=" + data.b.ToString();
+                })
+                .Activate();
         }
+        #endregion
     }
 }

@@ -1,6 +1,14 @@
 # JENGINE v0.3
 
-JEngine is a streamlined and easy-to-use framework base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
+JEngine is a streamlined and easy-to-use framework.
+
+JEngine has its own behaviour based on MonoBehaviour but much more friendly to manage lifecycle. (You can make loop easier using JEngine).
+
+JEngine has a method-chaining style of coding, which makes your code much more stramlined and beautiful.
+
+JEngine supports hot update, which is base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
+
+JEngine has its own purpose to help developers write powerful codes which are streamlined and beautiful; and to help developers distibute their games easier (eg. hot update).
 
 [中文请点这里](#中文说明)
 
@@ -8,9 +16,28 @@ JEngine is a streamlined and easy-to-use framework base on [XAsset](https://gith
 
 ## Latest Features
 
-- Update **ILRuntime** to v1.6.3 which fixes heaps of bugs in the dependency
-- **JEngine Lifecyle** is now included, it is **only a prototype** and will be extended in the future with more base codes.
-- **JUIBehaviour** is coming, it is a behaviour base on MonoBehaviour but more friendly to manage UI components' lifecycles which are not require to change that frequently, **and runs better**, you can use less codes to implement more
+- Combined **Unity-GUI-Redis**, which is also part of **JEngine**, now belongs to **JEngine.Redis** namespace
+
+- Update **XAsset** dependency to latest version:
+
+  - Supports **network monitor**
+  - Build bundles name by **hash**
+  - Tiny improvment on the framework
+
+- Rewrite **ILRuntime**:
+
+  - Supports **OnDestory** method called by MonoBehaviour
+  - Tiny improvment on the framework
+
+- **JEngine.UI** is now coming:
+
+  > Only supports Text at the moment
+
+  - Based on **JUIBehaviour**
+  - **Method-Chaining** which makes more stramlined and beautiful codes
+  - Unique and managable **lifecycle**
+
+- Improve **JUIBehaviour**
 
 
 
@@ -20,6 +47,9 @@ JEngine is a streamlined and easy-to-use framework base on [XAsset](https://gith
 - Automatically handle **Hot-update DLL**
 - Update [Hot-update](#What-is-Hot-update) codes and resources from server (Base on XAsset & ILRuntime)
 - Supports development mode which **loads dll and resources from local**
+- **JEngine.Redis** is built for enhancing your productivity of development when you are using Redis in your game made by Unity
+- **JUIBehaviour** is based on MonoBehaviour but much more friendly to **manage lifecycles**
+- **JEngine.UI** supports **method-chaning** coding in C# which makes your codes much more stramlined and beautiful.
 
 
 
@@ -126,7 +156,7 @@ Please clone this framework into your project and keep this directory structure
 - **DLC** - Generated hot-update resources will be store here, all you need to do is to put the whole DLC directory and files include, into your web server
 - **HotUpdateScripts** - Your hot-update scripts will be store here
   - **HotUpdateScripts/Program.cs** - Initialization for hot-update code, **you can change it but do not delete it, keep the RunGame method in Program.cs**
-  - **HotUpdateScripts/JEngine** - **Do not delete this file as JEngine codes are in it**
+  - **HotUpdateScripts/JEngine** - **Do not delete this directory as JEngine codes are in it**
 - **ProjectSettings** - Some project settings here, eg. allow unsafe code
 
 
@@ -214,6 +244,140 @@ Please clone this framework into your project and keep this directory structure
 
 ## Using JEngine Features in Hot Updatable Scripts
 
+#### JEngine.UI
+
+> JEngine now contains a new class which enhance the productivity of your UI (Only Supports Text at the moment)
+>
+> Why choose JEngine.UI?
+>
+> - Method-Chaning coding
+> - Simple but powerful
+
+1. In your Hot Update Scripts, and in your c# file, add the import at the top:
+
+   ```c#
+   using JEngine.UI;
+   ```
+
+2. Create a JUI with **AddComponent<T>** Method:
+
+   ```c#
+   //Here it is an example of JUIText
+   JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUIText>();
+   ```
+
+3. You can choose whether to give this JUI actions:
+
+   ```c#
+   //To Init it
+    t.onInit(t =>
+             {
+               
+             });
+   
+   //To Run it
+    t.onRun(t =>
+             {
+               
+             });
+   
+   //To Loop it
+    t.onLoop(t =>
+             {
+               
+             });
+   
+   //When it has ended
+    t.onEnd(t =>
+             {
+               
+             });
+   ```
+
+4. **To activate the JUI (IMPORTANT)**:
+
+   ```c#
+   t.Activate();
+   ```
+
+5. **All done!** (Remember to call **Activate** method when if you want to activate a JUI)
+
+##### Extension
+
+1. Method Chaining:
+
+   ```
+   JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUIText>()
+                   .onInit(t1 =>
+                   {
+                   
+                   })
+                   .onRun(t2 =>
+                   {
+                   })
+                   .onLoop(t3 =>
+                   {
+                   })
+                   .onEnd(t4 =>
+                   {
+                   })
+                   .Activate();
+   ```
+
+2. Example:
+
+   ```c#
+   public class Example
+       {
+           public void Start()
+           {
+               int i = 0;
+               JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUIText>()
+                   .onInit(t1 =>
+                   {
+                       t1.Text.text = "I have been Inited!";
+                       Debug.Log(t1.Text.text);
+                   })
+                   .onRun(t2 =>
+                   {
+                       t2.Text.text = "I am Running!";
+                       Debug.Log(t2.Text.text);
+   
+                       //Set the loop mode and frequency
+                       t2.frame = false;//Run in milliseconds
+                       t2.frequency = 1000;//Run in every 1000 ms (1 second)
+   
+                       UnityEngine.Object.Destroy(t2.gameObject,6);
+                   })
+                   .onLoop(t3 =>
+                   {
+                       i++;
+                       t3.Text.text = "This is the " + i + " times that I changed!";
+                       if (i >= 5)
+                       {
+                           t3.Text.text = "I will be destoryed in 1 second!";
+                       }
+                   })
+                   .onEnd(t4 =>
+                   {
+                       Debug.Log("My lifecycle has been ended!");
+                   })
+                   .Activate();
+           }
+       }
+   ```
+
+3. Controls the frequency of a loop:
+
+   **JUI** inherits from **JUIBehaviour**, which can manage the mode and frequency of loop.
+
+   - **frame** is a bool value which holds whether the loop runs in frames or in milliseconds
+   - **frequency** is a int value which holds the interval of loops (in frame counts when **frame** is true or in milliseconds)
+
+
+
+#### JUIBehaviour
+
 > JEngine now contains a **new behaviour** base on MonoBehaviour but **runs better**
 >
 > Why choose JUIBehaviour?
@@ -222,7 +386,7 @@ Please clone this framework into your project and keep this directory structure
 > - Less codes to implement loops
 > - Uses coroutine rather than methods to do updates
 
-1. In your Hot Update Solution, and in your c# file:
+1. In your Hot Update Scripts, and in your c# file:
 
    Add import at the top:
 

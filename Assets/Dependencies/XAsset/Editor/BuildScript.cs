@@ -141,37 +141,27 @@ namespace libx
             return rule;
         }
 
-        public static void CopyAssetBundlesTo(string outputPath)
+        public static void CopyAssetBundlesTo (string path)
         {
             var files = new[] {
                 Versions.Dataname,
                 Versions.Filename,
-            };
+            };  
+            if (!Directory.Exists (path)) {
+                Directory.CreateDirectory (path);
+            }
+
             foreach (var item in files)
             {
+                var src = outputPath + "/" + item;
                 var dest = Application.streamingAssetsPath + "/" + item;
-                if (File.Exists(dest))
+
+                if (File.Exists(src))
                 {
-                    File.Delete(dest);
+                    File.Copy(src, dest, true);
                 }
             }
-            var settings = BuildScript.GetSettings();
-            if (settings.copyToStreamingAssets)
-            {
-                if (!Directory.Exists(outputPath))
-                {
-                    Directory.CreateDirectory(outputPath);
-                }
-                foreach (var item in files)
-                {
-                    var src = outputPath + "/" + item;
-                    var dest = Application.streamingAssetsPath + "/" + item;
-                    if (File.Exists(src))
-                    {
-                        File.Copy(src, dest, true);
-                    }
-                }
-            }
+        
         }
 
         public static string GetPlatformName()
@@ -395,13 +385,6 @@ namespace libx
             }
 
             return asset;
-        }
-
-        public static Settings GetSettings()
-        {
-            const string path = "Assets/Dependencies/XAsset/ScriptableObjects/Settings.asset";
-            var setting = GetAsset<Settings>(path);
-            return setting;
         }
 
         public static Manifest GetManifest()

@@ -33,61 +33,55 @@ namespace libx
 {
     public class Download : DownloadHandlerScript, IDisposable, ICloneable
     {
-        private UnityWebRequest _request;
-        private bool _running;
-        private FileStream _stream;
-
-        public string savePath;
-
-        public int id { get; set; }
-        public string error { get; private set; }
-        public long len { get; set; }
-        public string hash { get; set; }
-        public string url { get; set; }
-        public long position { get; private set; }
-
-        public string tempPath => Application.persistentDataPath + "/temp_" + hash;
-
-        public Action<Download> completed { get; set; }
-
-        public bool finished { get; private set; }
-
         #region ICloneable implementation
 
         public object Clone()
         {
-            return new Download
+            return new Download()
             {
                 id = id,
                 hash = hash,
                 url = url,
                 len = len,
-                savePath = savePath
+                savePath = savePath,
+                completed = completed,
+                name = name
             };
         }
 
         #endregion
 
-        public new void Dispose()
+        public int id { get; set; }
+
+        public string error { get; private set; }
+
+        public long len { get; set; }
+
+        public string hash { get; set; }
+
+        public string url { get; set; }
+
+        public long position { get; private set; }
+
+        public string name { get; set; }
+
+        public string tempPath
         {
-            if (_stream != null)
-            {
-                _stream.Close();
-                _stream.Dispose();
-                _stream = null;
+            get
+            { 
+                var dir = Path.GetDirectoryName(savePath);
+                return string.Format("{0}/{1}", dir, hash);
             }
-
-            if (_request != null)
-            {
-                _request.Abort();
-                _request.Dispose();
-                _request = null;
-            }
-
-            base.Dispose();
-            _running = false;
-            finished = true;
         }
+
+        public string savePath;
+
+        public Action<Download> completed { get; set; }
+
+        private UnityWebRequest _request;
+        private FileStream _stream;
+        private bool _running;
+        private bool _finished = false;
 
         protected override float GetProgress()
         {
@@ -129,7 +123,10 @@ namespace libx
 
         public void Start()
         {
-            if (_running) return;
+            if (_running)
+            {
+                return;
+            }
 
             error = null;
             finished = false;
@@ -143,7 +140,7 @@ namespace libx
                 _request.SetRequestHeader("Range", "bytes=" + position + "-");
                 _request.downloadHandler = this;
                 _request.SendWebRequest();
-                // Debug.Log("Start Download：" + url);
+                Debug.Log("Start Download：" + url); 
             }
             else
             {
@@ -155,16 +152,43 @@ namespace libx
         {
             if (_running)
             {
-                if (_request.isDone && _request.downloadedBytes < (ulong) len)
+                if (_request.isDone && _request.downloadedBytes < (ulong)len)
+                {
                     error = "unknown error: downloadedBytes < len";
-                if (!string.IsNullOrEmpty(_request.error)) error = _request.error;
+                }
+                if (!string.IsNullOrEmpty(_request.error))
+                {
+                    error = _request.error;
+                } 
             }
+        }
+
+        public new void Dispose()
+        {
+            if (_stream != null)
+            {
+                _stream.Close();
+                _stream.Dispose();
+                _stream = null;
+            } 
+            if (_request != null)
+            {
+                _request.Abort();
+                _request.Dispose();
+                _request = null;
+            }  
+            base.Dispose();
+            _running = false;
+            finished = true;
         }
 
         public void Complete(bool stop = false)
         {
-            Dispose();
-            if (stop) return;
+            Dispose(); 
+            if (stop)
+            {
+                return;   
+            } 
             CheckError();
         }
 
@@ -173,40 +197,55 @@ namespace libx
             if (File.Exists(tempPath))
             {
                 if (string.IsNullOrEmpty(error))
+                {
                     using (var fs = File.OpenRead(tempPath))
                     {
-                        if (fs.Length != len) error = "下载文件长度异常:" + fs.Length;
+                        if (fs.Length != len)
+                        {
+                            error = "下载文件长度异常:" + fs.Length;
+                        } 
                         if (Versions.verifyBy == VerifyBy.Hash)
                         {
                             const StringComparison compare = StringComparison.OrdinalIgnoreCase;
-                            if (!hash.Equals(Utility.GetCRC32Hash(fs), compare)) error = "下载文件哈希异常:" + hash;
+                            if (!hash.Equals(Utility.GetCRC32Hash(fs), compare))
+                            {
+                                error = "下载文件哈希异常:" + hash;
+                            }
                         }
-                    }
-
+                    }  
+                } 
                 if (string.IsNullOrEmpty(error))
                 {
                     File.Copy(tempPath, savePath, true);
-                    File.Delete(tempPath);
-                    // Debug.Log("Complete Download：" + url);
-                    if (completed == null) return;
+                    File.Delete(tempPath); 
+                    Debug.Log("Complete Download：" + url);
+                    if (completed == null)
+                        return;
                     completed.Invoke(this);
-                    completed = null;
+                    completed = null; 
                 }
                 else
                 {
                     File.Delete(tempPath);
-                }
+                } 
             }
             else
             {
-                error = "文件不存在";
+                error = "文件不存在"; 
             }
         }
 
         public void Retry()
         {
-            Dispose();
+            Dispose(); 
             Start();
         }
+
+        public bool finished
+        {
+            get { return _finished; }
+            private set { _finished = value; }
+        }
     }
+
 }

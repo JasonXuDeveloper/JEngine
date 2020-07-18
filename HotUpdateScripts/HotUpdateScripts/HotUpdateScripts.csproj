@@ -33,8 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="Sample.cs" />
     <Compile Include="JEngine\JUIBehaviour.cs" />
+    <Compile Include="JEngine\JUIText.cs" />
+    <Compile Include="JUIShowcase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

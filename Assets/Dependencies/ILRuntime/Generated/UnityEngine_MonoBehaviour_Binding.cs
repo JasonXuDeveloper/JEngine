@@ -22,15 +22,34 @@ namespace ILRuntime.Runtime.Generated
             MethodBase method;
             Type[] args;
             Type type = typeof(UnityEngine.MonoBehaviour);
+            args = new Type[]{typeof(System.Object)};
+            method = type.GetMethod("print", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, print_0);
             args = new Type[]{typeof(System.Collections.IEnumerator)};
             method = type.GetMethod("StartCoroutine", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, StartCoroutine_0);
+            app.RegisterCLRMethodRedirection(method, StartCoroutine_1);
 
 
         }
 
 
-        static StackObject* StartCoroutine_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* print_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @message = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            UnityEngine.MonoBehaviour.print(@message);
+
+            return __ret;
+        }
+
+        static StackObject* StartCoroutine_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

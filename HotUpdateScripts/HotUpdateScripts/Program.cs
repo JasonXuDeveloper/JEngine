@@ -1,5 +1,5 @@
 ﻿//
-// EmptyClass.cs
+// Program.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -27,6 +27,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using JEngine.UI;
+using System.Threading.Tasks;
 
 namespace HotUpdateScripts
 {
@@ -34,13 +36,40 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
-            GameObject SampleGO = new GameObject
-            {
-                name = "SampleGO"
-            };
+            int i = 0;
+            JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUIText>()
+                .onInit(t1 =>
+                {
+                    t1.Text.text = "I have been Inited!";
+                    Debug.Log(t1.Text.text);
+                })
+                .onRun(t2 =>
+                {
+                    t2.Text.text = "I am Running!";
+                    Debug.Log(t2.Text.text);
 
-            SampleGO.AddComponent<Sample>();
+                    //Set the loop mode and frequency
+                    t2.frame = false;//Run in milliseconds
+                    t2.frequency = 1000;//Run in every 1000 ms (1 second)
+
+                    UnityEngine.Object.Destroy(t2.gameObject,6);
+                })
+                .onLoop(t3 =>
+                {
+                    i++;
+                    t3.Text.text = "This is the " + i + " times that I changed!";
+                    if (i >= 5)
+                    {
+                        t3.Text.text = "I will be destoryed in 1 second!";
+                    }
+                })
+                .onEnd(t4 =>
+                {
+                    Debug.Log("My lifecycle has been ended!");
+                })
+                .Activate();
+
+            var JUIShowcase = new GameObject("JUIShowcase").AddComponent<JUIShowcase>();
         }
-
     }
 }

@@ -36,12 +36,8 @@ namespace libx
         [RuntimeInitializeOnLoadMethod]
         private static void OnInitialize()
         {
-            var settings = BuildScript.GetSettings();
-			Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
-            // #if UNITY_EDITOR
-            // Assets.runtimeMode = settings.runtimeMode;
-            // #endif
-            Assets.loadDelegate = AssetDatabase.LoadAssetAtPath;
+            Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
+            Assets.loadDelegate = AssetDatabase.LoadAssetAtPath; 
 
             var assets = new List<string>();
             var rules = BuildScript.GetBuildRules();
@@ -75,9 +71,8 @@ namespace libx
         private static void OnEditorInitialize()
         {
             EditorUtility.ClearProgressBar();
-            BuildScript.GetManifest();
-            BuildScript.GetSettings();
-            BuildScript.GetBuildRules();
+            // BuildScript.GetManifest();
+            // BuildScript.GetBuildRules();
         }
     }
 }

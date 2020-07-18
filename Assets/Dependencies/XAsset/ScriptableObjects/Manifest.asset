@@ -13,6 +13,24 @@ MonoBehaviour:
   m_Name: Manifest
   m_EditorClassIdentifier: 
   activeVariants: []
-  assets: []
-  bundles: []
-  dirs: []
+  assets:
+  - bundle: 1
+    dir: 0
+    name: HotUpdateScripts.bytes
+  - bundle: 0
+    dir: 1
+    name: Game.unity
+  bundles:
+  - deps: 
+    hash: 683c172f2dcda3b277452350636ba9ec
+    id: 0
+    len: 9035
+    name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
+  - deps: 
+    hash: 034865e8cec09423105d164c5693368d
+    id: 1
+    len: 4375
+    name: f1e9148d33abaae32bb165f217c22e91.unity3d
+  dirs:
+  - Assets/HotUpdateResources/Dll
+  - Assets/HotUpdateResources/Scene

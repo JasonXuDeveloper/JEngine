@@ -75,6 +75,7 @@ public class Init : MonoBehaviour
         appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
+        appdomain.DelegateManager.RegisterFunctionDelegate<float>();
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
         appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
         {

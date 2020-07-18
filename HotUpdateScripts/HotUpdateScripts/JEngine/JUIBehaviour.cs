@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 namespace JEngine.LifeCycle
 {
@@ -42,6 +43,24 @@ namespace JEngine.LifeCycle
         /// 循环频率，如果是毫秒模式，单位就是ms
         /// </summary>
         [HideInInspector] public int frequency = 1;
+
+        /// <summary>
+        /// Activate the lifecycle
+        /// 激活生命周期
+        /// </summary>
+        [HideInInspector] public bool Activated = false;
+
+        /// <summary>
+        /// Whether inited or not
+        /// 是否完成初始化
+        /// </summary>
+        [HideInInspector] public bool Inited = false;
+
+        /// <summary>
+        /// Whether has run or not
+        /// 是否完成Run
+        /// </summary>
+        [HideInInspector] public bool HasRun = false;
         #endregion
 
         #region METHODS
@@ -73,19 +92,26 @@ namespace JEngine.LifeCycle
         /// Call Init method in MonoBehaviour 
         /// 在MonoBehaviour中调用Init方法
         /// </summary>
-        private void Awake()
+        private async void Awake()
         {
+            while (!Activated && Application.isPlaying)
+            {
+                await Task.Delay(50);
+            }
             Init();
+            StartCoroutine(DoRun());
         }
 
         /// <summary>
         /// Call Run method in MonoBehaviour
         /// 调用Run
         /// </summary>
-        private void Start()
+        private IEnumerator DoRun()
         {
+            yield return new WaitUntil(() => Inited);
             Run();
             StartCoroutine(DoLoop());
+            yield break;
         }
 
 
@@ -95,15 +121,17 @@ namespace JEngine.LifeCycle
         /// </summary>
         private IEnumerator DoLoop()
         {
+            yield return new WaitUntil(() => HasRun);
+
             while (true && Application.isPlaying)
             {
                 Loop();
 
                 if (frame)
                 {
-                    for (int f = frequency; f > 0; f--)
+                    for(int i = 0; i < frequency; i++)
                     {
-                        yield return new WaitForEndOfFrame();
+                        yield return null;
                     }
                 }
                 else
@@ -128,12 +156,12 @@ namespace JEngine.LifeCycle
         #region METHODS THAT ARE REWRITABLE
         public virtual void Init()
         {
-
+            Inited = true;
         }
 
         public virtual void Run()
         {
-
+            HasRun = true;
         }
 
         public virtual void Loop()

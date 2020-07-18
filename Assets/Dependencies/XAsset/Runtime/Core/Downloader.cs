@@ -34,21 +34,20 @@ namespace libx
     public class Downloader : MonoBehaviour
     {
         private const float BYTES_2_MB = 1f / (1024 * 1024);
-
-        private readonly List<Download> _progressing = new List<Download>();
+        
+        public int maxDownloads = 3;
+        
+        private readonly List<Download> _downloads = new List<Download>();
         private readonly List<Download> _tostart = new List<Download>();
-        private int _downloadIndex;
+        private readonly List<Download> _progressing = new List<Download>();
+        public Action<long, long, float> onUpdate;
+        public Action onFinished;
 
         private int _finishedIndex;
-        private long _lastSize;
-        private float _lastTime;
-
-        private bool _started;
+        private int _downloadIndex;
         private float _startTime;
-
-        public int maxDownloads = 3;
-        public Action onFinished;
-        public Action<long, long, float> onUpdate;
+        private float _lastTime;
+        private long _lastSize;
 
         public long size { get; private set; }
 
@@ -56,53 +55,55 @@ namespace libx
 
         public float speed { get; private set; }
 
-        public List<Download> downloads { get; } = new List<Download>();
+        public List<Download> downloads { get { return _downloads; } }
 
         private long GetDownloadSize()
         {
             var len = 0L;
             var downloadSize = 0L;
-            foreach (var download in downloads)
+            foreach (var download in _downloads)
             {
                 downloadSize += download.position;
                 len += download.len;
-            }
-
+            } 
             return downloadSize - (len - size);
         }
 
+        private bool _started;
+        [SerializeField]private float sampleTime = 0.5f;
+
         public void StartDownload()
         {
-            _tostart.Clear();
-            _finishedIndex = 0;
+            _tostart.Clear(); 
+            _finishedIndex = 0; 
+            _lastSize = 0L;
             Restart();
         }
 
         public void Restart()
         {
-            _lastTime = 0f;
-            _lastSize = 0L;
             _startTime = Time.realtimeSinceStartup;
+            _lastTime = 0;
             _started = true;
             _downloadIndex = _finishedIndex;
-            var max = Math.Min(downloads.Count, maxDownloads);
+            var max = Math.Min(_downloads.Count, maxDownloads);
             for (var i = _finishedIndex; i < max; i++)
             {
-                var item = downloads[i];
+                var item = _downloads[i];
                 _tostart.Add(item);
                 _downloadIndex++;
             }
         }
 
-        public void StopAll()
+        public void Stop()
         {
             _tostart.Clear();
             foreach (var download in _progressing)
             {
-                download.Complete(true);
-                downloads[download.id] = download.Clone() as Download;
-            }
+                download.Complete(true); 
+                _downloads[download.id] = download.Clone() as Download;
 
+            } 
             _progressing.Clear();
             _started = false;
         }
@@ -111,92 +112,98 @@ namespace libx
         {
             size = 0;
             position = 0;
-
+            
             _downloadIndex = 0;
             _finishedIndex = 0;
             _lastTime = 0f;
             _lastSize = 0L;
             _startTime = 0;
-            _started = false;
-            foreach (var item in _progressing) item.Complete(true);
+            _started = false; 
+            foreach (var item in _progressing)
+            {
+                item.Complete(true);
+            }
             _progressing.Clear();
-            downloads.Clear();
+            _downloads.Clear();
             _tostart.Clear();
         }
 
-        public void AddDownload(string url, string savePath, string hash, long len)
+        public void AddDownload(string url, string filename, string savePath, string hash, long len)
         {
             var download = new Download
             {
-                id = downloads.Count,
+                id = _downloads.Count,
                 url = url,
+                name = filename,
                 hash = hash,
                 len = len,
                 savePath = savePath,
                 completed = OnFinished
             };
-            downloads.Add(download);
+            _downloads.Add(download);
             var info = new FileInfo(download.tempPath);
             if (info.Exists)
-                size += len - info.Length;
+            {
+                size += len - info.Length; 
+            }
             else
-                size += len;
+            {
+                size += len; 
+            }
         }
 
         private void OnFinished(Download download)
         {
-            if (_downloadIndex < downloads.Count)
+            if (_downloadIndex < _downloads.Count)
             {
-                _tostart.Add(downloads[_downloadIndex]);
-                _downloadIndex++;
-            }
-
+                _tostart.Add(_downloads[_downloadIndex]);
+                _downloadIndex++;    
+            } 
             _finishedIndex++;
+            Debug.Log(string.Format("OnFinished:{0}, {1}", _finishedIndex, _downloads.Count));
             if (_finishedIndex != downloads.Count)
                 return;
-            if (onFinished != null) onFinished.Invoke();
+            if (onFinished != null)
+            {
+                onFinished.Invoke(); 
+            } 
             _started = false;
         }
 
         public static string GetDisplaySpeed(float downloadSpeed)
         {
-            if (downloadSpeed >= 1024 * 1024) return string.Format("{0:f2}MB/s", downloadSpeed * BYTES_2_MB);
-            if (downloadSpeed >= 1024) return string.Format("{0:f2}KB/s", downloadSpeed / 1024);
+            if (downloadSpeed >= 1024 * 1024)
+            {
+                return string.Format("{0:f2}MB/s", downloadSpeed * BYTES_2_MB);
+            }
+            if (downloadSpeed >= 1024)
+            {
+                return string.Format("{0:f2}KB/s", downloadSpeed / 1024);
+            }
             return string.Format("{0:f2}B/s", downloadSpeed);
         }
 
         public static string GetDisplaySize(long downloadSize)
         {
-            if (downloadSize >= 1024 * 1024) return string.Format("{0:f2}MB", downloadSize * BYTES_2_MB);
-            if (downloadSize >= 1024) return string.Format("{0:f2}KB", downloadSize / 1024);
+            if (downloadSize >= 1024 * 1024)
+            {
+                return string.Format("{0:f2}MB", downloadSize * BYTES_2_MB);
+            }
+            if (downloadSize >= 1024)
+            {
+                return string.Format("{0:f2}KB", downloadSize / 1024);
+            }
             return string.Format("{0:f2}B", downloadSize);
-        }
-
-
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (downloads.Count <= 0)
-                return;
-#if UNITY_EDITOR
-#else
-            if (hasFocus)
-            {
-            Restart(); 
-            }
-            else
-            {
-            StopAll();
-            }
-#endif
         }
 
 
         private void Update()
         {
             if (!_started)
-                return;
-
+                return; 
+            
             if (_tostart.Count > 0)
+            {
                 for (var i = 0; i < Math.Min(maxDownloads, _tostart.Count); i++)
                 {
                     var item = _tostart[i];
@@ -205,6 +212,7 @@ namespace libx
                     _progressing.Add(item);
                     i--;
                 }
+            }
 
             for (var index = 0; index < _progressing.Count; index++)
             {
@@ -216,17 +224,20 @@ namespace libx
                 index--;
             }
 
-            position = GetDownloadSize();
-
+            position = GetDownloadSize(); 
+            
             var elapsed = Time.realtimeSinceStartup - _startTime;
-            if (!(elapsed - _lastTime > 0.5f))
+            if (elapsed - _lastTime < sampleTime)
                 return;
-
-            var deltaTime = elapsed - _lastTime;
+            
+            var deltaTime = elapsed - _lastTime; 
             speed = (position - _lastSize) / deltaTime;
-            if (onUpdate != null) onUpdate(position, size, speed);
-
-            _lastTime = elapsed;
+            if (onUpdate != null)
+            {
+                onUpdate(position, size, speed);
+            }
+            
+            _lastTime = elapsed;  
             _lastSize = position;
         }
     }
