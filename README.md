@@ -161,7 +161,7 @@ Please clone this framework into your project and keep this directory structure
 
 
 
-## JEngine logics
+## JEngine Hot Update Logics
 
 ![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
 
