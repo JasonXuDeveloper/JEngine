@@ -1,4 +1,4 @@
-# JENGINE v0.3
+# JENGINE v0.3.1
 
 JEngine is a streamlined and easy-to-use framework.
 
