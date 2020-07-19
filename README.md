@@ -42,22 +42,39 @@ JEngine has its own purpose to help developers write powerful codes which are st
 
 ## Features
 
-- Automatically generate **Update Resources**
-- Automatically handle **Hot-update DLL**
-- Update [Hot-update](#What-is-Hot-update) codes and resources from server (Base on XAsset & ILRuntime)
-- Supports development mode which **loads dll and resources from local**
-- **JEngine.Redis** is built for enhancing your productivity of development when you are using Redis in your game made by Unity
-- **JUIBehaviour** is based on MonoBehaviour but much more friendly to **manage lifecycles**
-- **JEngine.UI.JUI** supports **method-chaning** coding in C# which makes your codes much more stramlined and beautiful.
-- **JUI** supports **binding mode** which will only do update logics when binded data has changed
+- **[Hot-update](WhyHotUpdate.md)** solution
+
+  - No need to learn Lua, **C# codes can be hot-updated**
+  - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
+
+- Unique **Lifecycle** & **UI solution**
+
+  - **[JBehaviour](JBehaviour.md) **is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
+
+    <img src="https://s1.ax1x.com/2020/07/19/URW5mn.png" alt="JBehaviour" style="zoom:50%;" />
+
+  - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI, with JUI, you can write codes shorter and in **Method-Chaning** form, which means **your codes can be shorter and more powerful**
+
+    - JUI borrowed concept from MVVM Framework and changed it, JUI can bind a data easily with a **Generic Class**
+    - You can choose to either update your UI in specific Loop with Frequency, or to update your UI only if the binded data changed
+
+    <img src="https://s1.ax1x.com/2020/07/19/URWIwq.png" alt="JUI" style="zoom:50%;" />
+
+    
+
+- **GUI-Redis** helps visualize data in Redis Databases and can **modify data** in it.
+
+  - Supports connect through **SSH tunnel**
+  - Supports connect through **normay way** (IP, Port connection)
+  - Supports **add/modify/delete/search** key-value pairs
 
 
 
 ## Future Features
 
-- ~~Supports local hot-update resources development in Unity Editor~~
+- ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - Encrypt Hot-update DLL and decrypt in runtime
-- Optiimize logics which can improve process speed (As always)
+- Optiimize logics which can improve process speed (As always doing it)
 - *Unity Editor FTP Tool (Maybe)*
 
 
@@ -75,36 +92,36 @@ Please clone this framework into your project and keep this directory structure
 ```
 .
 ├── Assets
-│   ├── Dependencies
-│   │   ├── ILRuntime
-│   │   │   ├── Editor
-│   │   │   ├── Essential
-│   │   │   ├── Generated
-│   │   │   └── ILRuntime
-│   │   ├── JEngine
-│   │   │   ├── Core
-│   │   │   └── Editor
-│   │   ├── LitJson
-│   │   └── XAsset
-│   │       ├── Editor
-│   │       ├── Resources
-│   │       ├── Runtime
-│   │       ├── ScriptableObjects
-│   │       └── UI
-│   ├── HotUpdateResources
-│   │   ├── Controller
-│   │   ├── Dll
-│   │   ├── Material
-│   │   ├── Other
-│   │   ├── Prefab
-│   │   ├── Scene
-│   │   ├── ScriptableObject
-│   │   ├── TextAsset
-│   │   └── UI
-│   ├── Init.unity
-│   └── Scripts
-│       ├── Init.cs
-│       └── APIs
+│   ├── Dependencies
+│   │   ├── ILRuntime
+│   │   │   ├── Editor
+│   │   │   ├── Essential
+│   │   │   ├── Generated
+│   │   │   └── ILRuntime
+│   │   ├── JEngine
+│   │   │   ├── Core
+│   │   │   └── Editor
+│   │   ├── LitJson
+│   │   └── XAsset
+│   │       ├── Editor
+│   │       ├── Resources
+│   │       ├── Runtime
+│   │       ├── ScriptableObjects
+│   │       └── UI
+│   ├── HotUpdateResources
+│   │   ├── Controller
+│   │   ├── Dll
+│   │   ├── Material
+│   │   ├── Other
+│   │   ├── Prefab
+│   │   ├── Scene
+│   │   ├── ScriptableObject
+│   │   ├── TextAsset
+│   │   └── UI
+│   ├── Init.unity
+│   └── Scripts
+│       ├── Init.cs
+│       └── APIs
 ├── Builds
 ├── DLC
 ├── HotUpdateScrpts
@@ -127,13 +144,13 @@ Please clone this framework into your project and keep this directory structure
 
 #### Basics
 
-> The basics tells you how to use this framework in basics
+> The basics tells you how to use this framework in basics (How to make your project hot-updatable)
 
 [Click here to have a read](Basic.md)
 
 #### Extensions
 
-> The extensions will show you how to hot-update your game in coding levels
+> The extensions will show you how to hot-update your game in coding levels (How to make hot-updatable codes)
 
 [Click here to have a read](Extension.md)
 
@@ -165,11 +182,11 @@ Please clone this framework into your project and keep this directory structure
 
 ## Using JEngine Features in Hot Updatable Scripts
 
-#### JEngine.UI
+#### JEngine.UI (JUI)
 
 > JEngine now contains a new class which enhance the productivity of your UI (Supports any UGUI components, eg. Button, Text, Slider,etc.)
 >
-> Why choose JEngine.UI?
+> Why choose JEngine.UI (JUI)?
 >
 > - Method-Chaning coding
 > - Bind datas and update UI when datas are changed
@@ -182,17 +199,17 @@ Please clone this framework into your project and keep this directory structure
 
 
 
-#### JUIBehaviour (Recommend to use JUI if you want to use this behaviour on an UI)
+#### JBehaviour (Recommend to use JUI if you want to use this behaviour on an UI)
 
 > JEngine now contains a **new behaviour** base on MonoBehaviour but **runs better**
 >
-> Why choose JUIBehaviour?
+> Why choose JBehaviour?
 >
 > - Simple lifecycle
 > - Less codes to implement loops
 > - Uses coroutine rather than methods to do updates
 
-[Click here to have a read](JUIBehaviour.md)
+[Click here to have a read](JBehaviour.md)
 
 
 

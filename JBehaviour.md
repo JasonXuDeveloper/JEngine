@@ -1,8 +1,8 @@
-## JUIBehaviour
+## JBehaviour
 
 > JEngine now contains a **new behaviour** base on MonoBehaviour but **runs better**
 >
-> Why choose JUIBehaviour?
+> Why choose JBehaviour?
 >
 > - Simple lifecycle
 > - Less codes to implement loops
@@ -18,19 +18,19 @@
    using JEngine.LifeCycle;
    ```
 
-2. Inherit **JUIBehaviour** in your class
+2. Inherit **JBehaviour** in your class
 
    ```c#
    namespace HotUpdateScripts
    {
-       public class Sample : JUIBehaviour
+       public class Sample : JBehaviour
        {
        	//ToDo
        }
    }
    ```
 
-3. There are four main methods in **JUIBehaviour**
+3. There are four main methods in **JBehaviour**
 
    - Init => When this class has been added to an Unity GameObject
    - Run => This method will be called after Init
@@ -46,7 +46,7 @@
    
    namespace HotUpdateScripts
    {
-       public class Sample : JUIBehaviour
+       public class Sample : JBehaviour
        {
            public Text HelloText;
    

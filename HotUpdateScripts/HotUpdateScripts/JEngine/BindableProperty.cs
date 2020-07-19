@@ -28,7 +28,7 @@ using JEngine.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace JEngine.UI
+namespace JEngine.Core
 {
     public interface IBindableProperty
     {

@@ -1,5 +1,5 @@
 ﻿//
-// JUIBehaviour.cs
+// JBehaviour.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -30,7 +30,7 @@ using JEngine.UI;
 using UnityEngine;
 namespace JEngine.LifeCycle
 {
-    public class JUIBehaviour : MonoBehaviour, IJBehaviour
+    public class JBehaviour : MonoBehaviour, IJBehaviour
     {
         #region FIELDS
         /// <summary>

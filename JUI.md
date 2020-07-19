@@ -1,4 +1,4 @@
-## JEngine.UI
+## JEngine.UI (JUI)
 
 > JEngine now contains a new class which enhance the productivity of your UI (Supports any UGUI components, eg. Button, Text, Slider,etc.)
 >
