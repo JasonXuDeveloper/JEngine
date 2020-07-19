@@ -1,3 +1,27 @@
+### v0.3.2
+
+- **JUIText** becomes **JUI**
+
+  - Supports any **UIBehaviour based class** to use
+
+    > All UGUI components in Unity is UIBehaviour based
+
+- **JUI** supports **data binding**
+
+- **JUI** supports **message mode**, will be called when binded data has changed
+
+- **BindableProperty** is coming, use it in your data class or sturcts
+
+- Improve performence of looping in **JUIBehaviour**
+
+- Improve performence on getting **generic components** in JUI
+
+- Update showcases to a countdown showcase and a data update & binding showcase
+
+
+
+
+
 ###  v0.3.1
 
 - Combined **Unity-GUI-Redis**, which is also part of **JEngine**, now belongs to **JEngine.Redis** namespace

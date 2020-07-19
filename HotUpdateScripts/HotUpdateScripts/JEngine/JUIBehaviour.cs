@@ -26,6 +26,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using JEngine.UI;
 using UnityEngine;
 namespace JEngine.LifeCycle
 {
@@ -61,6 +62,12 @@ namespace JEngine.LifeCycle
         /// 是否完成Run
         /// </summary>
         [HideInInspector] public bool HasRun = false;
+
+        /// <summary>
+        /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called
+        /// JUI运行模式，Loop模式下UI将在特定频率更新，Message模式UI将在被通知后更新
+        /// </summary>
+        [HideInInspector] public bool isLoop = true;
         #endregion
 
         #region METHODS
@@ -92,15 +99,23 @@ namespace JEngine.LifeCycle
         /// Call Init method in MonoBehaviour 
         /// 在MonoBehaviour中调用Init方法
         /// </summary>
-        private async void Awake()
+        private void Awake()
         {
-            while (!Activated && Application.isPlaying)
-            {
-                await Task.Delay(50);
-            }
+            StartCoroutine(DoInit());
+        }
+
+        /// <summary>
+        /// Call Run method in MonoBehaviour
+        /// 调用Run
+        /// </summary>
+        private IEnumerator DoInit()
+        {
+            yield return new WaitUntil(() => Activated);
             Init();
             StartCoroutine(DoRun());
+            yield break;
         }
+
 
         /// <summary>
         /// Call Run method in MonoBehaviour
@@ -110,7 +125,10 @@ namespace JEngine.LifeCycle
         {
             yield return new WaitUntil(() => Inited);
             Run();
-            StartCoroutine(DoLoop());
+            if(isLoop)
+            {
+                StartCoroutine(DoLoop());
+            }
             yield break;
         }
 
@@ -177,6 +195,9 @@ namespace JEngine.LifeCycle
         #endregion
     }
 
+    /// <summary>
+    /// JBehaviour Interface
+    /// </summary>
     interface IJBehaviour
     {
         /// <summary>

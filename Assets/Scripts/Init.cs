@@ -76,7 +76,15 @@ public class Init : MonoBehaviour
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
         appdomain.DelegateManager.RegisterFunctionDelegate<float>();
+        appdomain.DelegateManager.RegisterMethodDelegate<System.Int32>();
         appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.Int32>>((act) =>
+        {
+            return new UnityEngine.Events.UnityAction<System.Int32>((arg0) =>
+            {
+                ((Action<System.Int32>)act)(arg0);
+            });
+        });
         appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
         {
             return new Action<JsonData>((a) =>

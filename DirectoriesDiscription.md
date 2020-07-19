@@ -1,0 +1,28 @@
+## Description of those Directories
+
+- **Assets** - Source file for Unity
+  - **Dependencies** - All 3rd parties source code can be put in here
+    - **ILRuntime** - ILRuntime source code + demo
+    - **JEngine** - JEngine source code (only a few right now, will be extended)
+    - **XAsset** - XAsset source code (with modifications)
+    - **LitJson** - LitJson source code, which provides converting json in c# (with modifications which ILRuntime can use it, which means you can use LitJson in your hot-update code and will be compatible with ILRuntime)
+  - **HotUpdateResources** - All hot-updatable resources will be stored here
+    - **Controller** - Drop your animation controller files here which will be hot-updated
+    - **Dll** - Once you build your hot-update code solution, dll file will go into here and will automatically generate a .bytes file which can be hot-updated, *No need to put things here except HotUpdateScripts.dll*
+    - **Material** - Drop your material files here which will be hot-updated
+    - **Other** - Drop your files here which will be hot-updated (JSON files, WAV files,etc.)
+    - **Prefab** - Drop your prefab files here which will be hot-updated
+    - **Scene** - Drop your scene files here which will be hot-updated
+    - **ScriptableObject** - Drop your scriptable object files here which will be hot-updated
+    - **TextAsset** - Drop your text files here which will be hot-updated
+    - **UI** - Drop your image files (.png format) here which will be hot-updated
+  - **Scripts** - all scripts which will not be hot-updated but will be used in game
+    - **Init.cs** - A **REALLY IMPORTANT** script which luanch the whole game
+    - **APIs** - Drop all interfaces/methods/apis/etc you have here
+  - **Init.unity** - the luanch scene of your game, which will do hot-update logics in here
+- **Builds** - When you build your game, store those builds here (.apk, .xcodeproj, .app, .exe,etc.)
+- **DLC** - Generated hot-update resources will be store here, all you need to do is to put the whole DLC directory and files include, into your web server
+- **HotUpdateScripts** - Your hot-update scripts will be store here
+  - **HotUpdateScripts/Program.cs** - Initialization for hot-update code, **you can change it but do not delete it, keep the RunGame method in Program.cs**
+  - **HotUpdateScripts/JEngine** - **Do not delete this directory as JEngine codes are in it**
+- **ProjectSettings** - Some project settings here, eg. allow unsafe code
