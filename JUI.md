@@ -304,6 +304,7 @@
    ```c#
    JUI jui = GameObject.Find("Canvas/MyUIElement").AddComponent<JUI>();//Add JUI to an UI element
    Button btn = jui.Element<Button>();//It is a generic method to get an UI element
+   //If you dont have this component on the element, JUI will automatically add one
    ```
 
    
