@@ -265,7 +265,7 @@
    ```c#
    public class MyData
    {
-   	public int a;//Normay data
+     public int a;//Normay data
      public BindableProperty<int> b = new BindableProperty<int>(0);//Bindable data
    }
    ```
@@ -275,7 +275,7 @@
    ```c#
    void MyMethod()
    {
-   	//To get a BindableProperty's value:
+     //To get a BindableProperty's value:
      int newB = b;//Automatically convert from BindableProperty
      
      //To change a BindableProperty's value:
