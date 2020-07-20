@@ -16,7 +16,6 @@ JEngine has its own purpose to help developers write powerful codes which are st
 
 ## Latest Features
 
-- ### v0.3.2
 
   - **JUIText** becomes **JUI**
 
@@ -49,7 +48,7 @@ JEngine has its own purpose to help developers write powerful codes which are st
 
 - Unique **Lifecycle** & **UI solution**
 
-  - **[JBehaviour](JBehaviour.md) **is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
+  - **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 
     <img src="https://s1.ax1x.com/2020/07/19/URW5mn.png" alt="JBehaviour" style="zoom:50%;" />
 
