@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using JEngine.Core;
 using JEngine.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,7 +87,7 @@ namespace HotUpdateScripts
         {
             //Add showcase data
             new GameObject("BindShowcase").AddComponent<Demo>();
-            a = GameObject.Find("Canvas/A");//Bind the gameobject which has the UI element
+            a = GameObject.Find("Canvas/JUIBindBG/A");//Bind the gameobject which has the UI element
         }
         //In normal way you need to update your UI in every frame so that you can make your text acurately present your data
         int times = 0;
@@ -106,7 +107,7 @@ namespace HotUpdateScripts
         */
         public void Start()
         {
-            b = GameObject.Find("Canvas/B");//Bind gameobject to show data
+            b = GameObject.Find("Canvas/JUIBindBG/B");//Bind gameobject to show data
 
             //In JUI it is easy to bind data with text
             int times2 = 0;
@@ -114,11 +115,15 @@ namespace HotUpdateScripts
             .Bind(Demo.Instance.data.b)//Bind data.b to this gameobject
             .onInit(t =>//Counts since init
             {
+                Log.Print("JUI Bind has inited");
+                //EG. we have update UI here
                 t.Element<Text>().text = "(With JUI)b=" + ((int)Demo.Instance.data.b).ToString() + "\n<size=20>I have been run for " + times2 + " times</size>";
+                //You can convert bindable properties easily and get their values
                 times2++;
             })
             .onMessage(t1 =>//Tells JUI what to do when the binded data has updated
             {
+                Log.Print("Bind data has changed and it calls JUI to change!");
                 //EG. we have update UI here
                 t1.Element<Text>().text = "(With JUI)b=" + ((int)Demo.Instance.data.b).ToString() + "\n<size=20>I have been run for " + times2 + " times</size>";
                 //You can convert bindable properties easily and get their values

@@ -38,47 +38,153 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
+            Transform Canvas = GameObject.Find("Canvas").transform;
+
             /*
-             * ========================================================================
-             * 10 seconds countdown demo
-             * 10秒倒计时例子
-             * ========================================================================
-             */
+            * ====================================
+            *           JUI LOOP EXAMPLE
+            * ====================================
+            */
+            var JUILoopExampleGO = new GameObject("JUILoopExampleBtn");
+            JUILoopExampleGO.transform.SetParent(Canvas,false);
 
-            int i = 10;
+            var JUILoopExampleText = JUILoopExampleGO.AddComponent<Text>();
+            JUILoopExampleText.text = "[Press me to see LOOP example]";
+            JUILoopExampleText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            JUILoopExampleText.fontSize = 30;
+            JUILoopExampleText.color = Color.red;
+            JUILoopExampleText.alignment = TextAnchor.MiddleCenter;
 
-            JUI t = GameObject.Find("Canvas/Text").AddComponent<JUI>()//给一个GameObject绑定JUI，该GameObject可以不包含任何UI控件
-                .onInit(t1 =>
+            JUILoopExampleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(500,75);
+            JUILoopExampleGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -100);
+            var JUILoopExampleBtn = JUILoopExampleGO.AddComponent<Button>();
+            JUILoopExampleBtn.onClick.AddListener(
+                () =>
                 {
-                    var text = t1.Element<Text>();
-                    text.text = "I have been Inited!";
-                    Debug.Log(text.text);
-                })
-                .onRun(t2 =>
-                {
-                    var text = t2.Element<Text>();
-                    text.text = "I am Running!";
-                    Debug.Log(text.text);
+                    var JUILoopBG = new GameObject("JUILoopBG").AddComponent<Image>();
+                    JUILoopBG.transform.SetParent(Canvas);
+                    JUILoopBG.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
+                    JUILoopBG.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    JUILoopBG.color = new Color(0.2f,0.2f,0.2f);
 
-                    //Set the loop mode and frequency
-                    t2.frame = false;//Run in milliseconds
-                    t2.frequency = 1000;//Run in every 1000 ms (1 second)
+                    GameObject Showcase = new GameObject("CountdownShowcase");
 
-                    UnityEngine.Object.Destroy(t2.gameObject, 10);
-                })
-                .onLoop(t3 =>
-                {
-                    i--;
-                    var text = t3.Element<Text>();
-                    text.text = "I will be destroyed in " + i +" seconds!";
-                })
-                .onEnd(t4 =>
-                {
-                    Debug.Log("My lifecycle has been ended!");
-                })
-                .Activate();
+                    //JUI DEMO
+                    int i = 10;
+                    var JUI = Showcase.AddComponent<JUI>()
+                    .onInit(t =>
+                    {
+                        Log.Print("JUI Loop Example has been inited");
 
-            var JUIShowcase = new GameObject("JUIShowcase").AddComponent<JUIShowcase>();
+                        var text = t.Element<Text>();
+
+                        Showcase.transform.SetParent(JUILoopBG.transform);
+                        Showcase.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 100);
+                        Showcase.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+                        text.text = "I will be sestroyed in 10 seconds";
+                        text.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                        text.fontSize = 50;
+                        text.color = Color.white;
+                        text.alignment = TextAnchor.MiddleCenter;
+
+                        t.frame = false;//Run in ms
+                        t.frequency = 1000;//Loop each 1s
+
+                        UnityEngine.Object.Destroy(JUILoopBG.gameObject, 10);
+                    })
+                    .onLoop(t1=>
+                    {
+                        i--;
+                        t1.Element<Text>().text = "I will be destroyed in " + i + " seconds";
+                        Log.Print("JUI Loop Example is doing loop!");
+                    })
+                    .onEnd(t2 =>
+                    {
+                        Log.Print("JUI Loop Example has been destroyed!");
+                    })
+                    .Activate();
+
+                });
+
+
+            /*
+            * ====================================
+            *           JUI Bind EXAMPLE
+            * ====================================
+            */
+            var JUIBindExampleGO = new GameObject("JUIBindExampleBtn");
+            JUIBindExampleGO.transform.SetParent(Canvas, false);
+
+            var JUIBindExampleText = JUIBindExampleGO.AddComponent<Text>();
+            JUIBindExampleText.text = "[Press me to see BIND example]";
+            JUIBindExampleText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            JUIBindExampleText.fontSize = 30;
+            JUIBindExampleText.color = Color.red;
+            JUIBindExampleText.alignment = TextAnchor.MiddleCenter;
+
+            JUIBindExampleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 75);
+            JUIBindExampleGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(250, -100);
+            var JUIBindExampleBtn = JUIBindExampleGO.AddComponent<Button>();
+            JUIBindExampleBtn.onClick.AddListener(
+                () =>
+                {
+                    var JUIBindBG = new GameObject("JUIBindBG").AddComponent<Image>();
+                    JUIBindBG.transform.SetParent(Canvas);
+                    JUIBindBG.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
+                    JUIBindBG.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    JUIBindBG.color = new Color(0.2f, 0.2f, 0.2f);
+
+                    var Description = new GameObject("Description");
+                    Description.transform.SetParent(JUIBindBG.transform, false);
+                    var DescriptionText = Description.AddComponent<Text>();
+                    DescriptionText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                    DescriptionText.fontSize = 35;
+                    DescriptionText.color = Color.white;
+                    DescriptionText.alignment = TextAnchor.MiddleCenter;
+                    Description.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 75);
+                    Description.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 50);
+                    DescriptionText.text = "Below is a JUI Bind demo, which data updates in each second";
+
+                    var A = new GameObject("A");
+                    A.transform.SetParent(JUIBindBG.transform, false);
+                    var AText = A.AddComponent<Text>();
+                    AText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                    AText.fontSize = 27;
+                    AText.color = Color.red;
+                    AText.alignment = TextAnchor.MiddleCenter;
+                    A.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 75);
+                    A.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -100);
+
+                    var B = new GameObject("B");
+                    B.transform.SetParent(JUIBindBG.transform, false);
+                    var BText = B.AddComponent<Text>();
+                    BText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                    BText.fontSize = 27;
+                    BText.color = Color.red;
+                    BText.alignment = TextAnchor.MiddleCenter;
+                    B.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 75);
+                    B.GetComponent<RectTransform>().anchoredPosition = new Vector2(250, -100);
+
+                    JUIBindBG.gameObject.AddComponent<JUIShowcase>();
+
+                    var Close = new GameObject("Close");
+                    Close.transform.SetParent(JUIBindBG.transform, false);
+                    var CloseText = Close.AddComponent<Text>();
+                    CloseText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+                    CloseText.fontSize = 20;
+                    CloseText.color = Color.white;
+                    CloseText.alignment = TextAnchor.MiddleCenter;
+                    Close.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, 75);
+                    Close.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -300);
+                    CloseText.text = "[Close this Example]";
+                    var CloseBtn = Close.AddComponent<Button>();
+                    CloseBtn.onClick.AddListener(() =>
+                    {
+                        UnityEngine.Object.Destroy(JUIBindBG.gameObject);
+                        UnityEngine.Object.Destroy(GameObject.Find("BindShowcase"));
+                    });
+                });
         }
     }
 }

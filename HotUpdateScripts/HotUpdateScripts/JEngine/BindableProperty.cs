@@ -30,12 +30,7 @@ using UnityEngine.Events;
 
 namespace JEngine.Core
 {
-    public interface IBindableProperty
-    {
-        object ValueBoxed { get; set; }
-    }
-
-    public class BindableProperty<T> : IBindableProperty
+    public class BindableProperty<T>
     {
         public Action OnChange = null;
 
@@ -59,12 +54,6 @@ namespace JEngine.Core
         public BindableProperty(T val)
         {
             _value = Value = val;
-        }
-
-        public object ValueBoxed
-        {
-            get { return Value; }
-            set { Value = (T)value; }
         }
 
         public override string ToString()

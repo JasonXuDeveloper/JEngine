@@ -177,6 +177,7 @@ namespace JEngine.UI
             _run = new Action<JUI>(t => { });
             _loop = new Action<JUI>(t => { });
             _end = new Action<JUI>(t => { });
+            _message = new Action<JUI>(t => { });
         }
 
         #region OVERRIDE METHODS

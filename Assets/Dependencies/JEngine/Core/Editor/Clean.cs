@@ -95,7 +95,7 @@ class Clean
         }
     }
 
-    [MenuItem("JEngine/XAsset/Bundles/ConvertDLL")]
+    [MenuItem("JEngine/XAsset/Bundles/Convert DLL")]
     public static void MakeBytes()
     {
         var watch = new Stopwatch();

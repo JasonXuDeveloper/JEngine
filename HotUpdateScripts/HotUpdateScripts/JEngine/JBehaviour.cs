@@ -55,13 +55,13 @@ namespace JEngine.LifeCycle
         /// Whether inited or not
         /// 是否完成初始化
         /// </summary>
-        [HideInInspector] public bool Inited = false;
+        [HideInInspector] private bool Inited = false;
 
         /// <summary>
         /// Whether has run or not
         /// 是否完成Run
         /// </summary>
-        [HideInInspector] public bool HasRun = false;
+        [HideInInspector] private bool HasRun = false;
 
         /// <summary>
         /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called

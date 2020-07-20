@@ -371,7 +371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseURL: http://127.0.0.1:7888/DLC/
   gameScene: Game.unity
-  developmentMode: 0
+  developmentMode: 1
 --- !u!4 &964396227
 Transform:
   m_ObjectHideFlags: 0
@@ -497,7 +497,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '@2020 JasonXuDeveloper, ALL RIGHTS RESERVED.'
+  m_Text: JasonXuDeveloper, ALL RIGHTS RESERVED.
 --- !u!222 &1033013697
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1027,7 +1027,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -32, y: -32}
-  m_SizeDelta: {x: 150, y: 112}
+  m_SizeDelta: {x: 200, y: 112}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1277094935
 MonoBehaviour:
@@ -1189,7 +1189,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u6E05\u7406\u7F13\u5B58"
+  m_Text: Clear Cache
 --- !u!222 &1342681509
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1842,8 +1842,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -175}
+  m_SizeDelta: {x: 1000, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2078874960
 MonoBehaviour:
@@ -1857,7 +1857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
+  m_HorizontalFit: 0
   m_VerticalFit: 2
 --- !u!114 &2078874961
 MonoBehaviour:
@@ -1888,10 +1888,11 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 1
+    m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u4E00\u4E2A\u57FA\u4E8EXAsset&ILRuntime\uFF0C\u7CBE\u7B80\u597D\u7528\u7684\u70ED\u66F4\u6846\u67B6"
+  m_Text: JEngine is a streamlined and easy-to-use framework in Unity which provides
+    hot-update solution and unique lifecycles of UI
 --- !u!222 &2078874962
 CanvasRenderer:
   m_ObjectHideFlags: 0

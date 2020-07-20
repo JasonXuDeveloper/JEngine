@@ -180,6 +180,14 @@ Please clone this framework into your project and keep this directory structure
 
 
 
+#### IMPORTANT
+
+- When you build your project, remember to remove hot-update scenes in build setting panel to avoid redundancy
+
+  ![build](https://s1.ax1x.com/2020/07/20/Uhxcuj.jpg)
+
+
+
 ## Using JEngine Features in Hot Updatable Scripts
 
 #### JEngine.UI (JUI)
@@ -210,6 +218,13 @@ Please clone this framework into your project and keep this directory structure
 > - Uses coroutine rather than methods to do updates
 
 [Click here to have a read](JBehaviour.md)
+
+
+
+#### Examples
+
+- Just switch on development mode of the project you git
+- Run the game and you can try the examples
 
 
 
