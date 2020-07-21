@@ -165,6 +165,12 @@ namespace JEngine.UI
         public JUI Activate()
         {
             Activated = true;
+
+            if (!isLoop)//Call message() once to init UI
+            {
+                Message();
+            }
+
             return this;
         }
 

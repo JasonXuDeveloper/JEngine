@@ -234,11 +234,6 @@
                int times2 = 0;
                var JUI = b.AddComponent<JUI>()//Add JUI to an gameobject
                .Bind(Demo.Instance.data.b)//Bind data.b to this gameobject
-               .onInit(t =>//Counts since init
-               {
-                   t.Element<Text>().text = "(With JUI)b=" + ((int)Demo.Instance.data.b).ToString() + "\n<size=20>I have been run for " + times2 + " times</size>";
-                   times2++;
-               })
                .onMessage(t1 =>//Tells JUI what to do when the binded data has updated
                {
                    //EG. we have update UI here
@@ -250,9 +245,9 @@
            }
            #endregion
    ```
-
    
-
+   
+   
 3. Controls the frequency of a loop: *(Only if you want to make your UI do something in loop)*
 
    **JUI** inherits from **JUIBehaviour**, which can manage the mode and frequency of loop.

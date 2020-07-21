@@ -96,67 +96,49 @@ namespace JEngine.LifeCycle
         }
 
         /// <summary>
-        /// Call Init method in MonoBehaviour 
-        /// 在MonoBehaviour中调用Init方法
+        /// Call to launch JBehaviour
+        /// 启动生命周期
         /// </summary>
         private void Awake()
         {
-            StartCoroutine(DoInit());
+            StartCoroutine(Launch());
         }
 
         /// <summary>
-        /// Call Run method in MonoBehaviour
-        /// 调用Run
+        /// Launch the lifecycle
+        /// 开始生命周期
         /// </summary>
-        private IEnumerator DoInit()
+        private IEnumerator Launch()
         {
             yield return new WaitUntil(() => Activated);
+
             Init();
-            StartCoroutine(DoRun());
-            yield break;
-        }
 
-
-        /// <summary>
-        /// Call Run method in MonoBehaviour
-        /// 调用Run
-        /// </summary>
-        private IEnumerator DoRun()
-        {
             yield return new WaitUntil(() => Inited);
             Run();
-            if(isLoop)
+
+            if (isLoop)
             {
-                StartCoroutine(DoLoop());
-            }
-            yield break;
-        }
+                yield return new WaitUntil(() => HasRun);
 
-
-        /// <summary>
-        /// Do Loop
-        /// 循环
-        /// </summary>
-        private IEnumerator DoLoop()
-        {
-            yield return new WaitUntil(() => HasRun);
-
-            while (true && Application.isPlaying)
-            {
-                Loop();
-
-                if (frame)
+                while (true && Application.isPlaying)
                 {
-                    for(int i = 0; i < frequency; i++)
+                    Loop();
+
+                    if (frame)
                     {
-                        yield return null;
+                        for (int i = 0; i < frequency; i++)
+                        {
+                            yield return null;
+                        }
+                    }
+                    else
+                    {
+                        yield return new WaitForSeconds((float)frequency / 1000);
                     }
                 }
-                else
-                {
-                    yield return new WaitForSeconds((float)frequency / 1000);
-                }
             }
+            yield break;
         }
 
         /// <summary>

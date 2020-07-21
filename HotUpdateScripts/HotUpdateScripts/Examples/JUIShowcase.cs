@@ -113,14 +113,6 @@ namespace HotUpdateScripts
             int times2 = 0;
             var JUI = b.AddComponent<JUI>()//Add JUI to an gameobject
             .Bind(Demo.Instance.data.b)//Bind data.b to this gameobject
-            .onInit(t =>//Counts since init
-            {
-                Log.Print("JUI Bind has inited");
-                //EG. we have update UI here
-                t.Element<Text>().text = "(With JUI)b=" + ((int)Demo.Instance.data.b).ToString() + "\n<size=20>I have been run for " + times2 + " times</size>";
-                //You can convert bindable properties easily and get their values
-                times2++;
-            })
             .onMessage(t1 =>//Tells JUI what to do when the binded data has updated
             {
                 Log.Print("Bind data has changed and it calls JUI to change!");
