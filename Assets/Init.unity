@@ -369,9 +369,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b97ae374d27c0479dce9413bde907d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseURL: http://127.0.0.1:7888/DLC/
+  _step: 0
+  baseURL: http://127.0.0.1:1234/DLC
   gameScene: Game.unity
-  developmentMode: 0
+  enableVFS: 1
+  development: 0
 --- !u!4 &964396227
 Transform:
   m_ObjectHideFlags: 0

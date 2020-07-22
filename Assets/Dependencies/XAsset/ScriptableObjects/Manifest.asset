@@ -22,14 +22,14 @@ MonoBehaviour:
     name: Game.unity
   bundles:
   - deps: 
-    hash: 683c172f2dcda3b277452350636ba9ec
+    hash: 7b920834cb3eb495fedf085d9b599801
     id: 0
-    len: 9035
+    len: 9052
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: 034865e8cec09423105d164c5693368d
+    hash: d247597714b46294b7c17b654220d031
     id: 1
-    len: 4375
+    len: 9042
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll

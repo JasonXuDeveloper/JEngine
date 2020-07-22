@@ -52,77 +52,61 @@ namespace libx
     [RequireComponent(typeof(NetworkMonitor))]
     public class Updater : MonoBehaviour, IUpdater, INetworkMonitorListener
     {
-        public const int STEP_INVALID = -1;
-        public const int STEP_IDLE = 0;
-        public const int STEP_VFS = 1;
-        public const int STEP_COPY = 2;
-        public const int STEP_VERSIONS = 3;
-        public const int STEP_DOWNLOAD = 4;
-        public const int STEP_COMPLETE = 5;
-        private int _step;
+        enum Step
+        {
+            Wait,
+            Copy,
+            Coping,
+            Versions,
+            Prepared,
+            Download,
+        }
+
+        [SerializeField]private Step _step;
         
+        [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
+        [SerializeField] private string gameScene = "Game.unity";
+        [SerializeField] private bool enableVFS = true;
+        [SerializeField] private bool development;
+
+        public IUpdater listener { get; set; }
+
+        private Downloader _downloader;
+        private NetworkMonitor _monitor;
         private string _platform;
         private string _savePath;
         private List<VFile> _versions = new List<VFile>();
-       
-        private IEnumerator _checking;
-        
-        [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
-        [Tooltip("游戏主Scene")][SerializeField] private string gameScene = "Game.unity";
-        [SerializeField] private bool developmentMode = false;
-        private bool enableVFS;
-        
-        private Downloader _downloader;
-        private NetworkMonitor _monitor;
-        
-        
-        public IUpdater listener { get; set; }
+
 
         public void OnMessage(string msg)
         {
-            if (listener != null) listener.OnMessage(msg);
+            if (listener != null)
+            {
+                listener.OnMessage(msg);
+            }
         }
 
         public void OnProgress(float progress)
         {
-            if (listener != null) listener.OnProgress(progress);
+            if (listener != null)
+            {
+                listener.OnProgress(progress);
+            }
         }
 
         public void OnVersion(string ver)
         {
-            if (listener != null) listener.OnVersion(ver);
-        }
-
-        public void OnClear()
-        {
-            OnMessage("数据清除完毕");
-            OnProgress(0);
-            _versions.Clear();
-            _downloader.Clear();
-            _step = STEP_IDLE;
-            _reachabilityChanged = false;
-            Assets.Clear();
-
             if (listener != null)
             {
-                listener.OnClear();
+                listener.OnVersion(ver);
             }
-
-            if (Directory.Exists(_savePath))
-            {
-                Directory.Delete(_savePath, true);
-            }
-        }
-
-        public void OnStart()
-        {
-            if (listener != null) listener.OnStart();
         }
 
         private void Awake()
         {
-            FindObjectOfType<Init>().enabled = false;
-            DontDestroyOnLoad(FindObjectOfType<Init>().gameObject);
+            var Init = FindObjectOfType<Init>();
+            Init.enabled = false;
+            DontDestroyOnLoad(Init.gameObject);
         }
 
         private void Start()
@@ -135,73 +119,70 @@ namespace libx
             _monitor.listener = this;
 
             _savePath = string.Format("{0}/DLC/", Application.persistentDataPath);
-
-#if UNITY_EDITOR//编辑器下platform矫正
-    #if UNITY_IPHONE
-            _platform = GetPlatformForAssetBundles(RuntimePlatform.IPhonePlayer);
-    #elif UNITY_ANDROID
-            _platform = GetPlatformForAssetBundles(RuntimePlatform.Android);
-    #else
-             _platform = GetPlatformForAssetBundles(Application.platform);
-    #endif
-#else//打包出来后platform就没问题了
             _platform = GetPlatformForAssetBundles(Application.platform);
-            developmentMode = false;
-#endif
-            _step = STEP_IDLE;
 
-            Assets.updatePath = _savePath; 
+            _step = Step.Wait;
+
+            Assets.updatePath = _savePath;
         }
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            if (_reachabilityChanged)
+            if (_reachabilityChanged || _step == Step.Wait)
             {
                 return;
             }
-#if !UNITY_EDITOR
-             if (_step < 4)
-             {
-                 StartUpdate();
-             }
-             else if(_step == 4)
-             {
-                 if (hasFocus)
-                 {
-                     _downloader.Restart();
-                 } 
-             }
-#endif
+
+            if (hasFocus)
+            {
+                MessageBox.CloseAll();
+                if (_step == Step.Download)
+                {
+                    _downloader.Restart();
+                }
+                else
+                {
+                    StartUpdate();
+                }
+            }
+            else
+            {
+                if (_step == Step.Download)
+                {
+                    _downloader.Stop();
+                }
+            }
         }
 
-        private bool _reachabilityChanged = false;
+        private bool _reachabilityChanged;
 
         public void OnReachablityChanged(NetworkReachability reachability)
         {
-
-            if (_step == 0)
+            if (_step == Step.Wait)
             {
                 return;
-            } 
-            _reachabilityChanged = true; 
-            if (_step == 4)
+            }
+
+            _reachabilityChanged = true;
+            if (_step == Step.Download)
             {
-                _downloader.Stop(); 
-            } 
+                _downloader.Stop();
+            }
+
             if (reachability == NetworkReachability.NotReachable)
-            { 
+            {
                 MessageBox.Show("提示！", "找不到网络，请确保手机已经联网", "确定", "退出").onComplete += delegate(MessageBox.EventId id)
                 {
                     if (id == MessageBox.EventId.Ok)
                     {
-                        if (_step < 4)
-                        {
-                            StartUpdate();
-                        }
-                        else if (_step == 4)
+                        if (_step == Step.Download)
                         {
                             _downloader.Restart();
                         }
+                        else
+                        {
+                            StartUpdate();
+                        } 
                         _reachabilityChanged = false;
                     }
                     else
@@ -212,20 +193,19 @@ namespace libx
             }
             else
             {
-                if (_step < 4)
-                {
-                    StartUpdate();
-                }
-                else if (_step == 4)
+                if (_step == Step.Download)
                 {
                     _downloader.Restart();
                 }
+                else
+                {
+                    StartUpdate();
+                } 
                 _reachabilityChanged = false;
-                MessageBox.CloseAll(); 
+                MessageBox.CloseAll();
             }
         }
 
-        
         private void OnUpdate(long progress, long size, float speed)
         {
             OnMessage(string.Format("下载中...{0}/{1}, 速度：{2}",
@@ -246,29 +226,55 @@ namespace libx
             };
         }
 
-        public void Stop()
+        public void OnClear()
         {
-            _downloader.Stop();
+            OnMessage("数据清除完毕");
+            OnProgress(0);
+            _versions.Clear();
+            _downloader.Clear();
+            _step = Step.Wait;
+            _reachabilityChanged = false;
+
+            Assets.Clear();
+
+            if (listener != null)
+            {
+                listener.OnClear();
+            }
+
+            if (Directory.Exists(_savePath))
+            {
+                Directory.Delete(_savePath, true);
+            }
         }
 
-        public void Restart()
+        public void OnStart()
         {
-            _downloader.Restart();
-        }
+            if (listener != null)
+            {
+                listener.OnStart();
+            }
+        } 
+
+        private IEnumerator _checking;
 
         public void StartUpdate()
         {
-            #if UNITY_EDITOR
-            if (developmentMode)
+            // Debug.Log("StartUpdate.Development:" + development);
+#if UNITY_EDITOR
+            if (development)
             {
+                Assets.runtimeMode = false;
                 StartCoroutine(LoadGameScene());
                 return;
             }
-            #endif
-            
+#endif
             OnStart();
 
-            if (_checking != null) StopCoroutine(_checking);
+            if (_checking != null)
+            {
+                StopCoroutine(_checking);
+            }
 
             _checking = Checking();
 
@@ -298,11 +304,12 @@ namespace libx
             {
                 var item = _versions[i];
                 if (Versions.IsNew(string.Format("{0}{1}", _savePath, item.name), item.len, item.hash))
+                {
                     AddDownload(item);
+                }
             }
         }
-
-
+        
         private static string GetPlatformForAssetBundles(RuntimePlatform target)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
@@ -319,7 +326,7 @@ namespace libx
                     return "Windows";
                 case RuntimePlatform.OSXEditor:
                 case RuntimePlatform.OSXPlayer:
-                    return "OSX"; // OSX
+                    return "OSX";
                 default:
                     return null;
             }
@@ -332,62 +339,68 @@ namespace libx
 
         private IEnumerator Checking()
         {
-            if (!Directory.Exists(_savePath)) Directory.CreateDirectory(_savePath);
-            if (_step == STEP_IDLE)
+            if (!Directory.Exists(_savePath))
             {
-#if UNITY_IOS
-                enableVFS = false;
-#else
-                enableVFS = true;
-#endif
-                _step = STEP_COPY;
+                Directory.CreateDirectory(_savePath);
             }
 
-            if (_step == STEP_COPY)
+            if (_step == Step.Wait)
+            {
+                enableVFS = true;
+#if UNITY_IPHONE
+                enableVFS = false;
+#endif
+                _step = Step.Copy;
+            }
+
+            if (_step == Step.Copy)
             {
                 yield return RequestCopy();
-                _step = STEP_VERSIONS;
             }
 
-            if (_step == STEP_VERSIONS)
+            if (_step == Step.Coping)
+            {
+                var path = _savePath + Versions.Filename + ".tmp";
+                var versions = Versions.LoadVersions(path);
+                var basePath = GetStreamingAssetsPath() + "/";
+                yield return UpdateCopy(versions, basePath);
+            }
+
+            if (_step == Step.Versions)
             {
                 yield return RequestVersions();
             }
-            if (_versions.Count > 0)
+
+            if (_step == Step.Prepared)
             {
                 OnMessage("正在检查版本信息...");
-                PrepareDownloads();
                 var totalSize = _downloader.size;
                 if (totalSize > 0)
                 {
                     var tips = string.Format("发现内容更新，总计需要下载 {0} 内容", Downloader.GetDisplaySize(totalSize));
-                    var mb = MessageBox.Show("提示", tips, "[下载]", "[退出游戏]");
+                    var mb = MessageBox.Show("提示", tips, "下载", "退出");
                     yield return mb;
                     if (mb.isOk)
                     {
-                        _step = STEP_DOWNLOAD;
                         _downloader.StartDownload();
-                        yield break;
+                        _step = Step.Download;
                     }
                     else
                     {
                         Quit();
-                    }
+                    } 
                 }
-            }
-
+            } 
+            
             OnComplete();
         }
 
         private IEnumerator RequestVersions()
         {
             OnMessage("正在获取版本信息...");
-            var request = UnityWebRequest.Get(GetDownloadURL(Versions.Filename));
-            request.downloadHandler = new DownloadHandlerFile(_savePath + Versions.Filename);
-            yield return request.SendWebRequest();
-            if (!string.IsNullOrEmpty(request.error))
+            if (Application.internetReachability == NetworkReachability.NotReachable)
             {
-                var mb = MessageBox.Show("提示", string.Format("获取服务器版本失败：{0}", request.error), "[重试]", "[退出]");
+                var mb = MessageBox.Show("提示", "请检查网络连接状态", "重试", "退出");
                 yield return mb;
                 if (mb.isOk)
                 {
@@ -396,15 +409,41 @@ namespace libx
                 else
                 {
                     Quit();
-                }
-
-                yield break; // yield break;
+                } 
+                yield break;
             }
 
+            var request = UnityWebRequest.Get(GetDownloadURL(Versions.Filename));
+            request.downloadHandler = new DownloadHandlerFile(_savePath + Versions.Filename);
+            yield return request.SendWebRequest();
+            var error = request.error;
             request.Dispose();
+            if (!string.IsNullOrEmpty(error))
+            {
+                var mb = MessageBox.Show("提示", string.Format("获取服务器版本失败：{0}", error), "重试", "退出");
+                yield return mb;
+                if (mb.isOk)
+                {
+                    StartUpdate();
+                }
+                else
+                {
+                    Quit();
+                } 
+                yield break; 
+            } 
             try
             {
                 _versions = Versions.LoadVersions(_savePath + Versions.Filename, true);
+                if (_versions.Count > 0)
+                {
+                    PrepareDownloads();
+                    _step = Step.Prepared;
+                }
+                else
+                {
+                    OnComplete();
+                }
             }
             catch (Exception e)
             {
@@ -418,7 +457,7 @@ namespace libx
                         }
                         else
                         {
-                            Quit(); 
+                            Quit();
                         }
                     };
             }
@@ -426,27 +465,23 @@ namespace libx
 
         private static string GetStreamingAssetsPath()
         {
-            if (Application.platform == RuntimePlatform.Android) return Application.streamingAssetsPath;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                return Application.streamingAssetsPath;
+            }
 
             if (Application.platform == RuntimePlatform.WindowsPlayer ||
                 Application.platform == RuntimePlatform.WindowsEditor)
+            {
                 return "file:///" + Application.streamingAssetsPath;
+            }
 
             return "file://" + Application.streamingAssetsPath;
         }
 
         private IEnumerator RequestCopy()
         {
-            int v1;
-            try
-            {
-                v1 = Versions.LoadVersion(_savePath + Versions.Filename);
-            }
-            catch (Exception e)
-            {
-                yield break;
-            }
-            
+            var v1 = Versions.LoadVersion(_savePath + Versions.Filename);
             var basePath = GetStreamingAssetsPath() + "/";
             var request = UnityWebRequest.Get(basePath + Versions.Filename);
             var path = _savePath + Versions.Filename + ".tmp";
@@ -457,20 +492,20 @@ namespace libx
                 var v2 = Versions.LoadVersion(path);
                 if (v2 > v1)
                 {
-                    var mb = MessageBox.Show("提示", "是否将资源解压到本地？", "[解压]", "[跳过]");
+                    var mb = MessageBox.Show("提示", "是否将资源解压到本地？", "解压", "跳过");
                     yield return mb;
-                    if (mb.isOk)
-                    {
-                        var versions = Versions.LoadVersions(path);
-                        yield return UpdateCopy(versions, basePath);
-                    }
+                    _step = mb.isOk ? Step.Coping : Step.Versions;
                 }
                 else
                 {
                     Versions.LoadVersions(path);
+                    _step = Step.Versions;
                 }
             }
-
+            else
+            {
+                _step = Step.Versions;
+            } 
             request.Dispose();
         }
 
@@ -517,14 +552,20 @@ namespace libx
                     OnMessage("更新本地版本信息");
                     var files = new List<VFile>(downloads.Count);
                     foreach (var download in downloads)
+                    {
                         files.Add(new VFile
                         {
                             name = download.name,
                             hash = download.hash,
-                            len = download.len
+                            len = download.len,
                         });
+                    }
+
                     var file = files[0];
-                    if (!file.name.Equals(Versions.Dataname)) Versions.UpdateDisk(dataPath, files);
+                    if (!file.name.Equals(Versions.Dataname))
+                    {
+                        Versions.UpdateDisk(dataPath, files);
+                    }
                 }
 
                 Versions.LoadDisk(dataPath);
@@ -533,15 +574,19 @@ namespace libx
             OnProgress(1);
             OnMessage("更新完成");
             var version = Versions.LoadVersion(_savePath + Versions.Filename);
-            if (version > 0) OnVersion("资源版本号: v"+Application.version+"res"+version.ToString());
-            _step = STEP_COMPLETE;
+            if (version > 0)
+            {
+                OnVersion("资源版本号: v"+Application.version+"res"+version.ToString());
+            }
+
             StartCoroutine(LoadGameScene());
         }
+
 
         private IEnumerator LoadGameScene()
         {
             OnMessage("正在初始化");
-            Assets.runtimeMode = !developmentMode;
+            Assets.runtimeMode = !development;
             var init = Assets.Initialize();
             yield return init;
             
@@ -557,22 +602,9 @@ namespace libx
                 Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
                 Assets.AddSearchPath("Assets/HotUpdateResources/UI");
                 init.Release();
-                // foreach (var s in Assets._searchPaths)
-                // {
-                //     Debug.Log("Assets._searchPaths: "+s);
-                // }
-                
                 
                 OnProgress(0);
                 OnMessage("加载游戏场景");
-
-                //获取不到全部资源路径...
-                // var ss = Assets.GetAllAssetPaths();
-                // foreach (var s in ss)
-                // {
-                //     print("从资源包里找到路径: "+s);
-                // }
-                // Debug.Log("资源包有"+ss.Length+"资源");
                 
                 var scene = Assets.LoadSceneAsync(gameScene, false);
                 scene.completed+= (AssetRequest request) =>
@@ -602,7 +634,7 @@ namespace libx
         private void Quit()
         {
 #if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
