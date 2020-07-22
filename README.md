@@ -74,6 +74,7 @@ JEngine has its own purpose to help developers write powerful codes which are st
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - Encrypt Hot-update DLL and decrypt in runtime
 - Optiimize logics which can improve process speed (As always doing it)
+- Unique Lifecycle does no rely to MonoBehaviour
 - *Unity Editor FTP Tool (Maybe)*
 
 
@@ -231,13 +232,13 @@ Please clone this framework into your project and keep this directory structure
 
 - Debuging Unity Engine Version: 2019.3.13f1
 
-  > Should supports Unity Engine From 2018 LTS til the latest
+  > Should supports Unity Engine From 2018 LTS till the latest
 
 - .net Environment: .net 2.0 standard
 
 - Operating System: MacOS 10.15.5
 
-  > Should also supports windows
+  > Definityly supports windows
 
 
 
@@ -252,4 +253,4 @@ Please clone this framework into your project and keep this directory structure
 
 ## 中文说明
 
-> 将在v0.4更新中补充
+> 将在100 star之后补充

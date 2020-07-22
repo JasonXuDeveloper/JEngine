@@ -260,7 +260,7 @@
    ```c#
    public class MyData
    {
-     public int a;//Normay data
+     public int a;//Normal data
      public BindableProperty<int> b = new BindableProperty<int>(0);//Bindable data
    }
    ```
@@ -302,5 +302,6 @@
    //If you dont have this component on the element, JUI will automatically add one
    ```
 
+8. **IMPORTANT: IF YOU BIND A DATA TO JUI, LOOP WILL NOT BE CALLED; IF YOU CHOOSE TO LOOP JUI, BIND DATA WILL NOT BE CALLED**
    
 
