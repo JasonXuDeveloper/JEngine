@@ -390,9 +390,11 @@ namespace libx
                         Quit();
                     } 
                 }
+                else
+                {
+                    OnComplete();
+                }
             } 
-            
-            OnComplete();
         }
 
         private IEnumerator RequestVersions()
