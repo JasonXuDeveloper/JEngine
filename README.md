@@ -75,6 +75,7 @@ JEngine has its own purpose to help developers write powerful codes which are st
 - Encrypt Hot-update DLL and decrypt in runtime
 - Optiimize logics which can improve process speed (As always doing it)
 - Unique Lifecycle does no rely to MonoBehaviour
+- UI Special Effects
 - *Unity Editor FTP Tool (Maybe)*
 
 
@@ -253,4 +254,4 @@ Please clone this framework into your project and keep this directory structure
 
 ## 中文说明
 
-> 将在100 star之后补充
+> 将在获得 100 stars之后补充
