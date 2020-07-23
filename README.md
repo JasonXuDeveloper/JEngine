@@ -1,14 +1,16 @@
 # JENGINE v0.3.2
 
-JEngine is a streamlined and easy-to-use framework in Unity.
+JEngine is a **streamlined and easy-to-use** framework for Unity Programmers.
 
-JEngine has its own behaviour based on MonoBehaviour but much more friendly to manage lifecycle. (You can make loop easier using JEngine).
+JEngine has its **own behaviour** based on MonoBehaviour but much **more friendly to manage lifecycle**. (You can make loop easier using JEngine).
 
-JEngine has a method-chaining style of coding, which makes your code much more stramlined and beautiful.
+JEngine has its own **UI solution** which **enhance the performence** of an UI element. (You can choose either update UI in specific frequency or bind a data to the UI and update it when binded data has changed)
 
-JEngine supports hot update, which is base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
+JEngine has a **method-chaining** style of coding, which makes your code much more stramlined and beautiful.
 
-JEngine has its own purpose to help developers write powerful codes which are streamlined and beautiful; and to help developers distibute their games easier (eg. hot update).
+JEngine supports **hot update**, which is base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
+
+JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
 
 [中文请点这里](#中文说明)
 
