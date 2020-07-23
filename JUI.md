@@ -79,7 +79,7 @@
 
 1. Method Chaining:
 
-   ```
+   ```c#
    JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUI>()
                    .onInit(t1 =>
                    {
