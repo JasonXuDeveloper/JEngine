@@ -79,8 +79,8 @@
 
 1. Method Chaining:
 
-   ```
-   JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUIText>()
+   ```c#
+   JUIText t = GameObject.Find("Canvas/Text").AddComponent<JUI>()
                    .onInit(t1 =>
                    {
                    
