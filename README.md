@@ -18,24 +18,9 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-
-  - **JUIText** becomes **JUI**
-
-    - Supports any **UIBehaviour based class** to use
-
-      > All UGUI components in Unity is UIBehaviour based
-
-  - **JUI** supports **data binding**
-
-  - **JUI** supports **message mode**, will be called when binded data has changed
-
-  - **BindableProperty** is coming, use it in your data class or sturcts
-
-  - Improve performence of looping in **JUIBehaviour**
-
-  - Improve performence on getting **generic components** in JUI
-
-  - Update showcases to a countdown showcase and a data update & binding showcase
+- **Hot Update DLL Encryption** based on AES encryption, with a 16 bits key, it is harder to let others hack your dll
+- More **ILRuntime Registerations support**, reduce the requirements of registerations when using ILRuntime
+- Update **XAsset** and **ILRuntime** to the latest version
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -47,6 +32,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
   - No need to learn Lua, **C# codes can be hot-updated**
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
+  - **Encrypts DLL**, your hot-update dll won't be hacked easily
 
 - Unique **Lifecycle** & **UI solution**
 
@@ -74,9 +60,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 ## Future Features
 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
-- Encrypt Hot-update DLL and decrypt in runtime
+- ~~Encrypt Hot-update DLL and decrypt in runtime~~
 - Optiimize logics which can improve process speed (As always doing it)
-- Unique Lifecycle does no rely to MonoBehaviour
 - UI Special Effects
 - *Unity Editor FTP Tool (Maybe)*
 
@@ -185,6 +170,10 @@ Please clone this framework into your project and keep this directory structure
 
 #### IMPORTANT
 
+- If you want to **CHANGE ENCRYPT KEY**, go to **Assets/Dependencies/JEngine/Core/CryptoHelper.cs** to change the key, the key must be **lengthed 16 bits( 16 letters)**
+
+  ![key](https://s1.ax1x.com/2020/07/24/UjLEE8.png)
+  
 - When you build your project, remember to remove hot-update scenes in build setting panel to avoid redundancy
 
   ![build](https://s1.ax1x.com/2020/07/20/Uhxcuj.jpg)

@@ -1,5 +1,5 @@
 ﻿//
-// JUIBehaviour.cs
+// Log.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>

@@ -1,25 +1,27 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using ILRuntime.CLR.TypeSystem;
+using System.Threading;
 using ILRuntime.CLR.Method;
-using ILRuntime.CLR.Utils;
-using ILRuntime.Runtime;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Mono.Cecil.Pdb;
+using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
 using libx;
 using LitJson;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+using Object = System.Object;
 
 public class Init : MonoBehaviour
 {
     public static Init Instance;
     AppDomain appdomain;
-    System.IO.MemoryStream fs;
+    MemoryStream fs;
 
     void Start()
     {
@@ -30,7 +32,7 @@ public class Init : MonoBehaviour
 
     void LoadHotFixAssembly()
     {
-        appdomain = new ILRuntime.Runtime.Enviorment.AppDomain();
+        appdomain = new AppDomain();
 
         var dllAsset = Assets.LoadAssetAsync("HotUpdateScripts.bytes",typeof(TextAsset));
         dllAsset.completed += delegate
@@ -42,16 +44,29 @@ public class Init : MonoBehaviour
             }
 
             var dll = (TextAsset)dllAsset.asset;
+
+            byte[] original = dll.bytes;
+            try
+            {
+                original = CryptoHelper.AesDecrypt(original, CryptoHelper.Key);
+            }
+            catch(Exception ex)
+            {
+                Log.PrintError(ex);
+                return;
+            }
             
-            fs = new MemoryStream(dll.bytes);
+            fs = new MemoryStream(original);
             
             try
             {
-                appdomain.LoadAssembly(fs, null, new ILRuntime.Mono.Cecil.Pdb.PdbReaderProvider());
+                appdomain.LoadAssembly(fs, null, new PdbReaderProvider());
             }
             catch(Exception e)
             {
                 Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
+                Log.PrintError("加载热更DLL错误：\n" + e.Message);
+                return;
             }
             
             
@@ -64,49 +79,86 @@ public class Init : MonoBehaviour
     {
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
-        appdomain.UnityMainThreadID = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
         appdomain.DebugService.StartDebugService(56000);
 #endif
 
         #region 这里添加ILRuntime的注册 HERE TO ADD ILRuntime Registerations
-        
+
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
+        appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
         appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
-        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Boolean>();
+
+        appdomain.DelegateManager.RegisterMethodDelegate<Object>();
+        appdomain.DelegateManager
+            .RegisterFunctionDelegate<ILTypeInstance, Boolean>();
+        appdomain.DelegateManager.RegisterMethodDelegate<List<Object>>();
+        appdomain.DelegateManager
+            .RegisterMethodDelegate<IDictionary<String, UnityEngine.Object>>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Boolean>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Single>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Boolean, GameObject>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Int32, Int32>();
+        appdomain.DelegateManager.RegisterMethodDelegate<String>();
+        appdomain.DelegateManager.RegisterMethodDelegate<ILTypeInstance>();
+        appdomain.DelegateManager.RegisterMethodDelegate<GameObject>();
+        appdomain.DelegateManager.RegisterMethodDelegate<UIBehaviour, Object>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Transform, Object>();
+        appdomain.DelegateManager.RegisterMethodDelegate<GameObject>();
+        appdomain.DelegateManager.RegisterMethodDelegate<Int32>();
+        appdomain.DelegateManager.RegisterMethodDelegate<GameObject, Action>();
+        appdomain.DelegateManager.RegisterFunctionDelegate<Object, Boolean>();
+        appdomain.DelegateManager.RegisterFunctionDelegate<Boolean>();
         appdomain.DelegateManager.RegisterFunctionDelegate<float>();
-        appdomain.DelegateManager.RegisterMethodDelegate<System.Int32>();
-        appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, System.Action>();
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.Int32>>((act) =>
+        
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
         {
-            return new UnityEngine.Events.UnityAction<System.Int32>((arg0) =>
+            return new UnityAction(() => { ((Action) act)(); });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Single>>(act =>
+        {
+            return new UnityAction<Single>(arg0 =>
             {
-                ((Action<System.Int32>)act)(arg0);
+                ((Action<Single>) act)(arg0);
             });
         });
-        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>((action) =>
+        appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<Object>>(act =>
         {
-            return new Action<JsonData>((a) =>
+            return new Predicate<Object>(obj =>
             {
-                ((System.Action<JsonData>)action)(a);
+                return ((Func<Object, Boolean>) act)(obj);
             });
         });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction>((act) =>
-        {
-            return new UnityEngine.Events.UnityAction(async () =>
+        appdomain.DelegateManager
+            .RegisterDelegateConvertor<Predicate<ILTypeInstance>>(act =>
             {
-                ((Action)act)();
+                return new Predicate<ILTypeInstance>(obj =>
+                {
+                    return ((Func<ILTypeInstance, Boolean>) act)(obj);
+                });
+            });
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Int32>>(act =>
+        {
+            return new UnityAction<Int32>(arg0 =>
+            {
+                ((Action<Int32>) act)(arg0);
             });
         });
-        appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.ThreadStart>((act) =>
+        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
         {
-            return new System.Threading.ThreadStart(() =>
-            {
-                ((Action)act)();
-            });
+            return new Action<JsonData>(a => { ((Action<JsonData>) action)(a); });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
+        {
+            return new UnityAction(async () => { ((Action) act)(); });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<ThreadStart>(act =>
+        {
+            return new ThreadStart(() => { ((Action) act)(); });
         });
         
+
         //添加MonoBehaviour核心方法
         var arr = typeof(GameObject).GetMethods();
         foreach (var i in arr)
@@ -116,6 +168,7 @@ public class Init : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, AddComponent);
             }
         }
+
         foreach (var i in arr)
         {
             if (i.Name == "GetComponent" && i.GetGenericArguments().Length == 1)
@@ -123,38 +176,16 @@ public class Init : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, GetComponent);
             }
         }
-        
-        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);//绑定LitJson
-        ILRuntime.Runtime.Generated.CLRBindings.Initialize(appdomain);//CLR绑定
+
+        JsonMapper.RegisterILRuntimeCLRRedirection(appdomain); //绑定LitJson
+        CLRBindings.Initialize(appdomain); //CLR绑定
+
         #endregion
     }
 
-    unsafe void OnHotFixLoaded()
+    void OnHotFixLoaded()
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
-    }
-    
-    
-    /// <summary>
-    /// 将文件转换成byte[]数组
-    /// </summary>
-    /// <param name="fileUrl">文件路径文件名称</param>
-    /// <returns>byte[]数组</returns>
-    public static byte[] FileToByte(string fileUrl)
-    {
-        try
-        {
-            using (FileStream fs = new FileStream(fileUrl, FileMode.Open, FileAccess.Read))
-            {
-                byte[] byteArray = new byte[fs.Length];
-                fs.Read(byteArray, 0, byteArray.Length);
-                return byteArray;
-            }
-        }
-        catch
-        {
-            return null;
-        }
     }
     
     private void OnDestroy()
@@ -212,17 +243,17 @@ public class Init : MonoBehaviour
     /// <param name="__method"></param>
     /// <param name="isNewObj"></param>
     /// <returns></returns>
-    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="System.NullReferenceException"></exception>
     unsafe static StackObject* AddComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
     {
         //CLR重定向的说明请看相关文档和教程，这里不多做解释
-        ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+        AppDomain __domain = __intp.AppDomain;
 
         var ptr = __esp - 1;
         //成员方法的第一个参数为this
         GameObject instance = StackObject.ToObject(ptr, __domain, __mStack) as GameObject;
         if (instance == null)
-            throw new System.NullReferenceException();
+            throw new NullReferenceException();
         __intp.Free(ptr);
 
         var genericArgument = __method.GenericArguments;
@@ -268,17 +299,17 @@ public class Init : MonoBehaviour
     /// <param name="__method"></param>
     /// <param name="isNewObj"></param>
     /// <returns></returns>
-    /// <exception cref="NullReferenceException"></exception>
+    /// <exception cref="System.NullReferenceException"></exception>
     unsafe static StackObject* GetComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
     {
         //CLR重定向的说明请看相关文档和教程，这里不多做解释
-        ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+        AppDomain __domain = __intp.AppDomain;
 
         var ptr = __esp - 1;
         //成员方法的第一个参数为this
         GameObject instance = StackObject.ToObject(ptr, __domain, __mStack) as GameObject;
         if (instance == null)
-            throw new System.NullReferenceException();
+            throw new NullReferenceException();
         __intp.Free(ptr);
 
         var genericArgument = __method.GenericArguments;

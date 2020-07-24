@@ -101,7 +101,7 @@ class Clean
         var watch = new Stopwatch();
         watch.Start();
         var bytes = FileToByte("Assets/HotUpdateResources/Dll/HotUpdateScripts.dll");
-        var result = ByteToFile(bytes, "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+        var result = ByteToFile(CryptoHelper.AesEncrypt(bytes,CryptoHelper.Key), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
         watch.Stop();
         Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
         if (!result)

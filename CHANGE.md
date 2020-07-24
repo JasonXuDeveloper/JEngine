@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.3.3
+
+- **Hot Update DLL Encryption** based on AES encryption, with a 16 bits key, it is harder to let others hack your dll
+- More **ILRuntime Registerations support**, reduce the requirements of registerations when using ILRuntime
+- Update **XAsset** and **ILRuntime** to the latest version
+
+
+
 ### v0.3.2
 
 - **JUIText** becomes **JUI**

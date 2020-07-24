@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2377106144
+CRC: 1058640873
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: df95200cfb864984dc568b958c933dd0
+    Hash: 773c2cc15341cecb9d1804a2d14e5b81
   TypeTreeHash:
     serializedVersion: 2
     Hash: 5ad585dd02dfb5016c0dad519eab8f49
@@ -12,5 +12,5 @@ ClassTypes:
 - Class: 49
   Script: {instanceID: 0}
 Assets:
-- Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
+- Assets/HotUpdateResources/TextAsset/Example.txt
 Dependencies: []

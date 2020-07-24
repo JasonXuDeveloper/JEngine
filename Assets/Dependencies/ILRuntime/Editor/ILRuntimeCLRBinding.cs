@@ -7,7 +7,7 @@ using System.Collections.Generic;
 [System.Reflection.Obfuscation(Exclude = true)]
 public class ILRuntimeCLRBinding
 {
-    [MenuItem("JEngine/ILRuntime/Generate CLR Biding by automatically analyzing DLL")]
+    [MenuItem("JEngine/ILRuntime/Generate CLR Biding by DLL")]
     static void GenerateCLRBindingByAnalysis()
     {
         //用新的分析热更dll调用引用来生成绑定代码
@@ -30,6 +30,7 @@ public class ILRuntimeCLRBinding
         domain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         domain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
         domain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
+        domain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
     }
 }
 #endif
