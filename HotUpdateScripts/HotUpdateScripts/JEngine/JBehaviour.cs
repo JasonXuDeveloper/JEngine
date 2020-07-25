@@ -93,15 +93,6 @@ namespace JEngine.LifeCycle
         }
 
         /// <summary>
-        /// Call to launch JBehaviour
-        /// 启动生命周期
-        /// </summary>
-        public virtual void Awake()
-        {
-            StartCoroutine(Launch());
-        }
-
-        /// <summary>
         /// Launch the lifecycle
         /// 开始生命周期
         /// </summary>
@@ -120,6 +111,11 @@ namespace JEngine.LifeCycle
 
                 while (true && Application.isPlaying)
                 {
+                    if (Frequency == 0)
+                    {
+                        Frequency = 1;
+                    }
+
                     Loop();
 
                     if (FrameMode)
@@ -151,6 +147,15 @@ namespace JEngine.LifeCycle
 
 
         #region METHODS THAT ARE REWRITABLE
+        /// <summary>
+        /// Call to launch JBehaviour
+        /// 启动生命周期
+        /// </summary>
+        public virtual void Awake()
+        {
+            StartCoroutine(Launch());
+        }
+
         public virtual void Init()
         {
             Inited = true;

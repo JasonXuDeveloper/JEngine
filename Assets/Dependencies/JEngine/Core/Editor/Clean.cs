@@ -1,5 +1,5 @@
 ﻿//
-// JUIBehaviour.cs
+// Clean.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -31,7 +31,6 @@ using JEngine.Core;
 
 namespace JEngine.Editor
 {
- #if UNITY_EDITOR
 [InitializeOnLoad]
 class Clean
 {
@@ -101,7 +100,7 @@ class Clean
         var watch = new Stopwatch();
         watch.Start();
         var bytes = FileToByte("Assets/HotUpdateResources/Dll/HotUpdateScripts.dll");
-        var result = ByteToFile(CryptoHelper.AesEncrypt(bytes,CryptoHelper.Key), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+        var result = ByteToFile(CryptoHelper.AesEncrypt(bytes,"DevelopmentMode."), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
         watch.Stop();
         Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
         if (!result)
@@ -175,5 +174,4 @@ class Clean
         return result;
     }
 }
-#endif   
 }

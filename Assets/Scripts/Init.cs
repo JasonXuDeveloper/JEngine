@@ -23,6 +23,8 @@ public class Init : MonoBehaviour
     AppDomain appdomain;
     MemoryStream fs;
 
+    [SerializeField]private string Key;
+
     void Start()
     {
         Instance = this;
@@ -48,11 +50,19 @@ public class Init : MonoBehaviour
             byte[] original = dll.bytes;
             try
             {
-                original = CryptoHelper.AesDecrypt(original, CryptoHelper.Key);
+                if (!Assets.runtimeMode)
+                {
+                    original = CryptoHelper.AesDecrypt(original, "DevelopmentMode.");
+                }
+                else
+                {
+                    original = CryptoHelper.AesDecrypt(original, Key);
+                }
             }
             catch(Exception ex)
             {
-                Log.PrintError(ex);
+                Log.PrintError("加载热更DLL失败，可能是解密密码不正确");
+                Log.PrintError("加载热更DLL错误：\n" + ex.Message);
                 return;
             }
             

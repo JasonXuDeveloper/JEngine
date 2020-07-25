@@ -186,21 +186,21 @@ namespace JEngine.UI
         }
 
         #region OVERRIDE METHODS
-        public override void Awake()
+        private new void Awake()
         {
             Pause = true;
             base.Awake();
         }
 
         private Action<JUI> _init;
-        public sealed override void Init()
+        private new void Init()
         {
             _init?.Invoke(this);
             base.Init();
         }
 
         private Action<JUI> _run;
-        public sealed override void Run()
+        private new void Run()
         {
             NotLoop = _bind;
             _run?.Invoke(this);
@@ -208,20 +208,20 @@ namespace JEngine.UI
         }
 
         private Action<JUI> _loop;
-        public sealed override void Loop()
+        private new void Loop()
         {
             _loop?.Invoke(this);
         }
 
         private Action<JUI> _end;
-        public sealed override void End()
+        private new void End()
         {
             _end?.Invoke(this);
         }
         #endregion
 
         private Action<JUI> _message;
-        public void Message()
+        private void Message()
         {
             _message?.Invoke(this);
         }

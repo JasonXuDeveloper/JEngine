@@ -40,12 +40,12 @@ MonoBehaviour:
   - deps: 
     hash: 7b920834cb3eb495fedf085d9b599801
     id: 2
-    len: 9052
+    len: 9054
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: df95200cfb864984dc568b958c933dd0
+    hash: 8fbe26e6b0f8e84345132004eec10d9f
     id: 3
-    len: 14167
+    len: 15114
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll

@@ -32,12 +32,6 @@ namespace JEngine.Core
     public class CryptoHelper
     {
         /// <summary>
-        /// 16位密钥
-        /// 16bits key
-        /// </summary>
-        public static string Key = "1234567898765432";
-        
-        /// <summary>
         /// AES 算法加密(ECB模式) 将明文加密
         /// </summary>
         /// <param name="toEncryptArray,">明文</param>

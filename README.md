@@ -171,11 +171,15 @@ Please clone this framework into your project and keep this directory structure
 
 #### IMPORTANT
 
-- If you want to **CHANGE ENCRYPT KEY**, go to **Assets/Dependencies/JEngine/Core/CryptoHelper.cs** to change the key, the key must be **lengthed 16 bits( 16 letters)**
+- When **building bundle**, a window will pop up, and you need to **provide the encrypt key which encrypts your dll**
 
-  ![key](https://s1.ax1x.com/2020/07/24/UjLEE8.png)
+  ![key1](https://s1.ax1x.com/2020/07/26/apuoHs.png)
   
-- When you build your project, remember to remove hot-update scenes in build setting panel to avoid redundancy
+- In **Init scene**, select HotFixCode on hierarchy, you will see **Init (Script) on inspector**, there will be a section called **Key**, just **fill the encrypt key** in, and it will decrypt dll in runtime
+
+  ![key2](https://s1.ax1x.com/2020/07/26/apu7En.png)
+
+- When you build your project, **remember to remove hot-update scenes** in build setting panel to avoid redundancy
 
   ![build](https://s1.ax1x.com/2020/07/20/Uhxcuj.jpg)
 
