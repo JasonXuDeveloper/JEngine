@@ -1,6 +1,6 @@
 # JENGINE v0.3.4
 
-JEngine is a **streamlined and easy-to-use** framework for Unity Programmers.
+JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
 JEngine has its **own behaviour** based on MonoBehaviour but much **more friendly to manage lifecycle**. (You can make loop easier using JEngine).
 
@@ -50,7 +50,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
     
 
-- **GUI-Redis** helps visualize data in Redis Databases and can **modify data** in it.
+- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
 
   - Supports connect through **SSH tunnel**
   - Supports connect through **normay way** (IP, Port connection)
