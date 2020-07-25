@@ -129,8 +129,8 @@
                        Debug.Log(text.text);
    
                        //Set the loop mode and frequency
-                       t2.frame = false;//Run in milliseconds
-                       t2.frequency = 1000;//Run in every 1000 ms (1 second)
+                       t2.FrameMode = false;//Run in milliseconds
+                       t2.Frequency = 1000;//Run in every 1000 ms (1 second)
    
                        UnityEngine.Object.Destroy(t2.gameObject, 10);
                    })
@@ -252,8 +252,8 @@
 
    **JUI** inherits from **JUIBehaviour**, which can manage the mode and frequency of loop.
 
-   - **frame** is a bool value which holds whether the loop runs in frames or in milliseconds
-   - **frequency** is a int value which holds the interval of loops (in frame counts when **frame** is true or in milliseconds)
+   - **FrameMode** is a bool value which holds whether the loop runs in frames or in milliseconds
+   - **Frequency** is a int value which holds the interval of loops (in frame counts when **frame** is true or in milliseconds)
 
 4. How to bind my data to JUI
 

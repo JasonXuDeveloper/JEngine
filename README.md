@@ -1,4 +1,4 @@
-# JENGINE v0.3.3
+# JENGINE v0.3.4
 
 JEngine is a **streamlined and easy-to-use** framework for Unity Programmers.
 
@@ -18,9 +18,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Hot Update DLL Encryption** based on AES encryption, with a 16 bits key, it is harder to let others hack your dll
-- More **ILRuntime Registerations support**, reduce the requirements of registerations when using ILRuntime
-- Update **XAsset** and **ILRuntime** to the latest version
+- **JBehaviour Example**
+- **Rewrite** JBehaviour **Structure**
+- **Improve** JUI
+- **Fix** that **JBehaviou**r can't be called
 
 [Click here to see all version updates](CHANGE.md)
 

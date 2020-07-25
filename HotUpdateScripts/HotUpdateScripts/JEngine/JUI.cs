@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using JEngine.Core;
 using JEngine.LifeCycle;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace JEngine.UI
@@ -164,9 +163,9 @@ namespace JEngine.UI
         /// <returns></returns>
         public JUI Activate()
         {
-            Activated = true;
+            Pause = false;
 
-            if (!isLoop)//Call message() once to init UI
+            if (_bind)//Call message() once to init UI
             {
                 Message();
             }
@@ -187,6 +186,12 @@ namespace JEngine.UI
         }
 
         #region OVERRIDE METHODS
+        public override void Awake()
+        {
+            Pause = true;
+            base.Awake();
+        }
+
         private Action<JUI> _init;
         public sealed override void Init()
         {
@@ -197,7 +202,7 @@ namespace JEngine.UI
         private Action<JUI> _run;
         public sealed override void Run()
         {
-            isLoop = !_bind;
+            NotLoop = _bind;
             _run?.Invoke(this);
             base.Run();
         }

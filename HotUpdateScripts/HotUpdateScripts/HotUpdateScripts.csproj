@@ -37,6 +37,7 @@
     <Compile Include="JEngine\BindableProperty.cs" />
     <Compile Include="JEngine\JBehaviour.cs" />
     <Compile Include="Examples\JUIShowcase.cs" />
+    <Compile Include="Examples\JBehaviourExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

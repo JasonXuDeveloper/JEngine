@@ -23,14 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using JEngine.UI;
 using JEngine.Core;
-using System.Threading.Tasks;
-using UnityEngine.UI;
+using JEngine.Examples;
 
 namespace HotUpdateScripts
 {
@@ -46,7 +43,7 @@ namespace HotUpdateScripts
             * ====================================
             */
             var JUILoopExampleGO = new GameObject("JUILoopExampleBtn");
-            JUILoopExampleGO.transform.SetParent(Canvas,false);
+            JUILoopExampleGO.transform.SetParent(Canvas, false);
 
             var JUILoopExampleText = JUILoopExampleGO.AddComponent<Text>();
             JUILoopExampleText.text = "[Press me to see LOOP example]";
@@ -55,7 +52,7 @@ namespace HotUpdateScripts
             JUILoopExampleText.color = Color.red;
             JUILoopExampleText.alignment = TextAnchor.MiddleCenter;
 
-            JUILoopExampleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(500,75);
+            JUILoopExampleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(500, 75);
             JUILoopExampleGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -100);
             var JUILoopExampleBtn = JUILoopExampleGO.AddComponent<Button>();
             JUILoopExampleBtn.onClick.AddListener(
@@ -65,7 +62,7 @@ namespace HotUpdateScripts
                     JUILoopBG.transform.SetParent(Canvas);
                     JUILoopBG.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height);
                     JUILoopBG.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-                    JUILoopBG.color = new Color(0.2f,0.2f,0.2f);
+                    JUILoopBG.color = new Color(0.2f, 0.2f, 0.2f);
 
                     GameObject Showcase = new GameObject("CountdownShowcase");
 
@@ -88,12 +85,12 @@ namespace HotUpdateScripts
                         text.color = Color.white;
                         text.alignment = TextAnchor.MiddleCenter;
 
-                        t.frame = false;//Run in ms
-                        t.frequency = 1000;//Loop each 1s
+                        t.FrameMode = false;//Run in ms
+                        t.Frequency = 1000;//Loop each 1s
 
                         UnityEngine.Object.Destroy(JUILoopBG.gameObject, 10);
                     })
-                    .onLoop(t1=>
+                    .onLoop(t1 =>
                     {
                         i--;
                         t1.Element<Text>().text = "I will be destroyed in " + i + " seconds";
@@ -184,6 +181,31 @@ namespace HotUpdateScripts
                         UnityEngine.Object.Destroy(JUIBindBG.gameObject);
                         UnityEngine.Object.Destroy(GameObject.Find("BindShowcase"));
                     });
+                });
+
+
+            /*
+            * ====================================
+            *           JBehaviour Example
+            * ====================================
+            */
+            var JBehaviourExampleGO = new GameObject("JBehaviourExampleBtn");
+            JBehaviourExampleGO.transform.SetParent(Canvas, false);
+
+            var JBehaviourExampleText = JBehaviourExampleGO.AddComponent<Text>();
+            JBehaviourExampleText.text = "[Press me to see JBehaviour example]";
+            JBehaviourExampleText.font = Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+            JBehaviourExampleText.fontSize = 30;
+            JBehaviourExampleText.color = Color.red;
+            JBehaviourExampleText.alignment = TextAnchor.MiddleCenter;
+
+            JBehaviourExampleGO.GetComponent<RectTransform>().sizeDelta = new Vector2(1000, 75);
+            JBehaviourExampleGO.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -300);
+            var JBehaviourExampleBtn = JBehaviourExampleGO.AddComponent<Button>();
+            JBehaviourExampleBtn.onClick.AddListener(
+                () =>
+                {
+                    new GameObject("JBehaviourShowcase").AddComponent<JBehaviourExample>();
                 });
         }
     }

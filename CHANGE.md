@@ -1,5 +1,14 @@
 ## All Versions
 
+### v0.3.4
+
+- **JBehaviour Example**
+- **Rewrite** JBehaviour **Structure**
+- **Improve** JUI
+- **Fix** that **JBehaviou**r can't be called
+
+
+
 ### v0.3.3
 
 - **Hot Update DLL Encryption** based on AES encryption, with a 16 bits key, it is harder to let others hack your dll

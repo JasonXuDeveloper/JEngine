@@ -40,47 +40,51 @@
 4. Example Showcase:
 
    ```c#
-   using UnityEngine;
-   using UnityEngine.UI;
+   using System;
+   using JEngine.Core;
    using JEngine.LifeCycle;
    
-   namespace HotUpdateScripts
+   namespace JEngine.Examples
    {
-       public class Sample : JBehaviour
+       public class JBehaviourExample : JBehaviour
        {
-           public Text HelloText;
-   
-           public int times;
+           private int i;
    
            public override void Init()
            {
-               HelloText = GameObject.Find("Canvas/Text").GetComponent<Text>();
-               times = 0;
+               base.Init();
+               Log.Print("JBehaviour has been created!");
            }
    
            public override void Run()
            {
-               //Here in run method, we set up the frequency and mode of loop.
+               base.Run();
+               Log.Print("JBehaviour is running!");
+               //Change the frequency of loop
+               FrameMode = false;//Don't loop in frame
+               Frequency = 1000;//Run every 1000 milliseconds
    
-               frame = false;// Not loop in frame, but in milliseconds
-               frequency = 1000;//Loop in 1000ms => 1 second
+               i = 1;
    
-               /* OR:
-                * frame = true;// Loop in frame
-                * frequency = 10;//Loop in every 10 frames
-                */
+               Destroy(this.gameObject, 10);
            }
    
            public override void Loop()
            {
-               HelloText.text = "HELLO JEngine * " + times + " times";
-               times++;
+               Log.Print("Hello JBehaviour * " + i + " times!");
+               i++;
+           }
+   
+           public override void End()
+           {
+               Log.Print("I have been destroyed!");
            }
        }
    }
+   
    ```
 
 5. As you might see, in **Run** method, there is an assignment of **frame and frequency** variable, these variables controls **loop** method.
 
-   - frame: **bool**, when it is true, loop runs in **frames**; or loop runs in **milliseconds** 
-   - frequency: **int**, it holds the **interval of frames or milliseconds** which calls loop method
+   - FrameMode: **bool**, when it is true, loop runs in **frames**; or loop runs in **milliseconds** 
+   - Frequency: **int**, it holds the **interval of frames or milliseconds** which calls loop method

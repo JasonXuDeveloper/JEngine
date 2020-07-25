@@ -23,10 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 using System.Collections;
-using System.Threading.Tasks;
-using JEngine.UI;
 using UnityEngine;
 namespace JEngine.LifeCycle
 {
@@ -37,37 +34,37 @@ namespace JEngine.LifeCycle
         /// Loop in frame or millisecond
         /// 帧模式或毫秒模式
         /// </summary>
-        [HideInInspector] public bool frame = true;
+        [HideInInspector] public bool FrameMode;
 
         /// <summary>
         /// Frequency of loop, if frame = false, this field stands for milliseconds
         /// 循环频率，如果是毫秒模式，单位就是ms
         /// </summary>
-        [HideInInspector] public int frequency = 1;
+        [HideInInspector] public int Frequency;
 
         /// <summary>
-        /// Activate the lifecycle
-        /// 激活生命周期
+        /// Pause before init
+        /// 在初始化之前暂停
         /// </summary>
-        [HideInInspector] public bool Activated = false;
+        [HideInInspector] public bool Pause;
 
         /// <summary>
         /// Whether inited or not
         /// 是否完成初始化
         /// </summary>
-        [HideInInspector] private bool Inited = false;
+        [HideInInspector] private bool Inited;
 
         /// <summary>
         /// Whether has run or not
         /// 是否完成Run
         /// </summary>
-        [HideInInspector] private bool HasRun = false;
+        [HideInInspector] private bool HasRun;
 
         /// <summary>
         /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called
         /// JUI运行模式，Loop模式下UI将在特定频率更新，Message模式UI将在被通知后更新
         /// </summary>
-        [HideInInspector] public bool isLoop = true;
+        [HideInInspector] public bool NotLoop;
         #endregion
 
         #region METHODS
@@ -99,7 +96,7 @@ namespace JEngine.LifeCycle
         /// Call to launch JBehaviour
         /// 启动生命周期
         /// </summary>
-        private void Awake()
+        public virtual void Awake()
         {
             StartCoroutine(Launch());
         }
@@ -110,14 +107,14 @@ namespace JEngine.LifeCycle
         /// </summary>
         private IEnumerator Launch()
         {
-            yield return new WaitUntil(() => Activated);
+            yield return new WaitUntil(() => !Pause);
 
             Init();
 
             yield return new WaitUntil(() => Inited);
             Run();
 
-            if (isLoop)
+            if (!NotLoop)
             {
                 yield return new WaitUntil(() => HasRun);
 
@@ -125,16 +122,16 @@ namespace JEngine.LifeCycle
                 {
                     Loop();
 
-                    if (frame)
+                    if (FrameMode)
                     {
-                        for (int i = 0; i < frequency; i++)
+                        for (int i = 0; i < Frequency; i++)
                         {
                             yield return null;
                         }
                     }
                     else
                     {
-                        yield return new WaitForSeconds((float)frequency / 1000);
+                        yield return new WaitForSeconds((float)Frequency / 1000);
                     }
                 }
             }

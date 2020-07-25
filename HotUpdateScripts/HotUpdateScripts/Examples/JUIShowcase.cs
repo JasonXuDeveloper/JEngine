@@ -29,7 +29,7 @@ using JEngine.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HotUpdateScripts
+namespace JEngine.Examples
 {
     [Serializable]
     public class Data
