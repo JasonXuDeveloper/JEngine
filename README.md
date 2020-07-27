@@ -33,20 +33,19 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
   - No need to learn Lua, **C# codes can be hot-updated**
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
-  - **Encrypts DLL**, your hot-update dll won't be hacked easily
+  - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
 
 - Unique **Lifecycle** & **UI solution**
 
   - **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 
-    <img src="https://s1.ax1x.com/2020/07/19/URW5mn.png" alt="JBehaviour" style="zoom:50%;" />
+  - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
 
-  - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI, with JUI, you can write codes shorter and in **Method-Chaning** form, which means **your codes can be shorter and more powerful**
+    - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
+    - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
+    - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
 
-    - JUI borrowed concept from MVVM Framework and changed it, JUI can bind a data easily with a **Generic Class**
-    - You can choose to either update your UI in specific Loop with Frequency, or to update your UI only if the binded data changed
-
-    <img src="https://s1.ax1x.com/2020/07/19/URWIwq.png" alt="JUI" style="zoom:50%;" />
+  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
 
     
 
@@ -117,7 +116,7 @@ Please clone this framework into your project and keep this directory structure
 ├── ProjectSettings
 ```
 
-### Description of those Directories
+### Description for those Directories
 
 [Click here to have a read](DirectoriesDiscription.md)
 

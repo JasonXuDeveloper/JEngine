@@ -8,6 +8,8 @@
 > - Less codes to implement loops
 > - Uses coroutine rather than methods to do updates
 
+<img src="https://s1.ax1x.com/2020/07/19/URW5mn.png" alt="JBehaviour" style="zoom:50%;" />
+
 
 
 1. In your Hot Update Scripts, and in your c# file:

@@ -9,6 +9,8 @@
 > - Update UI in specific frequency
 > - Simple but powerful
 
+<img src="https://s1.ax1x.com/2020/07/19/URWIwq.png" alt="JUI" style="zoom:50%;" />
+
 
 
 1. In your Hot Update Scripts, and in your c# file, add the import at the top:
