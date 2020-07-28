@@ -2,15 +2,26 @@
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
-JEngine has its **own behaviour** based on MonoBehaviour but much **more friendly to manage lifecycle**. (You can make loop easier using JEngine).
+What can JEngine do?
 
-JEngine has its own **UI solution** which **enhance the performence** of an UI element. (You can choose either update UI in specific frequency or bind a data to the UI and update it when binded data has changed)
-
-JEngine has a **method-chaining** style of coding, which makes your code much more stramlined and beautiful.
-
-JEngine supports **hot update**, which is base on [XAsset](https://github.com/xasset/xasset) & [ILRuntime](https://github.com/Ourpalm/ILRuntime) which supports hot-update codes and resources in Unity.
+- **Own behaviour** based on MonoBehaviour
+  - **More friendly to manage lifecycle**
+    - You can make loop easier using JEngine
+- **Own UI solution**
+  - **Method-Chaining** style makes codes prettier and easier to visualize
+  - **Easier to manage** lifecycle
+    - Can **easily set up** **what** you want the UI element **to do in specific time**
+  - **Bindable to data**
+    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
+  - Supports any UIBehaviour objects
+- **Hot-update solution**
+  - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
+  - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
+  - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
 
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
+
+**If you enjoy using JEngine, please give this repo a star!**
 
 [中文请点这里](#中文说明)
 
@@ -21,7 +32,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - **JBehaviour Example**
 - **Rewrite** JBehaviour **Structure**
 - **Improve** JUI
-- **Fix** that **JBehaviou**r can't be called
+- **Fix** that some of **JBehaviou**r's method can't be called
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -61,8 +72,9 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - ~~Encrypt Hot-update DLL and decrypt in runtime~~
-- Optiimize logics which can improve process speed (As always doing it)
+- Object Pool which significantly improves performance rather than using Instantiate method
 - UI Special Effects
+- Optiimize logics which can improve process speed (As always doing it)
 - *Unity Editor FTP Tool (Maybe)*
 
 
