@@ -31,8 +31,13 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 ## Latest Features
 
 - **Rewrite JBehaviour's source code** which enhances the performence
+
 - **JObjectPool** is a new **solution for Object Pool**
+
+  > Example will come soon
+
 - **Improve JBehaviour** which it now **supports method-chaning** in some part
+
 - **Enhance JUI**
 
 [Click here to see all version updates](CHANGE.md)
