@@ -24,9 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 namespace JEngine.LifeCycle
 {
+    /// <summary>
+    /// JEngine's Behaviour
+    /// </summary>
     public class JBehaviour : MonoBehaviour, IJBehaviour
     {
         #region FIELDS
@@ -46,7 +50,7 @@ namespace JEngine.LifeCycle
         /// Pause before init
         /// 在初始化之前暂停
         /// </summary>
-        [HideInInspector] public bool Pause;
+        [HideInInspector] private bool Paused;
 
         /// <summary>
         /// Whether inited or not
@@ -72,24 +76,45 @@ namespace JEngine.LifeCycle
         /// Hides the UI gameObject
         /// 隐藏UI对象
         /// </summary>
-        public void Hide()
+        public JBehaviour Hide()
         {
             if (this.gameObject != null)
             {
                 this.gameObject.SetActive(false);
             }
+            return this;
         }
 
         /// <summary>
         /// Shows the UI gameObject
         /// 显示UI对象
         /// </summary>
-        public void Show()
+        public JBehaviour Show()
         {
             if (this.gameObject != null)
             {
                 this.gameObject.SetActive(true);
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Pause the loop
+        /// 暂停循环
+        /// </summary>
+        public JBehaviour Pause()
+        {
+            Paused = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Resume the loop
+        /// </summary>
+        public JBehaviour Resume()
+        {
+            Paused = false;
+            return this;
         }
 
         /// <summary>
@@ -98,7 +123,7 @@ namespace JEngine.LifeCycle
         /// </summary>
         private IEnumerator Launch()
         {
-            yield return new WaitUntil(() => !Pause);
+            yield return new WaitUntil(() => !Paused);
 
             Init();
 
@@ -109,29 +134,34 @@ namespace JEngine.LifeCycle
             {
                 yield return new WaitUntil(() => HasRun);
 
-                while (true && Application.isPlaying)
-                {
-                    if (Frequency == 0)
-                    {
-                        Frequency = 1;
-                    }
-
-                    Loop();
-
-                    if (FrameMode)
-                    {
-                        for (int i = 0; i < Frequency; i++)
-                        {
-                            yield return null;
-                        }
-                    }
-                    else
-                    {
-                        yield return new WaitForSeconds((float)Frequency / 1000);
-                    }
-                }
+                DoLoop();
             }
             yield break;
+        }
+
+        /// <summary>
+        /// Whether object is alive or not
+        /// </summary>
+        private bool _alive;
+        /// <summary>
+        /// Do the loop
+        /// </summary>
+        private async void DoLoop()
+        {
+            _alive = true;
+            if (Frequency == 0)
+            {
+                Frequency = 1;
+            }
+            while (true && Application.isPlaying && _alive)
+            {
+                if (Paused) break;
+                Loop();
+                if (FrameMode)
+                    await Task.Delay((int)(((float)Frequency / (float)Application.targetFrameRate) * 1000f));
+                else
+                    await Task.Delay(Frequency);
+            }
         }
 
         /// <summary>
@@ -140,6 +170,7 @@ namespace JEngine.LifeCycle
         /// </summary>
         private void OnDestroy()
         {
+            _alive = false;
             End();
         }
 

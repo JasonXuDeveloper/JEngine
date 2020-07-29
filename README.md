@@ -1,4 +1,4 @@
-# JENGINE v0.3.4
+# JENGINE v0.3.5
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -18,6 +18,7 @@ What can JEngine do?
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
+- <u>**More to explore!!!**</u>
 
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
 
@@ -29,10 +30,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **JBehaviour Example**
-- **Rewrite** JBehaviour **Structure**
-- **Improve** JUI
-- **Fix** that some of **JBehaviou**r's method can't be called
+- **Rewrite JBehaviour's source code** which enhances the performence
+- **JObjectPool** is a new **solution for Object Pool**
+- **Improve JBehaviour** which it now **supports method-chaning** in some part
+- **Enhance JUI**
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -65,6 +66,15 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Supports connect through **SSH tunnel**
   - Supports connect through **normay way** (IP, Port connection)
   - Supports **add/modify/delete/search** key-value pairs
+  
+- **Object Pool** solution
+
+  - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
+    - With this solution, **you don't have to repeat instantiate gameObject**
+    - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
+    - Request **PoolObject** to get the GameObject
+  - Easy and powerful
+  - With algorithm which fairly controls gameObjects
 
 
 
@@ -72,7 +82,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - ~~Encrypt Hot-update DLL and decrypt in runtime~~
-- Object Pool which significantly improves performance rather than using Instantiate method
+- ~~Object Pool which significantly improves performance rather than using Instantiate method~~
 - UI Special Effects
 - Optiimize logics which can improve process speed (As always doing it)
 - *Unity Editor FTP Tool (Maybe)*

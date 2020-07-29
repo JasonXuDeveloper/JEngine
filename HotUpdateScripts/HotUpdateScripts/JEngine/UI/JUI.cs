@@ -31,6 +31,9 @@ using UnityEngine.EventSystems;
 
 namespace JEngine.UI
 {
+    /// <summary>
+    /// JEngine's UI
+    /// </summary>
     public abstract class JUI : JBehaviour
     {
         /// <summary>
@@ -163,7 +166,7 @@ namespace JEngine.UI
         /// <returns></returns>
         public JUI Activate()
         {
-            Pause = false;
+            Resume();
 
             if (_bind)//Call message() once to init UI
             {
@@ -188,7 +191,7 @@ namespace JEngine.UI
         #region OVERRIDE METHODS
         private new void Awake()
         {
-            Pause = true;
+            Pause();
             base.Awake();
         }
 

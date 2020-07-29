@@ -33,11 +33,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="JEngine\JUI.cs" />
-    <Compile Include="JEngine\BindableProperty.cs" />
-    <Compile Include="JEngine\JBehaviour.cs" />
     <Compile Include="Examples\JUIShowcase.cs" />
     <Compile Include="Examples\JBehaviourExample.cs" />
+    <Compile Include="JEngine\Core\BindableProperty.cs" />
+    <Compile Include="JEngine\LifeCycle\JBehaviour.cs" />
+    <Compile Include="JEngine\UI\JUI.cs" />
+    <Compile Include="JEngine\Core\JObjectPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -62,6 +63,9 @@
   <ItemGroup>
     <Folder Include="JEngine\" />
     <Folder Include="Examples\" />
+    <Folder Include="JEngine\Core\" />
+    <Folder Include="JEngine\LifeCycle\" />
+    <Folder Include="JEngine\UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

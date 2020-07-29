@@ -1,5 +1,14 @@
 ## All Versions
 
+### v0.3.5
+
+- **Rewrite JBehaviour's source code** which enhances the performence
+- **JObjectPool** is a new **solution for Object Pool**
+- **Improve JBehaviour** which it now **supports method-chaning** in some part
+- **Enhance JUI**
+
+
+
 ### v0.3.4
 
 - **JBehaviour Example**
