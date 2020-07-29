@@ -80,6 +80,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     - Request **PoolObject** to get the GameObject
   - Easy and powerful
   - With algorithm which fairly controls gameObjects
+  
+  > Example will come soon
 
 
 
