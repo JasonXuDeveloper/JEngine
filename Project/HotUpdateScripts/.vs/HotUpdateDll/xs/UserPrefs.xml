@@ -1,0 +1,28 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/Sample.cs">
+    <Files>
+      <File FileName="HotUpdateScripts/Program.cs" Line="17" Column="45" />
+      <File FileName="HotUpdateScripts/Sample.cs" Line="24" Column="67" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="HotUpdateDll" expanded="True">
+            <Node name="HotUpdateScripts" expanded="True">
+              <Node name="Sample.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.HotUpdateScripts PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|anycpu" />
+  <Debugger.DebugSourceFolders />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <AuthorInfo Name="JasonXuDeveloper" Email="jasonxudeveloper@gmail.com" Copyright="JasonXuDeveloper" Company="" Trademark="" />
+</Properties>

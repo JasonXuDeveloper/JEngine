@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7882bd278763c45f49cef7deeae496e5, type: 3}
+  m_Name: Manifest
+  m_EditorClassIdentifier: 
+  activeVariants: []
+  assets:
+  - bundle: 3
+    dir: 0
+    name: HotUpdateScripts.bytes
+  - bundle: 0
+    dir: 1
+    name: Example.txt
+  - bundle: 2
+    dir: 2
+    name: Game.unity
+  - bundle: 1
+    dir: 3
+    name: Example.txt
+  bundles:
+  - deps: 
+    hash: 9dfc43218616426ffa52cf27eef34fbd
+    id: 0
+    len: 1241
+    name: 4dd92b5a9a7a8600a8b3720ae0ec4b8f.unity3d
+  - deps: 
+    hash: 773c2cc15341cecb9d1804a2d14e5b81
+    id: 1
+    len: 1250
+    name: 560f7cc690a202bbc3780bc878f6814b.unity3d
+  - deps: 
+    hash: 7b920834cb3eb495fedf085d9b599801
+    id: 2
+    len: 9054
+    name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
+  - deps: 
+    hash: b4721aaefa82554d36cc1241b0cf8749
+    id: 3
+    len: 16820
+    name: f1e9148d33abaae32bb165f217c22e91.unity3d
+  dirs:
+  - Assets/HotUpdateResources/Dll
+  - Assets/HotUpdateResources/Other
+  - Assets/HotUpdateResources/Scene
+  - Assets/HotUpdateResources/TextAsset
