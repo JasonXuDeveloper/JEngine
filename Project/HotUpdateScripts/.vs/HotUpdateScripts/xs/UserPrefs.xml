@@ -1,7 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/JEngine/LifeCycle/JBehaviour.cs">
     <Files>
-      <File FileName="HotUpdateScripts/Program.cs" Line="103" Column="32" />
+      <File FileName="HotUpdateScripts/Program.cs" Line="86" Column="23" />
+      <File FileName="HotUpdateScripts/JEngine/LifeCycle/JBehaviour.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -12,10 +13,11 @@
               <Node name="Examples" expanded="True" />
               <Node name="JEngine" expanded="True">
                 <Node name="Core" expanded="True" />
-                <Node name="LifeCycle" expanded="True" />
+                <Node name="LifeCycle" expanded="True">
+                  <Node name="JBehaviour.cs" selected="True" />
+                </Node>
                 <Node name="UI" expanded="True" />
               </Node>
-              <Node name="Program.cs" selected="True" />
             </Node>
           </Node>
         </State>

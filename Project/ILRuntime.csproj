@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{B807010A-BBB6-A779-00F5-796EB86F3475}</ProjectGuid>
+    <ProjectGuid>{15516311-81B0-9904-A6F8-D8DFBA718B84}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>ILRuntime</AssemblyName>
@@ -132,10 +132,10 @@
      <Compile Include="Assets\Dependencies\ILRuntime\ILRuntime\Runtime\Stack\StackObject.cs" />
      <None Include="Assets\Dependencies\ILRuntime\ILRuntime\ILRuntime.asmdef" />
  <Reference Include="UnityEditor.UI">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -336,40 +336,40 @@
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
  </Reference>
  <Reference Include="ILRuntime.Mono.Cecil.Pdb">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="ILRuntime.Mono.Cecil.Mdb">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
  </Reference>
  <Reference Include="ILRuntim.Mono.Cecil">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="Renci.SshNet">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/Renci.SshNet.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/Renci.SshNet.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Redis">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Redis.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Redis.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Common">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Common.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Common.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Text">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Text.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Text.dll</HintPath>
  </Reference>
  <Reference Include="System.Buffers">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Buffers.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Buffers.dll</HintPath>
  </Reference>
  <Reference Include="System.Runtime.CompilerServices.Unsafe">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Interfaces">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Interfaces.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Interfaces.dll</HintPath>
  </Reference>
  <Reference Include="System.Memory">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Memory.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Memory.dll</HintPath>
  </Reference>
  <Reference Include="HotUpdateScripts">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

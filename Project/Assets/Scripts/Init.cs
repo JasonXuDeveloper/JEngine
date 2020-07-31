@@ -3,6 +3,7 @@ using System.IO;
 using ILRuntime.Mono.Cecil.Pdb;
 using JEngine.Core;
 using libx;
+using UnityEditor;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -56,10 +57,21 @@ public class Init : MonoBehaviour
             }
             
             fs = new MemoryStream(original);
+            MemoryStream pdb = null;
+            if (Application.isEditor)
+            {
+                try
+                {
+                    pdb = new MemoryStream(AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/HotUpdateResources/Dll/HotUpdateScripts.pdb").bytes);
+                }
+                catch
+                {
+                }
+            }
             
             try
             {
-                appdomain.LoadAssembly(fs, null, new PdbReaderProvider());
+                appdomain.LoadAssembly(fs, pdb, new PdbReaderProvider());
             }
             catch(Exception e)
             {

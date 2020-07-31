@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{72BC621B-FB41-8DA3-3CEB-313FE0A247EC}</ProjectGuid>
+    <ProjectGuid>{6CDB4719-1D28-38FF-BF92-A07FF7EAE25F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -59,9 +59,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Dependencies\ILRuntime\Editor\ILRuntimeCLRBinding.cs" />
+     <Compile Include="Assets\Dependencies\ILRuntime\Editor\ILRuntimeMenu.cs" />
      <Compile Include="Assets\Dependencies\ILRuntime\Editor\MonoBehaviourAdapterEditor.cs" />
      <Compile Include="Assets\Dependencies\JEngine\Core\Editor\Clean.cs" />
      <Compile Include="Assets\Dependencies\JEngine\Core\Editor\CryptoWindow.cs" />
+     <Compile Include="Assets\Dependencies\JEngine\Core\Editor\MenuItems.cs" />
      <Compile Include="Assets\Dependencies\JEngine\GUI Redis\Editor\Connection.cs" />
      <Compile Include="Assets\Dependencies\JEngine\GUI Redis\Editor\RedisWindow.cs" />
      <Compile Include="Assets\Dependencies\XAsset\Editor\BuildRules.cs" />
@@ -70,37 +72,40 @@
      <Compile Include="Assets\Dependencies\XAsset\Editor\MenuItems.cs" />
      <Compile Include="Assets\Dependencies\XAsset\Editor\Settings.cs" />
  <Reference Include="UnityEditor.TestRunner">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.TestRunner">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline.Editor">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VSCode.Editor">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="ILRuntime">
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/ILRuntime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Rider.Editor">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -300,44 +305,44 @@
  <Reference Include="UnityEditor.iOS.Extensions">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
  </Reference>
- <Reference Include="ILRuntime.Mono.Cecil.Pdb">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
- </Reference>
- <Reference Include="ILRuntime.Mono.Cecil.Mdb">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
- </Reference>
- <Reference Include="ILRuntim.Mono.Cecil">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/ILRuntime/ILRuntime/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
- </Reference>
  <Reference Include="Renci.SshNet">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/Renci.SshNet.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/Renci.SshNet.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Redis">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Redis.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Redis.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Common">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Common.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Common.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Text">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Text.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Text.dll</HintPath>
  </Reference>
  <Reference Include="System.Buffers">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Buffers.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Buffers.dll</HintPath>
  </Reference>
  <Reference Include="System.Runtime.CompilerServices.Unsafe">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
  </Reference>
  <Reference Include="ServiceStack.Interfaces">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Interfaces.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/ServiceStack.Interfaces.dll</HintPath>
  </Reference>
  <Reference Include="System.Memory">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Memory.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Memory.dll</HintPath>
  </Reference>
  <Reference Include="HotUpdateScripts">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll</HintPath>
+ </Reference>
+ <Reference Include="ILRuntime.Mono.Cecil.Pdb">
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/PackageCache/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
+ </Reference>
+ <Reference Include="ILRuntime.Mono.Cecil.Mdb">
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/PackageCache/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
+ </Reference>
+ <Reference Include="ILRuntim.Mono.Cecil">
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/PackageCache/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="nunit.framework">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -702,12 +707,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{D3BAE46F-63B1-D6CB-4245-8BDAFD77B727}</Project>
+      <Project>{5B9FF267-005F-A3BF-219E-FEAE2D8C894F}</Project>
       <Name>Assembly-CSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="ILRuntime.csproj">
-      <Project>{B807010A-BBB6-A779-00F5-796EB86F3475}</Project>
-      <Name>ILRuntime</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

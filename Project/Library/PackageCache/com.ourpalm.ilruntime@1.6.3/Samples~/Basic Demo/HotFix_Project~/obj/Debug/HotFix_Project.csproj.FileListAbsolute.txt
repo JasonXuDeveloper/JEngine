@@ -1,0 +1,10 @@
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\StreamingAssets\HotFix_Project.dll
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\StreamingAssets\HotFix_Project.pdb
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csprojAssemblyReference.cache
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csproj.CoreCompileInputs.cache
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~\obj\Debug\HotFix_Project.dll
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6\Demo\HotFix_Project~\obj\Debug\HotFix_Project.pdb
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.2\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csprojAssemblyReference.cache
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.2\Demo\HotFix_Project~\obj\Debug\HotFix_Project.csproj.CoreCompileInputs.cache
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.2\Demo\HotFix_Project~\obj\Debug\HotFix_Project.dll
+E:\SVN\ILRuntimeU3D\ILRuntimeDemo\Assets\Samples\ILRuntime\1.6.2\Demo\HotFix_Project~\obj\Debug\HotFix_Project.pdb

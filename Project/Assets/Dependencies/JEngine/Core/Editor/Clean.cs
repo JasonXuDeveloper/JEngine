@@ -62,7 +62,7 @@ class Clean
                 var name = file.Name;
                 if (!file.Name.Contains("HotUpdateScripts"))
                 {
-                    File.Delete(file.FullName);
+                    Delete(file.FullName);
                     counts++;
                 }
             }
