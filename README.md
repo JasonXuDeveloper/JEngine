@@ -162,7 +162,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 <br>
 
 - **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
-- Supports connect through **SSH tunnel**
+  - Supports connect through **SSH tunnel**
   - Supports connect through **normay way** (IP, Port connection)
   - Supports **add/modify/delete/search** key-value pairs
 
