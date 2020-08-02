@@ -214,6 +214,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - ~~Encrypt Hot-update DLL and decrypt in runtime~~
 - ~~Object Pool which significantly improves performance rather than using Instantiate method~~
+- JUI with more extended APIs
 - UI Special Effects
 - Optiimize logics which can improve process speed (As always doing it)
 - *Unity Editor FTP Tool (Maybe)*
