@@ -35,6 +35,24 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
+            /*
+            * ====================================
+            *           JAction EXAMPLE
+            * ====================================
+            */
+            JAction j = new JAction();
+            j.Do(() =>
+            {
+                Log.Print("Hello from JAction!");
+            })
+            .Delay(3.0f)
+            .Do(() =>
+            {
+                Log.Print("Bye from JAction");
+            })
+            .Excute();
+
+
             Transform Canvas = GameObject.Find("Canvas").transform;
 
             /*

@@ -1,23 +1,106 @@
-# JENGINE v0.3.5
+# JENGINE v0.3.6
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
 What can JEngine do?
 
 - **Own behaviour** based on MonoBehaviour
+  
   - **More friendly to manage lifecycle**
+    
     - You can make loop easier using JEngine
+    
+    ```c#
+    public class JBehaviourExample : JBehaviour
+    {
+      public override void Init()
+      {
+        base.Init();
+        ...
+      }
+      
+      public override void Run()
+      {
+        base.Run();
+        ...
+      }
+      
+      public override void Loop()
+      {
+        ...
+      }
+      
+      public override void End()
+      {
+        ...
+      }
+    }
+    ```
+    
+    
+  
 - **Own UI solution**
+  
   - **Method-Chaining** style makes codes prettier and easier to visualize
+  
+    ```c#
+    var JUI = Showcase.AddComponent<JUI>()
+      .onInit(t =>
+              {
+                ...
+              })
+      .onLoop(t1 =>
+              {
+                ...
+              })
+      .onEnd(t2 =>
+             {
+               ...
+             })
+      .Activate();
+    ```
+  
+    
+  
   - **Easier to manage** lifecycle
+    
     - Can **easily set up** **what** you want the UI element **to do in specific time**
+    
+    ```c#
+    t.FrameMode = false;//Run in ms
+    t.Frequency = 1000;//Loop each 1s
+    ```
+    
+    
+    
   - **Bindable to data**
+    
     - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
+    
+    ```c#
+    var JUI = b.AddComponent<JUI>()
+      .Bind(data.b)
+      .onMessage(t1 =>
+                 {
+                   ...
+                 })
+      .Activate();
+    ```
+    
+    
+    
   - Supports any UIBehaviour objects
+  
+    ```c#
+    t1.Element<UIBehaviour>()
+    ```
+  
+    
 - **Hot-update solution**
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
+  
 - <u>**More to explore!!!**</u>
 
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
@@ -30,15 +113,25 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Rewrite JBehaviour's source code** which enhances the performence
+- **JAction** which **supports less code but do more**
 
-- **JObjectPool** is a new **solution for Object Pool**
+  ```c#
+  JAction j = new JAction();
+  j.Do(() =>
+        {
+          Log.Print("Hello from JAction!");
+        })
+    .Delay(3.0f)
+    .Do(() =>
+        {
+          Log.Print("Bye from JAction");
+        })
+    .Excute();
+  ```
 
-  > Example will come soon
+  
 
-- **Improve JBehaviour** which it now **supports method-chaning** in some part
-
-- **Enhance JUI**
+- Hidden dictionary to save Hot Update DLL which **strongly increased unity excute speed for dll** (Unity will no longer load Hot Update DLL from editor)
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -52,26 +145,29 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
   - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
 
-- Unique **Lifecycle** & **UI solution**
+<br>
 
-  - **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
+- **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 
-  - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
+<br>
 
-    - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
-    - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
-    - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
+- **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
+
+  - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
+  - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
+  - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
 
   - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
 
-    
+<br>
 
 - **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
-
-  - Supports connect through **SSH tunnel**
+- Supports connect through **SSH tunnel**
   - Supports connect through **normay way** (IP, Port connection)
   - Supports **add/modify/delete/search** key-value pairs
-  
+
+<br>
+
 - **Object Pool** solution
 
   - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
@@ -82,6 +178,34 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - With algorithm which fairly controls gameObjects
   
   > Example will come soon
+
+<br>
+
+- **Action** solution
+
+  - **Method-chaining** Style
+
+  - **Shorter and more powerful**
+
+    - Less code can do more things
+
+    ```c#
+    JAction j = new JAction();
+    j.Do(() =>
+         {
+           Log.Print("Hello from JAction!");
+         })
+      .Delay(3.0f)
+      .Do(() =>
+          {
+            Log.Print("Bye from JAction");
+          })
+      .Excute();
+    ```
+
+  - **Extension of System.Action**
+
+    - Add what to do, add delayings, JAction will do them in order
 
 
 

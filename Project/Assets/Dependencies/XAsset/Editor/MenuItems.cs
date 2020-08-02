@@ -43,77 +43,14 @@ namespace libx
         private const string KViewDataPath = "JEngine/XAsset/Bundles/View Bundles";
         private const string KCleanData = "JEngine/XAsset/Bundles/Clean Bundles";
         
-        /// <summary>
-        /// 删除文件或目录
-        /// </summary>
-        /// <param name="path"></param>
-        private static void Delete(string path)
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            if (Directory.Exists(path))
-            {
-                DirectoryInfo di = new DirectoryInfo(path);
-                di.Delete(true);
-            }
-        }
         
-        /// <summary>
-        /// 将文件转换成byte[]数组
-        /// </summary>
-        /// <param name="fileUrl">文件路径文件名称</param>
-        /// <returns>byte[]数组</returns>
-        public static byte[] FileToByte(string fileUrl)
-        {
-            try
-            {
-                using (FileStream fs = new FileStream(fileUrl, FileMode.Open, FileAccess.Read))
-                {
-                    byte[] byteArray = new byte[fs.Length];
-                    fs.Read(byteArray, 0, byteArray.Length);
-                    return byteArray;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 将byte[]数组保存成文件
-        /// </summary>
-        /// <param name="byteArray">byte[]数组</param>
-        /// <param name="fileName">保存至硬盘的文件路径</param>
-        /// <returns></returns>
-        public static bool ByteToFile(byte[] byteArray, string fileName)
-        {
-            bool result = false;
-            try
-            {
-                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    fs.Write(byteArray, 0, byteArray.Length);
-                    result = true;
-                }
-            }
-            catch
-            {
-                result = false;
-            }
-
-            return result;
-        }
 
         [MenuItem(KBuildAssetBundles)]
         private static void BuildAssetBundles()
         {
-            Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-            Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Rules.asset");
-            Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Manifest.asset");
+            DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+            DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Rules.asset");
+            DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Manifest.asset");
 
 
             CryptoWindow.ShowWindow();
@@ -121,8 +58,8 @@ namespace libx
             {
                 var watch = new Stopwatch();
                 watch.Start();
-                var bytes = FileToByte("Assets/HotUpdateResources/Dll/HotUpdateScripts.dll");
-                var result = ByteToFile(CryptoHelper.AesEncrypt(bytes,s), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+                var bytes = DLLMgr.FileToByte(DLLMgr.DllPath);
+                var result = DLLMgr.ByteToFile(CryptoHelper.AesEncrypt(bytes,s), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
                 watch.Stop();
                 Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
                 if (!result)
@@ -149,7 +86,7 @@ namespace libx
         {
             var watch = new Stopwatch();
             watch.Start();
-            Delete(Directory.GetParent(Application.dataPath)+"/DLC");
+            DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/DLC");
             watch.Stop();
             Log.Print("Clean bundles in: " + watch.ElapsedMilliseconds + " ms.");
         }

@@ -1,5 +1,29 @@
 ## All Versions
 
+### v0.3.6
+
+- **JAction** which **supports less code but do more**
+
+  ```c#
+  JAction j = new JAction();
+  j.Do(() =>
+        {
+          Log.Print("Hello from JAction!");
+        })
+    .Delay(3.0f)
+    .Do(() =>
+        {
+          Log.Print("Bye from JAction");
+        })
+    .Excute();
+  ```
+
+  
+
+- Hidden dictionary to save Hot Update DLL which **strongly increased unity excute speed for dll** (Unity will no longer load Hot Update DLL from editor)
+
+
+
 ### v0.3.5
 
 - **Rewrite JBehaviour's source code** which enhances the performence

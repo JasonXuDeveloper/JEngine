@@ -62,7 +62,7 @@ public class Init : MonoBehaviour
             {
                 try
                 {
-                    pdb = new MemoryStream(AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/HotUpdateResources/Dll/HotUpdateScripts.pdb").bytes);
+                    pdb = new MemoryStream(AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb").bytes);
                 }
                 catch
                 {

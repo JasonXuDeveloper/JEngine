@@ -363,9 +363,6 @@
  <Reference Include="System.Memory">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/Dependencies/JEngine/GUI Redis/Depencies/ServiceStack.Redis/System.Memory.dll</HintPath>
  </Reference>
- <Reference Include="HotUpdateScripts">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll</HintPath>
- </Reference>
  <Reference Include="ILRuntime.Mono.Cecil.Pdb">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/PackageCache/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
  </Reference>

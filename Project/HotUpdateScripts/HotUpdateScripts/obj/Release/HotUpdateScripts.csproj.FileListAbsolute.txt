@@ -1,4 +1,0 @@
-/Users/jason/Documents/GitHub/JEngine/Project/Assets/HotUpdateResources/Dll/HotUpdateScripts.dll
-/Users/jason/Documents/GitHub/JEngine/Project/HotUpdateScripts/HotUpdateScripts/obj/Release/HotUpdateScripts.csprojAssemblyReference.cache
-/Users/jason/Documents/GitHub/JEngine/Project/HotUpdateScripts/HotUpdateScripts/obj/Release/HotUpdateScripts.csproj.CopyComplete
-/Users/jason/Documents/GitHub/JEngine/Project/HotUpdateScripts/HotUpdateScripts/obj/Release/HotUpdateScripts.dll

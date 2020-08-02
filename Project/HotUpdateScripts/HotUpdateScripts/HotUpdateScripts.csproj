@@ -14,14 +14,14 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Assets\HotUpdateResources\Dll</OutputPath>
+    <OutputPath>..\..\Assets\HotUpdateResources\Dll\Hidden~</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|anycpu' ">
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Assets\HotUpdateResources\Dll</OutputPath>
+    <OutputPath>..\..\Assets\HotUpdateResources\Dll\Hidden~</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -39,6 +39,7 @@
     <Compile Include="JEngine\LifeCycle\JBehaviour.cs" />
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
+    <Compile Include="JEngine\Core\JAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
