@@ -248,11 +248,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     int num = 0;
     int repeatCounts = 3;
     float repeatDuration = 0.5f;
-  float timeout = 10f;
-    
-    ```
-  
-  JAction j = new JAction();
+    float timeout = 10f;
+    JAction j = new JAction();
   
     j.Do(() => Log.Print("Hello from JAction!"))
       .Repeat(() =>
