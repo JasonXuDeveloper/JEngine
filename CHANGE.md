@@ -1,5 +1,67 @@
 ## All Versions
 
+### v0.3.6.1
+
+- JAction supports more features
+
+  - Repeat with frequency
+
+    ```c#
+    int repeatCounts = 3;
+    float repeatDuration = 0.5f;
+    JAction j = new JAction();
+    j.Repeat(() =>
+           {
+             Log.Print("I have repeated");
+           }, repeatCounts, repeatDuration)
+      .Excute();
+    ```
+
+  - Repeat with condition
+
+    ```c#
+    int num = 10;
+    float repeatDuration = 0.5f;
+    float timeout = 10f;
+    JAction j = new JAction();
+    j.RepeatWhen(() =>
+                 {
+                   Log.Print($"num is more than 0, num--");
+                   num--;
+                 },
+                 () => num > 0, repeatDuration, timeout)
+      .Excute();
+    ```
+
+  - Repeat until
+
+    ```c#
+    int num = 10;
+    float repeatDuration = 0.5f;
+    float timeout = 10f;
+    JAction j = new JAction();
+    j.RepeatUntil(() =>
+                 {
+                   Log.Print($"num is more than 0, num--");
+                   num--;
+                 },
+                 () => num <= 0, repeatDuration, timeout)
+      .Excute();
+    ```
+
+    
+
+  - Wait Until
+
+    ```c#
+    JAction j = new JAction();
+    j.Until(()=> something is done)
+      .Do(something)
+      .Excute();
+    ```
+
+    
+
 ### v0.3.6
 
 - **JAction** which **supports less code but do more**

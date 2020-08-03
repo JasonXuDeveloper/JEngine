@@ -1,4 +1,4 @@
-# JENGINE v0.3.6
+# JENGINE v0.3.6.1
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -95,8 +95,28 @@ What can JEngine do?
     t1.Element<UIBehaviour>()
     ```
   
+- Own **Action solution**
+  
+  - **Less code, does more**
     
+    ```c#
+    JAction j = new JAction();
+    j.Do(() =>
+          {
+            Log.Print("Hello from JAction!");
+          })
+      .Delay(3.0f)
+      .Do(() =>
+          {
+            Log.Print("Bye from JAction");
+          })
+      .Excute();
+    ```
+    
+    
+  
 - **Hot-update solution**
+  
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
@@ -113,25 +133,65 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **JAction** which **supports less code but do more**
+- **[JAction](JAction.md)** supports more features
 
-  ```c#
-  JAction j = new JAction();
-  j.Do(() =>
-        {
-          Log.Print("Hello from JAction!");
-        })
-    .Delay(3.0f)
-    .Do(() =>
-        {
-          Log.Print("Bye from JAction");
-        })
-    .Excute();
-  ```
+  - Repeat with frequency
 
-  
+    ```c#
+    int repeatCounts = 3;
+    float repeatDuration = 0.5f;
+    JAction j = new JAction();
+    j.Repeat(() =>
+           {
+             Log.Print("I have repeated");
+           }, repeatCounts, repeatDuration)
+      .Excute();
+    ```
 
-- Hidden dictionary to save Hot Update DLL which **strongly increased unity excute speed for dll** (Unity will no longer load Hot Update DLL from editor)
+  - Repeat with condition
+
+    ```c#
+    int num = 10;
+    float repeatDuration = 0.5f;
+    float timeout = 10f;
+    JAction j = new JAction();
+    j.RepeatWhen(() =>
+                 {
+                   Log.Print($"num is more than 0, num--");
+                   num--;
+                 },
+                 () => num > 0, repeatDuration, timeout)
+      .Excute();
+    ```
+
+  - Repeat until
+
+    ```c#
+    int num = 10;
+    float repeatDuration = 0.5f;
+    float timeout = 10f;
+    JAction j = new JAction();
+    j.RepeatUntil(() =>
+                 {
+                   Log.Print($"num is more than 0, num--");
+                   num--;
+                 },
+                 () => num <= 0, repeatDuration, timeout)
+      .Excute();
+    ```
+
+    
+
+  - Wait Until
+
+    ```c#
+    JAction j = new JAction();
+    j.Until(()=> something is done)
+      .Do(something)
+      .Excute();
+    ```
+
+    
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -152,12 +212,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 <br>
 
 - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
-
-  - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
+- JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
   - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
-
-  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
+  
+- **Method-Chaning** style of coding makes your codes **prettier and easier to read**
 
 <br>
 
@@ -165,6 +224,59 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Supports connect through **SSH tunnel**
   - Supports connect through **normay way** (IP, Port connection)
   - Supports **add/modify/delete/search** key-value pairs
+
+<br>
+
+- **[JAction](JAction.md)** is an extension of Action
+
+  - **Method-chaining** Style
+
+  - Great variation of features
+
+    - Do action
+  - Delay
+    - Wait Until
+    - Repeat
+    - Repeat When
+    - Repeat Until
+  
+  - **Shorter and more powerful**
+  
+    - Less code can do more things
+  
+    ```c#
+    int num = 0;
+    int repeatCounts = 3;
+    float repeatDuration = 0.5f;
+  float timeout = 10f;
+    
+    ```
+  
+  JAction j = new JAction();
+  
+    j.Do(() => Log.Print("Hello from JAction!"))
+      .Repeat(() =>
+              {
+                num++;
+                Log.Print($"num is: {num}");
+              }, repeatCounts, repeatDuration)
+      .Do(() => Log.Print($"num has increased {repeatCounts} times"))
+      .RepeatWhen(() =>
+                  {
+                    Log.Print($"num is more than 0, num--");
+                    num--;
+                  },
+                  () => num > 0, repeatDuration, timeout)
+      .Do(() => Log.Print("JAction will do something else in 3 seconds"))
+      .Delay(3.0f)
+      .Do(() => Log.Print("Bye from JAction"))
+      .Excute();
+    ```
+  
+  - **Extension of System.Action**
+  
+    - Add what to do, add delayings, JAction will do them in order
+    ```
 
 <br>
 
@@ -176,36 +288,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     - Request **PoolObject** to get the GameObject
   - Easy and powerful
   - With algorithm which fairly controls gameObjects
-  
+
   > Example will come soon
-
-<br>
-
-- **Action** solution
-
-  - **Method-chaining** Style
-
-  - **Shorter and more powerful**
-
-    - Less code can do more things
-
-    ```c#
-    JAction j = new JAction();
-    j.Do(() =>
-         {
-           Log.Print("Hello from JAction!");
-         })
-      .Delay(3.0f)
-      .Do(() =>
-          {
-            Log.Print("Bye from JAction");
-          })
-      .Excute();
-    ```
-
-  - **Extension of System.Action**
-
-    - Add what to do, add delayings, JAction will do them in order
 
 
 
@@ -335,46 +419,6 @@ Please clone this framework into your project and keep this directory structure
 - When you build your project, **remember to remove hot-update scenes** in build setting panel to avoid redundancy
 
   ![build](https://s1.ax1x.com/2020/07/20/Uhxcuj.jpg)
-
-
-
-## Using JEngine Features in Hot Updatable Scripts
-
-#### JEngine.UI (JUI)
-
-> JEngine now contains a new class which enhance the productivity of your UI (Supports any UGUI components, eg. Button, Text, Slider,etc.)
->
-> Why choose JEngine.UI (JUI)?
->
-> - Method-Chaning coding
-> - Bind datas and update UI when datas are changed
-> - Update UI in specific frequency
-> - Simple but powerful
-
-[Click here to have a read](JUI.md)
-
-
-
-
-
-#### JBehaviour (Recommend to use JUI if you want to use this behaviour on an UI)
-
-> JEngine now contains a **new behaviour** base on MonoBehaviour but **runs better**
->
-> Why choose JBehaviour?
->
-> - Simple lifecycle
-> - Less codes to implement loops
-> - Uses coroutine rather than methods to do updates
-
-[Click here to have a read](JBehaviour.md)
-
-
-
-#### Examples
-
-- Just switch on development mode of the project you git
-- Run the game and you can try the examples
 
 
 

@@ -11,7 +11,22 @@
 
 <img src="https://s1.ax1x.com/2020/07/19/URWIwq.png" alt="JUI" style="zoom:50%;" />
 
+### APIs
 
+- onInit(Action<JUI> init)
+- onRun(Action<JUI> run)
+- onLoop(Action<JUI> loop)
+- onEnd(Action<JUI> end)
+- onMessage(Action<JUI> message)
+- Bind<T>(BindableProperty<T> val)
+- Element<T>()
+- Activate()
+
+
+
+
+
+### How to use it
 
 1. In your Hot Update Scripts, and in your c# file, add the import at the top:
 

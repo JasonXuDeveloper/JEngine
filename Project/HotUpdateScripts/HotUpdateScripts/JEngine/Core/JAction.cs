@@ -24,8 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -35,14 +38,68 @@ namespace JEngine.Core
         {
             _toDo = new List<Action>();
             _delays = new Dictionary<int, float>();
+            _waits = new Dictionary<int, Func<bool>>();
+            _frequency = new Dictionary<int, float>();
+            _timeout = new Dictionary<int, float>();
+            _whens = new Dictionary<int, Action>();
+            _whenCauses = new Dictionary<int, Func<bool>>();
+            _whenFrequency = new Dictionary<int, float>();
+            _whenTimeout = new Dictionary<int, float>();
         }
 
         private List<Action> _toDo;
+
         private Dictionary<int, float> _delays;
+
+        private Dictionary<int, Func<bool>> _waits;
+        private Dictionary<int, float> _frequency;
+        private Dictionary<int, float> _timeout;
+
+        private Dictionary<int, Action> _whens;
+        private Dictionary<int, Func<bool>> _whenCauses;
+        private Dictionary<int, float> _whenFrequency;
+        private Dictionary<int, float> _whenTimeout;
 
         public JAction Delay(float time)
         {
             _delays.Add(_toDo.Count, time);
+            _toDo.Add(null);
+            return this;
+        }
+
+        public JAction Until(Func<bool> condition, float frequency = 25, float timeout = -1)
+        {
+            _waits.Add(_toDo.Count, condition);
+            _frequency.Add(_toDo.Count, frequency);
+            _timeout.Add(_toDo.Count, timeout);
+            _toDo.Add(null);
+            return this;
+        }
+
+        public JAction RepeatWhen(Action action, Func<bool> condition, float frequency = 25, float timeout = -1)
+        {
+            _whens.Add(_toDo.Count, action);
+            _whenCauses.Add(_toDo.Count, condition);
+            _whenFrequency.Add(_toDo.Count, frequency);
+            _whenTimeout.Add(_toDo.Count, timeout);
+            _toDo.Add(null);
+            return this;
+        }
+
+        public JAction RepeatUntil(Action action, Func<bool> condition, float frequency = 25, float timeout = -1)
+        {
+            Func<bool> _condition = new Func<bool>(() => !condition());
+            RepeatWhen(action, _condition, frequency, timeout);
+            return this;
+        }
+
+        public JAction Repeat(Action action, int counts, float duration = 0)
+        {
+            for(int i = 0; i < counts; i++)
+            {
+                Do(action);
+                Delay(duration);
+            }
             return this;
         }
 
@@ -63,11 +120,52 @@ namespace JEngine.Core
             int index = 0;
             foreach (var td in _toDo)
             {
+                //Delay
                 if (_delays.ContainsKey(index))
                 {
                     await Task.Delay((int)(_delays[index] * 1000));
                 }
-                await Task.Run(td);
+
+                //Wait Until
+                if (_waits.ContainsKey(index))
+                {
+                    float _time = 0;
+                    while (!_waits[index]() && Application.isPlaying)
+                    {
+                        if (_timeout[index] > 0 && _time >= _timeout[index])
+                        {
+                            throw new TimeoutException();
+                        }
+                        await Task.Delay((int)(_frequency[index] * 1000));
+                        _time += _frequency[index];
+                    }
+                }
+
+                //Repeat When
+                if (_whens.ContainsKey(index))
+                {
+                    float _time = 0;
+                    Func<bool> _condition = _whenCauses[index];
+                    float _frequency = _whenFrequency[index];
+                    float _timeout = _whenTimeout[index];
+                    Action _action = _whens[index];
+                    while (_condition() && Application.isPlaying)
+                    {
+                        if (_timeout > 0 && _time >= _timeout)
+                        {
+                            throw new TimeoutException();
+                        }
+                        await Task.Run(_action);
+                        await Task.Delay((int)(_frequency * 1000));
+                        _time += _frequency;
+                    }
+                }
+
+                if (td != null)
+                {
+                    await Task.Run(td);
+                }
+
                 index++;
             }
             return this;
