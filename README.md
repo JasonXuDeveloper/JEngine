@@ -212,7 +212,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 <br>
 
 - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
-- JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
+  - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
   - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
   
