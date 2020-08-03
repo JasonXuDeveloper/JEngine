@@ -234,7 +234,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Great variation of features
 
     - Do action
-  - Delay
+    - Delay
     - Wait Until
     - Repeat
     - Repeat When
