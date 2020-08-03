@@ -23,9 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
+
 namespace JEngine.LifeCycle
 {
     /// <summary>
@@ -121,22 +121,31 @@ namespace JEngine.LifeCycle
         /// Launch the lifecycle
         /// 开始生命周期
         /// </summary>
-        private IEnumerator Launch()
+        private async void Launch()
         {
-            yield return new WaitUntil(() => !Paused);
+            while (Paused)
+            {
+                await Task.Delay(25);
+            }
 
             Init();
 
-            yield return new WaitUntil(() => Inited);
+            while (!Inited)
+            {
+                await Task.Delay(25);
+            }
             Run();
 
             if (!NotLoop)
             {
-                yield return new WaitUntil(() => HasRun);
+                while (!HasRun)
+                {
+                    await Task.Delay(25);
+                }
 
                 DoLoop();
             }
-            yield break;
+            return;
         }
 
         /// <summary>
@@ -184,7 +193,7 @@ namespace JEngine.LifeCycle
         /// </summary>
         public virtual void Awake()
         {
-            StartCoroutine(Launch());
+            Launch();
         }
 
         public virtual void Init()

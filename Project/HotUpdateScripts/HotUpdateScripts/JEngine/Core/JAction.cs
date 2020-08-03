@@ -24,9 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -36,6 +34,8 @@ namespace JEngine.Core
     {
         public JAction()
         {
+            _excuting = false;
+            _parallel = false;
             _toDo = new List<Action>();
             _delays = new Dictionary<int, float>();
             _waits = new Dictionary<int, Func<bool>>();
@@ -46,6 +46,9 @@ namespace JEngine.Core
             _whenFrequency = new Dictionary<int, float>();
             _whenTimeout = new Dictionary<int, float>();
         }
+
+        private bool _excuting;
+        private bool _parallel;
 
         private List<Action> _toDo;
 
@@ -62,8 +65,11 @@ namespace JEngine.Core
 
         public JAction Delay(float time)
         {
-            _delays.Add(_toDo.Count, time);
-            _toDo.Add(null);
+            if (time > 0)
+            {
+                _delays.Add(_toDo.Count, time);
+                _toDo.Add(null);
+            }
             return this;
         }
 
@@ -109,14 +115,31 @@ namespace JEngine.Core
             return this;
         }
 
+        public JAction Parallel()
+        {
+            _parallel = true;
+            return this;
+        }
+
         public JAction Excute()
         {
-            _ = Do();
+            if(_excuting == true)
+            {
+                Log.PrintError("JAction is currently excuting, if you want to excute JAction multiple times at the same time, call Parallel() before calling Excute()");
+            }
+            else
+            {
+                _ = Do();
+            }
             return this;
         }
 
         private async Task<JAction> Do()
         {
+            if (!_parallel)
+            {
+                _excuting = true;
+            }
             int index = 0;
             foreach (var td in _toDo)
             {
@@ -168,6 +191,7 @@ namespace JEngine.Core
 
                 index++;
             }
+            _excuting = false;
             return this;
         }
     }
