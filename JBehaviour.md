@@ -6,7 +6,7 @@
 >
 > - Simple lifecycle
 > - Less codes to implement loops
-> - Uses coroutine rather than methods to do updates
+> - Uses async method to call loops
 
 <img src="https://s1.ax1x.com/2020/07/19/URW5mn.png" alt="JBehaviour" style="zoom:50%;" />
 
