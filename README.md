@@ -1,4 +1,4 @@
-# JENGINE v0.3.6.1
+# JENGINE v0.3.6.2
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -135,60 +135,35 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 - **[JAction](JAction.md)** supports more features
 
-  - Repeat with frequency
+  - JAction supports **Async & Async Parallel**
 
     ```c#
-    int repeatCounts = 3;
-    float repeatDuration = 0.5f;
-    JAction j = new JAction();
-    j.Repeat(() =>
-           {
-             Log.Print("I have repeated");
-           }, repeatCounts, repeatDuration)
-      .Excute();
-    ```
-
-  - Repeat with condition
-
-    ```c#
-    int num = 10;
-    float repeatDuration = 0.5f;
-    float timeout = 10f;
-    JAction j = new JAction();
-    j.RepeatWhen(() =>
-                 {
-                   Log.Print($"num is more than 0, num--");
-                   num--;
-                 },
-                 () => num > 0, repeatDuration, timeout)
-      .Excute();
-    ```
-
-  - Repeat until
-
-    ```c#
-    int num = 10;
-    float repeatDuration = 0.5f;
-    float timeout = 10f;
-    JAction j = new JAction();
-    j.RepeatUntil(() =>
-                 {
-                   Log.Print($"num is more than 0, num--");
-                   num--;
-                 },
-                 () => num <= 0, repeatDuration, timeout)
-      .Excute();
-    ```
-
+    //Execute Async
+    JAction j6 = new JAction();
+    _ = j6.Do(() => Log.Print("[j6] This is an async JAction"))
+      .ExecuteAsync();
     
-
-  - Wait Until
-
+    //Execute Async Parallel
+    JAction j7 = new JAction();
+    j7.Do(()=>Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
+      .ExecuteAsyncParallel(()=>Log.Print("[j7] Done"));
+```
+  
+- JAction supports **Cancelation**
+  
     ```c#
-    JAction j = new JAction();
-    j.Until(()=> something is done)
-      .Do(something)
-      .Excute();
+    //Cancel a JAction
+    JAction j8 = new JAction();	
+    _ = j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, repeatDuration, timeout)
+      .ExecuteAsync();
+    JAction j9 = new JAction();
+    j9.Delay(5)
+      .Do(() =>
+          {
+            j8.Cancel();
+            Log.Print("[j9] cancelled j8");
+          })
+    .Execute();
     ```
 
     
@@ -238,6 +213,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     - Repeat
     - Repeat When
     - Repeat Until
+    - Cancel
+    - Excute(Async/AsyncParallel)
   
   - **Shorter and more powerful**
   

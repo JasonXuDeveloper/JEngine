@@ -13,14 +13,37 @@
 
 ### APIs
 
-- onInit(Action<JUI> init)
-- onRun(Action<JUI> run)
-- onLoop(Action<JUI> loop)
-- onEnd(Action<JUI> end)
-- onMessage(Action<JUI> message)
-- Bind<T>(BindableProperty<T> val)
-- Element<T>()
-- Activate()
+- ```c#
+  onInit(Action<JUI> init)
+  ```
+
+- ```c#
+  onRun(Action<JUI> run)
+  ```
+
+- ```c#
+  onLoop(Action<JUI> loop)
+  ```
+
+- ```c#
+  onEnd(Action<JUI> end)
+  ```
+
+- ```c#
+  onMessage(Action<JUI> message)
+  ```
+
+- ```c#
+  Bind<T>(BindableProperty<T> val)
+  ```
+
+- ```c#
+  Element<T>() where T: UIBehaviour
+  ```
+
+- ```c#
+  Activate()
+  ```
 
 
 

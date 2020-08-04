@@ -26,7 +26,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -34,7 +33,7 @@ namespace JEngine.Core
     {
         public JAction()
         {
-            _excuting = false;
+            _executing = false;
             _parallel = false;
             _toDo = new List<Action>();
             _delays = new Dictionary<int, float>();
@@ -45,10 +44,12 @@ namespace JEngine.Core
             _whenCauses = new Dictionary<int, Func<bool>>();
             _whenFrequency = new Dictionary<int, float>();
             _whenTimeout = new Dictionary<int, float>();
+            _cancel = false;
         }
 
-        private bool _excuting;
+        private bool _executing;
         private bool _parallel;
+        private bool _cancel;
 
         private List<Action> _toDo;
 
@@ -73,7 +74,7 @@ namespace JEngine.Core
             return this;
         }
 
-        public JAction Until(Func<bool> condition, float frequency = 25, float timeout = -1)
+        public JAction Until(Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
             _waits.Add(_toDo.Count, condition);
             _frequency.Add(_toDo.Count, frequency);
@@ -82,7 +83,7 @@ namespace JEngine.Core
             return this;
         }
 
-        public JAction RepeatWhen(Action action, Func<bool> condition, float frequency = 25, float timeout = -1)
+        public JAction RepeatWhen(Action action, Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
             _whens.Add(_toDo.Count, action);
             _whenCauses.Add(_toDo.Count, condition);
@@ -92,7 +93,7 @@ namespace JEngine.Core
             return this;
         }
 
-        public JAction RepeatUntil(Action action, Func<bool> condition, float frequency = 25, float timeout = -1)
+        public JAction RepeatUntil(Action action, Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
             Func<bool> _condition = new Func<bool>(() => !condition());
             RepeatWhen(action, _condition, frequency, timeout);
@@ -121,11 +122,11 @@ namespace JEngine.Core
             return this;
         }
 
-        public JAction Excute()
+        public JAction Execute()
         {
-            if(_excuting == true)
+            if (_executing == true)
             {
-                Log.PrintError("JAction is currently excuting, if you want to excute JAction multiple times at the same time, call Parallel() before calling Excute()");
+                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
             }
             else
             {
@@ -134,15 +135,55 @@ namespace JEngine.Core
             return this;
         }
 
+        public async Task<JAction> ExecuteAsync()
+        {
+            if (_executing == true)
+            {
+                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsync()");
+            }
+            else
+            {
+                await Do();
+            }
+            return this;
+        }
+
+        public JAction ExecuteAsyncParallel(Action callback = null)
+        {
+            if (_executing == true)
+            {
+                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsyncParallel()");
+            }
+            else
+            {
+                Task.Run(async () =>
+                {
+                    await Do();
+                    callback?.Invoke();
+                });
+            }
+            return this;
+        }
+
+
+        public JAction Cancel()
+        {
+            _cancel = true;
+            return this;
+        }
+
+
         private async Task<JAction> Do()
         {
             if (!_parallel)
             {
-                _excuting = true;
+                _executing = true;
             }
             int index = 0;
             foreach (var td in _toDo)
             {
+                if (_cancel) return this;
+
                 //Delay
                 if (_delays.ContainsKey(index))
                 {
@@ -153,12 +194,15 @@ namespace JEngine.Core
                 if (_waits.ContainsKey(index))
                 {
                     float _time = 0;
-                    while (!_waits[index]() && Application.isPlaying)
+                    while (!_waits[index]())
                     {
+                        if (_cancel) return this;
+
                         if (_timeout[index] > 0 && _time >= _timeout[index])
                         {
                             throw new TimeoutException();
                         }
+
                         await Task.Delay((int)(_frequency[index] * 1000));
                         _time += _frequency[index];
                     }
@@ -172,8 +216,10 @@ namespace JEngine.Core
                     float _frequency = _whenFrequency[index];
                     float _timeout = _whenTimeout[index];
                     Action _action = _whens[index];
-                    while (_condition() && Application.isPlaying)
+                    while (_condition())
                     {
+                        if (_cancel) return this;
+
                         if (_timeout > 0 && _time >= _timeout)
                         {
                             throw new TimeoutException();
@@ -191,7 +237,7 @@ namespace JEngine.Core
 
                 index++;
             }
-            _excuting = false;
+            _executing = false;
             return this;
         }
     }

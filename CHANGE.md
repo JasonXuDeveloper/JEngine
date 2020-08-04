@@ -1,6 +1,43 @@
 ## All Versions
 
-### v0.3.6.1
+###  v0.3.6.2 (August 5, 2020)
+
+- JAction supports **Async & Async Parallel**
+
+  ```c#
+  //Execute Async
+  JAction j6 = new JAction();
+  _ = j6.Do(() => Log.Print("[j6] This is an async JAction"))
+    .ExecuteAsync();
+  
+  //Execute Async Parallel
+  JAction j7 = new JAction();
+  j7.Do(()=>Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
+    .ExecuteAsyncParallel(()=>Log.Print("[j7] Done"));
+  ```
+
+- JAction supports **Cancelation**
+
+  ```c#
+  //Cancel a JAction
+  JAction j8 = new JAction();	
+  _ = j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, repeatDuration, timeout)
+    .ExecuteAsync();
+  JAction j9 = new JAction();
+  j9.Delay(5)
+    .Do(() =>
+        {
+          j8.Cancel();
+          Log.Print("[j9] cancelled j8");
+        })
+    .Execute();
+  ```
+
+  
+
+
+
+### v0.3.6.1 (August 3, 2020)
 
 - JAction supports more features
 
@@ -62,7 +99,7 @@
 
     
 
-### v0.3.6
+### v0.3.6 (August  2, 2020)
 
 - **JAction** which **supports less code but do more**
 
@@ -86,7 +123,7 @@
 
 
 
-### v0.3.5
+### v0.3.5 (July 29, 2020)
 
 - **Rewrite JBehaviour's source code** which enhances the performence
 - **JObjectPool** is a new **solution for Object Pool**
@@ -95,7 +132,7 @@
 
 
 
-### v0.3.4
+### v0.3.4 (July 25, 2020)
 
 - **JBehaviour Example**
 - **Rewrite** JBehaviour **Structure**
@@ -104,7 +141,7 @@
 
 
 
-### v0.3.3
+### v0.3.3 (July 24, 2020)
 
 - **Hot Update DLL Encryption** based on AES encryption, with a 16 bits key, it is harder to let others hack your dll
 - More **ILRuntime Registerations support**, reduce the requirements of registerations when using ILRuntime
@@ -112,7 +149,7 @@
 
 
 
-### v0.3.2
+### v0.3.2 (July 19, 2020)
 
 - **JUIText** becomes **JUI**
 
@@ -136,7 +173,7 @@
 
 
 
-###  v0.3.1
+###  v0.3.1 (July 18, 2020)
 
 - Combined **Unity-GUI-Redis**, which is also part of **JEngine**, now belongs to **JEngine.Redis** namespace
 
@@ -163,7 +200,7 @@
 
 
 
-### v0.3
+### v0.3 (July 17, 2020)
 
 - Update **ILRuntime** to v1.6.3 which fixes heaps of bugs in the dependency
 - **JEngine Lifecyle** is now included, it is **only a prototype** and will be extended in the future with more base codes.
@@ -171,7 +208,7 @@
 
 
 
-### v0.2
+### v0.2 (July 16, 2020)
 
 - Supports development mode which **loads dll and resources from local**
 - Automatically **clean up unnecessary dlls, pdbs, etc.** in DLL Resource Directory
@@ -179,7 +216,7 @@
 
 
 
-### v0.1
+### v0.1  (July 14, 2020)
 
 - Automatically generate **Update Resources**
 - Automatically handle **Hot-update DLL**
