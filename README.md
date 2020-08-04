@@ -147,9 +147,9 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     JAction j7 = new JAction();
     j7.Do(()=>Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
       .ExecuteAsyncParallel(()=>Log.Print("[j7] Done"));
-  ```
+    ```
   
-- JAction supports **Cancelation**
+  - JAction supports **Cancelation**
   
     ```c#
     //Cancel a JAction
