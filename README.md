@@ -4,6 +4,97 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 
 What can JEngine do?
 
+- **Hot-update solution**
+  
+  - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
+  - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
+  - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
+  
+- Own **Action solution**
+  
+  - **Less code, does more**
+  
+    ```c#
+    int num = 0;
+    int repeatCounts = 3;
+    float repeatDuration = 0.5f;
+    float timeout = 10f;
+    JAction j = new JAction();
+    j.Do(() => Log.Print("Hello from JAction!"))
+      .Repeat(() =>
+              {
+                num++;
+                Log.Print($"num is: {num}");
+              }, repeatCounts, repeatDuration)
+      .Do(() => Log.Print($"num has increased {repeatCounts} times"))
+      .RepeatWhen(() =>
+                  {
+                    Log.Print($"num is more than 0, num--");
+                    num--;
+                  },
+                  () => num > 0, repeatDuration, timeout)
+      .Do(() => Log.Print("JAction will do something else in 3 seconds"))
+      .Delay(3.0f)
+      .Do(() => Log.Print("Bye from JAction"))
+      .Excute();
+    ```
+  
+- **Own UI solution**
+  
+  - **Method-Chaining** style makes codes prettier and easier to visualize
+  
+    ```c#
+    var JUI = Showcase.AddComponent<JUI>()
+      .onInit(t =>
+              {
+                ...
+              })
+      .onLoop(t1 =>
+              {
+                ...
+              })
+      .onEnd(t2 =>
+             {
+               ...
+             })
+      .Activate();
+    ```
+  
+    
+  
+  - **Easier to manage** lifecycle
+  
+    - Can **easily set up** **what** you want the UI element **to do in specific time**
+  
+    ```c#
+    t.FrameMode = false;//Run in ms
+    t.Frequency = 1000;//Loop each 1s
+    ```
+  
+    
+  
+  - **Bindable to data**
+  
+    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
+  
+    ```c#
+    var JUI = b.AddComponent<JUI>()
+      .Bind(data.b)
+      .onMessage(t1 =>
+                 {
+                   ...
+                 })
+      .Activate();
+    ```
+  
+    
+  
+  - Supports any UIBehaviour objects
+  
+    ```c#
+    t1.Element<UIBehaviour>()
+    ```
+  
 - **Own behaviour** based on MonoBehaviour
   
   - **More friendly to manage lifecycle**
@@ -37,89 +128,6 @@ What can JEngine do?
     }
     ```
     
-    
-  
-- **Own UI solution**
-  
-  - **Method-Chaining** style makes codes prettier and easier to visualize
-  
-    ```c#
-    var JUI = Showcase.AddComponent<JUI>()
-      .onInit(t =>
-              {
-                ...
-              })
-      .onLoop(t1 =>
-              {
-                ...
-              })
-      .onEnd(t2 =>
-             {
-               ...
-             })
-      .Activate();
-    ```
-  
-    
-  
-  - **Easier to manage** lifecycle
-    
-    - Can **easily set up** **what** you want the UI element **to do in specific time**
-    
-    ```c#
-    t.FrameMode = false;//Run in ms
-    t.Frequency = 1000;//Loop each 1s
-    ```
-    
-    
-    
-  - **Bindable to data**
-    
-    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
-    
-    ```c#
-    var JUI = b.AddComponent<JUI>()
-      .Bind(data.b)
-      .onMessage(t1 =>
-                 {
-                   ...
-                 })
-      .Activate();
-    ```
-    
-    
-    
-  - Supports any UIBehaviour objects
-  
-    ```c#
-    t1.Element<UIBehaviour>()
-    ```
-  
-- Own **Action solution**
-  
-  - **Less code, does more**
-    
-    ```c#
-    JAction j = new JAction();
-    j.Do(() =>
-          {
-            Log.Print("Hello from JAction!");
-          })
-      .Delay(3.0f)
-      .Do(() =>
-          {
-            Log.Print("Bye from JAction");
-          })
-      .Excute();
-    ```
-    
-    
-  
-- **Hot-update solution**
-  
-  - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
-  - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
-  - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
   
 - <u>**More to explore!!!**</u>
 
@@ -133,40 +141,27 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **[JAction](JAction.md)** supports more features
+- JAction supports **Cancelation Callback**
 
-  - JAction supports **Async & Async Parallel**
+  ```c#
+  //Cancel a JAction
+  JAction j8 = new JAction();
+  j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
+    .ExecuteAsyncParallel();
+  //You can either add a cancel callback
+  j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
+  ```
 
-    ```c#
-    //Execute Async
-    JAction j6 = new JAction();
-    _ = j6.Do(() => Log.Print("[j6] This is an async JAction"))
-      .ExecuteAsync();
-    
-    //Execute Async Parallel
-    JAction j7 = new JAction();
-    j7.Do(()=>Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
-      .ExecuteAsyncParallel(()=>Log.Print("[j7] Done"));
-    ```
-  
-  - JAction supports **Cancelation**
-  
-    ```c#
-    //Cancel a JAction
-    JAction j8 = new JAction();	
-    _ = j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, repeatDuration, timeout)
-      .ExecuteAsync();
-    JAction j9 = new JAction();
-    j9.Delay(5)
-      .Do(() =>
-          {
-            j8.Cancel();
-            Log.Print("[j9] cancelled j8");
-          })
-    .Execute();
-    ```
+- JAction supports **Reset**
 
-    
+  ```c#
+  //Reset a JAction
+  j8.Reset();
+  ```
+
+- Fixed bug on JAction.ExecuteAsyncParallel
+
+
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -180,26 +175,13 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
   - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
 
-<br>
-
 - **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
-
-<br>
 
 - **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
   - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
   - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
   - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
-
-<br>
-
-- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
-  - Supports connect through **SSH tunnel**
-  - Supports connect through **normay way** (IP, Port connection)
-  - Supports **add/modify/delete/search** key-value pairs
-
-<br>
 
 - **[JAction](JAction.md)** is an extension of Action
 
@@ -214,6 +196,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     - Repeat When
     - Repeat Until
     - Cancel
+    - Reset
     - Excute(Async/AsyncParallel)
   
   - **Shorter and more powerful**
@@ -226,8 +209,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     float repeatDuration = 0.5f;
     float timeout = 10f;
     JAction j = new JAction();
-  
-    j.Do(() => Log.Print("Hello from JAction!"))
+  j.Do(() => Log.Print("Hello from JAction!"))
       .Repeat(() =>
               {
                 num++;
@@ -245,12 +227,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
       .Do(() => Log.Print("Bye from JAction"))
       .Excute();
     ```
-  
+    
   - **Extension of System.Action**
   
     - Add what to do, add delayings, JAction will do them in order
-
-<br>
 
 - **Object Pool** solution
 
@@ -262,6 +242,12 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - With algorithm which fairly controls gameObjects
 
   > Example will come soon
+  
+- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
+
+  - Supports connect through **SSH tunnel**
+  - Supports connect through **normay way** (IP, Port connection)
+  - Supports **add/modify/delete/search** key-value pairs
 
 
 

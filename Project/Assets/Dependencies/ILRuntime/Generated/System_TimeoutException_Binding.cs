@@ -14,14 +14,14 @@ using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.Generated
 {
-    unsafe class System_NotSupportedException_Binding
+    unsafe class System_TimeoutException_Binding
     {
         public static void Register(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
             MethodBase method;
             Type[] args;
-            Type type = typeof(System.NotSupportedException);
+            Type type = typeof(System.TimeoutException);
 
             args = new Type[]{};
             method = type.GetConstructor(flag, null, args, null);
@@ -36,7 +36,7 @@ namespace ILRuntime.Runtime.Generated
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* __ret = ILIntepreter.Minus(__esp, 0);
 
-            var result_of_this_method = new System.NotSupportedException();
+            var result_of_this_method = new System.TimeoutException();
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }

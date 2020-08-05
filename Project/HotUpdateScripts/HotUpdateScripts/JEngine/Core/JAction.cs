@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JEngine.Core
@@ -35,7 +36,9 @@ namespace JEngine.Core
         {
             _executing = false;
             _parallel = false;
+            _cancel = false;
             _toDo = new List<Action>();
+            _onCancel = new Action(() => { });
             _delays = new Dictionary<int, float>();
             _waits = new Dictionary<int, Func<bool>>();
             _frequency = new Dictionary<int, float>();
@@ -44,7 +47,12 @@ namespace JEngine.Core
             _whenCauses = new Dictionary<int, Func<bool>>();
             _whenFrequency = new Dictionary<int, float>();
             _whenTimeout = new Dictionary<int, float>();
-            _cancel = false;
+        }
+
+        private JAction _reset(JAction j)
+        {
+            j = new JAction();
+            return j;
         }
 
         private bool _executing;
@@ -52,6 +60,7 @@ namespace JEngine.Core
         private bool _cancel;
 
         private List<Action> _toDo;
+        private Action _onCancel;
 
         private Dictionary<int, float> _delays;
 
@@ -156,12 +165,18 @@ namespace JEngine.Core
             }
             else
             {
-                Task.Run(async () =>
+                _ = Task.Run(async () =>
                 {
-                    await Do();
+                    await ExecuteAsync();
                     callback?.Invoke();
                 });
             }
+            return this;
+        }
+
+        public JAction OnCancel(Action action)
+        {
+            _onCancel = action;
             return this;
         }
 
@@ -169,6 +184,29 @@ namespace JEngine.Core
         public JAction Cancel()
         {
             _cancel = true;
+            _onCancel?.Invoke();
+            return this;
+        }
+
+        public JAction Reset(bool force = true)
+        {
+            if (force)
+            {
+                Cancel();
+                _reset(this);
+            }
+            else
+            {
+                if (_executing)
+                {
+                    Log.PrintError("JAction is currently executing, if you want to force reset, call Reset(true)");
+                }
+                else
+                {
+                    Cancel();
+                    _reset(this);
+                }
+            }
             return this;
         }
 
@@ -179,6 +217,8 @@ namespace JEngine.Core
             {
                 _executing = true;
             }
+            _cancel = false;
+
             int index = 0;
             foreach (var td in _toDo)
             {

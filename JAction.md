@@ -54,7 +54,15 @@
   ```
 
 - ```c#
+  OnCancel(Action action)
+  ```
+
+- ```c#
   Cancel()
+  ```
+
+- ```c#
+  Reset(bool force)
   ```
 
 
@@ -126,7 +134,7 @@
        //Until
        JAction j1 = new JAction();
        j1.Until(() => true)
-         .Do(()=>Log.Print("[j1] until condition has done"))
+         .Do(() => Log.Print("[j1] until condition has done"))
          .Execute();
    
        //Repeat
@@ -176,8 +184,11 @@
    
        //Cancel a JAction
        JAction j8 = new JAction();
-       _ = j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, repeatDuration, timeout)
-         .ExecuteAsync();
+       j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
+         .ExecuteAsyncParallel();
+       //You can either add a cancel callback
+       j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
+   
        JAction j9 = new JAction();
        j9.Delay(5)
          .Do(() =>
@@ -186,6 +197,10 @@
                Log.Print("[j9] cancelled j8");
              })
          .Execute();
+   
+   
+       //Reset a JAction
+       j8.Reset();
      }
    }
    ```

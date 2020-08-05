@@ -1,5 +1,29 @@
 ## All Versions
 
+### v0.3.6.3 (August 6, 2020)
+
+- JAction supports **Cancelation Callback**
+
+  ```c#
+  //Cancel a JAction
+  JAction j8 = new JAction();
+  j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
+    .ExecuteAsyncParallel();
+  //You can either add a cancel callback
+  j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
+  ```
+
+- JAction supports **Reset**
+
+  ```c#
+  //Reset a JAction
+  j8.Reset();
+  ```
+
+- Fixed bug on JAction.ExecuteAsyncParallel
+
+
+
 ###  v0.3.6.2 (August 5, 2020)
 
 - JAction supports **Async & Async Parallel**
