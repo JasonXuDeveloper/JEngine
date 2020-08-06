@@ -1,16 +1,16 @@
-# JENGINE v0.3.6.2
+# JENGINE v0.3.6.3
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
 What can JEngine do?
 
-- **Hot-update solution**
+- **[Hot-update](WhyHotUpdate.md) solution**
   
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
   
-- Own **Action solution**
+- Own **[Action](JAction.md) solution**
   
   - **Less code, does more**
   
@@ -39,7 +39,7 @@ What can JEngine do?
       .Excute();
     ```
   
-- **Own UI solution**
+- **Own [UI](JUI.md) solution**
   
   - **Method-Chaining** style makes codes prettier and easier to visualize
   
@@ -95,7 +95,7 @@ What can JEngine do?
     t1.Element<UIBehaviour>()
     ```
   
-- **Own behaviour** based on MonoBehaviour
+- **Own [Behaviour](JBehaviour.md)** based on MonoBehaviour
   
   - **More friendly to manage lifecycle**
     
@@ -141,7 +141,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- JAction supports **Cancelation Callback**
+- **[JAction](JAction.md)** supports **Cancelation Callback**
 
   ```c#
   //Cancel a JAction
@@ -209,7 +209,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     float repeatDuration = 0.5f;
     float timeout = 10f;
     JAction j = new JAction();
-  j.Do(() => Log.Print("Hello from JAction!"))
+    j.Do(() => Log.Print("Hello from JAction!"))
       .Repeat(() =>
               {
                 num++;
