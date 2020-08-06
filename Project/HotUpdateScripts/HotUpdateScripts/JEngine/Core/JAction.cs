@@ -47,6 +47,7 @@ namespace JEngine.Core
             _whenCauses = new Dictionary<int, Func<bool>>();
             _whenFrequency = new Dictionary<int, float>();
             _whenTimeout = new Dictionary<int, float>();
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         private JAction _reset(JAction j)
@@ -72,6 +73,9 @@ namespace JEngine.Core
         private Dictionary<int, Func<bool>> _whenCauses;
         private Dictionary<int, float> _whenFrequency;
         private Dictionary<int, float> _whenTimeout;
+
+        private CancellationTokenSource _cancellationTokenSource;
+
 
         public JAction Delay(float time)
         {
@@ -184,6 +188,7 @@ namespace JEngine.Core
         public JAction Cancel()
         {
             _cancel = true;
+            _cancellationTokenSource.Cancel();
             _onCancel?.Invoke();
             return this;
         }
@@ -264,7 +269,7 @@ namespace JEngine.Core
                         {
                             throw new TimeoutException();
                         }
-                        await Task.Run(_action);
+                        await Task.Run(_action, _cancellationTokenSource.Token);
                         await Task.Delay((int)(_frequency * 1000));
                         _time += _frequency;
                     }
@@ -272,7 +277,7 @@ namespace JEngine.Core
 
                 if (td != null)
                 {
-                    await Task.Run(td);
+                    await Task.Run(td, _cancellationTokenSource.Token);
                 }
 
                 index++;

@@ -129,12 +129,14 @@ namespace JEngine.LifeCycle
             }
 
             Init();
+            Inited = true;
 
             while (!Inited)
             {
                 await Task.Delay(25);
             }
             Run();
+            HasRun = true;
 
             if (!NotLoop)
             {
@@ -198,12 +200,12 @@ namespace JEngine.LifeCycle
 
         public virtual void Init()
         {
-            Inited = true;
+
         }
 
         public virtual void Run()
         {
-            HasRun = true;
+
         }
 
         public virtual void Loop()

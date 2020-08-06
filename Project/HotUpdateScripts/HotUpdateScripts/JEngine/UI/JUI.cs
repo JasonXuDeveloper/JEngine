@@ -199,7 +199,6 @@ namespace JEngine.UI
         private new void Init()
         {
             _init?.Invoke(this);
-            base.Init();
         }
 
         private Action<JUI> _run;
@@ -207,7 +206,6 @@ namespace JEngine.UI
         {
             NotLoop = _bind;
             _run?.Invoke(this);
-            base.Run();
         }
 
         private Action<JUI> _loop;

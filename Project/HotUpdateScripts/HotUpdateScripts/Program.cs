@@ -119,7 +119,7 @@ namespace HotUpdateScripts
 
 
             //Reset a JAction
-            j8.Reset();
+            j1.Reset();
 
 
 
