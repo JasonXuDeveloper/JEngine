@@ -54,13 +54,11 @@
    
            public override void Init()
            {
-               base.Init();
                Log.Print("JBehaviour has been created!");
            }
    
            public override void Run()
            {
-               base.Run();
                Log.Print("JBehaviour is running!");
                //Change the frequency of loop
                FrameMode = false;//Don't loop in frame
