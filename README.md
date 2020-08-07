@@ -106,13 +106,11 @@ What can JEngine do?
     {
       public override void Init()
       {
-        base.Init();
         ...
       }
       
       public override void Run()
       {
-        base.Run();
         ...
       }
       
