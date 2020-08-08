@@ -31,6 +31,7 @@ public class InitILrt : MonoBehaviour
         appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
         appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
         
+        appdomain.DelegateManager.RegisterMethodDelegate<libx.AssetRequest>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
         appdomain.DelegateManager.RegisterMethodDelegate<Object>();
         appdomain.DelegateManager

@@ -1,0 +1,31 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+    <Files>
+      <File FileName="JEngine/Core/JResource.cs" Line="39" Column="104" />
+      <File FileName="Program.cs" Line="63" Column="55" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="HotUpdateScripts" expanded="True">
+            <Node name="HotUpdateScripts" expanded="True">
+              <Node name="JEngine" expanded="True">
+                <Node name="Core" expanded="True" />
+                <Node name="LifeCycle" expanded="True" />
+                <Node name="UI" expanded="True" />
+              </Node>
+              <Node name="Program.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|anycpu" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <AuthorInfo Name="JasonXuDeveloper（傑）" Email="jasonxudeveloper@gmail.com" Copyright="JEngine" Company="" Trademark="" />
+</Properties>

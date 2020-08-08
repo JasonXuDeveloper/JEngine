@@ -103,7 +103,6 @@
      <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_UI_Text_Binding.cs" />
      <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Vector2_Binding.cs" />
      <Compile Include="Assets\Dependencies\JEngine\Core\CryptoHelper.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Core\InitILrt.cs" />
      <Compile Include="Assets\Dependencies\JEngine\Core\Log.cs" />
      <Compile Include="Assets\Dependencies\LitJson\IJsonWrapper.cs" />
      <Compile Include="Assets\Dependencies\LitJson\JsonData.cs" />
@@ -133,14 +132,15 @@
      <Compile Include="Assets\Dependencies\XAsset\Runtime\Utility\Utility.cs" />
      <Compile Include="Assets\Scripts\APIs\ExampleAPI.cs" />
      <Compile Include="Assets\Scripts\Init.cs" />
-     <None Include="Assets\HotUpdateResources\ScriptableObject\Example.txt" />
-     <None Include="Assets\HotUpdateResources\Material\Example.txt" />
-     <None Include="Assets\HotUpdateResources\Other\Example.txt" />
-     <None Include="Assets\HotUpdateResources\TextAsset\Example.txt" />
+     <Compile Include="Assets\Scripts\InitILrt.cs" />
+     <None Include="Assets\HotUpdateResources\ScriptableObject\ScriptableObject.txt" />
+     <None Include="Assets\HotUpdateResources\Material\Material.txt" />
+     <None Include="Assets\HotUpdateResources\Other\Anything.txt" />
+     <None Include="Assets\HotUpdateResources\TextAsset\Text.txt" />
      <None Include="Assets\Dependencies\XAsset\Resources\Shaders\SimpleGrabPassBlur.shader" />
-     <None Include="Assets\HotUpdateResources\Prefab\Example.txt" />
-     <None Include="Assets\HotUpdateResources\UI\Example.txt" />
-     <None Include="Assets\HotUpdateResources\Controller\Example.txt" />
+     <None Include="Assets\HotUpdateResources\Prefab\Prefab.txt" />
+     <None Include="Assets\HotUpdateResources\UI\PNG.txt" />
+     <None Include="Assets\HotUpdateResources\Controller\Controller.txt" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/Project/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>

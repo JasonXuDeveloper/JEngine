@@ -966,7 +966,7 @@ namespace ILRuntime.Runtime.Intepreter
             bool isByRef;
             if (method.ReturnType.Name != "Void" || method.ParameterCount > 0)
             {
-                sb.AppendLine(", Please add following code:");
+                sb.AppendLine(", Please add following code :");
                 if (method.ReturnType.Name == "Void")
                 {
                     sb.Append("appdomain.DelegateManager.RegisterMethodDelegate<");

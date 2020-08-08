@@ -1,5 +1,24 @@
 ## All Versions
 
+### v0.3.6.4 (August 8, 2020)
+
+- **Enhanced** JAciton
+
+- **Enhanced** JBehaviour
+
+- **JResource** is now coming
+
+  - JResource is based on XAsset and it allows to load asset from hot-update resources via sync/async methods
+
+  ```c#
+  var txt = JResource.LoadRes<TextAsset>("Text.txt");
+  Log.Print("Get Resource with Sync method: " + txt.text);
+  ```
+
+  
+
+
+
 ### v0.3.6.3 (August 6, 2020)
 
 - JAction supports **Cancelation Callback**

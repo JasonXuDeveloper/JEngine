@@ -37,6 +37,19 @@ namespace HotUpdateScripts
         {
             /*
             * ====================================
+            *           JResource EXAMPLE
+            * ====================================
+            */
+            var txt = JResource.LoadRes<TextAsset>("Text.txt");
+            Log.Print("Get Resource with Sync method: " + txt.text);
+
+            JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
+            {
+                Log.Print("Get Resource with Async Paralleled method: " + txt.text);
+            });
+
+            /*
+            * ====================================
             *           JAction EXAMPLE
             * ====================================
             */

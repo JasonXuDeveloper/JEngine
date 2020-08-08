@@ -42,6 +42,7 @@
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
     <Compile Include="JEngine\Core\JAction.cs" />
+    <Compile Include="JEngine\Core\JResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

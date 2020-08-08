@@ -1,16 +1,16 @@
-# JENGINE v0.3.6.3
+# JENGINE v0.3.6.4
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
 What can JEngine do?
 
-- **[Hot-update](WhyHotUpdate.md) solution**
+- **[Hot-update](Docs/WhyHotUpdate.md) solution**
   
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
   
-- Own **[Action](JAction.md) solution**
+- Own **[Action](Docs/JAction.md) solution**
   
   - **Less code, does more**
   
@@ -39,7 +39,7 @@ What can JEngine do?
       .Excute();
     ```
   
-- **Own [UI](JUI.md) solution**
+- **Own [UI](Docs/JUI.md) solution**
   
   - **Method-Chaining** style makes codes prettier and easier to visualize
   
@@ -60,8 +60,6 @@ What can JEngine do?
       .Activate();
     ```
   
-    
-  
   - **Easier to manage** lifecycle
   
     - Can **easily set up** **what** you want the UI element **to do in specific time**
@@ -70,8 +68,6 @@ What can JEngine do?
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-  
-    
   
   - **Bindable to data**
   
@@ -87,15 +83,7 @@ What can JEngine do?
       .Activate();
     ```
   
-    
-  
-  - Supports any UIBehaviour objects
-  
-    ```c#
-    t1.Element<UIBehaviour>()
-    ```
-  
-- **Own [Behaviour](JBehaviour.md)** based on MonoBehaviour
+- **Own [Behaviour](Docs/JBehaviour.md)** based on MonoBehaviour
   
   - **More friendly to manage lifecycle**
     
@@ -127,7 +115,14 @@ What can JEngine do?
     ```
     
   
-- <u>**More to explore!!!**</u>
+- **Own [Resource Management](Docs/JResource.md)** based on XAsset
+
+  ```c#
+  TextAsset txt = JResource.LoadRes<TextAsset>("Text.txt");
+  Log.Print("Get Resource with Sync method: " + txt.text);
+  ```
+
+- **More to explore!!!**
 
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
 
@@ -139,25 +134,18 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **[JAction](JAction.md)** supports **Cancelation Callback**
+- **Enhanced** JAciton
+
+- **Enhanced** JBehaviour
+
+- **JResource** is now coming
+
+  - JResource is based on XAsset and it allows to load asset from hot-update resources via sync/async methods
 
   ```c#
-  //Cancel a JAction
-  JAction j8 = new JAction();
-  j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
-    .ExecuteAsyncParallel();
-  //You can either add a cancel callback
-  j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
+  var txt = JResource.LoadRes<TextAsset>("Text.txt");
+  Log.Print("Get Resource with Sync method: " + txt.text);
   ```
-
-- JAction supports **Reset**
-
-  ```c#
-  //Reset a JAction
-  j8.Reset();
-  ```
-
-- Fixed bug on JAction.ExecuteAsyncParallel
 
 
 
@@ -167,21 +155,22 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Features
 
-- **[Hot-update](WhyHotUpdate.md)** solution
+- **[Hot-update](Docs/WhyHotUpdate.md)** solution
 
   - No need to learn Lua, **C# codes can be hot-updated**
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
   - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
 
-- **[JBehaviour](JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
+- **[JBehaviour](Docs/JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 
-- **[JUI](JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
+- **[JUI](Docs/JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
+  
   - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
   - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
-  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
-
-- **[JAction](JAction.md)** is an extension of Action
+- **Method-Chaning** style of coding makes your codes **prettier and easier to read**
+  
+- **[JAction](Docs/JAction.md)** is an extension of Action
 
   - **Method-chaining** Style
 
@@ -193,43 +182,22 @@ JEngine has its own purpose to help developers **write powerful codes which are 
     - Repeat
     - Repeat When
     - Repeat Until
-    - Cancel
-    - Reset
-    - Excute(Async/AsyncParallel)
-  
+    - etc...
+    
   - **Shorter and more powerful**
   
     - Less code can do more things
   
-    ```c#
-    int num = 0;
-    int repeatCounts = 3;
-    float repeatDuration = 0.5f;
-    float timeout = 10f;
-    JAction j = new JAction();
-    j.Do(() => Log.Print("Hello from JAction!"))
-      .Repeat(() =>
-              {
-                num++;
-                Log.Print($"num is: {num}");
-              }, repeatCounts, repeatDuration)
-      .Do(() => Log.Print($"num has increased {repeatCounts} times"))
-      .RepeatWhen(() =>
-                  {
-                    Log.Print($"num is more than 0, num--");
-                    num--;
-                  },
-                  () => num > 0, repeatDuration, timeout)
-      .Do(() => Log.Print("JAction will do something else in 3 seconds"))
-      .Delay(3.0f)
-      .Do(() => Log.Print("Bye from JAction"))
-      .Excute();
-    ```
-    
   - **Extension of System.Action**
   
     - Add what to do, add delayings, JAction will do them in order
+  
+- **[Resource Management](Docs/JResource.md)** solution
 
+  - Based on XAsset
+  - **Can load resources in sync/async method**
+  - **Generic methods**
+  
 - **Object Pool** solution
 
   - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
@@ -263,7 +231,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## What is Hot update and Why
 
-[Click here to have a read](WhyHotUpdate.md)
+[Click here to have a read](Docs/WhyHotUpdate.md)
 
 
 
@@ -312,7 +280,7 @@ Please clone this framework into your project and keep this directory structure
 
 ### Description for those Directories
 
-[Click here to have a read](DirectoriesDiscription.md)
+[Click here to have a read](Docs/DirectoriesDiscription.md)
 
 
 
@@ -328,13 +296,13 @@ Please clone this framework into your project and keep this directory structure
 
 > The basics tells you how to use this framework in basics (How to make your project hot-updatable)
 
-[Click here to have a read](Basic.md)
+[Click here to have a read](Docs/Basic.md)
 
 #### Extensions
 
 > The extensions will show you how to hot-update your game in coding levels (How to make hot-updatable codes)
 
-[Click here to have a read](Extension.md)
+[Click here to have a read](Docs/Extension.md)
 
 
 
@@ -354,9 +322,9 @@ Please clone this framework into your project and keep this directory structure
 
 #### Common "Bugs"
 
-- Cannot find Delegate Adapter for: **XXX**, Please add following code into Assets/Scripts/Init.cs 'InitializeILRuntime()' Method:
+- Cannot find Delegate Adapter for: **XXX**:
 
-  > Just do what it asked you to add into **Scripts/Init.cs,  'InitializeILRuntime()' Method**
+  > Just do what it asked you to add into **Scripts/InitIlrt.cs,  'InitializeILRuntime()' Method**
   >
   > ![bug1](https://s1.ax1x.com/2020/07/14/Ut2RoD.png)
 
