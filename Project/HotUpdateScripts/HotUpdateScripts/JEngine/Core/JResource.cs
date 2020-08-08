@@ -30,18 +30,58 @@ namespace JEngine.Core
 {
     public class JResource
     {
-        public static T LoadRes<T>(string path) where T : UnityEngine.Object
+        public static T LoadRes<T>(string path, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
         {
-            var res = Assets.LoadAsset(path, typeof(T));
+            var res = Assets.LoadAsset(ResPath(path, mode), typeof(T));
             return res.asset as T;
         }
 
-        public static void LoadResAsync<T>(string path,Action<T> callback) where T : UnityEngine.Object
+        public static void LoadResAsync<T>(string path, Action<T> callback, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
         {
-            var res = Assets.LoadAssetAsync(path, typeof(T)).completed += delegate (AssetRequest res)
+            var res = Assets.LoadAssetAsync(ResPath(path, mode), typeof(T)).completed += delegate (AssetRequest res)
             {
                 callback?.Invoke(res.asset as T);
             };
+        }
+
+        private static string ResPath(string path, MatchMode mode)
+        {
+            switch (mode)
+            {
+                case MatchMode.AutoMatch:
+                    return path;
+                case MatchMode.Animation:
+                    return "Assets/HotUpdateResources/Controller/" + path;
+                case MatchMode.Material:
+                    return "Assets/HotUpdateResources/Material/" + path;
+                case MatchMode.Prefab:
+                    return "Assets/HotUpdateResources/Prefab/" + path;
+                case MatchMode.Scene:
+                    return "Assets/HotUpdateResources/Scene/" + path;
+                case MatchMode.ScriptableObject:
+                    return "Assets/HotUpdateResources/ScriptableObject/" + path;
+                case MatchMode.TextAsset:
+                    return "Assets/HotUpdateResources/TextAsset/" + path;
+                case MatchMode.UI:
+                    return "Assets/HotUpdateResources/UI/" + path;
+                case MatchMode.Other:
+                    return "Assets/HotUpdateResources/Other/" + path;
+                default:
+                    return path;
+            }
+        }
+
+        public enum MatchMode
+        {
+            AutoMatch = 1,
+            Animation = 2,
+            Material = 3,
+            Prefab = 4,
+            Scene = 5,
+            ScriptableObject = 6,
+            TextAsset = 7,
+            UI = 8,
+            Other = 9
         }
     }
 }

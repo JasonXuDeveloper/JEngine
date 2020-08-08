@@ -1,4 +1,4 @@
-# JENGINE v0.3.6.4
+# JENGINE v0.3.6.5
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -10,33 +10,19 @@ What can JEngine do?
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
   
-- Own **[Action](Docs/JAction.md) solution**
+- **Own [Action](Docs/JAction.md) solution**
   
   - **Less code, does more**
   
     ```c#
-    int num = 0;
-    int repeatCounts = 3;
-    float repeatDuration = 0.5f;
-    float timeout = 10f;
     JAction j = new JAction();
-    j.Do(() => Log.Print("Hello from JAction!"))
-      .Repeat(() =>
-              {
-                num++;
-                Log.Print($"num is: {num}");
-              }, repeatCounts, repeatDuration)
-      .Do(() => Log.Print($"num has increased {repeatCounts} times"))
-      .RepeatWhen(() =>
-                  {
-                    Log.Print($"num is more than 0, num--");
-                    num--;
-                  },
-                  () => num > 0, repeatDuration, timeout)
-      .Do(() => Log.Print("JAction will do something else in 3 seconds"))
-      .Delay(3.0f)
-      .Do(() => Log.Print("Bye from JAction"))
-      .Excute();
+    j.Do(() => something toDo)
+      .Until(() => something is done)
+      .Repeat(() => something toDo, repeatCounts)
+      .RepeatWhen(() => something toDo,
+                  () => condition)
+      .Delay(some times)
+      .Execute();
     ```
   
 - **Own [UI](Docs/JUI.md) solution**
@@ -118,8 +104,17 @@ What can JEngine do?
 - **Own [Resource Management](Docs/JResource.md)** based on XAsset
 
   ```c#
+  //Get Resource via Sync method
   TextAsset txt = JResource.LoadRes<TextAsset>("Text.txt");
   Log.Print("Get Resource with Sync method: " + txt.text);
+  ```
+
+  ```c#
+  //Get Resource via Async method with callback
+  JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
+  {
+  	Log.Print("Get Resource with Async method: " + txt.text);
+  });
   ```
 
 - **More to explore!!!**
@@ -134,20 +129,24 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Enhanced** JAciton
-
-- **Enhanced** JBehaviour
-
-- **JResource** is now coming
-
-  - JResource is based on XAsset and it allows to load asset from hot-update resources via sync/async methods
+- **JResource** supports **match pattern**, which prevents different resources witch same name can't be loaded
 
   ```c#
-  var txt = JResource.LoadRes<TextAsset>("Text.txt");
-  Log.Print("Get Resource with Sync method: " + txt.text);
+  public enum MatchMode
+  {
+    AutoMatch = 1,
+    Animation = 2,
+    Material = 3,
+    Prefab = 4,
+    Scene = 5,
+    ScriptableObject = 6,
+    TextAsset = 7,
+    UI = 8,
+    Other = 9
+  }
   ```
 
-
+  
 
 [Click here to see all version updates](CHANGE.md)
 

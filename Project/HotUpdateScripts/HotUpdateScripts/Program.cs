@@ -45,7 +45,7 @@ namespace HotUpdateScripts
 
             JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
             {
-                Log.Print("Get Resource with Async Paralleled method: " + txt.text);
+                Log.Print("Get Resource with Async method: " + txt.text);
             });
 
             /*

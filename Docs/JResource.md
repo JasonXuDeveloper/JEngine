@@ -13,11 +13,26 @@
 ### APIs
 
 - ```c#
-  LoadRes<T>(string path) where T : UnityEngine.Object
+  LoadRes<T>(string path, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
   ```
 
 - ```c#
-  LoadResAsync<T>(string path,Action<T> callback) where T : UnityEngine.Object
+  LoadResAsync<T>(string path, Action<T> callback, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
+  ```
+
+- ```c#
+  public enum MatchMode
+  {
+    AutoMatch = 1,
+    Animation = 2,
+    Material = 3,
+    Prefab = 4,
+    Scene = 5,
+    ScriptableObject = 6,
+    TextAsset = 7,
+    UI = 8,
+    Other = 9
+  }
   ```
 
 
@@ -36,7 +51,7 @@ Log.Print("Get Resource with Sync method: " + txt.text);
 ```c#
 JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
 {
-	Log.Print("Get Resource with Async Paralleled method: " + txt.text);
+	Log.Print("Get Resource with Async method: " + txt.text);
 });
 ```
 
