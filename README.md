@@ -244,20 +244,9 @@ Please clone this framework into your project and keep this directory structure
 ├── Assets
 │   ├── Dependencies
 │   │   ├── ILRuntime
-│   │   │   ├── Editor
-│   │   │   ├── Essential
-│   │   │   ├── Generated
-│   │   │   └── ILRuntime
 │   │   ├── JEngine
-│   │   │   ├── Core
-│   │   │   └── Editor
 │   │   ├── LitJson
 │   │   └── XAsset
-│   │       ├── Editor
-│   │       ├── Resources
-│   │       ├── Runtime
-│   │       ├── ScriptableObjects
-│   │       └── UI
 │   ├── HotUpdateResources
 │   │   ├── Controller
 │   │   ├── Dll
@@ -271,6 +260,7 @@ Please clone this framework into your project and keep this directory structure
 │   ├── Init.unity
 │   └── Scripts
 │       ├── Init.cs
+│       ├── InitILrt.cs
 │       └── APIs
 ├── Builds
 ├── DLC
