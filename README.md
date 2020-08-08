@@ -15,27 +15,13 @@ What can JEngine do?
   - **Less code, does more**
   
     ```c#
-    int num = 0;
-    int repeatCounts = 3;
-    float repeatDuration = 0.5f;
-    float timeout = 10f;
     JAction j = new JAction();
-    j.Do(() => Log.Print("Hello from JAction!"))
-      .Repeat(() =>
-              {
-                num++;
-                Log.Print($"num is: {num}");
-              }, repeatCounts, repeatDuration)
-      .Do(() => Log.Print($"num has increased {repeatCounts} times"))
-      .RepeatWhen(() =>
-                  {
-                    Log.Print($"num is more than 0, num--");
-                    num--;
-                  },
-                  () => num > 0, repeatDuration, timeout)
-      .Do(() => Log.Print("JAction will do something else in 3 seconds"))
-      .Delay(3.0f)
-      .Do(() => Log.Print("Bye from JAction"))
+    j.Do(() => something)
+      .Repeat(() => something, repeatCounts, repeatFrequency)
+      .Do(() => something else)
+      .RepeatWhen(() => do something,
+                  () => condition, repeatFrequency, timeout)
+      .Delay(some time)
       .Excute();
     ```
   
