@@ -168,7 +168,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
   - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
-- **Method-Chaning** style of coding makes your codes **prettier and easier to read**
+  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
   
 - **[JAction](Docs/JAction.md)** is an extension of Action
 
