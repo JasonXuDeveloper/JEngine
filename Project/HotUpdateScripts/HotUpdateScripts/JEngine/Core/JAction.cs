@@ -224,8 +224,7 @@ namespace JEngine.Core
             }
             _cancel = false;
 
-            int index = 0;
-            foreach (var td in _toDo)
+            for(int index = 0;index< _toDo.Count;index++ )
             {
                 if (_cancel) return this;
 
@@ -275,12 +274,10 @@ namespace JEngine.Core
                     }
                 }
 
-                if (td != null)
+                if (_toDo[index] != null)
                 {
-                    await Task.Run(td, _cancellationTokenSource.Token);
+                    await Task.Run(_toDo[index], _cancellationTokenSource.Token);
                 }
-
-                index++;
             }
             _executing = false;
             return this;

@@ -169,7 +169,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
   - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
   
-- **[JAction](Docs/JAction.md)** is an extension of Action
+- **[JAction](Docs/JAction.md)** is an extension rather than usual Action
 
   - **Method-chaining** Style
 
@@ -221,6 +221,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - ~~Encrypt Hot-update DLL and decrypt in runtime~~
 - ~~Object Pool which significantly improves performance rather than using Instantiate method~~
+- JPrefab, a better way to manage Prefab from Resources
 - JUI with more extended APIs
 - UI Special Effects
 - Optiimize logics which can improve process speed (As always doing it)
