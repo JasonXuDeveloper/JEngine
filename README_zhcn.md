@@ -207,7 +207,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
   > 教程暂未完成
 
-- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)**是一个可视化Redis数据库管理工具
+- [**GUI-Redis**](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)是一个可视化Redis数据库管理工具
 
   - 可**SSH连接**，安全高效！
   - 可**常规连接**，IP+端口连接
