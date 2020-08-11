@@ -292,6 +292,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 > 该环节将告诉你如何编写可以热更的代码
 
 [点击阅读](Docs/Extension.md)
+[ILRuntime文档](https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html)
 
 
 
