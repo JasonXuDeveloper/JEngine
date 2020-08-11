@@ -2,6 +2,8 @@
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
+[中文文档](README_zhcn.md)
+
 What can JEngine do?
 
 - **[Hot-update](Docs/WhyHotUpdate.md) solution**
@@ -122,8 +124,6 @@ What can JEngine do?
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
 
 **If you enjoy using JEngine, please give this repo a star!**
-
-[中文请点这里](#中文说明)
 
 
 
@@ -354,11 +354,3 @@ Please clone this framework into your project and keep this directory structure
 
 - [XAsset](https://github.com/xasset/xasset) - A more streamlined, efficient and secure Unity Resource Management Solution for you.
 - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
-
-<br>
-<br>
-<br>
-
-## 中文说明
-
-> 将在获得 100 stars之后补充
