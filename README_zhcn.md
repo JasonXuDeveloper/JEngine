@@ -6,14 +6,14 @@ JEngine是针对Unity开发者设计的**精简易用**的框架
 
 JEngine能够做些什么？
 
-- **[热更新解决方案 ](Docs/WhyHotUpdate.md) **
+- **[热更新解决方案 ](Docs/WhyHotUpdate.md)**
 
-  - **资源热更**来自**[XAsset](https://github.com/xasset/xasset)**，JEngine的作者是该框架贡献成员之一
-  - **C#代码热更**来自**[ILRuntime](https://github.com/Ourpalm/ILRuntime)**，JEngine的作者也是该框架贡献成员之一
+  - **资源热更**来自[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
+  - **C#代码热更**来自[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架贡献成员之一
   - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128_ECB**模式加密进Assetbundle，运行游戏时动态解密
   - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
 
-- **[Action队列解决方案](Docs/JAction.md) **
+- **[Action队列解决方案](Docs/JAction.md)**
 
   - **更少的代码，实现更多功能，效率大幅度提高**！
 
