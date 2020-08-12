@@ -1,328 +1,328 @@
 # JENGINE v0.3.6.5
 
-      JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
-
-      [中文文档](README_zh-cn.md)
-
-      What can JEngine do?
-
-      - **[Hot-update](Docs/en-us/WhyHotUpdate.md) solution**
-
-        - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
-        - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
-        - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
-
-      - **Own [Action](Docs/en-us/JAction.md) solution**
-
-        - **Less code, does more**
-
-          ```c#
-          JAction j = new JAction();
-          j.Do(() => something toDo)
-            .Until(() => something is done)
-            .Repeat(() => something toDo, repeatCounts)
-            .RepeatWhen(() => something toDo,
-                        () => condition)
-            .Delay(some times)
-            .Execute();
-          ```
-
-      - **Own [UI](Docs/en-us/JUI.md) solution**
-
-        - **Method-Chaining** style makes codes prettier and easier to visualize
-
-          ```c#
-          var JUI = Showcase.AddComponent<JUI>()
-            .onInit(t =>
-                    {
-                      ...
-                    })
-            .onLoop(t1 =>
-                    {
-                      ...
-                    })
-            .onEnd(t2 =>
-                   {
-                     ...
-                   })
-            .Activate();
-          ```
-
-        - **Easier to manage** lifecycle
-
-          - Can **easily set up** **what** you want the UI element **to do in specific time**
-
-          ```c#
-          t.FrameMode = false;//Run in ms
-          t.Frequency = 1000;//Loop each 1s
-          ```
-
-        - **Bindable to data**
-
-          - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
-
-          ```c#
-          var JUI = b.AddComponent<JUI>()
-            .Bind(data.b)
-            .onMessage(t1 =>
-                       {
-                         ...
-                       })
-            .Activate();
-          ```
-
-      - **Own [Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
-
-        - **More friendly to manage lifecycle**
-
-          - You can make loop easier using JEngine
-
-          ```c#
-          public class JBehaviourExample : JBehaviour
-          {
-            public override void Init()
-            {
-              ...
-            }
-            
-            public override void Run()
-            {
-              ...
-            }
-            
-            public override void Loop()
-            {
-              ...
-            }
-            
-            public override void End()
-            {
-              ...
-            }
-          }
-          ```
+JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
+
+[中文文档](README_zh-cn.md)
+
+What can JEngine do?
+
+- **[Hot-update](Docs/en-us/WhyHotUpdate.md) solution**
+
+  - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
+  - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into.
+  - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
+
+- **Own [Action](Docs/en-us/JAction.md) solution**
+
+  - **Less code, does more**
+
+    ```c#
+    JAction j = new JAction();
+    j.Do(() => something toDo)
+      .Until(() => something is done)
+      .Repeat(() => something toDo, repeatCounts)
+      .RepeatWhen(() => something toDo,
+                  () => condition)
+      .Delay(some times)
+      .Execute();
+    ```
 
-      - **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset
+- **Own [UI](Docs/en-us/JUI.md) solution**
 
-        ```c#
-        //Get Resource via Sync method
-        TextAsset txt = JResource.LoadRes<TextAsset>("Text.txt");
-        Log.Print("Get Resource with Sync method: " + txt.text);
-        ```
+  - **Method-Chaining** style makes codes prettier and easier to visualize
 
-        ```c#
-        //Get Resource via Async method with callback
-        JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
-        {
-        	Log.Print("Get Resource with Async method: " + txt.text);
-        });
-        ```
+    ```c#
+    var JUI = Showcase.AddComponent<JUI>()
+      .onInit(t =>
+              {
+                ...
+              })
+      .onLoop(t1 =>
+              {
+                ...
+              })
+      .onEnd(t2 =>
+             {
+               ...
+             })
+      .Activate();
+    ```
 
-      - **More to explore!!!**
+  - **Easier to manage** lifecycle
 
-      JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
+    - Can **easily set up** **what** you want the UI element **to do in specific time**
 
-      **If you enjoy using JEngine, please give this repo a star!**
+    ```c#
+    t.FrameMode = false;//Run in ms
+    t.Frequency = 1000;//Loop each 1s
+    ```
 
-      
+  - **Bindable to data**
 
-      ## Latest Features
+    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
 
-      - **JResource** supports **match pattern**, which prevents different resources witch same name can't be loaded
+    ```c#
+    var JUI = b.AddComponent<JUI>()
+      .Bind(data.b)
+      .onMessage(t1 =>
+                 {
+                   ...
+                 })
+      .Activate();
+    ```
 
-        ```c#
-        public enum MatchMode
-        {
-          AutoMatch = 1,
-          Animation = 2,
-          Material = 3,
-          Prefab = 4,
-          Scene = 5,
-          ScriptableObject = 6,
-          TextAsset = 7,
-          UI = 8,
-          Other = 9
-        }
-        ```
+- **Own [Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
 
-        
+  - **More friendly to manage lifecycle**
 
-      [Click here to see all version updates](CHANGE.md)
+    - You can make loop easier using JEngine
 
-      
+    ```c#
+    public class JBehaviourExample : JBehaviour
+    {
+      public override void Init()
+      {
+        ...
+      }
 
-      ## Features
+      public override void Run()
+      {
+        ...
+      }
 
-      - **[Hot-update](Docs/en-us/WhyHotUpdate.md)** solution
+      public override void Loop()
+      {
+        ...
+      }
 
-        - No need to learn Lua, **C# codes can be hot-updated**
-        - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
-        - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
+      public override void End()
+      {
+        ...
+      }
+    }
+    ```
 
-      - **[JBehaviour](Docs/en-us/JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
+- **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset
 
-      - **[JUI](Docs/en-us/JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
+  ```c#
+  //Get Resource via Sync method
+  TextAsset txt = JResource.LoadRes<TextAsset>("Text.txt");
+  Log.Print("Get Resource with Sync method: " + txt.text);
+  ```
 
-        - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
-        - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
-        - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
-        - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
+  ```c#
+  //Get Resource via Async method with callback
+  JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
+  {
+      Log.Print("Get Resource with Async method: " + txt.text);
+  });
+  ```
 
-      - **[JAction](Docs/en-us/JAction.md)** is an extension rather than usual Action
+- **More to explore!!!**
 
-        - **Method-chaining** Style
+JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
 
-        - Great variation of features
+**If you enjoy using JEngine, please give this repo a star!**
 
-          - Do action
-          - Delay
-          - Wait Until
-          - Repeat
-          - Repeat When
-          - Repeat Until
-          - etc...
 
-        - **Shorter and more powerful**
 
-          - Less code can do more things
+## Latest Features
 
-        - **Extension of System.Action**
+- **JResource** supports **match pattern**, which prevents different resources witch same name can't be loaded
 
-          - Add what to do, add delayings, JAction will do them in order
+  ```c#
+  public enum MatchMode
+  {
+    AutoMatch = 1,
+    Animation = 2,
+    Material = 3,
+    Prefab = 4,
+    Scene = 5,
+    ScriptableObject = 6,
+    TextAsset = 7,
+    UI = 8,
+    Other = 9
+  }
+  ```
 
-      - **[Resource Management](Docs/en-us/JResource.md)** solution
 
-        - Based on XAsset
-        - **Can load resources in sync/async method**
-        - **Generic methods**
 
-      - **Object Pool** solution
+[Click here to see all version updates](CHANGE.md)
 
-        - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
-          - With this solution, **you don't have to repeat instantiate gameObject**
-          - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
-          - Request **PoolObject** to get the GameObject
-        - Easy and powerful
-        - With algorithm which fairly controls gameObjects
 
-        > Example will come soon
 
-      - **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
+## Features
 
-        - Supports connect through **SSH tunnel**
-        - Supports connect through **normay way** (IP, Port connection)
-        - Supports **add/modify/delete/search** key-value pairs
+- **[Hot-update](Docs/en-us/WhyHotUpdate.md)** solution
 
-      
+  - No need to learn Lua, **C# codes can be hot-updated**
+  - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
+  - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
 
-      ## Future Features
+- **[JBehaviour](Docs/en-us/JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 
-      - ~~Supports local hot-update resources development in Unity Editor (Done)~~
-      - ~~Encrypt Hot-update DLL and decrypt in runtime~~
-      - ~~Object Pool which significantly improves performance rather than using Instantiate method~~
-      - JPrefab, a better way to manage Prefab from Resources
-      - JUI with more extended APIs
-      - UI Special Effects
-      - Optiimize logics which can improve process speed (As always doing it)
-      - *Unity Editor FTP Tool (Maybe)*
+- **[JUI](Docs/en-us/JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
 
-      
+  - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
+  - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
+  - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
+  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
 
-      ## What is Hot update and Why
+- **[JAction](Docs/en-us/JAction.md)** is an extension rather than usual Action
 
-      [Click here to have a read](Docs/en-us/WhyHotUpdate.md)
+  - **Method-chaining** Style
 
-      
+  - Great variation of features
 
-      ## Directory Structure **(IMPORTANT)**
+    - Do action
+    - Delay
+    - Wait Until
+    - Repeat
+    - Repeat When
+    - Repeat Until
+    - etc...
 
-      Please clone this framework into your project and keep this directory structure
+  - **Shorter and more powerful**
 
-      ```
-      .
-      ├── Assets
-      │   ├── Dependencies
-      │   ├── HotUpdateResources
-      │   │   ├── Controller
-      │   │   ├── Dll
-      │   │   ├── Material
-      │   │   ├── Other
-      │   │   ├── Prefab
-      │   │   ├── Scene
-      │   │   ├── ScriptableObject
-      │   │   ├── TextAsset
-      │   │   └── UI
-      │   ├── Init.unity
-      │   └── Scripts
-      │       ├── Init.cs
-      │       ├── InitILrt.cs
-      │       └── APIs
-      ├── Builds
-      ├── DLC
-      ├── HotUpdateScrpts
-      ```
+    - Less code can do more things
 
-      ### Description for those Directories
+  - **Extension of System.Action**
 
-      [Click here to have a read](Docs/en-us/DirectoriesDiscription.md)
+    - Add what to do, add delayings, JAction will do them in order
 
-      
+- **[Resource Management](Docs/en-us/JResource.md)** solution
 
-      ## JEngine Hot Update Logics
+  - Based on XAsset
+  - **Can load resources in sync/async method**
+  - **Generic methods**
 
-      ![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
+- **Object Pool** solution
 
-      
+  - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
+    - With this solution, **you don't have to repeat instantiate gameObject**
+    - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
+    - Request **PoolObject** to get the GameObject
+  - Easy and powerful
+  - With algorithm which fairly controls gameObjects
 
-      ## Quick Start
+  > Example will come soon
 
-      #### Basics
+- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
 
-      > The basics tells you how to use this framework in basics (How to make your project hot-updatable)
+  - Supports connect through **SSH tunnel**
+  - Supports connect through **normay way** (IP, Port connection)
+  - Supports **add/modify/delete/search** key-value pairs
 
-      [Click here to have a read](Docs/en-us/Basic.md)
 
-      #### Extensions
 
-      > The extensions will show you how to hot-update your game in coding levels (How to make hot-updatable codes)
+## Future Features
 
-      [Click here to have a read](Docs/en-us/Extension.md)
+- ~~Supports local hot-update resources development in Unity Editor (Done)~~
+- ~~Encrypt Hot-update DLL and decrypt in runtime~~
+- ~~Object Pool which significantly improves performance rather than using Instantiate method~~
+- JPrefab, a better way to manage Prefab from Resources
+- JUI with more extended APIs
+- UI Special Effects
+- Optiimize logics which can improve process speed (As always doing it)
+- *Unity Editor FTP Tool (Maybe)*
 
-      
 
-      #### Developement Guide
 
-      > This will enable you quick develop your game and you don't need to upload your latest hot-update resources into your server **(which saves your time)**
+## What is Hot update and Why
 
-      [Click here to have a read](Docs/en-us/DevelopmentGuide.md)
+[Click here to have a read](Docs/en-us/WhyHotUpdate.md)
 
-      #### Common "Bugs"
 
-      [Click here to have a read](Docs/en-us/CommonBugs.md)
 
-      
+## Directory Structure **(IMPORTANT)**
 
-      #### IMPORTANT
+Please clone this framework into your project and keep this directory structure
 
-      [Click here to have a read](Docs/en-us/Important.md)
+```
+.
+├── Assets
+│   ├── Dependencies
+│   ├── HotUpdateResources
+│   │   ├── Controller
+│   │   ├── Dll
+│   │   ├── Material
+│   │   ├── Other
+│   │   ├── Prefab
+│   │   ├── Scene
+│   │   ├── ScriptableObject
+│   │   ├── TextAsset
+│   │   └── UI
+│   ├── Init.unity
+│   └── Scripts
+│       ├── Init.cs
+│       ├── InitILrt.cs
+│       └── APIs
+├── Builds
+├── DLC
+├── HotUpdateScrpts
+```
 
-      
+### Description for those Directories
 
-      ## Development Environment
+[Click here to have a read](Docs/en-us/DirectoriesDiscription.md)
 
-      - Debuging Unity Engine Version: 2019.3.13f1
 
-        > Should supports Unity Engine From 2018 LTS till the latest
 
-      - .net Environment: .net 2.0 standard
+## JEngine Hot Update Logics
 
-      - Operating System: MacOS 10.15.5
+![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
 
-        > Definityly supports windows
 
-      
 
-      ## Recommend Repositories
+## Quick Start
 
-      - [XAsset](https://github.com/xasset/xasset) - A more streamlined, efficient and secure Unity Resource Management Solution for you.
-      - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
+#### Basics
+
+> The basics tells you how to use this framework in basics (How to make your project hot-updatable)
+
+[Click here to have a read](Docs/en-us/Basic.md)
+
+#### Extensions
+
+> The extensions will show you how to hot-update your game in coding levels (How to make hot-updatable codes)
+
+[Click here to have a read](Docs/en-us/Extension.md)
+
+
+
+#### Developement Guide
+
+> This will enable you quick develop your game and you don't need to upload your latest hot-update resources into your server **(which saves your time)**
+
+[Click here to have a read](Docs/en-us/DevelopmentGuide.md)
+
+#### Common "Bugs"
+
+[Click here to have a read](Docs/en-us/CommonBugs.md)
+
+
+
+#### IMPORTANT
+
+[Click here to have a read](Docs/en-us/Important.md)
+
+
+
+## Development Environment
+
+- Debuging Unity Engine Version: 2019.3.13f1
+
+  > Should supports Unity Engine From 2018 LTS till the latest
+
+- .net Environment: .net 2.0 standard
+
+- Operating System: MacOS 10.15.5
+
+  > Definityly supports windows
+
+
+
+## Recommend Repositories
+
+- [XAsset](https://github.com/xasset/xasset) - A more streamlined, efficient and secure Unity Resource Management Solution for you.
+- [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
