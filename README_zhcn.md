@@ -128,7 +128,7 @@ JEngine能够做些什么？
 
 JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**代码**功能，并且使游戏开发者**更加轻松的制作游戏**
 
-**如果你觉得JEngine对你有帮助，请给该框架一个Star！**
+**如果您觉得JEngine对您有帮助，请给该框架一个Star！**
 
 
 
@@ -283,15 +283,16 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 #### 热更基础
 
-> 热更基础将告诉你如何让游戏支持热更资源和代码
+> 热更基础将告诉您如何让游戏支持热更资源和代码
 
 [点击阅读](Docs/Basic.md)
 
 #### 热更代码
 
-> 该环节将告诉你如何编写可以热更的代码
+> 该环节将告诉您如何编写可以热更的代码
 
 [点击阅读](Docs/Extension.md)
+<br>
 [ILRuntime文档](https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html)
 
 
@@ -314,7 +315,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 - Cannot find Delegate Adapter for: **XXX**:
 
-  > 复制报错内让你添加的代码，添加到 **Scripts/InitIlrt.cs,  'InitializeILRuntime()'** 方法
+  > 复制报错内让您添加的代码，添加到 **Scripts/InitIlrt.cs,  'InitializeILRuntime()'** 方法
   >
   > ![bug1](https://s1.ax1x.com/2020/07/14/Ut2RoD.png)
 
