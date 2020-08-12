@@ -1,4 +1,4 @@
-- - - # JENGINE v0.3.6.5
+# JENGINE v0.3.6.5
 
       JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
