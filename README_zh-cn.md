@@ -161,6 +161,7 @@ JEngine短时间内将会拆分为：
 - JEngine.Core
 - JEngine.HotUpdate
 - JEngine.JSON
+- JEngine.Redis
 - JEngine.Socket
 - etc.
 
