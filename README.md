@@ -220,6 +220,7 @@ JEngine will be soon splitting into following parts:
 - JEngine.HotUpdate
 - JEngine.JSON
 - JEngine.Socket
+- JEngine.Redis
 - etc.
 
 ## Future Features
