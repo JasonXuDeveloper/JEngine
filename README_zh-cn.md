@@ -156,6 +156,14 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
 
+## 提醒事项
+JEngine短时间内将会拆分为：
+- JEngine.Core
+- JEngine.HotUpdate
+- JEngine.JSON
+- JEngine.Socket
+- etc.
+
 
 ## 特色功能
 
