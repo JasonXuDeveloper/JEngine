@@ -214,6 +214,13 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Supports **add/modify/delete/search** key-value pairs
 
 
+## Notice
+JEngine will be soon splitting into following parts:
+- JEngine.Core
+- JEngine.HotUpdate
+- JEngine.JSON
+- JEngine.Socket
+- etc.
 
 ## Future Features
 
