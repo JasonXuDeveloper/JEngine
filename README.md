@@ -217,9 +217,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - Supports connect through **normay way** (IP, Port connection)
   
   - Supports **add/modify/delete/search** key-value pairs
-  
-    
 
+  
 ## Future Features
 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
