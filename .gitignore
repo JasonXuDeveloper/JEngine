@@ -3,5 +3,5 @@
 .idea/*
 HotUpdateScripts/.vs/*
 Assets/Dependencies/JEngine/Core/.idea/*
-Project/.idea/*
-Project/HotUpdateScripts/.vs/*
+UnityProject/.idea/*
+UnityProject/HotUpdateScripts/.vs/*
