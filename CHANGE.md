@@ -1,5 +1,33 @@
 ## All Versions
 
+### v0.4.0 (August 16, 2020)
+
+- **JEngine Framework** has been **devided** into following parts:
+
+  - **JEngine**
+
+    > You can include this into your hot-update scripts or your Unity main project
+
+    - Core
+    - UI
+    - LifeCycle
+
+  - **UnityPlugins**
+
+    > You can choose to import these into unity
+
+    - JEngine.Unity (compulsory to a new project)
+    - JEngine.JSON (optional)
+    - JEngine.Redis (optional)
+
+- **Small bugs** has been **fixed**
+
+- **ILRuntime back to Unity Solution**
+
+
+
+
+
 ### v0.3.6.5 (August 9, 2020)
 
 - **JResource** supports **match pattern**, which prevents different resources witch same name can't be loaded

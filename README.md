@@ -1,4 +1,4 @@
-# JENGINE v0.3.6.5
+# JENGINE v0.4.0
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -128,24 +128,27 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **JResource** supports **match pattern**, which prevents different resources witch same name can't be loaded
+- **JEngine Framework** has been **devided** into following parts:
 
-  ```c#
-  public enum MatchMode
-  {
-    AutoMatch = 1,
-    Animation = 2,
-    Material = 3,
-    Prefab = 4,
-    Scene = 5,
-    ScriptableObject = 6,
-    TextAsset = 7,
-    UI = 8,
-    Other = 9
-  }
-  ```
+  - **JEngine**
+  
+    > You can include this into your hot-update scripts or your Unity main project
+  
+    - Core
+    - UI
+    - LifeCycle
+  
+  - **UnityPlugins**
+  
+    > You can choose to import these into unity
+  
+    - JEngine.Unity (compulsory to a new project)
+    - JEngine.JSON (optional)
+    - JEngine.Redis (optional)
+  
+- **Small bugs** has been **fixed**
 
-
+- **ILRuntime back to Unity Solution**
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -210,17 +213,12 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
 
   - Supports connect through **SSH tunnel**
+  
   - Supports connect through **normay way** (IP, Port connection)
+  
   - Supports **add/modify/delete/search** key-value pairs
-
-
-## Notice
-JEngine will be soon splitting into following parts:
-- JEngine.Core
-- JEngine.HotUpdate
-- JEngine.JSON
-- JEngine.Socket
-- etc.
+  
+    
 
 ## Future Features
 

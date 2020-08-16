@@ -1,4 +1,4 @@
-# JENGINE v0.3.6.5
+# JENGINE v0.4.0
 
 JEngine是针对Unity开发者设计的**精简易用**的框架
 
@@ -134,35 +134,31 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **JResource**新增匹配模式，以防止同名文件不能正确获取的问题
+- **JEngine框架**已被**分割**为以下部分
 
-  ```c#
-  public enum MatchMode
-  {
-    AutoMatch = 1,
-    Animation = 2,
-    Material = 3,
-    Prefab = 4,
-    Scene = 5,
-    ScriptableObject = 6,
-    TextAsset = 7,
-    UI = 8,
-    Other = 9
-  }
-  ```
+  - **JEngine**
+  
+    > 您可以将这个目录加入您热更项目或Unity主项目
+  
+    - Core
+    - UI
+    - LifeCycle
+  
+  - **UnityPlugins**
+  
+    > 您可以选择将这些导入Unity
+  
+    - JEngine.Unity (空项目必备)
+    - JEngine.JSON (可选)
+    - JEngine.Redis (可选)
+  
+- 小Bug修复
 
-
+- ILRuntime重新回到主项目
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
 
-## 提醒事项
-JEngine短时间内将会拆分为：
-- JEngine.Core
-- JEngine.HotUpdate
-- JEngine.JSON
-- JEngine.Socket
-- etc.
 
 
 ## 特色功能
