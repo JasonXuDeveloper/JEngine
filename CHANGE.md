@@ -1,5 +1,15 @@
 ## All Versions
 
+### v0.4.1 (August 22, 2020)
+
+- JAction now supports **execute in main thread**
+
+  > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
+
+- Enhance **Developement Mode performance**
+
+
+
 ### v0.4.0 (August 16, 2020)
 
 - **JEngine Framework** has been **devided** into following parts:

@@ -27,6 +27,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using JEngine.LifeCycle;
+using JEngine.ThridParty;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -148,7 +151,7 @@ namespace JEngine.Core
             return this;
         }
 
-        public async Task<JAction> ExecuteAsync()
+        public JAction ExecuteAsync(Action callback = null)
         {
             if (_executing == true)
             {
@@ -156,22 +159,9 @@ namespace JEngine.Core
             }
             else
             {
-                await Do();
-            }
-            return this;
-        }
-
-        public JAction ExecuteAsyncParallel(Action callback = null)
-        {
-            if (_executing == true)
-            {
-                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsyncParallel()");
-            }
-            else
-            {
-                _ = Task.Run(async () =>
+                Loom.RunAsync(async () =>
                 {
-                    await ExecuteAsync();
+                    await Do();
                     callback?.Invoke();
                 });
             }
@@ -226,12 +216,13 @@ namespace JEngine.Core
 
             for(int index = 0;index< _toDo.Count;index++ )
             {
-                if (_cancel) return this;
+                if (_cancel || !Application.isPlaying) return this;
 
                 //Delay
                 if (_delays.ContainsKey(index))
                 {
                     await Task.Delay((int)(_delays[index] * 1000));
+                    continue;
                 }
 
                 //Wait Until
@@ -250,6 +241,7 @@ namespace JEngine.Core
                         await Task.Delay((int)(_frequency[index] * 1000));
                         _time += _frequency[index];
                     }
+                    continue;
                 }
 
                 //Repeat When
@@ -268,15 +260,25 @@ namespace JEngine.Core
                         {
                             throw new TimeoutException();
                         }
-                        await Task.Run(_action, _cancellationTokenSource.Token);
+
+
+                        await Task.Run(() =>
+                        {
+                            Loom.QueueOnMainThread(_action);
+                        }, _cancellationTokenSource.Token);
+
                         await Task.Delay((int)(_frequency * 1000));
                         _time += _frequency;
                     }
+                    continue;
                 }
 
                 if (_toDo[index] != null)
                 {
-                    await Task.Run(_toDo[index], _cancellationTokenSource.Token);
+                    await Task.Run(() =>
+                    {
+                        Loom.QueueOnMainThread(_toDo[index]);
+                    },_cancellationTokenSource.Token);
                 }
             }
             _executing = false;

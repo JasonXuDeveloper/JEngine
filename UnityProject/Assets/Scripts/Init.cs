@@ -26,7 +26,13 @@ public class Init : MonoBehaviour
     {
         appdomain = new AppDomain();
 
+        if (!Assets.runtimeMode)
+        {
+            DLLMgr.MakeBytes();
+        }
+
         var dllAsset = Assets.LoadAsset("HotUpdateScripts.bytes", typeof(TextAsset));
+
         if (dllAsset.error != null)
         {
             Log.PrintError(dllAsset.error);
@@ -56,7 +62,9 @@ public class Init : MonoBehaviour
             
         fs = new MemoryStream(original);
         MemoryStream pdb = null;
-        if (Application.isEditor)
+
+#if UNITY_EDITOR
+        if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"))
         {
             try
             {
@@ -66,6 +74,7 @@ public class Init : MonoBehaviour
             {
             }
         }
+#endif
             
         try
         {

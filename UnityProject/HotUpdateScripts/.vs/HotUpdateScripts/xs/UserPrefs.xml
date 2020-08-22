@@ -1,7 +1,7 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="HotUpdateScripts/JEngine/Core/JAction.cs">
     <Files>
-      <File FileName="HotUpdateScripts/Program.cs" Line="48" Column="52" />
+      <File FileName="HotUpdateScripts/JEngine/Core/JAction.cs" Line="166" Column="16" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -10,11 +10,12 @@
             <Node name="HotUpdateScripts" expanded="True">
               <Node name="Examples" expanded="True" />
               <Node name="JEngine" expanded="True">
-                <Node name="Core" expanded="True" />
+                <Node name="Core" expanded="True">
+                  <Node name="JAction.cs" selected="True" />
+                </Node>
                 <Node name="LifeCycle" expanded="True" />
                 <Node name="UI" expanded="True" />
               </Node>
-              <Node name="Program.cs" selected="True" />
             </Node>
           </Node>
         </State>

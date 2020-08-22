@@ -1,4 +1,4 @@
-# JENGINE v0.4.0
+# JENGINE v0.4.1
 
 JEngine是针对Unity开发者设计的**精简易用**的框架
 
@@ -29,6 +29,8 @@ JEngine能够做些什么？
       .Delay(some times)
       .Execute();
     ```
+    
+  - **主线程运行代码**
 
 - **[UI生命周期解决方案](Docs/zh-cn/JUI.md)**
 
@@ -134,27 +136,11 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **JEngine框架**已被**分割**为以下部分
+- JAction**现已支持运行在主线程**
 
-  - **JEngine**
+  > Task.Run的异步方法，在Unity中并不可以在主线程运行，因此，会导致绝大部分Unity的API无法使用，JAction现已克服该问题，运用Loom解决方案
   
-    > 您可以将这个目录加入您热更项目或Unity主项目
-  
-    - Core
-    - UI
-    - LifeCycle
-  
-  - **UnityPlugins**
-  
-    > 您可以选择将这些导入Unity
-  
-    - JEngine.Unity (空项目必备)
-    - JEngine.JSON (可选)
-    - JEngine.Redis (可选)
-  
-- 小Bug修复
-
-- ILRuntime重新回到主项目
+- 提高**开发模式性能**
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -183,17 +169,16 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 - **[JAction](Docs/zh-cn/JAction.md)**是一个针对**Action构建的任务队列**解决方案
 
   - **链式编程**，让代码可读性提高！
-
-  - **支持最常用的功能！**
+- **支持最常用的功能！**
     - 执行方法
     - 延时
     - 条件等待
     - 定期（次数）循环
     - 条件循环
     - *还有更多未列出...*
-
   - **更少的代码，更强的功能！**
-
+- 支持在**主线程运行代码**
+  
 - **[资源加载解决方案](Docs/zh-cn/JResource.md)**
 
   - 基于XAsset！

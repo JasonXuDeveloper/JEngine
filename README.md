@@ -1,4 +1,4 @@
-# JENGINE v0.4.0
+# JENGINE v0.4.1
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -26,6 +26,10 @@ What can JEngine do?
       .Delay(some times)
       .Execute();
     ```
+    
+  - Can be **Run in Main Thread**
+
+    > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
 
 - **Own [UI](Docs/en-us/JUI.md) solution**
 
@@ -128,27 +132,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **JEngine Framework** has been **devided** into following parts:
+- JAction now supports **execute in main thread**
 
-  - **JEngine**
-  
-    > You can include this into your hot-update scripts or your Unity main project
-  
-    - Core
-    - UI
-    - LifeCycle
-  
-  - **UnityPlugins**
-  
-    > You can choose to import these into unity
-  
-    - JEngine.Unity (compulsory to a new project)
-    - JEngine.JSON (optional)
-    - JEngine.Redis (optional)
-  
-- **Small bugs** has been **fixed**
+  > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
 
-- **ILRuntime back to Unity Solution**
+- Enhance **Developement Mode performance**
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -174,25 +162,24 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - **[JAction](Docs/en-us/JAction.md)** is an extension rather than usual Action
 
   - **Method-chaining** Style
-
-  - Great variation of features
-
-    - Do action
+- Great variation of features
+  
+  - Do action
     - Delay
     - Wait Until
     - Repeat
     - Repeat When
     - Repeat Until
     - etc...
-
   - **Shorter and more powerful**
 
     - Less code can do more things
-
-  - **Extension of System.Action**
-
-    - Add what to do, add delayings, JAction will do them in order
-
+- **Extension of System.Action**
+  
+  - Add what to do, add delayings, JAction will do them in order
+  - Run in **Main Thread**
+  - Call Unity APIs anytime
+  
 - **[Resource Management](Docs/en-us/JResource.md)** solution
 
   - Based on XAsset

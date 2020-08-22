@@ -33,6 +33,7 @@ public class InitILrt : MonoBehaviour
         appdomain.DelegateManager.RegisterMethodDelegate<libx.AssetRequest>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
         appdomain.DelegateManager.RegisterMethodDelegate<Object>();
+        appdomain.DelegateManager.RegisterMethodDelegate<System.Object>();
         appdomain.DelegateManager
             .RegisterFunctionDelegate<ILTypeInstance, Boolean>();
         appdomain.DelegateManager.RegisterMethodDelegate<List<Object>>();
@@ -55,6 +56,13 @@ public class InitILrt : MonoBehaviour
         appdomain.DelegateManager.RegisterFunctionDelegate<float>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
         
+        appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.WaitCallback>((act) =>
+        {
+            return new System.Threading.WaitCallback((state) =>
+            {
+                ((Action<System.Object>)act)(state);
+            });
+        });
         appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
         {
             return new UnityAction(() => { ((Action) act)(); });
