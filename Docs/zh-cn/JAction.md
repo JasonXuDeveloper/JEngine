@@ -42,15 +42,11 @@
   ```
 
 - ```c#
-  Excute()
+  Excute(bool onMainThread = false)
   ```
 
 - ```c#
-  ExcuteAsync()
-  ```
-
-- ```c#
-  ExcuteAsyncParallel()
+  ExcuteAsync(Action callback = null, bool onMainThread = false)
   ```
 
 - ```c#
@@ -180,12 +176,12 @@
        //Execute Async Parallel
        JAction j7 = new JAction();
        j7.Do(() => Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
-         .ExecuteAsyncParallel(() => Log.Print("[j7] Done"));
+         .ExecuteAsync(() => Log.Print("[j7] Done"));
    
        //Cancel a JAction
        JAction j8 = new JAction();
        j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
-         .ExecuteAsyncParallel();
+         .ExecuteAsync();
        //You can either add a cancel callback
        j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
    

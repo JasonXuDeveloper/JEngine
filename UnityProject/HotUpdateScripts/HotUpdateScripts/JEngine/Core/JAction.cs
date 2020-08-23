@@ -138,7 +138,7 @@ namespace JEngine.Core
             return this;
         }
 
-        public JAction Execute()
+        public JAction Execute(bool onMainThread = false)
         {
             if (_executing == true)
             {
@@ -146,12 +146,12 @@ namespace JEngine.Core
             }
             else
             {
-                _ = Do();
+                _ = Do(onMainThread);
             }
             return this;
         }
 
-        public JAction ExecuteAsync(Action callback = null)
+        public JAction ExecuteAsync(Action callback = null, bool onMainThread = false)
         {
             if (_executing == true)
             {
@@ -161,7 +161,7 @@ namespace JEngine.Core
             {
                 Loom.RunAsync(async () =>
                 {
-                    await Do();
+                    await Do(onMainThread);
                     callback?.Invoke();
                 });
             }
@@ -206,7 +206,7 @@ namespace JEngine.Core
         }
 
 
-        private async Task<JAction> Do()
+        private async Task<JAction> Do(bool onMainThread)
         {
             if (!_parallel)
             {
@@ -261,11 +261,18 @@ namespace JEngine.Core
                             throw new TimeoutException();
                         }
 
-
-                        await Task.Run(() =>
+                        if (onMainThread)
                         {
-                            Loom.QueueOnMainThread(_action);
-                        }, _cancellationTokenSource.Token);
+                            await Task.Run(() =>
+                            {
+                                Loom.QueueOnMainThread(_action);
+                            }, _cancellationTokenSource.Token);
+                        }
+                        else
+                        {
+                            await Task.Run(_action, _cancellationTokenSource.Token);
+                        }
+                        
 
                         await Task.Delay((int)(_frequency * 1000));
                         _time += _frequency;
@@ -275,10 +282,17 @@ namespace JEngine.Core
 
                 if (_toDo[index] != null)
                 {
-                    await Task.Run(() =>
+                    if (onMainThread)
                     {
-                        Loom.QueueOnMainThread(_toDo[index]);
-                    },_cancellationTokenSource.Token);
+                        await Task.Run(() =>
+                        {
+                            Loom.QueueOnMainThread(_toDo[index]);
+                        }, _cancellationTokenSource.Token);
+                    }
+                    else
+                    {
+                        await Task.Run(_toDo[index], _cancellationTokenSource.Token);
+                    }
                 }
             }
             _executing = false;
