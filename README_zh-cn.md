@@ -9,7 +9,7 @@ JEngine能够做些什么？
 - **[热更新解决方案 ](Docs/zh-cn/WhyHotUpdate.md)**
 
   - **资源热更**来自[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
-  - **C#代码热更**来自[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架贡献成员之一
+  - **C#代码热更**来自[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
   - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
   - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
 
