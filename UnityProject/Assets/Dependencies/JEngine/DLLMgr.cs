@@ -7,9 +7,7 @@ namespace JEngine.Core
     public class DLLMgr
     {
         public static string DllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
-
-
-        #if UNITY_EDITOR
+        
         [MenuItem("JEngine/XAsset/Bundles/Convert DLL")]
         public static void MakeBytes()
         {
@@ -90,6 +88,5 @@ namespace JEngine.Core
 
             return result;
         }
-        #endif
     }
 }
