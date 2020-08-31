@@ -2,6 +2,8 @@
 
 JEngine是针对Unity开发者设计的**精简易用**的框架
 
+> 将在100收藏后开QQ群且进行一次直播教学
+
 [English Document](README.md)
 
 JEngine能够做些什么？
