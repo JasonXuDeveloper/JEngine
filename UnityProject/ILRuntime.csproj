@@ -335,14 +335,14 @@
  <Reference Include="UnityEditor.iOS.Extensions">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
  </Reference>
- <Reference Include="ILRuntim.Mono.Cecil">
- <HintPath>/Users/jason/Documents/GitHub/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
- </Reference>
  <Reference Include="ILRuntime.Mono.Cecil.Pdb">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
  </Reference>
  <Reference Include="ILRuntime.Mono.Cecil.Mdb">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Mdb.dll</HintPath>
+ </Reference>
+ <Reference Include="ILRuntim.Mono.Cecil">
+ <HintPath>/Users/jason/Documents/GitHub/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>/Applications/Unity/Hub/2019.3.13f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

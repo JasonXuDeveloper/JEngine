@@ -17,35 +17,35 @@ MonoBehaviour:
   - bundle: 3
     dir: 0
     name: HotUpdateScripts.bytes
-  - bundle: 0
+  - bundle: 1
     dir: 1
-    name: Example.txt
+    name: Anything.txt
   - bundle: 2
     dir: 2
     name: Game.unity
-  - bundle: 1
+  - bundle: 0
     dir: 3
-    name: Example.txt
+    name: Text.txt
   bundles:
   - deps: 
-    hash: 9dfc43218616426ffa52cf27eef34fbd
+    hash: 1c65e5bea92df9dd3912f0df086c4569
     id: 0
-    len: 1241
-    name: 4dd92b5a9a7a8600a8b3720ae0ec4b8f.unity3d
+    len: 1246
+    name: 2729121f1447818ebcc32362fa7a845f.unity3d
   - deps: 
-    hash: 773c2cc15341cecb9d1804a2d14e5b81
+    hash: 8b624927f6b630146e0c9224ea31a825
     id: 1
-    len: 1250
-    name: 560f7cc690a202bbc3780bc878f6814b.unity3d
+    len: 1244
+    name: cdcdfc5d2f29dd1ac94ed10aaf3d9434.unity3d
   - deps: 
     hash: 7b920834cb3eb495fedf085d9b599801
     id: 2
-    len: 9054
+    len: 9052
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: b4721aaefa82554d36cc1241b0cf8749
+    hash: 6e05c7762c02fba3cd9bf5b283090fba
     id: 3
-    len: 16820
+    len: 31659
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll
