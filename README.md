@@ -164,7 +164,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - **[JAction](Docs/en-us/JAction.md)** is an extension rather than usual Action
 
   - **Method-chaining** Style
-- Great variation of features
+  - Great variation of features
   
   - Do action
     - Delay
@@ -176,11 +176,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - **Shorter and more powerful**
 
     - Less code can do more things
-- **Extension of System.Action**
+  - **Extension of System.Action**
   
-  - Add what to do, add delayings, JAction will do them in order
-  - Run in **Main Thread**
-  - Call Unity APIs anytime
+    - Add what to do, add delayings, JAction will do them in order
+    - Run in **Main Thread**
+      - Call Unity APIs anytime
   
 - **[Resource Management](Docs/en-us/JResource.md)** solution
 
