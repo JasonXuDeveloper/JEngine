@@ -2,7 +2,9 @@
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
-> Will create QQ ChatGroup after 100 stars & Hold one live broadcast
+> QQ Group ID: 921271552
+
+> Will hold one live broadcast
 
 [中文文档](README_zh-cn.md)
 
