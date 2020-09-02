@@ -2,7 +2,7 @@
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
-> QQ Group ID: 921271552
+> QQ Group ID: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
 > Will hold one live broadcast
 
