@@ -2,6 +2,16 @@
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
+![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
+
+![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
+
+![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
+
+![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
+
+![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
+
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
 > 将在100收藏后进行一次直播教学

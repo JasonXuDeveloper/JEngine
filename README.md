@@ -4,6 +4,16 @@
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
+![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
+
+![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
+
+![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
+
+![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
+
+![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
+
 > QQ Group ID: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
 > Will hold one live broadcast
