@@ -7,13 +7,7 @@ namespace JEngine.Core
     public class DLLMgr
     {
         public static string DllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
-
-
         
-
-#if  UNITY_EDITOR
-        [MenuItem("JEngine/XAsset/Bundles/Convert DLL")]
-#endif
         public static void MakeBytes()
         {
             var watch = new Stopwatch();

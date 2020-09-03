@@ -12,6 +12,7 @@ public class Init : MonoBehaviour
     public static Init Instance;
     AppDomain appdomain;
     MemoryStream fs;
+    MemoryStream pdb;
 
     [SerializeField]private string Key;
 
@@ -26,56 +27,48 @@ public class Init : MonoBehaviour
     {
         appdomain = new AppDomain();
 
+        pdb = null;
+        
+        //编译模式
         if (!Assets.runtimeMode)
         {
-            DLLMgr.MakeBytes();
-        }
-
-        var dllAsset = Assets.LoadAsset("HotUpdateScripts.bytes", typeof(TextAsset));
-
-        if (dllAsset.error != null)
-        {
-            Log.PrintError(dllAsset.error);
-            return;
-        }
-
-        var dll = (TextAsset)dllAsset.asset;
-
-        byte[] original = dll.bytes;
-        try
-        {
-            if (!Assets.runtimeMode)
+            if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll"))
             {
-                original = CryptoHelper.AesDecrypt(original, "DevelopmentMode.");
+                fs = new MemoryStream(DLLMgr.FileToByte("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll"));
             }
             else
             {
-                original = CryptoHelper.AesDecrypt(original, Key);
+                Log.PrintWarning("DLL文件不存在");
+                return;
+            }
+                
+            //查看是否有PDB文件
+            if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"))
+            {
+                pdb = new MemoryStream(DLLMgr.FileToByte("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"));
             }
         }
-        catch(Exception ex)
+        else//解密加载
         {
-            Log.PrintError("加载热更DLL失败，可能是解密密码不正确");
-            Log.PrintError("加载热更DLL错误：\n" + ex.Message);
-            return;
-        }
-            
-        fs = new MemoryStream(original);
-        MemoryStream pdb = null;
-
-#if UNITY_EDITOR
-        if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"))
-        {
+            var dllAsset = Assets.LoadAsset("HotUpdateScripts.bytes", typeof(TextAsset));
+            if (dllAsset.error != null)
+            {
+                Log.PrintError(dllAsset.error);
+                return;
+            }
+            var dll = (TextAsset)dllAsset.asset;
             try
             {
-                pdb = new MemoryStream(AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb").bytes);
+                var original = CryptoHelper.AesDecrypt(dll.bytes, Key);
+                fs = new MemoryStream(original);
             }
-            catch
+            catch(Exception ex)
             {
+                Log.PrintError("加载热更DLL失败，可能是解密密码不正确");
+                Log.PrintError("加载热更DLL错误：\n" + ex.Message);
+                return;
             }
         }
-#endif
-            
         try
         {
             appdomain.LoadAssembly(fs, pdb, new PdbReaderProvider());
@@ -103,6 +96,9 @@ public class Init : MonoBehaviour
     {
         if (fs != null)
             fs.Close();
+        if (pdb != null)
+            pdb.Close();
         fs = null;
+        pdb = null;
     }
 }

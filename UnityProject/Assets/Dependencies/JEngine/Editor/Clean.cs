@@ -49,11 +49,12 @@ class Clean
             return;
         }
 
-        if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~"))
+        if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~"))//DLL导入到隐藏文件夹，防止每次加载浪费时间
         {
             Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
         }
         
+        DirectoryInfo library = new DirectoryInfo(Application.dataPath+"/Library/ScriptAssemblies");
         DirectoryInfo di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
         var files = di.GetFiles();
         if (files.Length > 1)
@@ -65,15 +66,19 @@ class Clean
             foreach (var file in files)
             {
                 var name = file.Name;
-                if (!file.Name.Contains("HotUpdateScripts"))
+                if (File.Exists(library.FullName+"/"+name))//重复依赖直接删除
                 {
                     DLLMgr.Delete(file.FullName);
                     counts++;
                 }
+                else if(!name.Contains("HotUpdateScripts")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
+                {
+                    File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
+                }
             }
 
             watch.Stop();
-            if (counts > 0)
+            if (counts > 0)//如果删除过东西，就代表DLL更新了，就需要生成文件
             {
                 Log.Print("Cleaned: " + counts + " files in: " + watch.ElapsedMilliseconds + " ms.");
                 DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");

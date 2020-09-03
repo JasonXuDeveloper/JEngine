@@ -104,9 +104,9 @@
      <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Vector2_Binding.cs" />
      <Compile Include="Assets\Dependencies\ILRuntime\Generated\libx_AssetRequest_Binding.cs" />
      <Compile Include="Assets\Dependencies\ILRuntime\Generated\libx_Assets_Binding.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\CryptoHelper.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\DLLMgr.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Log.cs" />
+     <Compile Include="Assets\Dependencies\JEngine\Core\CryptoHelper.cs" />
+     <Compile Include="Assets\Dependencies\JEngine\Core\DLLMgr.cs" />
+     <Compile Include="Assets\Dependencies\JEngine\Core\Log.cs" />
      <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Assets.cs" />
      <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Download.cs" />
      <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Downloader.cs" />

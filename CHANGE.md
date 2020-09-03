@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.4.2 (September 3, 2020)
+
+- Advanced hotupdate dependecies cleaner
+- Enhanced development mode
+- Allows custom scenes addition
+
+
+
 ### v0.4.1 (August 22, 2020)
 
 - JAction now supports **execute in main thread**

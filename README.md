@@ -1,4 +1,8 @@
-# JENGINE v0.4.1
+# JENGINE v0.4.2
+
+
+
+![logo](Docs/logo.png)
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
@@ -41,44 +45,39 @@ What can JEngine do?
 
     ```c#
     var JUI = Showcase.AddComponent<JUI>()
-      .onInit(t =>
-              {
-                ...
-              })
       .onLoop(t1 =>
               {
                 ...
               })
-      .onEnd(t2 =>
-             {
-               ...
-             })
       .Activate();
     ```
-
+    
   - **Easier to manage** lifecycle
-
+  
     - Can **easily set up** **what** you want the UI element **to do in specific time**
-
+  
     ```c#
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-
-  - **Bindable to data**
-
-    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
-
+  ```
+  
+  ```
+  
+- **Bindable to data**
+  
+  - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
+  
     ```c#
     var JUI = b.AddComponent<JUI>()
       .Bind(data.b)
-      .onMessage(t1 =>
+    .onMessage(t1 =>
                  {
-                   ...
+                 ...
                  })
-      .Activate();
+    .Activate();
     ```
-
+  
 - **Own [Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
 
   - **More friendly to manage lifecycle**
@@ -89,27 +88,24 @@ What can JEngine do?
     public class JBehaviourExample : JBehaviour
     {
       public override void Init()
-      {
-        ...
-      }
-
+      {...}
+    
       public override void Run()
-      {
-        ...
-      }
-
+  {...}
+    
       public override void Loop()
-      {
-        ...
-      }
-
-      public override void End()
-      {
-        ...
-      }
-    }
+      {...}
+    
     ```
-
+  
+  public override void End()
+      {...}
+    }
+  
+    ```
+  
+    ```
+  
 - **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset
 
   ```c#
@@ -136,11 +132,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- JAction now supports **execute in main thread**
+- Advanced hotupdate dependecies cleaner
 
-  > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
-
-- Enhance **Developement Mode performance**
+- Enhanced development mode
+- Allows custom scenes addition
 
 [Click here to see all version updates](CHANGE.md)
 

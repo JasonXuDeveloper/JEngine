@@ -1,6 +1,8 @@
-# JENGINE v0.4.1
+# JENGINE v0.4.2
 
-JEngine是针对Unity开发者设计的**精简易用**的框架
+![logo](Docs/logo.png)
+
+JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
@@ -42,44 +44,39 @@ JEngine能够做些什么？
 
     ```c#
     var JUI = Showcase.AddComponent<JUI>()
-      .onInit(t =>
-              {
-                ...
-              })
       .onLoop(t1 =>
               {
                 ...
               })
-      .onEnd(t2 =>
-             {
-               ...
-             })
       .Activate();
     ```
-
+    
   - UI**定期循环**更新？再也不是问题！
-
+  
     - 可以选择**毫秒更新或帧更新**，可以指定更新**频率**
-
+  
     ```c#
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-
-  - UI**绑定数据**？轻松搞定！
-
-    - 将**UI和数据绑定**，当**数据更新**，即可**执行绑定的方法**
-
+  ```
+  
+  ```
+  
+- UI**绑定数据**？轻松搞定！
+  
+  - 将**UI和数据绑定**，当**数据更新**，即可**执行绑定的方法**
+  
     ```c#
     var JUI = b.AddComponent<JUI>()
       .Bind(data.b)
-      .onMessage(t1 =>
+    .onMessage(t1 =>
                  {
-                   ...
+                 ...
                  })
-      .Activate();
+    .Activate();
     ```
-
+  
 - **[基于MonoBehaviour扩展的生命周期](Docs/zh-cn/JBehaviour.md)**
 
   - **轻松管理**生命周期
@@ -90,27 +87,24 @@ JEngine能够做些什么？
     public class JBehaviourExample : JBehaviour
     {
       public override void Init()
-      {
-        ...
-      }
-
+      {...}
+    
       public override void Run()
-      {
-        ...
-      }
-
+  {...}
+    
       public override void Loop()
-      {
-        ...
-      }
-
-      public override void End()
-      {
-        ...
-      }
-    }
+      {...}
+    
     ```
-
+  
+  public override void End()
+      {...}
+    }
+  
+    ```
+  
+    ```
+  
 - **[基于XAsset的资源加载方案](Docs/zh-cn/JResource.md)** 
 
   - 支持**同步/异步加载**资源
@@ -140,11 +134,10 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- JAction**现已支持运行在主线程**
+- 优化热更DLL依赖清理
 
-  > Task.Run的异步方法，在Unity中并不可以在主线程运行，因此，会导致绝大部分Unity的API无法使用，JAction现已克服该问题，运用Loom解决方案
-  
-- 提高**开发模式性能**
+- 提高开发模式性能
+- 允许自主添加额外场景
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
