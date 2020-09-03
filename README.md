@@ -2,7 +2,7 @@
 
 
 
-![logo](Docs/logo.png)
+![logo](Docs/jengine.png)
 
 JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
 
