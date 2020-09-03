@@ -1,7 +1,5 @@
 # JENGINE v0.4.2
 
-![logo](Docs/jengine.png)
-
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
