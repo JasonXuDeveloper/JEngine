@@ -117,6 +117,13 @@ namespace JEngine.LifeCycle
             return this;
         }
 
+        public JBehaviour Activate()
+        {
+            this.enabled = true;
+            this.Awake();
+            return this;
+        }
+
         /// <summary>
         /// Launch the lifecycle
         /// 开始生命周期

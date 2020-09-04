@@ -1,10 +1,20 @@
 ## All Versions
 
+### v0.4.3(September 5, 2020)
+
+- **Custom scenes** bug fixed
+- **Pdb symbol** bug fixed
+- **Enhanced** JBehaviour
+- **Autobind** classes from hotupdate dll to prefabs
+- **Support** more Unity versions
+
+
+
 ### v0.4.2 (September 3, 2020)
 
-- Advanced hotupdate dependecies cleaner
-- Enhanced development mode
-- Allows custom scenes addition
+- **Advanced** hotupdate dependecies **cleaner**
+- **Enhanced** development mode
+- Allows **custom scenes addition**
 
 
 

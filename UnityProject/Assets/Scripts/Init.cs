@@ -13,8 +13,11 @@ public class Init : MonoBehaviour
     AppDomain appdomain;
     MemoryStream fs;
     MemoryStream pdb;
+    private const string dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
+    private const string pdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
     [SerializeField]private string Key;
+    [SerializeField] private bool UsePdb = true;
 
     void Start()
     {
@@ -32,9 +35,9 @@ public class Init : MonoBehaviour
         //编译模式
         if (!Assets.runtimeMode)
         {
-            if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll"))
+            if (File.Exists(dllPath))
             {
-                fs = new MemoryStream(DLLMgr.FileToByte("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll"));
+                fs = new MemoryStream(DLLMgr.FileToByte(dllPath));
             }
             else
             {
@@ -43,9 +46,18 @@ public class Init : MonoBehaviour
             }
                 
             //查看是否有PDB文件
-            if (File.Exists("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"))
+            if (File.Exists(pdbPath) && UsePdb)
             {
-                pdb = new MemoryStream(DLLMgr.FileToByte("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb"));
+                var dllTime = File.GetLastAccessTime(dllPath);
+                var pdbTime = File.GetLastAccessTime(pdbPath);
+                if (pdbTime > dllTime.AddSeconds(10))
+                {
+                    Log.PrintWarning("PDB于DLL版本不匹配，已跳过使用PDB");
+                }
+                else
+                {
+                    pdb = new MemoryStream(DLLMgr.FileToByte(pdbPath));
+                }
             }
         }
         else//解密加载
@@ -75,7 +87,14 @@ public class Init : MonoBehaviour
         }
         catch(Exception e)
         {
-            Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
+            if (!UsePdb)
+            {
+                Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");   
+            }
+            else
+            {
+                Log.PrintError("加载热更DLL失败");
+            }
             Log.PrintError("加载热更DLL错误：\n" + e.Message);
             return;
         }

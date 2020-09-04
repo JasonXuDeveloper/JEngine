@@ -86,7 +86,10 @@ class Clean
                 watch = new Stopwatch();
                 DLLMgr.MakeBytes();
                 watch.Stop();
-                Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
+                if (watch.ElapsedMilliseconds > 0)
+                {
+                    Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");   
+                }
                 AssetDatabase.Refresh();
             }
 

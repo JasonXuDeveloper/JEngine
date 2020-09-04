@@ -661,6 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: 
+  UsePdb: 1
 --- !u!1 &1079429683
 GameObject:
   m_ObjectHideFlags: 0
@@ -1469,7 +1470,7 @@ RectTransform:
   m_GameObject: {fileID: 1787357528}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.125, y: 2.125, z: 2.125}
+  m_LocalScale: {x: 1.0625, y: 1.0625, z: 1.0625}
   m_Children: []
   m_Father: {fileID: 1196238786}
   m_RootOrder: 0

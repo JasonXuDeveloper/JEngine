@@ -139,6 +139,23 @@ public class InitILrt : MonoBehaviour
         #endregion
     }
 
+    public static void BindAllScripts()
+    {
+        foreach (var cb in FindObjectsOfType<ClassBind>())
+        {
+            foreach (var classes in cb.Classes)
+            {
+                IType type = appDomain.LoadedTypes[$"{classes.Namespace}.{classes.Class}"];
+                var instance = new ILTypeInstance(type as ILType,false);
+                var clrInstance = cb.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+                clrInstance.enabled = false;
+                clrInstance.ILInstance = instance;
+                clrInstance.AppDomain = appDomain;
+                instance.CLRInstance = clrInstance;
+            }
+        }
+    }
+
     
     
     /// <summary>

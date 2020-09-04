@@ -1,4 +1,4 @@
-# JENGINE v0.4.2
+# JENGINE v0.4.3
 
 
 
@@ -128,10 +128,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- Advanced hotupdate dependecies cleaner
-
-- Enhanced development mode
-- Allows custom scenes addition
+- **Custom scenes** bug fixed
+- **Pdb symbol** bug fixed
+- **Enhanced** JBehaviour
+- **Autobind** classes from hotupdate dll to prefabs
+- **Support** more Unity versions
 
 [Click here to see all version updates](CHANGE.md)
 

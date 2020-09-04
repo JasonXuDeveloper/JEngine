@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using JEngine.Core;
 using UnityEditor;
+using UnityEditor.Build.Content;
 using UnityEngine;
 
 namespace libx
@@ -60,30 +61,31 @@ namespace libx
                 }
             }
 
-            EditorBuildSettingsScene[] scenes = null;
-            int InitCount = 1;
+            List<EditorBuildSettingsScene> _scenes =new List<EditorBuildSettingsScene>(0);
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (scene.path.Contains("Init.unity"))
+                if (scene.path.Contains("Init.unity") || _scenes.Exists(settingsScene => settingsScene.path == scene.path))
                 {
-                    InitCount = 0;
-                    break;
+                    continue;
                 }
+                _scenes.Add(scene);
             }
 
-            scenes = new EditorBuildSettingsScene[assets.Count + EditorBuildSettings.scenes.Length + InitCount];
+            EditorBuildSettingsScene[] scenes = new EditorBuildSettingsScene[assets.Count + _scenes.Count + 1];
             
             scenes[0] = new EditorBuildSettingsScene("Assets/Init.unity", true);//添加启动场景
-            for (var index = 1; index < assets.Count+1; index++)//添加热更场景（用于编译测试）
+            int _index = 1;
+            for (var index = 0; index < _scenes.Count; index++)//添加其他场景（用户自己加的）
             {
-                var asset = assets[index-1]; 
+                scenes[index + 1] = new EditorBuildSettingsScene(_scenes[index].path, true);
+                _index++;
+            }
+            for (var index = _index; index < scenes.Length; index++)//添加热更场景（用于编译测试）
+            {
+                var asset = assets[index - _index]; 
                 scenes[index] = new EditorBuildSettingsScene(asset, true);
             }
-            for (var index = 1; index < EditorBuildSettings.scenes.Length+1; index++)//添加其他场景（用户自己加的）
-            {
-                var asset = EditorBuildSettings.scenes[index-1]; 
-                scenes[index] = asset;
-            }
+
             EditorBuildSettings.scenes = scenes;
         }
 

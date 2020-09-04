@@ -152,7 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Classes:
   - Namespace: JEngine.Examples
-    Class: AutoBindDemo
+    Class: AutoBindDemo1
+  - Namespace: JEngine.Examples
+    Class: AutoBindDemo2
 --- !u!4 &627944075
 Transform:
   m_ObjectHideFlags: 0
