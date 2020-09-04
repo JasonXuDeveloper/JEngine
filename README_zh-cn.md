@@ -269,7 +269,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 [点击阅读](Docs/zh-cn/Extension.md)
 
-<br>
+> ILRuntime文档可帮助理解C#热更，热更的地方出了问题，就从文档里找原因即可
 
 [ILRuntime文档](https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html)
 

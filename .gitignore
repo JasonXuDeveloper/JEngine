@@ -1,5 +1,5 @@
 .DS_Store
 .idea/*
-HotUpdateScripts/HotUpdateScripts/.vs/*
-Assets/Dependencies/JEngine/Core/.idea/*
+UnityProject/Assets/Dependencies/JEngine/Core/.idea/*
 UnityProject/.idea/*
+UnityProject/HotUpdateScripts/.vs/*
