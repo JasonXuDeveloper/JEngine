@@ -4,7 +4,7 @@
 
 1. 找到并打开**Project/HotUpdateScripts/HotUpdateScripts.sln**
 2. 选择**Program.cs** 并打开
-3. 更改但**不要删除** *RunGame()*方法
+3. 更改但**不要删除RunGame()**方法
 4. **以Release模式打包DLL**
 5. 回到Unity，进行基础指南的**4&5步**
 6. 开启开发模式，运行游戏
