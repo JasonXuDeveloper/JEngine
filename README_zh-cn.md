@@ -63,9 +63,6 @@ JEngine能够做些什么？
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-  ```
-  
-  ```
   
 - UI**绑定数据**？轻松搞定！
   
@@ -94,19 +91,14 @@ JEngine能够做些什么？
       {...}
     
       public override void Run()
-  {...}
+    {...}
     
       public override void Loop()
       {...}
-    
-    ```
-  
-  public override void End()
+      
+      public override void End()
       {...}
     }
-  
-    ```
-  
     ```
   
 - **[基于XAsset的资源加载方案](Docs/zh-cn/JResource.md)** 

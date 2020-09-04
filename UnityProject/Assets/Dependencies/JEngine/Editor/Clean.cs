@@ -28,6 +28,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using JEngine.Core;
+using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
@@ -54,7 +55,7 @@ class Clean
             Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
         }
         
-        DirectoryInfo library = new DirectoryInfo(Application.dataPath+"/Library/ScriptAssemblies");
+        DirectoryInfo library = new DirectoryInfo(new DirectoryInfo(Application.dataPath).Parent.FullName+"/Library/ScriptAssemblies");
         DirectoryInfo di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
         var files = di.GetFiles();
         if (files.Length > 1)
@@ -71,7 +72,7 @@ class Clean
                     DLLMgr.Delete(file.FullName);
                     counts++;
                 }
-                else if(!name.Contains("HotUpdateScripts")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
+                else if(!name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
                 {
                     File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
                 }

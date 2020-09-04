@@ -64,9 +64,6 @@ What can JEngine do?
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-  ```
-  
-  ```
   
 - **Bindable to data**
   
@@ -95,19 +92,14 @@ What can JEngine do?
       {...}
     
       public override void Run()
-  {...}
+    {...}
     
       public override void Loop()
       {...}
-    
-    ```
-  
-  public override void End()
+      
+      public override void End()
       {...}
     }
-  
-    ```
-  
     ```
   
 - **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset

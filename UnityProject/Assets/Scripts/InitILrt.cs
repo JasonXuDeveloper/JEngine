@@ -6,6 +6,7 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
+using JEngine.Core;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -15,8 +16,12 @@ using Object = UnityEngine.Object;
 
 public class InitILrt : MonoBehaviour
 {
+    public static AppDomain appDomain;
+    
     public static unsafe void InitializeILRuntime(AppDomain appdomain)
     {
+        appDomain = appdomain;
+        
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
@@ -133,6 +138,9 @@ public class InitILrt : MonoBehaviour
 
         #endregion
     }
+
+    
+    
     /// <summary>
     /// GetComponent 的实现
     /// </summary>

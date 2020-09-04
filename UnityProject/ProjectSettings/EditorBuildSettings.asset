@@ -39,6 +39,75 @@ EditorBuildSettings:
     path: Assets/Init.unity
     guid: 73f345c91023e4a0ea39fc1f7c559b0a
   - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
+    path: Assets/Init.unity
+    guid: 73f345c91023e4a0ea39fc1f7c559b0a
+  - enabled: 1
     path: Assets/HotUpdateResources/Scene/Game.unity
     guid: 6b0710e96413b44a295f199f4cb022bb
   m_configObjects: {}
