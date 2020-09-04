@@ -1,6 +1,6 @@
 ## All Versions
 
-### v0.4.3(September 5, 2020)
+### v0.4.3(September 4, 2020)
 
 - **Custom scenes** bug fixed
 - **Pdb symbol** bug fixed
