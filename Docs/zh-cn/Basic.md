@@ -6,11 +6,10 @@
 
 2. 将**Project目录用Unity打开**
 
-3. 找到**HotUpdateResources/DLL**以及**HotUpdateResources/Scene**, 确保你能找到**HotUpdateScripts.dll以及Game.unity**
+3. 找到**HotUpdateResources/Scene**, 确保你能找到**Game.unity**，并且**HotUpdateResources/DLL/~Hidden文件夹中有生成的DLL文件（这个文件夹Unity内看不见）**
 
    <img src="https://s1.ax1x.com/2020/07/14/Ut6vWR.png" alt="check1" style="width:50%;margin-left:25%" />
-
-   <img src="https://s1.ax1x.com/2020/07/14/UtcFTe.png" alt="check2" style="width:50%;margin-left:25%" />
+   
 
 4. 找到并点击顶部导航栏中**JEngine/XAsset/Build Bundles**选项
 
