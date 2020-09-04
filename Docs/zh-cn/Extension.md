@@ -22,6 +22,7 @@
 4. **运行**后会**自动绑定**，需要注意的是**添加的脚本不会赋值**，**里面的Properties需要自己赋值**
 5. 继承**MonoBehaviour**的脚本，**激活需要enabled = true 以及 调用Awake()**
 6. 继承**JBehabviour**的脚本，直接调用**Activate()**
+7. 必要时，可以调用**InitILrt.BindAllScripts();**来请求自动绑定（Program.cs里面有，请勿删除）
 
 ![autobind](https://s1.ax1x.com/2020/09/04/wkGjqe.jpg)
 

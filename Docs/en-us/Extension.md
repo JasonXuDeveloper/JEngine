@@ -21,6 +21,7 @@
 4. Will **auto bind ** **when running**，need to be aware that**those scripts been auto bind has no params, you need to set properties and params in code**
 5. **MonoBehaviour**'s scripts，**requires set enabled = true and call Awake()** to activate the script
 6. **JBehabviour**'s scripts，just call **Activate()** to activate
+7. When necessary, can call **InitILrt.BindAllScripts();** to request auto-bind (It has been called in Program.cs, please do not delete it)
 
 ![autobind](https://s1.ax1x.com/2020/09/04/wkGjqe.jpg)
 
