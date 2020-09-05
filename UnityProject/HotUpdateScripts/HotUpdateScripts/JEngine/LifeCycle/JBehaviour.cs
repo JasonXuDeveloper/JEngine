@@ -38,37 +38,37 @@ namespace JEngine.LifeCycle
         /// Loop in frame or millisecond
         /// 帧模式或毫秒模式
         /// </summary>
-        [HideInInspector] public bool FrameMode;
+        [HideInInspector] public bool FrameMode { get; set; } = true;
 
         /// <summary>
         /// Frequency of loop, if frame = false, this field stands for milliseconds
         /// 循环频率，如果是毫秒模式，单位就是ms
         /// </summary>
-        [HideInInspector] public int Frequency;
+        [HideInInspector] public int Frequency { get; set; } = 1;
 
         /// <summary>
         /// Pause before init
         /// 在初始化之前暂停
         /// </summary>
-        [HideInInspector] private bool Paused;
+        [HideInInspector] private bool Paused { get; set; } = false;
 
         /// <summary>
         /// Whether inited or not
         /// 是否完成初始化
         /// </summary>
-        [HideInInspector] private bool Inited;
+        [HideInInspector] private bool Inited { get; set; } = false;
 
         /// <summary>
         /// Whether has run or not
         /// 是否完成Run
         /// </summary>
-        [HideInInspector] private bool HasRun;
+        [HideInInspector] private bool HasRun { get; set; } = false;
 
         /// <summary>
         /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called
         /// JUI运行模式，Loop模式下UI将在特定频率更新，Message模式UI将在被通知后更新
         /// </summary>
-        [HideInInspector] public bool NotLoop;
+        [HideInInspector] public bool NotLoop { get; set; } = false;
         #endregion
 
         #region METHODS
@@ -160,7 +160,7 @@ namespace JEngine.LifeCycle
         /// <summary>
         /// Whether object is alive or not
         /// </summary>
-        private bool _alive;
+        private bool _alive { get; set; }
         /// <summary>
         /// Do the loop
         /// </summary>

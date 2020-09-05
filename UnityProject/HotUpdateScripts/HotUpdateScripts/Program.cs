@@ -42,7 +42,7 @@ namespace HotUpdateScripts
             */
             InitILrt.BindAllScripts();
 
-
+            return;
 
 
 

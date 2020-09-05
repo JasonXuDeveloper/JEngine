@@ -27,11 +27,21 @@ using System;
 using JEngine.Core;
 using JEngine.LifeCycle;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace JEngine.Examples
 {
     public class AutoBindDemo1 : JBehaviour
     {
+        public int IntField1;
+
+        public string StringField1;
+
+        public EventSystem EventSystemField1;
+
+        public GameObject GameObjectField1;
+
+
         public override void Init()
         {
             Log.Print("AutoBindDemo1::Inited");
@@ -40,6 +50,12 @@ namespace JEngine.Examples
 
     public class AutoBindDemo2 : MonoBehaviour
     {
+        public int PublicField2;
+
+        [SerializeField] private string AttributeField2;
+
+        private bool PrivateField2;
+
         public void Awake()
         {
             Log.Print("AutoBindDemo2::Started");

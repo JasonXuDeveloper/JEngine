@@ -41,7 +41,7 @@ public class Init : MonoBehaviour
             }
             else
             {
-                Log.PrintWarning("DLL文件不存在");
+                Log.PrintError("DLL文件不存在");
                 return;
             }
                 
@@ -52,7 +52,7 @@ public class Init : MonoBehaviour
                 var pdbTime = File.GetLastAccessTime(pdbPath);
                 if (pdbTime > dllTime.AddSeconds(10))
                 {
-                    Log.PrintWarning("PDB于DLL版本不匹配，已跳过使用PDB");
+                    Log.PrintError("PDB于DLL版本不匹配，已跳过使用PDB");
                 }
                 else
                 {

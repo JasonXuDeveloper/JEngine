@@ -19,7 +19,7 @@
 1. 给GameObject**添加Class Bind脚本**
 2. 想给该GameObject加几个热更脚本，**就把Classes的size修改为该数字**
 3. **Namespace写命名空间 (默认HotUpdateScripts，即热更命名空间)，Class写脚本类名**
-4. **运行**后会**自动绑定**，需要注意的是**添加的脚本不会赋值**，**里面的Properties需要自己赋值**
+4. **运行**后会**自动绑定**，需要注意的是**添加的脚本不会赋值**，**里面的Properties需要自己赋值**，推荐使用**ScriptableObject**可以**可视化赋值**且**可以被热更新**，**只需要手动把自动添加的脚本的值和ScriptableObject绑定即可**
 5. 继承**MonoBehaviour**的脚本，**激活需要enabled = true 以及 调用Awake()**
 6. 继承**JBehabviour**的脚本，直接调用**Activate()**
 7. 必要时，可以调用 **InitILrt.BindAllScripts();** 来请求自动绑定（Program.cs里面有，请勿删除）

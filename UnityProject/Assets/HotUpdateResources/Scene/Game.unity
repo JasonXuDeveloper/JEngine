@@ -153,8 +153,26 @@ MonoBehaviour:
   Classes:
   - Namespace: JEngine.Examples
     Class: AutoBindDemo1
+    ActiveAfter: 1
+    RequireBindFields: 1
+    Fields:
+    - fieldType: 11
+      fieldName: EventSystemField1
+      value: EventSystem.EventSystem
+    - fieldType: 2
+      fieldName: IntField1
+      value: 100
+    - fieldType: 9
+      fieldName: StringField1
+      value: "\u8FD9\u662F\u81EA\u52A8\u8D4B\u503C\u7684string"
+    - fieldType: 10
+      fieldName: GameObjectField1
+      value: ClassBindDemo
   - Namespace: JEngine.Examples
     Class: AutoBindDemo2
+    ActiveAfter: 1
+    RequireBindFields: 0
+    Fields: []
 --- !u!4 &627944075
 Transform:
   m_ObjectHideFlags: 0

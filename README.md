@@ -1,4 +1,4 @@
-# JENGINE v0.4.3
+# JENGINE v0.4.4
 
 
 
@@ -118,6 +118,10 @@ What can JEngine do?
   });
   ```
 
+- **[Auto bind scripts from Hot-Update DLL to GameObjects & Prefabs](Docs/en-us/AutoBind.md)**
+
+  ![autobind](https://s1.ax1x.com/2020/09/05/wErsiV.png)
+
 - **More to explore!!!**
 
 JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
@@ -128,11 +132,8 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Custom scenes** bug fixed
-- **Pdb symbol** bug fixed
-- **Enhanced** JBehaviour
-- **Autobind** classes from hotupdate dll to prefabs
-- **Support** more Unity versions
+- **Autobind** support auto set fields
+- **Enhance Autobind**
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -269,11 +270,25 @@ Please clone this framework into your project and keep this directory structure
 
 [Click here to have a read](Docs/en-us/Basic.md)
 
-#### Extensions
 
-> The extensions will show you how to hot-update your game in coding levels (How to make hot-updatable codes)
+
+#### Hot Update Code
+
+> How to write
 
 [Click here to have a read](Docs/en-us/Extension.md)
+
+
+
+> How to auto bind codes
+
+[Click here to have a read](Docs/en-us/AutoBind.md)
+
+
+
+> ILRuntime documents which leads to C# hot update
+
+[ILRuntime Document](https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html)
 
 
 
@@ -297,9 +312,7 @@ Please clone this framework into your project and keep this directory structure
 
 ## Development Environment
 
-- Debuging Unity Engine Version: 2019.3.13f1
-
-  > Should supports Unity Engine From 2018 LTS till the latest
+- Debuging Unity Engine Version: 2019.3.13f1 (Please use at least this version)
 
 - .net Environment: .net 2.0 standard
 
