@@ -16,6 +16,10 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 
 [中文文档](README_zh-cn.md)
 
+
+
+[Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
+
 What can JEngine do?
 
 - **[Hot-update](Docs/en-us/WhyHotUpdate.md) solution**
