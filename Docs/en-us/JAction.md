@@ -42,11 +42,11 @@
   ```
 
 - ```c#
-  Excute(bool onMainThread = false)
+  Execute(bool onMainThread = false)
   ```
 
 - ```c#
-  ExcuteAsync(Action callback = null, bool onMainThread = false)
+  ExecuteAsync(Action callback = null, bool onMainThread = false)
   ```
 
 - ```c#
@@ -84,13 +84,13 @@
      .Do(() => Log.Print("Bye from JAction"))
    ```
 
-4. **To Excute JAction (IMPORTANT)**:
+4. **To Execute JAction (IMPORTANT)**:
 
    ```c#
-   j.Excute();
+   j.Execute();
    ```
 
-5. **All done!** (Remember to call **Excute** method when if you want to excute your action)
+5. **All done!** (Remember to call **Execute** method when if you want to Execute your action)
 
 ##### Extension
 
@@ -102,7 +102,7 @@
      .Repeat(xxx,times,frequecny)
      .Delay(duration)
      .Do(xxx)
-     .Excute();
+     .Execute();
    ```
 
 2. Example:
