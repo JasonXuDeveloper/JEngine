@@ -150,35 +150,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Classes:
+  ScriptsToBind:
   - Namespace: JEngine.Examples
     Class: AutoBindDemo1
     ActiveAfter: 1
     RequireBindFields: 1
     Fields:
-    - fieldType: 11
-      fieldName: EventSystemField1
-      value: EventSystem.EventSystem
-    - fieldType: 2
-      fieldName: IntField1
-      value: 100
-    - fieldType: 9
-      fieldName: StringField1
-      value: "\u8FD9\u662F\u81EA\u52A8\u8D4B\u503C\u7684string"
-    - fieldType: 10
-      fieldName: GameObjectField1
-      value: ClassBindDemo
+      array:
+      - fieldType: 9
+        fieldName: StringField1
+        value: test string is here
+      - fieldType: 2
+        fieldName: IntField1
+        value: 123
+      - fieldType: 10
+        fieldName: GameObjectField1
+        value: ClassBindDemo
+      - fieldType: 11
+        fieldName: EventSystemField1
+        value: EventSystem.EventSystem
   - Namespace: JEngine.Examples
     Class: AutoBindDemo2
-    ActiveAfter: 1
+    ActiveAfter: 0
     RequireBindFields: 1
     Fields:
-    - fieldType: 2
-      fieldName: PublicField2
-      value: 1000
-    - fieldType: 9
-      fieldName: AttributeField2
-      value: 1092w8egfdhsj
+      array:
+      - fieldType: 2
+        fieldName: PublicField2
+        value: 999
+      - fieldType: 9
+        fieldName: AttributeField2
+        value: Attr String private can be set
 --- !u!4 &627944075
 Transform:
   m_ObjectHideFlags: 0

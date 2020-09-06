@@ -13,7 +13,7 @@
 
 ### Params
 
-- Classes
+- ScriptsToBind
 
   - **Size is how many scripts** from hot update dll you wanna add into this gameObject/ prefab
 
@@ -41,9 +41,7 @@
 
 - Field Type
 
-  - **Type of this value** (Support **number, string, GameoObject and Unity Components which are not hot updatable**)
-
-    ![type](https://s1.ax1x.com/2020/09/05/wEs4XQ.png)
+  - **Type of this value** (Support **number, bool, string, GameoObject and Unity Components which are not hot updatable**)
 
 - Field Name
 
@@ -55,10 +53,11 @@
 
   - Value of this value
     - If it is a number or a string, just write them in
+    - If it is a bool value, write true or false
     - If it is a **GameObject**，please write **full path**，**if it is a child GameObject of a parent GameObject, parent needs to be Active**; **if it is not a child GameObject, itself needs to be Active**, EG:**Path,Canvas/Text，Text can be inactive, but Canvas must be Active; Path,Demo, Demo GameObject must be Active**
     - If it is a **Unity Component**, please write **full path, referenced by above GameObject**, and then add a **".", at the end put the name of script**,**EG: Canvas/Text.Text，Which means get Text script From this GameObject**
-
+  
   
 
-![show](https://s1.ax1x.com/2020/09/05/wErsiV.png)
+![show](https://s1.ax1x.com/2020/09/06/wenolT.png)
 

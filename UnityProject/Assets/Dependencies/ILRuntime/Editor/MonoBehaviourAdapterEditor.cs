@@ -1,4 +1,5 @@
 ﻿#if UNITY_EDITOR
+using System;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 // using LitJson;
@@ -42,25 +43,32 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                 var cType = type.TypeForCLR;
                 if (cType.IsPrimitive) //如果是基础类型
                 {
-                    if (cType == typeof(float))
+                    try
                     {
-                        instance[i.Value] = EditorGUILayout.FloatField(name, (float) instance[i.Value]);
+                        if (cType == typeof(float))
+                        {
+                            instance[i.Value] = EditorGUILayout.FloatField(name, (float) instance[i.Value]);
+                        }
+                        else if (cType == typeof(int))
+                        {
+                            instance[i.Value] = EditorGUILayout.IntField(name, (int) instance[i.Value]);
+                        }
+                        else if (cType == typeof(long))
+                        {
+                            instance[i.Value] = EditorGUILayout.LongField(name, (long) instance[i.Value]);
+                        }
+                        else if (cType == typeof(string))
+                        {
+                            instance[i.Value] = EditorGUILayout.TextArea(name, (string) instance[i.Value]);
+                        }
+                        else
+                        {
+                            //剩下的大家自己补吧
+                        }
                     }
-                    else if (cType == typeof(int))
+                    catch (Exception e)
                     {
-                        instance[i.Value] = EditorGUILayout.IntField(name, (int) instance[i.Value]);
-                    }
-                    else if (cType == typeof(long))
-                    {
-                        instance[i.Value] = EditorGUILayout.LongField(name, (long) instance[i.Value]);
-                    }
-                    else if (cType == typeof(string))
-                    {
-                        instance[i.Value] = EditorGUILayout.TextArea(name, (string) instance[i.Value]);
-                    }
-                    else
-                    {
-                        //剩下的大家自己补吧
+                        instance[i.Value] = EditorGUILayout.TextArea(name, $"(null)");
                     }
                 }
                 else

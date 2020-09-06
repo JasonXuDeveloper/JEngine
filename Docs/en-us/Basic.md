@@ -2,15 +2,13 @@
 
 > The basics tells you how to use this framework in basics
 
-1. **Clone** this project
+1. **Clone** this project or **Import Packages/UnityPlugins/JEngine.unitypackage** to a new project
 
 2. Open **Project Directory** via Unity
 
-3. Go to **HotUpdateResources/DLL & HotUpdateResources/Scene**, make sure you have **HotUpdateScripts.dll & Game.unity**
+3. Go to **HotUpdateResources/DLL & HotUpdateResources/Scene**, make sure you have **Game.unity** and **HotUpdateResources/DLL/~Hidden/HotUpdateScripts.dll** exists
 
    <img src="https://s1.ax1x.com/2020/07/14/Ut6vWR.png" alt="check1" style="width:50%;margin-left:25%" />
-
-   <img src="https://s1.ax1x.com/2020/07/14/UtcFTe.png" alt="check2" style="width:50%;margin-left:25%" />
 
 4. On top menu, select **JEngine/XAsset/Build Bundles**
 

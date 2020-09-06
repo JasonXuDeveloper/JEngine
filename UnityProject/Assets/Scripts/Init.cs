@@ -107,14 +107,4 @@ public class Init : MonoBehaviour
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
     }
-    
-    private void OnDestroy()
-    {
-        if (fs != null)
-            fs.Close();
-        if (pdb != null)
-            pdb.Close();
-        fs = null;
-        pdb = null;
-    }
 }

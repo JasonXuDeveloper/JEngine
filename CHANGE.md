@@ -1,6 +1,17 @@
 ## All Versions
 
-### v0.4.5 (September 56 2020)
+### v0.4.6 (September 7 2020)
+
+- **MonoBehaviour Adapter Inspector window show error fields**
+- **Autobind editor window**
+- **Autobind support bool value**
+- **Autobind support private and static and instance fields**
+
+
+
+
+
+### v0.4.5 (September 6 2020)
 
 - **ILRuntime Adpater Generater**
 - **Enhanced Autobind**

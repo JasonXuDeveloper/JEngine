@@ -2,7 +2,7 @@
 
 > 该文章将告诉您如何初步使用JEngine
 
-1. **Clone该项目**
+1. **Clone该项目**或**将Packages/UnityPlugins/JEngine.unitypackage导入新项目**
 
 2. 将**Project目录用Unity打开**
 
@@ -10,7 +10,6 @@
 
    <img src="https://s1.ax1x.com/2020/07/14/Ut6vWR.png" alt="check1" style="width:50%;margin-left:25%" />
    
-
 4. 找到并点击顶部导航栏中**JEngine/XAsset/Build Bundles**选项
 
    <img src="https://s1.ax1x.com/2020/07/14/Ut6qwF.png" alt="menu" style="width:75%;margin-left:12.5%" />

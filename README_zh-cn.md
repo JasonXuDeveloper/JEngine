@@ -10,7 +10,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
-> 将在100收藏后进行一次直播教学
+> 将于2020年9月19日直播
 
 [English Document](README.md)
 
@@ -96,11 +96,11 @@ JEngine能够做些什么？
       {...}
     
       public override void Run()
-    {...}
+      {...}
     
       public override void Loop()
       {...}
-      
+    
       public override void End()
       {...}
     }
@@ -127,7 +127,12 @@ JEngine能够做些什么？
 
 - **[自动绑定热更脚本到GameObject](Docs/zh-cn/AutoBind.md)**
 
-  ![autobind](https://s1.ax1x.com/2020/09/05/wErsiV.png)
+  - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
+  - 输入命名空间，类名，即可自动绑定热更脚本至物体
+    - 可对该脚本public/private/static数值进行赋值
+  - 支持数字，布尔，字符串，GameObject和GameObject上挂在的脚本
+
+  ![autobind](https://s1.ax1x.com/2020/09/06/wenolT.png)
 
 - 还有更多功能，尽情自行探索！
 
@@ -139,11 +144,10 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **ILRuntime适配器自动生成器**
-- **优化自动绑定**
-- **自动绑定更少GC**
-- **自动绑定后自动销毁**
-- **不需要调用任何方法来自动绑定**
+- **MonoBehaviour适配器可在Inspector显示异常数值**
+- **自动绑定脚本Inspector面板**
+- **自动绑定支持自动赋值布尔值**
+- **自动绑定支持Private/Static/Instance**
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -261,7 +265,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## JEngine热更逻辑
 
-![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
+![flowchart](https://s1.ax1x.com/2020/09/06/wenIpV.png)
 
 
 

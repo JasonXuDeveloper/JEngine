@@ -11,7 +11,7 @@
 
 ### 参数介绍
 
-- Classes
+- ScriptsToBind
 
   - 要添加**多少个**热更DLL里的**脚本**
 
@@ -39,9 +39,7 @@
 
 - Field Type
 
-  - 该值的**类型**（支持**数字类型**，**字符串类型**，**GameObject**和**挂在GameObject上面的不可热更的脚本**）
-
-    ![type](https://s1.ax1x.com/2020/09/05/wEs4XQ.png)
+  - 该值的**类型**（支持**数字类型**，**布尔值类型**，**字符串类型**，**GameObject**和**挂在GameObject上面的不可热更的脚本**）
 
 - Field Name
 
@@ -53,10 +51,11 @@
 
   - 该值的数值
     - 如果是**数字或字符串**，直接写进去
+    - 如果是**布尔值**，写true或false
     - 如果是**GameObject**，请写**完整路径**，**如果是一个GameObject的子物体，父物体要Active**；**如果不是子物体，本身要Active**，例如：**路径，Canvas/Text，其中Text可以不Active，Canvas必须Active；路径，Demo，其中Demo必须Active**
     - 如果是**Unity Component**，即不可热更的挂载脚本，需要输入**完整路径，参考GameObject**，**加上"."，最后加上脚本名称**，**例如：Canvas/Text.Text，即获取这个GameObject的Text组件**
-
+  
   
 
-![show](https://s1.ax1x.com/2020/09/05/wErsiV.png)
+![show](https://s1.ax1x.com/2020/09/06/wenolT.png)
 
