@@ -129,7 +129,7 @@ JEngine能够做些什么？
 
   - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
   - 输入命名空间，类名，即可自动绑定热更脚本至物体
-    - 可对该脚本public/private/static数值进行赋值
+  - 可对该脚本public/private/static数值进行赋值
   - 支持数字，布尔，字符串，GameObject和GameObject上挂在的脚本
 
   ![autobind](https://s1.ax1x.com/2020/09/06/wenolT.png)

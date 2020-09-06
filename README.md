@@ -123,11 +123,11 @@ What can JEngine do?
   });
   ```
 
-- **[Auto bind scripts from Hot-Update DLL to GameObjects & Prefabs](Docs/en-us/AutoBind.md)**
+- **[Auto bind](Docs/en-us/AutoBind.md)** scripts from Hot-Update DLL to GameObjects & Prefabs
 
   - Want to make scripts from hot-update project on to GameObject? Too much to write codes to add it? Here is a solution!
-  - Fill in namespace, and class of a hotupdate scripte, it will automatically bind to a GameObject
-    - Can set values of public/private/static fields automatically
+  - Fill in namespace, and class of a hotupdate scripts, it will automatically bind to a GameObject
+  - Can set values of public/private/static fields automatically
   - Supports numbers, bools, strings, GameObject and Components on GameObject
 
   ![autobind](https://s1.ax1x.com/2020/09/06/wenolT.png)
