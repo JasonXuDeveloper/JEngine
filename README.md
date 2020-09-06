@@ -1,4 +1,4 @@
-# JENGINE v0.4.4
+# JENGINE v0.4.5
 
 
 
@@ -27,6 +27,7 @@ What can JEngine do?
   - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
   - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into its Unity Project.
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
+  - **Auto bind** hot update scripts to gameObject, no need to write codes to add stuffs
 
 - **Own [Action](Docs/en-us/JAction.md) solution**
 
@@ -136,8 +137,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Autobind** support auto set fields
-- **Enhance Autobind**
+- **ILRuntime Adpater Generater**
+- **Enhanced Autobind**
+- **Less GC on Autobind**
+- **Auto Destory when Finish Autobind**
+- **No need to call any method to require autobind**
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -150,6 +154,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
   - No need to learn Lua, **C# codes can be hot-updated**
   - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
   - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
+  - **Auto bind** hot update scripts to gameObject, no need to write codes to add stuffs
 
 - **[JBehaviour](Docs/en-us/JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
 

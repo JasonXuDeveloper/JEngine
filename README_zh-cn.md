@@ -1,4 +1,4 @@
-# JENGINE v0.4.4
+# JENGINE v0.4.5
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
@@ -22,10 +22,11 @@ JEngine能够做些什么？
 
 - **[热更新解决方案 ](Docs/zh-cn/WhyHotUpdate.md)**
 
-  - **资源热更**来自[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
-  - **C#代码热更**来自[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
+  - **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
+  - **C#代码热更**基于[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
   - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
   - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
+  - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
 
 - **[Action队列解决方案](Docs/zh-cn/JAction.md)**
 
@@ -138,8 +139,11 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **自动绑定**支持自动赋值
-- **优化自动绑定处理机制**
+- **ILRuntime适配器自动生成器**
+- **优化自动绑定**
+- **自动绑定更少GC**
+- **自动绑定后自动销毁**
+- **不需要调用任何方法来自动绑定**
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -151,6 +155,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
   - 无需学习Lua，**C#代码能够直接热更**！
   - 将**不同类型的资源放进指定文件夹**，只需**点击**目录中的*JEngine/XAsset/Build Bundles***按钮**，即可**自动生成热更资源！**
   - **热更DLL加密**，AES加密，目前**最安全的加密方式**！
+  - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
 
 - **[JBehaviour](Docs/zh-cn/JBehaviour.md)**是一个**基于但代替MonoBehaviour**的解决方案
 

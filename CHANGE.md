@@ -1,5 +1,17 @@
 ## All Versions
 
+### v0.4.5 (September 56 2020)
+
+- **ILRuntime Adpater Generater**
+- **Enhanced Autobind**
+- **Less GC on Autobind**
+- **Auto Destory when Finish Autobind**
+- **No need to call any method to require autobind**
+
+
+
+
+
 ### v0.4.4 (September 5, 2020)
 
 - **Autobind** support auto set fields

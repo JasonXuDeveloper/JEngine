@@ -28,7 +28,6 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using JEngine.Core;
-using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {

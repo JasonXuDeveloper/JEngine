@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using JEngine.Core;
+using UnityEngine;
 
-namespace MyAPI
+public class ExampleAPI :MonoBehaviour
 {
-    public class ExampleAPI :MonoBehaviour
+    public virtual void ExampleMethod()
     {
-        
+        Log.Print("ExampleAPI::ExampleMethod");
     }
 }

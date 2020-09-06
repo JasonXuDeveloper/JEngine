@@ -48,16 +48,7 @@ public class Init : MonoBehaviour
             //查看是否有PDB文件
             if (File.Exists(pdbPath) && UsePdb)
             {
-                var dllTime = File.GetLastAccessTime(dllPath);
-                var pdbTime = File.GetLastAccessTime(pdbPath);
-                if (pdbTime > dllTime.AddSeconds(10))
-                {
-                    Log.PrintError("PDB于DLL版本不匹配，已跳过使用PDB");
-                }
-                else
-                {
-                    pdb = new MemoryStream(DLLMgr.FileToByte(pdbPath));
-                }
+                pdb = new MemoryStream(DLLMgr.FileToByte(pdbPath));
             }
         }
         else//解密加载
@@ -81,6 +72,7 @@ public class Init : MonoBehaviour
                 return;
             }
         }
+       
         try
         {
             appdomain.LoadAssembly(fs, pdb, new PdbReaderProvider());
@@ -90,15 +82,20 @@ public class Init : MonoBehaviour
             if (!UsePdb)
             {
                 Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");   
+                Log.PrintError("加载热更DLL错误：\n" + e.Message);
+                return;
             }
-            else
+
+            try
             {
-                Log.PrintError("加载热更DLL失败");
+                appdomain.LoadAssembly(fs, null, new PdbReaderProvider());
+                Log.PrintError("PDB不可用，可能是DLL和PDB版本不一致，已跳过PDB使用");
             }
-            Log.PrintError("加载热更DLL错误：\n" + e.Message);
-            return;
+            catch(Exception ex)
+            {
+                Log.PrintError("加载热更DLL错误：\n" + ex.Message);
+            }
         }
-            
             
         InitILrt.InitializeILRuntime(appdomain);
         OnHotFixLoaded();

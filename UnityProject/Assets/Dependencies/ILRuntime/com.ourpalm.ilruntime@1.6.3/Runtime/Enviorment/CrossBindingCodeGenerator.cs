@@ -21,7 +21,7 @@ namespace ILRuntime.Runtime.Enviorment
             public string Modifier;
             public string OverrideString;
         }
-        public static string GenerateCrossBindingAdapterCode(Type baseType, string nameSpace)
+        public static string GenerateCrossBindingAdapterCode(Type baseType, string nameSpace = "ProjectAdapter")
         {
             StringBuilder sb = new StringBuilder();
             MethodInfo[] methods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);

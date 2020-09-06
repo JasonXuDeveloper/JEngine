@@ -5,10 +5,9 @@
 1. **Add Class Bind Script** on a GameObject
 2. **Change the size of Classes to whatever numbers of scripts you wanna auto add**
 3. **Namespace section put the namespace of hot update script (default is HotUpdateScripts, which is the hot-update namespace), Class section put the script name**
-4. Will **auto bind ** **when running**
+4. Will **auto bind ** **when running**, can check Active After to active automatically
 5. **MonoBehaviour**'s scripts，**requires set enabled = true and call Awake()** to activate the script
 6. **JBehabviour**'s scripts，just call **Activate()** to activate
-7. When necessary, can call **InitILrt.BindAllScripts();** to request auto-bind (It has been called in Program.cs, please do not delete it)
 
 
 

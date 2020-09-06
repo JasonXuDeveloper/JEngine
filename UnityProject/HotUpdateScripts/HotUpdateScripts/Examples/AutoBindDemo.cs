@@ -54,8 +54,6 @@ namespace JEngine.Examples
 
         [SerializeField] private string AttributeField2;
 
-        private bool PrivateField2;
-
         public void Awake()
         {
             Log.Print("AutoBindDemo2::Started");
