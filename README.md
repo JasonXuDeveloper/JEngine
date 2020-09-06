@@ -69,11 +69,11 @@ What can JEngine do?
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-  
-- **Bindable to data**
-  
-  - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
-  
+    
+  - **Bindable to data**
+    
+    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
+    
     ```c#
     var JUI = b.AddComponent<JUI>()
       .Bind(data.b)

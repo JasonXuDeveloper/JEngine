@@ -68,11 +68,11 @@ JEngine能够做些什么？
     t.FrameMode = false;//Run in ms
     t.Frequency = 1000;//Loop each 1s
     ```
-  
-- UI**绑定数据**？轻松搞定！
-  
-  - 将**UI和数据绑定**，当**数据更新**，即可**执行绑定的方法**
-  
+    
+  - UI**绑定数据**？轻松搞定！
+    
+    - 将**UI和数据绑定**，当**数据更新**，即可**执行绑定的方法**
+    
     ```c#
     var JUI = b.AddComponent<JUI>()
       .Bind(data.b)
