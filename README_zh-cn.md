@@ -16,6 +16,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)，框架教程在这里
 
+[知乎链接](https://zhuanlan.zhihu.com/p/218105381)
+
 [Gitee码云链接 （国内快速克隆通道）](https://gitee.com/JasonXuDeveloper/JEngine)
 
 JEngine能够做些什么？

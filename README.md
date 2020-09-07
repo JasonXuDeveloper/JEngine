@@ -18,6 +18,8 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 
 [Wiki Page](https://github.com/JasonXuDeveloper/JEngine/wiki), tutorials are in here
 
+[Zhihu Article](https://zhuanlan.zhihu.com/p/218105381)
+
 [Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
 
 What can JEngine do?
