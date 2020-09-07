@@ -114,7 +114,8 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.GameObject)
                             {
-                                var go = GameObject.Find(field.value);
+                                GameObject go = field.value == "${this}" ? this.gameObject : GameObject.Find(field.value);
+                                
                                 if (go == null)
                                 {
                                     if (field.value.Contains("/")) //如果有父级
@@ -144,7 +145,7 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.UnityComponent)
                             {
-                                var go = GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                GameObject go = field.value.Substring(0,7) == "${this}" ? this.gameObject : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
                                 if (go == null)
                                 {
                                     if (field.value.Contains("/")) //如果有父级

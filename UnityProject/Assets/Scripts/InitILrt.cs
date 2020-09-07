@@ -10,6 +10,7 @@ using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
+using LitJson;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -136,7 +137,7 @@ public class InitILrt : MonoBehaviour
             }
         }
 
-        // JsonMapper.RegisterILRuntimeCLRRedirection(appdomain); //绑定LitJson
+        JsonMapper.RegisterILRuntimeCLRRedirection(appdomain); //绑定LitJson
         CLRBindings.Initialize(appdomain); //CLR绑定
 
         #endregion

@@ -1,0 +1,20 @@
+{
+    "name": "com.malee.reorderablelist",
+    "author": "Chris Foulston",
+    "displayName": "Reorderable List",
+    "version": "1.0.1",
+    "unity": "2018.1",
+    "keywords": [
+        "unity",
+        "editor",
+        "list"
+    ],
+    "description": "Editor extension for managing the ordering of List and Array contents",
+    "samples": [
+        {
+            "displayName": "Examples",
+            "description": "A set of examples highlighting various features of the ReorderableList package",
+            "path": "Samples~/Examples"
+        }
+    ]
+}

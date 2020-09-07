@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.malee.reorderablelist": "https://github.com/cfoulston/Unity-Reorderable-List.git",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.2d.tilemap": "1.0.0",
     "com.unity.ads": "3.4.4",
@@ -46,11 +45,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "com.malee.reorderablelist": {
-      "revision": "HEAD",
-      "hash": "ac1f508240fb752b1f9d7c222c231d7f2a33df87"
-    }
   }
 }

@@ -1,0 +1,17 @@
+{
+    "name": "Malee.ReorderableList.Editor",
+    "references": [
+        "GUID:d178ac4b10764814c8ae876ce6354d19"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -43,15 +43,43 @@ namespace HotUpdateScripts
 
             /*
             * ====================================
+            *           JSaver EXAMPLE
+            * ====================================
+            */
+            JSaver.SaveAsString("data to save", "dataName", "1234567890987654");//Set a data to local storage
+            var encryptStr = JSaver.SaveAsString("data to save", "dataName", "1234567890987654");//set and get the encrypted data string
+            Log.Print($"[JSaver] Str Encrypted result: {encryptStr}");
+            var decryptStr = JSaver.GetString("dataName", "1234567890987654");
+            Log.Print($"[JSaver] Str Decrypted result: {decryptStr}");
+
+            //save custom class
+            DataClass data = new DataClass
+            {
+                id = 666,
+                name = "JEngine牛逼",
+                money = 999999,
+                diamond = 999999,
+                gm = true
+            };
+            encryptStr = JSaver.SaveAsJSON(data, "playerData", "password_is_this");
+            Log.Print($"[JSaver] Custom Class Encrypted result: {encryptStr}");
+            decryptStr = JSaver.GetString("playerData", "password_is_this");//Can convert to string
+            Log.Print($"[JSaver] Str Decrypted result: {decryptStr}");
+
+            DataClass newData = JSaver.GetObject<DataClass>("playerData", "password_is_this");//Can covert to class
+
+
+            /*
+            * ====================================
             *           JResource EXAMPLE
             * ====================================
             */
             var txt = JResource.LoadRes<TextAsset>("Text.txt");
-            Log.Print("Get Resource with Sync method: " + txt.text);
+            Log.Print("[JResource] Get Resource with Sync method: " + txt.text);
 
             JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
             {
-                Log.Print("Get Resource with Async method: " + txt.text);
+                Log.Print("[JResource] Get Resource with Async method: " + txt.text);
             });
 
             /*
@@ -66,13 +94,13 @@ namespace HotUpdateScripts
 
             //Simple use
             JAction j = new JAction();
-            j.Do(() => Log.Print("[j] Hello from JAction!"))
+            j.Do(() => Log.Print("[JAction] [j] Hello from JAction!"))
                 .Execute();
 
             //Until
             JAction j1 = new JAction();
             j1.Until(() => true)
-                .Do(() => Log.Print("[j1] until condition has done"))
+                .Do(() => Log.Print("[JAction] [j1] until condition has done"))
                 .Execute();
 
             //Repeat
@@ -80,7 +108,7 @@ namespace HotUpdateScripts
             j2.Repeat(() =>
             {
                 num++;
-                Log.Print($"[j2] num is: {num}");
+                Log.Print($"[JAction] [j2] num is: {num}");
             }, repeatCounts, repeatDuration)
                 .Execute();
 
@@ -88,7 +116,7 @@ namespace HotUpdateScripts
             JAction j3 = new JAction();
             j3.RepeatWhen(() =>
             {
-                Log.Print($"[j3] num is more than 0, num--");
+                Log.Print($"[JAction] [j3] num is more than 0, num--");
                 num--;
             },
             () => num > 0, repeatDuration, timeout)
@@ -98,41 +126,41 @@ namespace HotUpdateScripts
             JAction j4 = new JAction();
             j4.RepeatUntil(() =>
             {
-                Log.Print($"[j4] num is less than 3, num++");
+                Log.Print($"[JAction] [j4] num is less than 3, num++");
                 num++;
             }, () => num < 3, repeatDuration, timeout)
                 .Execute();
 
             //Delay
             JAction j5 = new JAction();
-            j5.Do(() => Log.Print("[j5] JAction will do something else in 3 seconds"))
+            j5.Do(() => Log.Print("[JAction] [j5] JAction will do something else in 3 seconds"))
                 .Delay(3.0f)
-                .Do(() => Log.Print("[j5] Bye from JAction"))
+                .Do(() => Log.Print("[JAction] [j5] Bye from JAction"))
                 .Execute();
 
             //Execute Async
             JAction j6 = new JAction();
-            _ = j6.Do(() => Log.Print("[j6] This is an async JAction"))
+            _ = j6.Do(() => Log.Print("[JAction] [j6] This is an async JAction"))
                 .ExecuteAsync();
 
             //Execute Async With Callback
             JAction j7 = new JAction();
-            j7.Do(() => Log.Print("[j7] This is an async JAction but runs parallel, callback will be called after it has done"))
-                .ExecuteAsync(() => Log.Print("[j7] Done"));
+            j7.Do(() => Log.Print("[JAction] [j7] This is an async JAction but runs parallel, callback will be called after it has done"))
+                .ExecuteAsync(() => Log.Print("[JAction] [j7] Done"));
 
             //Cancel a JAction
             JAction j8 = new JAction();
-            j8.RepeatWhen(() => Log.Print("[j8] I am repeating!!!"), () => true, 1, timeout)
+            j8.RepeatWhen(() => Log.Print("[JAction] [j8] I am repeating!!!"), () => true, 1, timeout)
                 .ExecuteAsync();
             //You can either add a cancel callback
-            j8.OnCancel(() => Log.Print("[j8] has been cancelled!"));
+            j8.OnCancel(() => Log.Print("[JAction] [j8] has been cancelled!"));
 
             JAction j9 = new JAction();
             j9.Delay(5)
                 .Do(() =>
                 {
                     j8.Cancel();
-                    Log.Print("[j9] cancelled j8");
+                    Log.Print("[JAction] [j9] cancelled j8");
                 })
                 .Execute();
 
@@ -180,7 +208,7 @@ namespace HotUpdateScripts
                     var JUI = Showcase.AddComponent<JUI>()
                     .onInit(t =>
                     {
-                        Log.Print("JUI Loop Example has been inited");
+                        Log.Print("[JUI] JUI Loop Example has been inited");
 
                         var text = t.Element<Text>();
 
@@ -203,11 +231,11 @@ namespace HotUpdateScripts
                     {
                         i--;
                         t1.Element<Text>().text = "I will be destroyed in " + i + " seconds";
-                        Log.Print("JUI Loop Example is doing loop!");
+                        Log.Print("[JUI] JUI Loop Example is doing loop!");
                     })
                     .onEnd(t2 =>
                     {
-                        Log.Print("JUI Loop Example has been destroyed!");
+                        Log.Print("[JUI] JUI Loop Example has been destroyed!");
                     })
                     .Activate();
 
