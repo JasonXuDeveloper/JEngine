@@ -169,54 +169,6 @@ Please clone this framework into your project and keep this directory structure
 
 
 
-## Quick Start
-
-#### Basics
-
-> The basics tells you how to use this framework in basics (How to make your project hot-updatable)
-
-[Click here to have a read](Docs/en-us/Basic.md)
-
-
-
-#### Hot Update Code
-
-> How to write
-
-[Click here to have a read](Docs/en-us/Extension.md)
-
-
-
-> How to auto bind codes
-
-[Click here to have a read](Docs/en-us/AutoBind.md)
-
-
-
-> ILRuntime documents which leads to C# hot update
-
-[ILRuntime Document](https://ourpalm.github.io/ILRuntime/public/v1/guide/tutorial.html)
-
-
-
-#### Developement Guide
-
-> This will enable you quick develop your game and you don't need to upload your latest hot-update resources into your server **(which saves your time)**
-
-[Click here to have a read](Docs/en-us/DevelopmentGuide.md)
-
-#### Common "Bugs"
-
-[Click here to have a read](Docs/en-us/CommonBugs.md)
-
-
-
-#### IMPORTANT
-
-[Click here to have a read](Docs/en-us/Important.md)
-
-
-
 ## Development Environment
 
 - Debuging Unity Engine Version: 2019.3.13f1 (Please use at least this version)
