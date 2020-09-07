@@ -1,4 +1,4 @@
-# JENGINE v0.4.6
+# JENGINE v0.4.7
 
 
 
@@ -16,7 +16,7 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 
 [中文文档](README_zh-cn.md)
 
-
+[Wiki Page](https://github.com/JasonXuDeveloper/JEngine/wiki), tutorials are in here
 
 [Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
 
@@ -33,56 +33,22 @@ What can JEngine do?
 
   - **Less code, does more**
 
-    ```c#
-    JAction j = new JAction();
-    j.Do(() => something toDo)
-      .Until(() => something is done)
-      .Repeat(() => something toDo, repeatCounts)
-      .RepeatWhen(() => something toDo,
-                  () => condition)
-      .Delay(some times)
-      .Execute();
-    ```
-    
   - Can be **Run in Main Thread**
-
+  
     > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
-
+  
 - **Own [UI](Docs/en-us/JUI.md) solution**
 
   - **Method-Chaining** style makes codes prettier and easier to visualize
 
-    ```c#
-    var JUI = Showcase.AddComponent<JUI>()
-      .onLoop(t1 =>
-              {
-                ...
-              })
-      .Activate();
-    ```
-    
   - **Easier to manage** lifecycle
   
     - Can **easily set up** **what** you want the UI element **to do in specific time**
   
-    ```c#
-    t.FrameMode = false;//Run in ms
-    t.Frequency = 1000;//Loop each 1s
-    ```
-    
   - **Bindable to data**
     
     - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
     
-    ```c#
-    var JUI = b.AddComponent<JUI>()
-      .Bind(data.b)
-    .onMessage(t1 =>
-                 {
-                 ...
-                 })
-    .Activate();
-    ```
   
 - **Own [Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
 
@@ -90,38 +56,10 @@ What can JEngine do?
 
     - You can make loop easier using JEngine
 
-    ```c#
-    public class JBehaviourExample : JBehaviour
-    {
-      public override void Init()
-      {...}
-    
-      public override void Run()
-      {...}
-    
-      public override void Loop()
-      {...}
-    
-      public override void End()
-      {...}
-    }
-    ```
-  
 - **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset
 
-  ```c#
-  //Get Resource via Sync method
-  TextAsset txt = JResource.LoadRes<TextAsset>("Text.txt");
-  Log.Print("Get Resource with Sync method: " + txt.text);
-  ```
-
-  ```c#
-  //Get Resource via Async method with callback
-  JResource.LoadResAsync<TextAsset>("Text.txt",(txt)=>
-  {
-      Log.Print("Get Resource with Async method: " + txt.text);
-  });
-  ```
+  - Support generic method
+  - Async/Sync methods
 
 - **[Auto bind](Docs/en-us/AutoBind.md)** scripts from Hot-Update DLL to GameObjects & Prefabs
 
@@ -130,7 +68,27 @@ What can JEngine do?
   - Can set values of public/private/static fields automatically
   - Supports numbers, bools, strings, GameObject and Components on GameObject
 
-  ![autobind](https://s1.ax1x.com/2020/09/06/wenolT.png)
+- **Object Pool soulution**
+
+  - MUCH MORE Enhances the performencerather than using**Instantiate method**
+    - With this solution, **you don't have to repeat instantiate gameObject**
+    - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
+    - Request **PoolObject** to get the GameObject
+  - Easy and powerful
+  - With algorithm which fairly controls gameObjects
+
+- **[Data persistence solution](Docs/zh-cn/JSaver.md)**
+
+  > JEngine now supports JSaver, which is a data persistance tool
+  >
+  > What can JSaver do?
+  >
+  > - Convert data into string/JSON string
+  > - AES encryption
+  > - Save to local storage
+  > - Load data from local storage (supports generic method)
+  > - Judge if has key in local
+  > - Delete local Key data
 
 - **More to explore!!!**
 
@@ -142,80 +100,14 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **MonoBehaviour Adapter Inspector window show error fields**
-- **Autobind editor window**
-- **Autobind support bool value**
-- **Autobind support private and static and instance fields**
+- **Autobind** supports bind to GameObject **itself**
+- Support **AES encrypt string**
+- **JSaver**, support Data persistence
 
 [Click here to see all version updates](CHANGE.md)
 
 
 
-## Features
-
-- **[Hot-update](Docs/en-us/WhyHotUpdate.md)** solution
-
-  - No need to learn Lua, **C# codes can be hot-updated**
-  - Drop your resources in specific directories and can be **generate hot-updatable resources automatically**, all you need to do is to press "Build Bundle" button, and to put  your what it generated into your server
-  - **Encrypts DLL**, your hot-update codes are safe now unless someone got your encrypted password
-  - **Auto bind** hot update scripts to gameObject, no need to write codes to add stuffs
-
-- **[JBehaviour](Docs/en-us/JBehaviour.md)** is a Behaviour in JEngine  which is based on MonoBehaviour, and it is **easier to manage lifecycle** of UI elements
-
-- **[JUI](Docs/en-us/JUI.md)** is a class in JEngine which can **enhance the performence of UI** elements based on UGUI
-
-  - JUI borrowed concept from **MVVM Framework** and rewrote it, JUI supports **binding a data with an action,** once data has changed, the action will be called
-  - You can choose to **either update your UI in specific Loop** with Frequency, or to update your UI only if the binded data changed
-  - You can **get UI components more efficiently** with JUI via the generic method **Method<T>**
-  - **Method-Chaning** style of coding makes your codes **prettier and easier to read**
-
-- **[JAction](Docs/en-us/JAction.md)** is an extension rather than usual Action
-
-  - **Method-chaining** Style
-  - Great variation of features
-  
-  - Do action
-    - Delay
-    - Wait Until
-    - Repeat
-    - Repeat When
-    - Repeat Until
-    - etc...
-  - **Shorter and more powerful**
-
-    - Less code can do more things
-  - **Extension of System.Action**
-  
-    - Add what to do, add delayings, JAction will do them in order
-    - Run in **Main Thread**
-      - Call Unity APIs anytime
-  
-- **[Resource Management](Docs/en-us/JResource.md)** solution
-
-  - Based on XAsset
-  - **Can load resources in sync/async method**
-  - **Generic methods**
-
-- **Object Pool** solution
-
-  - **MUCH MORE Enhances the performence** rather than using ***Instantiate method***
-    - With this solution, **you don't have to repeat instantiate gameObject**
-    - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
-    - Request **PoolObject** to get the GameObject
-  - Easy and powerful
-  - With algorithm which fairly controls gameObjects
-
-  > Example will come soon
-
-- **[GUI-Redis](https://github.com/JasonXuDeveloper/Unity-GUI-Redis)** helps visualize data in Redis Databases and can **modify data** in it.
-
-  - Supports connect through **SSH tunnel**
-  
-  - Supports connect through **normay way** (IP, Port connection)
-  
-  - Supports **add/modify/delete/search** key-value pairs
-
-  
 ## Future Features
 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~

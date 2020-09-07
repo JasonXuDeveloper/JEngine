@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.4.7 (September 8 2020)
+
+- **Autobind** supports bind to GameObject **itself**
+- Support **AES encrypt string**
+- **JSaver**, support Data persistence
+
+
+
 ### v0.4.6 (September 7 2020)
 
 - **MonoBehaviour Adapter Inspector window show error fields**

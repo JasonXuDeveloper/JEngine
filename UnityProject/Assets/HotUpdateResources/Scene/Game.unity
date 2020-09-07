@@ -163,10 +163,10 @@ MonoBehaviour:
       - fieldType: 2
         fieldName: IntField1
         value: 123
-      - fieldType: 10
-        fieldName: GameObjectField1
-        value: ClassBindDemo
       - fieldType: 11
+        fieldName: GameObjectField1
+        value: ${this}
+      - fieldType: 12
         fieldName: EventSystemField1
         value: EventSystem.EventSystem
   - Namespace: JEngine.Examples

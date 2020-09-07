@@ -40,6 +40,8 @@
     <Compile Include="JEngine\LifeCycle\JBehaviour.cs" />
     <Compile Include="JEngine\3rdParty\Loom.cs" />
     <Compile Include="Examples\AutoBindDemo.cs" />
+    <Compile Include="JEngine\Core\JSaver.cs" />
+    <Compile Include="Examples\DataClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

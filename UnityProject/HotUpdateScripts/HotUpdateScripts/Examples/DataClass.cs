@@ -1,10 +1,10 @@
 ﻿//
-// JBehaviourExample.cs
+// DataClass.cs
 //
 // Author:
-//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
+//       jason <>
 //
-// Copyright (c) 2020 JEngine
+// Copyright (c) 2020 
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,41 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using JEngine.Core;
-using JEngine.LifeCycle;
-
 namespace JEngine.Examples
 {
-    public class JBehaviourExample : JBehaviour
+    public class DataClass
     {
-        private int i;
-
-        public override void Init()
-        {
-            Log.Print("[JBehaviour] JBehaviour has been created!");
-        }
-
-        public override void Run()
-        {
-            Log.Print("[JBehaviour] JBehaviour is running!");
-            //Change the frequency of loop
-            FrameMode = false;//Don't loop in frame
-            Frequency = 1000;//Run every 1000 milliseconds
-
-            i = 1;
-
-            Destroy(this.gameObject, 10);
-        }
-
-        public override void Loop()
-        {
-            Log.Print("[JBehaviour] Hello JBehaviour * " + i + " times!");
-            i++;
-        }
-
-        public override void End()
-        {
-            Log.Print("[JBehaviour] I have been destroyed!");
-        }
+        public int id;
+        public string name;
+        public long money;
+        public long diamond;
+        public bool gm;
     }
 }

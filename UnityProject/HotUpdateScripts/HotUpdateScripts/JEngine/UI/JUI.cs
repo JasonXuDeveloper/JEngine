@@ -164,7 +164,7 @@ namespace JEngine.UI
         /// 激活UI
         /// </summary>
         /// <returns></returns>
-        public JUI Activate()
+        public new JUI Activate()
         {
             Resume();
 

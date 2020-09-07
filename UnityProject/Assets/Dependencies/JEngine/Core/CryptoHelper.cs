@@ -26,11 +26,68 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using UnityEngine;
 
 namespace JEngine.Core
 {
     public class CryptoHelper
-    {
+    { 
+        /// <summary>
+        /// 加密字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static string EncryptStr(string value, string key)
+        {
+            try
+            {
+                Byte[] keyArray = System.Text.Encoding.UTF8.GetBytes(key);
+                Byte[] toEncryptArray = System.Text.Encoding.UTF8.GetBytes(value);
+                var rijndael = new System.Security.Cryptography.RijndaelManaged();
+                rijndael.Key = keyArray;
+                rijndael.Mode = System.Security.Cryptography.CipherMode.ECB;
+                rijndael.Padding = System.Security.Cryptography.PaddingMode.PKCS7;
+                System.Security.Cryptography.ICryptoTransform cTransform = rijndael.CreateEncryptor();
+                Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                return Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            }
+            catch (Exception ex)
+            {
+                Log.PrintError(ex);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// 解密字符串
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static string DecryptStr(string value, string key)
+        {
+            try
+            {
+                Byte[] keyArray = System.Text.Encoding.UTF8.GetBytes(key);
+                Byte[] toEncryptArray = Convert.FromBase64String(value);
+                var rijndael = new System.Security.Cryptography.RijndaelManaged();
+                rijndael.Key = keyArray;
+                rijndael.Mode = System.Security.Cryptography.CipherMode.ECB;
+                rijndael.Padding = System.Security.Cryptography.PaddingMode.PKCS7;
+                System.Security.Cryptography.ICryptoTransform cTransform = rijndael.CreateDecryptor();
+                Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                return System.Text.Encoding.UTF8.GetString(resultArray);
+            }
+            catch (Exception ex)
+            {
+                Log.PrintError(ex);
+                return null;
+            }
+        }
+        
         /// <summary>
         /// AES 算法加密(ECB模式) 将明文加密
         /// </summary>
@@ -55,7 +112,8 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                Log.PrintError(ex);
+                return null;
             }
         }
         
@@ -82,7 +140,8 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                throw ex;
+                Log.PrintError(ex);
+                return null;
             }
         }
     }
