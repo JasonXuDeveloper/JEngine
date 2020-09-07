@@ -3,3 +3,7 @@
 UnityProject/Assets/Dependencies/JEngine/Core/.idea/*
 UnityProject/.idea/*
 UnityProject/HotUpdateScripts/.vs/*
+UnityProject/Library/*
+UnityProject/Temp/*
+UnityProject/DLC/*
+
