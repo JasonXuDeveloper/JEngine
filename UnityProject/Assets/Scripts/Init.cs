@@ -46,7 +46,7 @@ public class Init : MonoBehaviour
             }
                 
             //查看是否有PDB文件
-            if (File.Exists(pdbPath) && UsePdb)
+            if (File.Exists(pdbPath) && UsePdb && (File.GetLastWriteTime(dllPath)-File.GetLastWriteTime(pdbPath)).Seconds < 30)
             {
                 pdb = new MemoryStream(DLLMgr.FileToByte(pdbPath));
             }
@@ -86,15 +86,9 @@ public class Init : MonoBehaviour
                 return;
             }
 
-            try
-            {
-                appdomain.LoadAssembly(fs, null, new PdbReaderProvider());
-                Log.PrintError("PDB不可用，可能是DLL和PDB版本不一致，已跳过PDB使用");
-            }
-            catch(Exception ex)
-            {
-                Log.PrintError("加载热更DLL错误：\n" + ex.Message);
-            }
+            Log.PrintError("PDB不可用，可能是DLL和PDB版本不一致，可能DLL是Release，如果是Release出包，请取消UsePdb选项，本次已跳过使用PDB");
+            UsePdb = false;
+            LoadHotFixAssembly();
         }
             
         InitILrt.InitializeILRuntime(appdomain);

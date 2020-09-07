@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.4.8 (September 9 2020)
+
+- **Right Click** to **copy GameObject Path from hierarchy**
+- **Bug fix** on **release dll**
+- **Bug fix** on **Build Setting scenes**
+
+
+
 ### v0.4.7 (September 8 2020)
 
 - **Autobind** supports bind to GameObject **itself**

@@ -1,4 +1,4 @@
-# JENGINE v0.4.7
+# JENGINE v0.4.8
 
 
 
@@ -102,9 +102,9 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Autobind** supports bind to GameObject **itself**
-- Support **AES encrypt string**
-- **JSaver**, support Data persistence
+- **Right Click** to **copy GameObject Path from hierarchy**
+- **Bug fix** on **release dll**
+- **Bug fix** on **Build Setting scenes**
 
 [Click here to see all version updates](CHANGE.md)
 

@@ -11,7 +11,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HotUpdateResources/Scene/Game.unity
     guid: 6b0710e96413b44a295f199f4cb022bb
-  - enabled: 1
-    path: Assets/HotUpdateResources/Scene/Game.unity
-    guid: 6b0710e96413b44a295f199f4cb022bb
   m_configObjects: {}

@@ -64,6 +64,7 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                         else
                         {
                             //剩下的大家自己补吧
+                            instance[i.Value] = EditorGUILayout.TextArea(name, cType.ToString());
                         }
                     }
                     catch (Exception e)
@@ -112,7 +113,7 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                     {
                         //其他类型现在没法处理
                         if (obj != null)
-                            EditorGUILayout.LabelField(name, obj.ToString());
+                            EditorGUILayout.LabelField(name, obj.GetType().ToString());
                         else
                             EditorGUILayout.LabelField(name, "(null)");
                     }
