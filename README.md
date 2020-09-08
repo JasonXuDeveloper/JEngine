@@ -22,7 +22,11 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 
 [Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
 
-What can JEngine do?
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
+
+## What can JEngine do?
 
 - **[Hot-update](Docs/en-us/WhyHotUpdate.md) solution**
 
@@ -31,7 +35,7 @@ What can JEngine do?
   - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
   - **Auto bind** hot update scripts to gameObject, no need to write codes to add stuffs
 
-- **Own [Action](Docs/en-us/JAction.md) solution**
+- **[Action](Docs/en-us/JAction.md) solution**
 
   - **Less code, does more**
 
@@ -39,7 +43,7 @@ What can JEngine do?
   
     > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
   
-- **Own [UI](Docs/en-us/JUI.md) solution**
+- **[UI](Docs/en-us/JUI.md) solution**
 
   - **Method-Chaining** style makes codes prettier and easier to visualize
 
@@ -52,13 +56,13 @@ What can JEngine do?
     - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
     
   
-- **Own [Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
+- **[Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
 
   - **More friendly to manage lifecycle**
 
     - You can make loop easier using JEngine
 
-- **Own [Resource Management](Docs/en-us/JResource.md)** based on XAsset
+- **[Resource Management](Docs/en-us/JResource.md)** based on XAsset
 
   - Support generic method
   - Async/Sync methods
