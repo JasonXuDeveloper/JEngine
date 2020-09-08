@@ -46,6 +46,7 @@ namespace JEngine.Editor
             window.Show();
         }
 
+        private string _assembly = "Assembly-CSharp";
         private string _class;
         private string _namespace = "ProjectAdapter";
         
@@ -58,25 +59,38 @@ namespace JEngine.Editor
             GUILayout.Label("ILRuntime适配器生成");
             GUI.skin.label.fontSize = 18;
             GUILayout.Label("ILRuntime Adapter Generator");
-
-            //命名空间
+            
+            //程序集
             GUILayout.Space(50);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _namespace = "ProjectAdapter";
-            EditorGUILayout.LabelField("Adapter Namespace 适配器命名空间");
+            _assembly = "Assembly-CSharp";
+            EditorGUILayout.LabelField("Assembly 适配器命名空间");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _namespace= EditorGUILayout.TextField("",_namespace);
+            _assembly= EditorGUILayout.TextField("",_assembly);
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
-            
+
             //类名
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
             _class = EditorGUILayout.TextField("Class name 类名",_class);
+            GUILayout.Space(25);
+            GUILayout.EndHorizontal();
+            
+            //命名空间
+            GUILayout.Space(10);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(25);
+            _namespace = "ProjectAdapter";
+            EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(25);
+            _namespace= EditorGUILayout.TextField("",_namespace);
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
             
@@ -95,7 +109,7 @@ namespace JEngine.Editor
         private void GenAdapter()
         {
             //获取主工程DLL的类
-            Type t = Assembly.LoadFile(new DirectoryInfo(Application.dataPath).Parent.FullName+"/Library/ScriptAssemblies/Assembly-CSharp.dll").GetType(_class);
+            Type t = Assembly.LoadFile(new DirectoryInfo(Application.dataPath).Parent.FullName+$"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
             
             //判断空
             if (t ==null)

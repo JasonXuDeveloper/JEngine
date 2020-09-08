@@ -64,7 +64,7 @@ namespace HotUpdateScripts
             encryptStr = JSaver.SaveAsJSON(data, "playerData", "password_is_this");
             Log.Print($"[JSaver] Custom Class Encrypted result: {encryptStr}");
             decryptStr = JSaver.GetString("playerData", "password_is_this");//Can convert to string
-            Log.Print($"[JSaver] Str Decrypted result: {decryptStr}");
+            Log.Print($"[JSaver] JSON Str Decrypted result: {decryptStr}");
 
             DataClass newData = JSaver.GetObject<DataClass>("playerData", "password_is_this");//Can covert to class
 
