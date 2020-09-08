@@ -56,8 +56,9 @@
     - If it is a bool value, write true or false
     - If it is a **GameObject**，please write **full path**，**if it is a child GameObject of a parent GameObject, parent needs to be Active**; **if it is not a child GameObject, itself needs to be Active**, EG:**Path,Canvas/Text，Text can be inactive, but Canvas must be Active; Path,Demo, Demo GameObject must be Active**, can link to this gameObjecet, use **${this}** for value, **right click can copy path of a gameobject straight away**
     - If it is a **Unity Component**, please write **full path, referenced by above GameObject**, and then add a **".", at the end put the name of script**,**EG: Canvas/Text.Outline，Which means get Outline script From Canvas/Text**, can link to script on this gameObject, use **${this}.xxx** for value, xxx is name of component, **right click can copy path of a gameobject straight away**, once you get the path, put ***path*.scriptName**
+    - If it is a **hot update Resource**, put the full path or a single path which XAsset can detect
   
   
 
-![show](https://s1.ax1x.com/2020/09/06/wenolT.png)
+![show](https://s1.ax1x.com/2020/09/08/wQk0aj.png)
 

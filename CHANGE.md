@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.4.9 (September 10 2020)
+
+- **Able to autobind hot update resource**
+- **Auto bind** runs in Awake which becomes **faster**
+- ILRuntime Adapter Generator supports **custom assembly**
+
+
+
 ### v0.4.8 (September 9 2020)
 
 - **Right Click** to **copy GameObject Path from hierarchy**

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
+using libx;
 using Malee.List;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace JEngine.Core
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
 
-        private async void Start()
+        private async void Awake()
         {
             while (InitILrt.appDomain == null)
             {
@@ -181,10 +182,15 @@ namespace JEngine.Core
                                     }
                                 }
                             }
+                            else if (field.fieldType == _ClassField.FieldType.HotUpdateResource)
+                            {
+                               obj = Assets.LoadAsset(field.value, typeof(UnityEngine.Object)).asset;
+                               _class.BoundData = true;
+                            }
                         }
                         catch(Exception except)
                         {
-                            Log.PrintError($"{classType}.{field.fieldName}赋值出错：{except.Message}，已跳过");
+                            Log.PrintError($"{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
                         }
 
                         //如果有数据再绑定
@@ -260,7 +266,8 @@ namespace JEngine.Core
             String,
             Bool,
             GameObject,
-            UnityComponent
+            UnityComponent,
+            HotUpdateResource
         }
 
         public FieldType fieldType;

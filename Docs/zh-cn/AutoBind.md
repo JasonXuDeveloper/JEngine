@@ -54,8 +54,9 @@
     - 如果是**布尔值**，写true或false
     - 如果是**GameObject**，请写**完整路径**，**如果是一个GameObject的子物体，父物体要Active**；**如果不是子物体，本身要Active**，例如：**路径，Canvas/Text，其中Text可以不Active，Canvas必须Active；路径，Demo，其中Demo必须Active**，可以指向自己，指向自己，输入**${this}**，**右键可直接复制GameObject全路径**
     - 如果是**Unity Component**，即不可热更的挂载脚本，需要输入**完整路径，参考GameObject**，**加上"."，最后加上脚本名称**，**例如：Canvas/Text.Outline，即获取这个Canvas/Text的Outline组件**，可以指向自己身上的组件，输入 **${this}.xxx** ，xxx为组件名，**右键可直接复制GameObject全路径**，**然后再加.绑定的脚本名称，即可提高效率**
+    - 如果是**热更资源**，输入资源**完整路径**或XAsset**可检测到的短路径**
   
   
 
-![show](https://s1.ax1x.com/2020/09/06/wenolT.png)
+![show](https://s1.ax1x.com/2020/09/08/wQk0aj.png)
 

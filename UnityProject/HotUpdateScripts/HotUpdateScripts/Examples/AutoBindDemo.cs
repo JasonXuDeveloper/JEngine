@@ -44,7 +44,7 @@ namespace JEngine.Examples
 
         public override void Init()
         {
-            Log.Print("AutoBindDemo1::Inited");
+            Log.Print("[Autobind] AutoBindDemo1::Inited");
         }
     }
 
@@ -54,9 +54,12 @@ namespace JEngine.Examples
 
         [SerializeField] private string AttributeField2;
 
+        public TextAsset txtFile;
+
         public void Awake()
         {
-            Log.Print("AutoBindDemo2::Started");
+            Log.Print("[Autobind] AutoBindDemo2::Started");
+            Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
         }
     }
 }

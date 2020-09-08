@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
+using LitJson;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 // using LitJson;
@@ -64,43 +65,43 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                         else
                         {
                             //剩下的大家自己补吧
-                            instance[i.Value] = EditorGUILayout.TextArea(name, cType.ToString());
+                            instance[i.Value] = EditorGUILayout.TextArea(name, instance[i.Value].ToString());
                         }
                     }
                     catch (Exception e)
                     {
-                        instance[i.Value] = EditorGUILayout.TextArea(name, $"(null)");
+                        instance[i.Value] = EditorGUILayout.TextArea(name, "(null)");
                     }
                 }
                 else
                 {
-                    // if (cType == typeof(JsonData))
-                    // {
-                    //     if (instance[i.Value] != null)
-                    //     {
-                    //         // target控制动画开始播放
-                    //         this.fadeGroup.target = EditorGUILayout.Foldout(this.fadeGroup.target, name, true);
-                    //
-                    //         // 系统使用tween渐变faded数值
-                    //         if (EditorGUILayout.BeginFadeGroup(this.fadeGroup.faded))
-                    //         {
-                    //             EditorGUILayout.TextArea(
-                    //                 ((JsonData) instance[i.Value]).ToString()
-                    //             );
-                    //         }
-                    //         // begin - end 之间元素会进行动画
-                    //         EditorGUILayout.EndFadeGroup();
-                    //         
-                    //         EditorGUILayout.Space();
-                    //         
-                    //     }
-                    //     else
-                    //     {
-                    //         EditorGUILayout.LabelField(name, "暂无值的JsonData");
-                    //     }
-                    //
-                    //     continue;
-                    // }
+                    if (cType == typeof(JsonData))
+                    {
+                        if (instance[i.Value] != null)
+                        {
+                            // target控制动画开始播放
+                            this.fadeGroup.target = EditorGUILayout.Foldout(this.fadeGroup.target, name, true);
+                    
+                            // 系统使用tween渐变faded数值
+                            if (EditorGUILayout.BeginFadeGroup(this.fadeGroup.faded))
+                            {
+                                EditorGUILayout.TextArea(
+                                    ((JsonData) instance[i.Value]).ToString()
+                                );
+                            }
+                            // begin - end 之间元素会进行动画
+                            EditorGUILayout.EndFadeGroup();
+                            
+                            EditorGUILayout.Space();
+                            
+                        }
+                        else
+                        {
+                            EditorGUILayout.LabelField(name, "暂无值的JsonData");
+                        }
+                    
+                        continue;
+                    }
 
                     object obj = instance[i.Value];
                     if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
@@ -113,7 +114,7 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                     {
                         //其他类型现在没法处理
                         if (obj != null)
-                            EditorGUILayout.LabelField(name, obj.GetType().ToString());
+                            EditorGUILayout.TextField(name, obj.ToString());
                         else
                             EditorGUILayout.LabelField(name, "(null)");
                     }

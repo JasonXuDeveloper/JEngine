@@ -1,4 +1,4 @@
-# JENGINE v0.4.7
+# JENGINE v0.4.9
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
@@ -20,7 +20,11 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 [Gitee码云链接 （国内快速克隆通道）](https://gitee.com/JasonXuDeveloper/JEngine)
 
-JEngine能够做些什么？
+## 近期star趋势
+
+[![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
+
+## JEngine能够做些什么？
 
 - **[热更新解决方案 ](Docs/zh-cn/WhyHotUpdate.md)**
 
@@ -99,9 +103,9 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **右键**以**复制层级中GameObject的全路径**
-- **Release** DLL **Bug修复**
-- **自动添加**场景**Bug修复**
+- **自动绑定支持绑定热更资源**
+- **自动绑定在Awake开始，速度更快**
+- ILRuntime适配器生成支持自定义**程序集**
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
