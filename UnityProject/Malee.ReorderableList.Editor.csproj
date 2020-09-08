@@ -12,10 +12,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{5B580621-09B4-68CB-B5F4-5B9DD210A60F}</ProjectGuid>
+    <ProjectGuid>{46FB31FC-4910-BF53-61B4-0603ED3140EB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Malee.ReorderableList.Editor</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -29,7 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -39,7 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
@@ -58,155 +58,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Dependencies\ILRuntime\Adapters\CoroutineAdapter.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Adapters\ExceptionAdapter.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Adapters\IAsyncStateMachineClassInheritanceAdaptor.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Adapters\MonoBehaviourAdapter.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\CLRBindings.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\JEngine_Core_Log_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Action_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Action_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_Int32_Action_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_Int32_Func_1_Boolean.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_Int32_Single_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Bin.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_List_1_Action_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Collections_Generic_List_1_GameObject_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Func_1_Boolean_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Int32_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Object_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_ILT.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Runtime_CompilerServices_AsyncTaskMethodBuilder_Bindi.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Runtime_CompilerServices_AsyncVoidMethodBuilder_Bindi.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Runtime_CompilerServices_TaskAwaiter_1_ILTypeInstance.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Runtime_CompilerServices_TaskAwaiter_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_String_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Threading_CancellationTokenSource_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Threading_Tasks_Task_1_ILTypeInstance_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Threading_Tasks_Task_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_TimeoutException_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\System_Type_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Application_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Color_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Component_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Events_UnityEvent_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_GameObject_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Object_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_RectTransform_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Resources_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Screen_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_TextAsset_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Time_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Transform_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_UI_Button_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_UI_Graphic_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_UI_Text_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\UnityEngine_Vector2_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\libx_AssetRequest_Binding.cs" />
-     <Compile Include="Assets\Dependencies\ILRuntime\Generated\libx_Assets_Binding.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Core\ClassBind.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Core\CryptoHelper.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Core\DLLMgr.cs" />
-     <Compile Include="Assets\Dependencies\JEngine\Core\Log.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\IJsonWrapper.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonData.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonException.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonMapper.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonMockWrapper.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonReader.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\JsonWriter.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\Lexer.cs" />
-     <Compile Include="Assets\Dependencies\LitJson\ParserToken.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Assets.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Download.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Downloader.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Manifest.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\NetworkMonitor.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Reference.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Requests.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Updater.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\VDisk.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Core\Versions.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\UI\BackgroundAdapter.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\UI\BuildinSceneLoader.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\UI\MessageBox.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\UI\ScrollContent.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\UI\UpdateScreen.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Utility\StringExtension.cs" />
-     <Compile Include="Assets\Dependencies\XAsset\Runtime\Utility\Utility.cs" />
-     <Compile Include="Assets\Scripts\APIs\ExampleAPI.cs" />
-     <Compile Include="Assets\Scripts\Init.cs" />
-     <Compile Include="Assets\Scripts\InitILrt.cs" />
-     <None Include="Assets\HotUpdateResources\ScriptableObject\ScriptableObject.txt" />
-     <None Include="Assets\HotUpdateResources\Material\Material.txt" />
-     <None Include="Assets\HotUpdateResources\Other\Anything.txt" />
-     <None Include="Assets\HotUpdateResources\TextAsset\Text.txt" />
-     <None Include="Assets\Dependencies\XAsset\Resources\Shaders\SimpleGrabPassBlur.shader" />
-     <None Include="Assets\HotUpdateResources\Prefab\Prefab.txt" />
-     <None Include="Assets\HotUpdateResources\UI\PNG.txt" />
-     <None Include="Assets\HotUpdateResources\Controller\Controller.txt" />
- <Reference Include="Unity.Timeline.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Monetization">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.Monetization.dll</HintPath>
- </Reference>
- <Reference Include="com.unity.multiplayer-hlapi.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.VSCode.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+     <Compile Include="Assets\Dependencies\ReorderableList\Editor\ReorderableDrawer.cs" />
+     <Compile Include="Assets\Dependencies\ReorderableList\Editor\ReorderableList.cs" />
+     <None Include="Assets\Dependencies\ReorderableList\Editor\Malee.ReorderableList.Editor.asmdef" />
+ <Reference Include="UnityEditor.UI">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
- <Reference Include="Unity.Timeline">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <Reference Include="UnityEditor.TestRunner">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>
  </Reference>
- <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
- </Reference>
- <Reference Include="com.unity.multiplayer-weaver.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/com.unity.multiplayer-weaver.Editor.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.XR.LegacyInputHelpers">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Rider.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Editor">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.SpatialTracking">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.SpatialTracking">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.XR.LegacyInputHelpers">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor.UI">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
- </Reference>
- <Reference Include="com.unity.multiplayer-hlapi.Runtime">
- <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
+ <Reference Include="UnityEngine.TestRunner">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/ScriptAssemblies/UnityEngine.TestRunner.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -385,6 +250,15 @@
  <Reference Include="UnityEngine.XRModule">
  <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.VR">
+ <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Graphs">
+ <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+ <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+ </Reference>
  <Reference Include="ILRuntim.Mono.Cecil">
  <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntim.Mono.Cecil.dll</HintPath>
  </Reference>
@@ -394,6 +268,9 @@
  <Reference Include="ILRuntime.Mono.Cecil.Pdb">
  <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Assets/Dependencies/ILRuntime/com.ourpalm.ilruntime@1.6.3/Plugins/ILRuntime.Mono.Cecil.Pdb.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.Advertisements">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/PackageCache/com.unity.ads@3.4.4/Editor/UnityEditor.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.Analytics.Editor">
  <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
@@ -402,6 +279,12 @@
  </Reference>
  <Reference Include="Unity.Analytics.StandardEvents">
  <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/PackageCache/com.unity.analytics@3.3.5/AnalyticsStandardEvents/Unity.Analytics.StandardEvents.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Purchasing">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/PackageCache/com.unity.purchasing@2.0.6/Editor/UnityEditor.Purchasing.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.framework">
+ <HintPath>D:/Workspace/Unity3D/JEngine/UnityProject/Library/PackageCache/com.unity.ext.nunit@1.0.0/net35/unity-custom/nunit.framework.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>D:/Program Files/Unity2019.3.6f1/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
@@ -759,14 +642,6 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Malee.ReorderableList.Editor.csproj">
-      <Project>{46FB31FC-4910-BF53-61B4-0603ED3140EB}</Project>
-      <Name>Malee.ReorderableList.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="ILRuntime.csproj">
-      <Project>{F1E17271-F70D-AFF3-9A96-BDA7C5E0B2DE}</Project>
-      <Name>ILRuntime</Name>
-    </ProjectReference>
     <ProjectReference Include="Malee.ReorderableList.csproj">
       <Project>{DB3FC58F-DE4E-80D8-0FA1-09C24A0DE399}</Project>
       <Name>Malee.ReorderableList</Name>
