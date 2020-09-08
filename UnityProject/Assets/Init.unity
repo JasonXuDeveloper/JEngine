@@ -1846,7 +1846,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -175}
+  m_AnchoredPosition: {x: 0, y: -225}
   m_SizeDelta: {x: 1000, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2078874960
@@ -1895,8 +1895,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: JEngine is a streamlined and easy-to-use framework in Unity which provides
-    hot-update solution and unique lifecycles of UI
+  m_Text: "JEngine is a streamlined and easy-to-use framework designed for Unity
+    Programmers  JEngine\u662F\u9488\u5BF9Unity\u5F00\u53D1\u8005\u8BBE\u8BA1\u7684\u5F00\u7BB1\u5373\u7528\u7684\u6846\u67B6\uFF0C\u652F\u6301\u8D44\u6E90+\u4EE3\u7801\u70ED\u66F4"
 --- !u!222 &2078874962
 CanvasRenderer:
   m_ObjectHideFlags: 0

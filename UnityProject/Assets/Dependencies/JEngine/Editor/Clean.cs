@@ -66,14 +66,15 @@ class Clean
             foreach (var file in files)
             {
                 var name = file.Name;
-                if (File.Exists(library.FullName+"/"+name))//重复依赖直接删除
+
+                if(!File.Exists(library.FullName+"/"+name) && !name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
+                {
+                    File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
+                }
+                else if(!name.Contains("HotUpdateScripts"))
                 {
                     DLLMgr.Delete(file.FullName);
                     counts++;
-                }
-                else if(!name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
-                {
-                    File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
                 }
             }
 

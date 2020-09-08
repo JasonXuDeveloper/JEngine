@@ -60,15 +60,17 @@ namespace libx
                     assets.AddRange(rule.GetAssets());
                 }
             }
-
+            
             List<EditorBuildSettingsScene> _scenes =new List<EditorBuildSettingsScene>(0);
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (scene.path.Contains("Init.unity") || _scenes.Exists(settingsScene => settingsScene.path == scene.path))
+                if (scene.path.Contains("Init.unity") || assets.Contains(scene.path))
                 {
                     continue;
                 }
+
                 _scenes.Add(scene);
+                Log.Print(scene.path);
             }
 
             EditorBuildSettingsScene[] scenes = new EditorBuildSettingsScene[assets.Count + _scenes.Count + 1];
