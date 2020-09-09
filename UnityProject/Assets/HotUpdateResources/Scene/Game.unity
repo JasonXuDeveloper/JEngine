@@ -165,7 +165,7 @@ MonoBehaviour:
         value: 123
       - fieldType: 11
         fieldName: GameObjectField1
-        value: ${this}
+        value: Canvas/Description
       - fieldType: 12
         fieldName: EventSystemField1
         value: EventSystem.EventSystem
@@ -364,7 +364,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2046311236
 RectTransform:
   m_ObjectHideFlags: 0

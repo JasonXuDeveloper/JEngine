@@ -45,6 +45,7 @@ namespace JEngine.Examples
         public override void Init()
         {
             Log.Print("[Autobind] AutoBindDemo1::Inited");
+            GameObjectField1.SetActive(!GameObjectField1.activeSelf);
         }
     }
 

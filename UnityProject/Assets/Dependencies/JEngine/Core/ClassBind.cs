@@ -115,20 +115,27 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.GameObject)
                             {
-                                GameObject go = field.value == "${this}" ? this.gameObject : GameObject.Find(field.value);
-                                
-                                if (go == null)
+                                GameObject go = null;
+                                try
+                                {
+                                    go = field.value.Substring(0, 7) == "${this}"
+                                        ? this.gameObject
+                                        : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                }
+                                catch (Exception ex)
                                 {
                                     if (field.value.Contains("/")) //如果有父级
                                     {
-                                        var parent =
-                                            GameObject.Find(field.value.Remove(field.value.IndexOf('/'))); //寻找父物体
-                                        if (parent != null)
+                                        try
                                         {
-                                            go = parent.transform.Find(field.value.Substring(field.value.IndexOf('/')))
+                                            var parent =
+                                                GameObject.Find(field.value.Substring(0,
+                                                    field.value.IndexOf('/'))); //寻找父物体
+                                            go = parent.transform
+                                                .Find(field.value.Substring(field.value.IndexOf('/') + 1))
                                                 .gameObject;
                                         }
-                                        else
+                                        catch
                                         {
                                             Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                             continue;
@@ -146,19 +153,27 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.UnityComponent)
                             {
-                                GameObject go = field.value.Substring(0,7) == "${this}" ? this.gameObject : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
-                                if (go == null)
+                                GameObject go = null;
+                                try
+                                {
+                                    go = field.value.Substring(0, 7) == "${this}"
+                                        ? this.gameObject
+                                        : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                }
+                                catch (Exception ex)
                                 {
                                     if (field.value.Contains("/")) //如果有父级
                                     {
-                                        var parent =
-                                            GameObject.Find(field.value.Remove(field.value.IndexOf('/'))); //寻找父物体
-                                        if (parent != null)
+                                        try
                                         {
-                                            go = parent.transform.Find(field.value.Substring(field.value.IndexOf('/')))
+                                            var parent =
+                                                GameObject.Find(field.value.Substring(0,
+                                                    field.value.IndexOf('/'))); //寻找父物体
+                                            go = parent.transform
+                                                .Find(field.value.Substring(field.value.IndexOf('/') + 1))
                                                 .gameObject;
                                         }
-                                        else
+                                        catch
                                         {
                                             Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                             continue;
