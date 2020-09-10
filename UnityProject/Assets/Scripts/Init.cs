@@ -23,7 +23,7 @@ public class Init : MonoBehaviour
     {
         Instance = this;
         LoadHotFixAssembly();
-        Application.targetFrameRate = 30;
+//         Application.targetFrameRate = 30;
     }
 
     void LoadHotFixAssembly()
