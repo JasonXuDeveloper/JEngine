@@ -1,4 +1,4 @@
-# JENGINE v0.4.9
+# JENGINE v0.4.10
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
@@ -26,7 +26,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 ## JEngine能够做些什么？
 
-- **[热更新解决方案 ](Docs/zh-cn/WhyHotUpdate.md)**
+- **[热更新解决方案 ](https://github.com/JasonXuDeveloper/JEngine/wiki/开始使用)**
 
   - **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
   - **C#代码热更**基于[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
@@ -34,7 +34,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
   - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
   - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
 
-- **[Action队列解决方案](Docs/zh-cn/JAction.md)**
+- **[Action队列解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
 
   - **更少的代码，实现更多功能，效率大幅度提高**！
 
@@ -42,7 +42,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
   - **主线程运行代码**
   
-- **[UI生命周期解决方案](Docs/zh-cn/JUI.md)**
+- **[UI生命周期解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
 
   - **轻松**管理**UI周期**，**链式编程**让代码**更美观**
 
@@ -55,18 +55,18 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
     - 将**UI和数据绑定**，当**数据更新**，即可**执行绑定的方法**
     
   
-- **[基于MonoBehaviour扩展的生命周期](Docs/zh-cn/JBehaviour.md)**
+- **[基于MonoBehaviour扩展的生命周期](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
 
   - **轻松管理**生命周期
 
     - 类似JUI，可以**调整循环频率**，或者**不循环**
 
-- **[基于XAsset的资源加载方案](Docs/zh-cn/JResource.md)** 
+- **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
 
   - 支持**同步/异步加载**资源
   - **泛型**方法，轻松使用
 
-- **[自动绑定热更脚本到GameObject](Docs/zh-cn/AutoBind.md)**
+- **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
 
   - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
   - 输入命名空间，类名，即可自动绑定热更脚本至物体
@@ -80,7 +80,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
   - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
   - 简单友好
 
-- **[数据持久化解决方案](Docs/zh-cn/JSaver.md)**
+- **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
 
   > JEngine现已支持JSaver，是数据持久化的工具
   >
@@ -103,9 +103,10 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **自动绑定支持绑定热更资源**
-- **自动绑定在Awake开始，速度更快**
-- ILRuntime适配器生成支持自定义**程序集**
+- **StringifyHelper** 是一个序列化和反序列化数据的助手
+  - 支持 **JSON & Protobuf & BinaryFormatter**
+- **JSaver** 先已使用StringifyHelper进行JSON处理
+- **优化** clean.cs
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -191,4 +192,5 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 由衷感谢
 
-- Ekson（经济支持）
+- Ekson（赞助）
+- 程序-华仔（赞助）

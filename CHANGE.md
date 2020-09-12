@@ -1,5 +1,14 @@
 ## All Versions
 
+### v0.4.10 (Sepetember 12 2020)
+
+- **StringifyHelper** is a helper which serialize and deserialize data
+  - Support **JSON & Protobuf & BinaryFormatter**
+- **JSaver** now uses StringifyHelper to do JSON converts
+- **Enhance** clean.cs
+
+
+
 ### v0.4.9 (September 10 2020)
 
 - **Able to autobind hot update resource**

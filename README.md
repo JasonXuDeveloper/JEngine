@@ -1,4 +1,4 @@
-# JENGINE v0.4.9
+# JENGINE v0.4.10
 
 
 
@@ -106,9 +106,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Able to autobind hot update resource**
-- **Auto bind** runs in Awake which becomes **faster**
-- ILRuntime Adapter Generator supports **custom assembly**
+- **StringifyHelper** is a helper which serialize and deserialize data
+  - Support **JSON & Protobuf & BinaryFormatter**
+- **JSaver** now uses StringifyHelper to do JSON converts
+- **Enhance** clean.cs
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -195,4 +196,5 @@ Please clone this framework into your project and keep this directory structure
 ## Sincerely Appreciated
 
 - Ekson (Sponsorship)
+- 程序-华仔 (Sponsorship)
 

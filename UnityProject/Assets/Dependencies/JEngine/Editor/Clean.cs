@@ -54,7 +54,7 @@ class Clean
             Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
         }
         
-        DirectoryInfo library = new DirectoryInfo(new DirectoryInfo(Application.dataPath).Parent.FullName+"/Library/ScriptAssemblies");
+        DirectoryInfo library = new DirectoryInfo(Application.dataPath+"/../Library/ScriptAssemblies");
         DirectoryInfo di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
         var files = di.GetFiles();
         if (files.Length > 1)

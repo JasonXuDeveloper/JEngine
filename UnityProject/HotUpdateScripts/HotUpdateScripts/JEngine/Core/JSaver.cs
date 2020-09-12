@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using LitJson;
 using UnityEngine;
 
 namespace JEngine.Core
@@ -67,7 +66,7 @@ namespace JEngine.Core
                 Log.PrintError(ex);
                 return null;
             }
-            string strData = JsonMapper.ToJson(val);
+            string strData = StringifyHelper.JSONSerliaze(val);
             var result = CryptoHelper.EncryptStr(strData, encryptKey);
             PlayerPrefs.SetString(dataName, result);
             return result;
@@ -194,7 +193,7 @@ namespace JEngine.Core
             try
             {
                 result = CryptoHelper.DecryptStr(result, encryptKey);
-                return JsonMapper.ToObject<T>(result);
+                return StringifyHelper.JSONDeSerliaze<T>(result);
             }
             catch (Exception ex)
             {
