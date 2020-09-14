@@ -184,6 +184,12 @@ MonoBehaviour:
       - fieldType: 13
         fieldName: txtFile
         value: Assets/HotUpdateResources/TextAsset/Text.txt
+  - Namespace: HotUpdateScripts
+    Class: ExcelTest
+    ActiveAfter: 1
+    RequireBindFields: 0
+    Fields:
+      array: []
 --- !u!4 &627944075
 Transform:
   m_ObjectHideFlags: 0
@@ -399,7 +405,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
