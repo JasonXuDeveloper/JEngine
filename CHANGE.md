@@ -1,5 +1,25 @@
 ## All Versions
 
+### v0.5.0 (Sepetember 19 2020)
+
+- **Rebuilt** demos
+- **Rewrote** **StringifyHelper**
+- **Updated** ILRuntime
+- **Rewrote** JSaver
+- **Enhanced** Auto Class Bind
+- **Enhanced** Cleaning Hot Update Solution in Unity Editor
+- **Enhanced** LitJson to serialize and deserialize **BindableProperty** (**Decreases 80%** of size when **converting BindableProperty to JSON**)
+- **Adapt** protobuf-net
+- **Proto2CS** converter
+- **Rearranged** hot update solution
+- **JResource** now supports **load scene async** and **get progress when loading scene**
+- **Combined** JBehaviour & JUI to JEngine.Core
+- **Enhanced** JBehaviour
+- **Enhanced** BindableProperty ToString method
+- **Enhanced** MonoBehaviour Adapter Inspector Window
+
+
+
 ### v0.4.10 (Sepetember 12 2020)
 
 - **StringifyHelper** is a helper which serialize and deserialize data

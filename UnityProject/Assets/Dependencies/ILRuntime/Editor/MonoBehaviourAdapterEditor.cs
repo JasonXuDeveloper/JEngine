@@ -1,8 +1,11 @@
 ﻿#if UNITY_EDITOR
 using System;
+using ILRuntime.Runtime.Intepreter;
 using LitJson;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
+using UnityEngine;
+
 // using LitJson;
 
 [CustomEditor(typeof(MonoBehaviourAdapter.Adaptor), true)]
@@ -104,8 +107,15 @@ public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
                     }
 
                     object obj = instance[i.Value];
+                    
                     if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
                     {
+                        if (obj == null && cType == typeof(MonoBehaviourAdapter.Adaptor))
+                        {
+                            EditorGUILayout.LabelField(name, "未赋值或自动赋值的热更类");
+                            break;
+                        }
+                        
                         //处理Unity类型
                         var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
                         instance[i.Value] = res;

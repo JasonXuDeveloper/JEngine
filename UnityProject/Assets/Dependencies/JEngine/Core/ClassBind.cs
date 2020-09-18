@@ -121,6 +121,31 @@ namespace JEngine.Core
                                     go = field.value.Substring(0, 7) == "${this}"
                                         ? this.gameObject
                                         : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                    if (go == null)
+                                    {
+                                        if (field.value.Contains("/")) //如果有父级
+                                        {
+                                            try
+                                            {
+                                                var parent =
+                                                    GameObject.Find(field.value.Substring(0,
+                                                        field.value.IndexOf('/'))); //寻找父物体
+                                                go = parent.transform
+                                                    .Find(field.value.Substring(field.value.IndexOf('/') + 1))
+                                                    .gameObject;
+                                            }
+                                            catch
+                                            {
+                                                Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                                            continue;
+                                        }
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -159,6 +184,39 @@ namespace JEngine.Core
                                     go = field.value.Substring(0, 7) == "${this}"
                                         ? this.gameObject
                                         : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                    if (go == null)
+                                    {
+                                        if (field.value.Contains("/")) //如果有父级
+                                        {
+                                            try
+                                            {
+                                                var parent =
+                                                    GameObject.Find(field.value.Substring(0,
+                                                        field.value.IndexOf('/'))); //寻找父物体
+                                                try
+                                                {
+                                                    var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
+                                                    go = parent.transform
+                                                        .Find(newPath.Substring(0,newPath.LastIndexOf('.')))
+                                                        .gameObject;
+                                                }
+                                                catch(Exception exx)
+                                                {
+                                                    Log.Print(exx);
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                                            continue;
+                                        }
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -169,9 +227,17 @@ namespace JEngine.Core
                                             var parent =
                                                 GameObject.Find(field.value.Substring(0,
                                                     field.value.IndexOf('/'))); //寻找父物体
-                                            go = parent.transform
-                                                .Find(field.value.Substring(field.value.IndexOf('/') + 1))
-                                                .gameObject;
+                                            try
+                                            {
+                                                var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
+                                                go = parent.transform
+                                                    .Find(newPath.Substring(0,newPath.LastIndexOf('.')))
+                                                    .gameObject;
+                                            }
+                                            catch(Exception exx)
+                                            {
+                                                Log.Print(exx);
+                                            }
                                         }
                                         catch
                                         {
@@ -188,8 +254,18 @@ namespace JEngine.Core
 
                                 foreach (var component in go.GetComponents<Component>())
                                 {
-                                    if (component.GetType().ToString()
-                                        .Contains(field.value.Substring(field.value.LastIndexOf('.'))))
+                                    string scriptName = field.value.Substring(field.value.LastIndexOf('.'));
+                                    if (component.GetType() == typeof(MonoBehaviourAdapter.Adaptor))
+                                    {
+                                        MonoBehaviourAdapter.Adaptor c = (MonoBehaviourAdapter.Adaptor) component;
+                                        if (c.ILInstance.Type.ToString().Contains(scriptName))
+                                        {
+                                            obj = c.ILInstance;
+                                            _class.BoundData = true;
+                                            break;
+                                        }
+                                    }
+                                    if (component.GetType().ToString().Contains(scriptName))
                                     {
                                         obj = component;
                                         _class.BoundData = true;

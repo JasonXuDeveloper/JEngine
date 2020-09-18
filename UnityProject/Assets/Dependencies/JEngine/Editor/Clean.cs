@@ -23,10 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 using JEngine.Core;
 
 namespace JEngine.Editor
@@ -61,13 +65,15 @@ class Clean
         {
             isDone = false;
             int counts = 0;
+            List<string> fileNames = Directory.GetFiles("Assets/",
+                "*.*", SearchOption.AllDirectories).ToList();
             var watch = new Stopwatch();
             watch.Start();
             foreach (var file in files)
             {
                 var name = file.Name;
 
-                if(!File.Exists(library.FullName+"/"+name) && !name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
+                if(fileNames.Find(x=>x.Contains(name)).Length == 0 && !File.Exists(library.FullName+"/"+name) && !name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
                 {
                     File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
                 }
@@ -108,6 +114,7 @@ class Clean
         }
     }
 
+    
     
 }
 }

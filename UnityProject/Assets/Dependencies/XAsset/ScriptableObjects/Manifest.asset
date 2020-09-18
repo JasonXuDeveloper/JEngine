@@ -14,41 +14,154 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVariants: []
   assets:
-  - bundle: 3
+  - bundle: 17
     dir: 0
     name: HotUpdateScripts.bytes
-  - bundle: 1
+  - bundle: 16
     dir: 1
-    name: Anything.txt
-  - bundle: 2
+    name: impact.ttf
+  - bundle: 14
     dir: 2
     name: Game.unity
-  - bundle: 0
+  - bundle: 1
     dir: 3
     name: Text.txt
+  - bundle: 15
+    dir: 4
+    name: Btn_Back_h.png
+  - bundle: 6
+    dir: 4
+    name: Btn_Buy1_n.png
+  - bundle: 11
+    dir: 4
+    name: Btn_Buy1_p.png
+  - bundle: 12
+    dir: 4
+    name: Btn_MainMenu_n.png
+  - bundle: 5
+    dir: 4
+    name: Btn_Title_p.png
+  - bundle: 8
+    dir: 4
+    name: Icon_Back1.png
+  - bundle: 3
+    dir: 4
+    name: Title2_bg.png
+  - bundle: 7
+    dir: 4
+    name: background1.png
+  - bundle: 10
+    dir: 4
+    name: background4.png
+  - bundle: 4
+    dir: 4
+    name: background4_v2.png
+  - bundle: 13
+    dir: 4
+    name: background5_v2.png
+  - bundle: 9
+    dir: 4
+    name: bg_GoodsTitle.png
+  - bundle: 2
+    dir: 4
+    name: bg_Input0_n.png
+  - bundle: 0
+    dir: 4
+    name: small title02_bg.png
   bundles:
   - deps: 
-    hash: 1c65e5bea92df9dd3912f0df086c4569
+    hash: 431dd1bd2d9c7c08f73b13fe9971a4f6
     id: 0
+    len: 12104
+    name: 10307e2579158266bb48c84de4e31f81.unity3d
+  - deps: 
+    hash: 1c65e5bea92df9dd3912f0df086c4569
+    id: 1
     len: 1246
     name: 2729121f1447818ebcc32362fa7a845f.unity3d
   - deps: 
-    hash: 8b624927f6b630146e0c9224ea31a825
-    id: 1
-    len: 1244
-    name: cdcdfc5d2f29dd1ac94ed10aaf3d9434.unity3d
-  - deps: 
-    hash: c835241011483d93a7a24fbe0baa431e
+    hash: 2797efbf05992dfa31451c217229fdc5
     id: 2
-    len: 9561
+    len: 4080
+    name: 27c5099dfaec456da35432abd9e7519f.unity3d
+  - deps: 
+    hash: e2b752aaa377cbd82e184e0916786d5d
+    id: 3
+    len: 131962
+    name: 2e84f72bca55b4a2664807591fbbfe3c.unity3d
+  - deps: 
+    hash: 57e154c750c43f9b68bb947ea8f6ec1d
+    id: 4
+    len: 509367
+    name: 2ea539b7e6776608840881784f687b61.unity3d
+  - deps: 
+    hash: 011335e28c78e019fc2bcf8cbdb9a93c
+    id: 5
+    len: 63032
+    name: 405201991a9a71af19b75ddc360ad2dd.unity3d
+  - deps: 
+    hash: af2ae251b8e68bb817aa130de4a39929
+    id: 6
+    len: 35914
+    name: 4ff9b922316f65b7af5caa11c61a61fe.unity3d
+  - deps: 
+    hash: c3b1b1cf4ca5b148e51e26cc763b50fa
+    id: 7
+    len: 625695
+    name: 56a148f67bbba8d1c2e1cab4e8e73500.unity3d
+  - deps: 
+    hash: 50d65815e49352af691206e6993489fe
+    id: 8
+    len: 4600
+    name: 582d81dd23ce97cbefd9f25233498fe3.unity3d
+  - deps: 
+    hash: 4343336ab3a4fd188a305d72971e82ac
+    id: 9
+    len: 20084
+    name: 643866ffc58d995dc55ac0c622318aed.unity3d
+  - deps: 
+    hash: eba6d0bb5445db6641bb8955e29125ac
+    id: 10
+    len: 401710
+    name: 7f29c2d974928b09cb4ca9c6e4ba1bee.unity3d
+  - deps: 
+    hash: 04a396778582647234de86cdfe046b81
+    id: 11
+    len: 40339
+    name: 985692b6599af4825887201642c1fc54.unity3d
+  - deps: 
+    hash: e89fb88a1159d296ca1a51e76ae7b89f
+    id: 12
+    len: 81130
+    name: 989028c25bfff14113e19b6f721808e8.unity3d
+  - deps: 
+    hash: 928038a2847e8235d316087cc2a57778
+    id: 13
+    len: 498200
+    name: 99e969c8b6bdaeaf6012f9c767df7903.unity3d
+  - deps: 020000000600000007000000080000000a0000000b0000000c00000010000000
+    hash: 9bee2599b91aab9c2037584ce728ba1d
+    id: 14
+    len: 43800
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: b6fa2647cbdfc92171228c4b4ae01b68
-    id: 3
-    len: 31421
+    hash: 03c0213ba0a5b615ceb5757ce1594392
+    id: 15
+    len: 7866
+    name: ed4e8e2a86549760785bda16bd4be410.unity3d
+  - deps: 
+    hash: e5244ae6d9a956d008b228bc8b81e25b
+    id: 16
+    len: 129517
+    name: f027f62d736f2b9930b079d86f3b90c2.unity3d
+  - deps: 
+    hash: 9027c8f2dc322e85d594046a9fa5df59
+    id: 17
+    len: 33547
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll
   - Assets/HotUpdateResources/Other
   - Assets/HotUpdateResources/Scene
   - Assets/HotUpdateResources/TextAsset
+  - Assets/HotUpdateResources/UI

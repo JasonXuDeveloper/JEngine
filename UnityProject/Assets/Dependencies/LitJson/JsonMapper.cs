@@ -18,7 +18,10 @@ using System.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.Method;
+using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using UnityEngine;
+using Object = System.Object;
 
 namespace LitJson
 {
@@ -357,6 +360,21 @@ namespace LitJson
                 Type json_type = reader.Value.GetType();
                 var vt = value_type is ILRuntime.Reflection.ILRuntimeWrapperType ? ((ILRuntime.Reflection.ILRuntimeWrapperType)value_type).CLRType.TypeForCLR : value_type;
 
+                if (vt.FullName.Contains("BindableProperty"))
+                {
+                    //获取泛型的T
+                    string TName = vt.FullName.Replace("JEngine.Core.BindableProperty`1<", "").Replace(">", "");
+                    Type GenericType = Type.GetType(TName);
+                    //强转值到T
+                    object[] parameters = new object[1];
+                    //泛型赋值的参数
+                    parameters[0] = Convert.ChangeType(reader.Value,GenericType);
+                    //生成实例且赋值
+                    object _instance = InitILrt.appDomain.Instantiate(vt.FullName,parameters);
+                    //返回可绑定数据
+                    return _instance;
+                }
+                
                 if (vt.IsAssignableFrom(json_type))
                     return reader.Value;
                 if (vt is ILRuntime.Reflection.ILRuntimeType && ((ILRuntime.Reflection.ILRuntimeType)vt).ILType.IsEnum)
@@ -737,6 +755,41 @@ namespace LitJson
                 writer.Write (null);
                 return;
             }
+            
+            Type obj_type;
+            if (obj is ILRuntime.Runtime.Intepreter.ILTypeInstance)
+            {
+                obj_type = ((ILRuntime.Runtime.Intepreter.ILTypeInstance)obj).Type.ReflectionType;
+            }
+            else if(obj is ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)
+            {
+                obj_type = ((ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)obj).ILInstance.Type.ReflectionType;
+            }
+            else
+                obj_type = obj.GetType();
+
+            if (obj_type.FullName.Contains("BindableProperty"))
+            {
+                FieldInfo fi = obj_type.GetField("_value");
+                obj = fi.GetValue(obj);
+            }
+            
+            // See if there's a custom exporter for the object
+            if (custom_exporters_table.ContainsKey (obj_type)) {
+                ExporterFunc exporter = custom_exporters_table[obj_type];
+                exporter (obj, writer);
+
+                return;
+            }
+
+            // If not, maybe there's a base exporter
+            if (base_exporters_table.ContainsKey (obj_type)) {
+                ExporterFunc exporter = base_exporters_table[obj_type];
+                exporter (obj, writer);
+
+                return;
+            }
+
 
             if (obj is IJsonWrapper) {
                 if (writer_is_private)
@@ -757,6 +810,11 @@ namespace LitJson
                 return;
             }
 
+            if (obj is Int64) {
+                writer.Write ((long) obj);
+                return;
+            }
+            
             if (obj is Int32) {
                 writer.Write ((int) obj);
                 return;
@@ -764,11 +822,6 @@ namespace LitJson
 
             if (obj is Boolean) {
                 writer.Write ((bool) obj);
-                return;
-            }
-
-            if (obj is Int64) {
-                writer.Write ((long) obj);
                 return;
             }
 
@@ -804,34 +857,7 @@ namespace LitJson
                 return;
             }
 
-            Type obj_type;
-            if (obj is ILRuntime.Runtime.Intepreter.ILTypeInstance)
-            {
-                obj_type = ((ILRuntime.Runtime.Intepreter.ILTypeInstance)obj).Type.ReflectionType;
-            }
-            else if(obj is ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)
-            {
-                obj_type = ((ILRuntime.Runtime.Enviorment.CrossBindingAdaptorType)obj).ILInstance.Type.ReflectionType;
-            }
-            else
-                obj_type = obj.GetType();
-
-            // See if there's a custom exporter for the object
-            if (custom_exporters_table.ContainsKey (obj_type)) {
-                ExporterFunc exporter = custom_exporters_table[obj_type];
-                exporter (obj, writer);
-
-                return;
-            }
-
-            // If not, maybe there's a base exporter
-            if (base_exporters_table.ContainsKey (obj_type)) {
-                ExporterFunc exporter = base_exporters_table[obj_type];
-                exporter (obj, writer);
-
-                return;
-            }
-
+            
             // Last option, let's see if it's an enum
             if (obj is Enum) {
                 Type e_type = Enum.GetUnderlyingType (obj_type);

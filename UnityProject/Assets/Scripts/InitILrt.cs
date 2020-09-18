@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
-using ILRuntime.Runtime;
 using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
-using JEngine.Core;
 using LitJson;
+using ProtoBuf;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -36,8 +33,9 @@ public class InitILrt : MonoBehaviour
 
         appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
         appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
         appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
+        appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
+        appdomain.RegisterCrossBindingAdaptor(new IExtensibleAdapter());
         
         appdomain.DelegateManager.RegisterMethodDelegate<libx.AssetRequest>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
@@ -50,6 +48,8 @@ public class InitILrt : MonoBehaviour
             .RegisterMethodDelegate<IDictionary<String, UnityEngine.Object>>();
         appdomain.DelegateManager.RegisterMethodDelegate<Boolean>();
         appdomain.DelegateManager.RegisterMethodDelegate<Single>();
+        appdomain.DelegateManager.RegisterMethodDelegate<System.Object, System.UnhandledExceptionEventArgs>();
+        appdomain.DelegateManager.RegisterMethodDelegate<System.Boolean>();
         appdomain.DelegateManager.RegisterMethodDelegate<Boolean, GameObject>();
         appdomain.DelegateManager.RegisterMethodDelegate<Int32, Int32>();
         appdomain.DelegateManager.RegisterMethodDelegate<String>();
@@ -65,6 +65,20 @@ public class InitILrt : MonoBehaviour
         appdomain.DelegateManager.RegisterFunctionDelegate<float>();
         appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
         
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.String>>((act) =>
+        {
+            return new UnityEngine.Events.UnityAction<System.String>((arg0) =>
+            {
+                ((Action<System.String>)act)(arg0);
+            });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.Boolean>>((act) =>
+        {
+            return new UnityEngine.Events.UnityAction<System.Boolean>((arg0) =>
+            {
+                ((Action<System.Boolean>)act)(arg0);
+            });
+        });
         appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.WaitCallback>((act) =>
         {
             return new System.Threading.WaitCallback((state) =>
@@ -72,6 +86,7 @@ public class InitILrt : MonoBehaviour
                 ((Action<System.Object>)act)(state);
             });
         });
+        
         appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
         {
             return new UnityAction(() => { ((Action) act)(); });
@@ -81,6 +96,13 @@ public class InitILrt : MonoBehaviour
             return new UnityAction<Single>(arg0 =>
             {
                 ((Action<Single>) act)(arg0);
+            });
+        });
+        appdomain.DelegateManager.RegisterDelegateConvertor<System.UnhandledExceptionEventHandler>((act) =>
+        {
+            return new System.UnhandledExceptionEventHandler((sender, e) =>
+            {
+                ((Action<System.Object, System.UnhandledExceptionEventArgs>)act)(sender, e);
             });
         });
         appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<Object>>(act =>
@@ -105,10 +127,10 @@ public class InitILrt : MonoBehaviour
                 ((Action<Int32>) act)(arg0);
             });
         });
-        // appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
-        // {
-        //     return new Action<JsonData>(a => { ((Action<JsonData>) action)(a); });
-        // });
+        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
+        {
+            return new Action<JsonData>(a => { ((Action<JsonData>) action)(a); });
+        });
         appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
         {
             return new UnityAction(async () => { ((Action) act)(); });
@@ -136,14 +158,26 @@ public class InitILrt : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, GetComponent);
             }
         }
-
+        ProtoBuf.PType.RegisterFunctionCreateInstance(PType_CreateInstance);
+        ProtoBuf.PType.RegisterFunctionGetRealType(PType_GetRealType);
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain); //绑定LitJson
         CLRBindings.Initialize(appdomain); //CLR绑定
 
         #endregion
     }
-
-
+    
+    static object PType_CreateInstance(string typeName){
+        return appDomain.Instantiate (typeName);
+    }
+    static Type PType_GetRealType(object o){
+        var type = o.GetType ();
+        if (type.FullName == "ILRuntime.Runtime.Intepreter.ILTypeInstance") {
+            var ilo = o as ILRuntime.Runtime.Intepreter.ILTypeInstance;
+            type = ProtoBuf.PType.FindType (ilo.Type.FullName);
+        }
+        return type;
+    }
+    
     /// <summary>
     /// GetComponent 的实现
     /// </summary>

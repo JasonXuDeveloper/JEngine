@@ -3,7 +3,6 @@ using System.IO;
 using ILRuntime.Mono.Cecil.Pdb;
 using JEngine.Core;
 using libx;
-using UnityEditor;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -16,14 +15,32 @@ public class Init : MonoBehaviour
     private const string dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
     private const string pdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
-    [SerializeField]private string Key;
-    [SerializeField] private bool UsePdb = true;
+    [SerializeField] public string Key;
+    [SerializeField] public bool UsePdb = true;
+
+    
+    /*
+     *获取FPS
+     */
+    private int frames = 0;
+    private float timer = 1;
 
     void Start()
     {
         Instance = this;
         LoadHotFixAssembly();
-//         Application.targetFrameRate = 30;
+    }
+
+    void FixedUpdate()
+    {
+        ++frames;
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            GameStat.fps = frames;
+            frames = 0;
+            timer = 1;
+        }
     }
 
     void LoadHotFixAssembly()
@@ -101,4 +118,13 @@ public class Init : MonoBehaviour
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
     }
+}
+
+public class GameStat
+{
+    public GameStat()
+    {
+        fps = 0;
+    }
+    public static float fps;
 }

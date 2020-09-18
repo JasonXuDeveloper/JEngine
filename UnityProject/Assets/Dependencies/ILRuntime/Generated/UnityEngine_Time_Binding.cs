@@ -23,20 +23,20 @@ namespace ILRuntime.Runtime.Generated
             Type[] args;
             Type type = typeof(UnityEngine.Time);
             args = new Type[]{};
-            method = type.GetMethod("get_deltaTime", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, get_deltaTime_0);
+            method = type.GetMethod("get_time", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, get_time_0);
 
 
         }
 
 
-        static StackObject* get_deltaTime_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* get_time_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* __ret = ILIntepreter.Minus(__esp, 0);
 
 
-            var result_of_this_method = UnityEngine.Time.deltaTime;
+            var result_of_this_method = UnityEngine.Time.time;
 
             __ret->ObjectType = ObjectTypes.Float;
             *(float*)&__ret->Value = result_of_this_method;

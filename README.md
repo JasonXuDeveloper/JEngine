@@ -1,4 +1,4 @@
-# JENGINE v0.4.10
+# JENGINE v0.5.0
 
 
 
@@ -11,8 +11,6 @@ JEngine is a **streamlined and easy-to-use** framework designed for Unity Progra
 ![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
 
 > QQ Group ID: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
-
-> Will hold one live broadcast on 19th of August, 2020
 
 [中文文档](README_zh-cn.md)
 
@@ -106,10 +104,21 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **StringifyHelper** is a helper which serialize and deserialize data
-  - Support **JSON & Protobuf & BinaryFormatter**
-- **JSaver** now uses StringifyHelper to do JSON converts
-- **Enhance** clean.cs
+- **Rebuilt** demos
+- **Rewrote** **StringifyHelper**
+- **Updated** ILRuntime
+- **Rewrote** JSaver
+- **Enhanced** Auto Class Bind
+- **Enhanced** Cleaning Hot Update Solution in Unity Editor
+- **Enhanced** LitJson to serialize and deserialize **BindableProperty** (**Decreases 80%** of size when **converting BindableProperty to JSON**)
+- **Adapt** protobuf-net
+- **Proto2CS** converter
+- **Rearranged** hot update solution
+- **JResource** now supports **load scene async** and **get progress when loading scene**
+- **Combined** JBehaviour & JUI to JEngine.Core
+- **Enhanced** JBehaviour
+- **Enhanced** BindableProperty ToString method
+- **Enhanced** MonoBehaviour Adapter Inspector Window
 
 [Click here to see all version updates](CHANGE.md)
 

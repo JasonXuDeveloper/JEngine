@@ -1,4 +1,4 @@
-# JENGINE v0.4.10
+# JENGINE v0.5.0
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架
 
@@ -9,8 +9,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 ![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
 
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
-
-> 将于2020年9月19日直播
 
 [English Document](README.md)
 
@@ -86,12 +84,24 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
   >
   > JSaver能干什么？
   >
-  > - 将数据转字符串/JSON字符串
+  > - 将数据转字符串/JSON/Protobuf字符串
   > - AES加密
   > - 存储本地
   > - 从本地加载（支持泛型）
   > - 获取本地是否有Key
   > - 删除本地Key
+
+- 加密解密解决方案
+
+  - AES加密
+  - 支持字符串
+  - 支持二进制
+
+- 序列化解决方案
+
+  - 转String
+  - 转JSON
+  - 转Protobuf-net二进制
 
 - 还有更多功能，尽情自行探索！
 
@@ -103,10 +113,21 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **StringifyHelper** 是一个序列化和反序列化数据的助手
-  - 支持 **JSON & Protobuf & BinaryFormatter**
-- **JSaver** 先已使用StringifyHelper进行JSON处理
-- **优化** clean.cs
+- **重构** demos
+- **重写** **StringifyHelper**
+- **更新** ILRuntime
+- **重写** JSaver
+- **优化** 自动绑定
+- **优化** 自动清理编辑器下热更工程
+- **优化** LitJson当序列化和反序列化**BindableProperty可绑定数据** (**减少 80%字符长度** 当序列化可绑定数据)
+- **适配** protobuf-net
+- **Proto2CS** 转换生成器
+- **重新整理** 热更工程
+- **JResource** 先已支持**异步加载场景** 以及 **获取加载场景的进度**
+- **合并** JBehaviour & JUI到JEngine.Core
+- **优化** JBehaviour
+- **优化** BindableProperty的ToString方法
+- **优化** MonoBehaviour Adapter编辑器界面
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
