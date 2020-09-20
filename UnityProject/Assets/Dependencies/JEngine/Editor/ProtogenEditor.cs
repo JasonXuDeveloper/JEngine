@@ -156,7 +156,11 @@ namespace JEngine.Editor
 
 		private static void Generate(string inpath, string[] inprotos, string outpath)
 		{
-
+			if (!Directory.Exists(outpath))
+			{
+				Directory.CreateDirectory(outpath);
+			}
+			
 			var set = new FileDescriptorSet();
 
 			set.AddImportPath(inpath);

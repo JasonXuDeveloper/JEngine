@@ -116,34 +116,6 @@ namespace JEngine.ThridParty
             }
         }
 
-        public static Thread RunAsync(Action a)
-        {
-            Initialize();
-            while (numThreads >= maxThreads)
-            {
-                Thread.Sleep(100);
-            }
-            Interlocked.Increment(ref numThreads);
-            ThreadPool.QueueUserWorkItem(RunAction, a);
-            return null;
-        }
-
-        private static void RunAction(object action)
-        {
-            try
-            {
-                ((Action)action)();
-            }
-            catch
-            {
-            }
-            finally
-            {
-                Interlocked.Decrement(ref numThreads);
-            }
-
-        }
-
 
         void OnDisable()
         {

@@ -152,17 +152,20 @@ namespace JEngine.Core
 
         public JAction ExecuteAsync(Action callback = null, bool onMainThread = false)
         {
+            _ = _ExecuteAsync(callback,onMainThread);
+            return this;
+        }
+
+        private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
+        {
             if (_executing == true)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsync()");
             }
             else
             {
-                Loom.RunAsync(async () =>
-                {
-                    await Do(onMainThread);
-                    callback?.Invoke();
-                });
+                await Do(onMainThread);
+                callback?.Invoke();
             }
             return this;
         }

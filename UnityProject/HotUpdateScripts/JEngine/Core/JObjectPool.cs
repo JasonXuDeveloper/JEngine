@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace JEngine.Core
 {
-    public class JGameObjectPool : JBehaviour
+    public class JGameObjectPool : MonoBehaviour
     {
         public GameObject OriginalObj;
         public Transform Parent;
@@ -43,7 +43,7 @@ namespace JEngine.Core
         /// 初始化
         /// Initialize
         /// </summary>
-        private new void Init()
+        private void Awake()
         {
             if (Parent == null)
             {

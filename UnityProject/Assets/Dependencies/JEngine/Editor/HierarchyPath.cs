@@ -12,7 +12,7 @@ namespace  JEngine.Editor
         /// <summary>
         /// 将一个GameObject在Hierarchy中的完整路径拷贝的剪切板
         /// </summary>
-        [MenuItem("GameObject/JEngine/Copy Path",priority = 0)]
+        [MenuItem("GameObject/JEngine/Copy Path %#&C",priority = 0)]
         static void CopyTransPath()
         {
             Transform trans = Selection.activeTransform;

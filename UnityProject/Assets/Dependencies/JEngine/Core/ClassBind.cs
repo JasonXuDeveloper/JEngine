@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace JEngine.Core
 {
-    public class ClassBind: MonoBehaviour
+    public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
 
@@ -22,6 +22,7 @@ namespace JEngine.Core
             {
                 await Task.Delay(50);
             }
+
             Bind();
         }
 
@@ -34,22 +35,23 @@ namespace JEngine.Core
                 string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
                 if (!InitILrt.appDomain.LoadedTypes.ContainsKey(classType))
                 {
-                    Log.PrintError($"{classType}不存在，已跳过");
+                    Log.PrintError($"{this.name}-自动绑定：{classType}不存在，已跳过");
                     continue;
                 }
+
                 IType type = InitILrt.appDomain.LoadedTypes[classType];
-                var instance = new ILTypeInstance(type as ILType,false);
+                var instance = new ILTypeInstance(type as ILType, false);
                 var clrInstance = cb.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
                 clrInstance.enabled = false;
                 clrInstance.ILInstance = instance;
                 clrInstance.AppDomain = InitILrt.appDomain;
                 instance.CLRInstance = clrInstance;
-                
+
                 //绑定数据
                 if (_class.RequireBindFields)
                 {
                     _class.BoundData = false;
-                    
+
                     //获取实际属性
                     Type t = type.ReflectionType;
 
@@ -118,57 +120,23 @@ namespace JEngine.Core
                                 GameObject go = null;
                                 try
                                 {
-                                    go = field.value.Substring(0, 7) == "${this}"
+                                    go = field.value == "${this}"
                                         ? this.gameObject
-                                        : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
-                                    if (go == null)
+                                        : GameObject.Find(field.value);
+                                    if (go == null)//找父物体
                                     {
-                                        if (field.value.Contains("/")) //如果有父级
+                                        go = FindSubGameObject(field);
+                                        if (go == null) //如果父物体还不存在
                                         {
-                                            try
-                                            {
-                                                var parent =
-                                                    GameObject.Find(field.value.Substring(0,
-                                                        field.value.IndexOf('/'))); //寻找父物体
-                                                go = parent.transform
-                                                    .Find(field.value.Substring(field.value.IndexOf('/') + 1))
-                                                    .gameObject;
-                                            }
-                                            catch
-                                            {
-                                                Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                             continue;
                                         }
                                     }
                                 }
-                                catch (Exception ex)
+                                catch (Exception ex)//找父物体（如果抛出空异常）
                                 {
-                                    if (field.value.Contains("/")) //如果有父级
+                                    go = FindSubGameObject(field);
+                                    if (go == null) //如果父物体还不存在
                                     {
-                                        try
-                                        {
-                                            var parent =
-                                                GameObject.Find(field.value.Substring(0,
-                                                    field.value.IndexOf('/'))); //寻找父物体
-                                            go = parent.transform
-                                                .Find(field.value.Substring(field.value.IndexOf('/') + 1))
-                                                .gameObject;
-                                        }
-                                        catch
-                                        {
-                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                         continue;
                                     }
                                 }
@@ -184,70 +152,20 @@ namespace JEngine.Core
                                     go = field.value.Substring(0, 7) == "${this}"
                                         ? this.gameObject
                                         : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
-                                    if (go == null)
+                                    if (go == null)//找父物体
                                     {
-                                        if (field.value.Contains("/")) //如果有父级
+                                        go = FindSubGameObjectForScript(field);
+                                        if (go == null) //如果父物体还不存在
                                         {
-                                            try
-                                            {
-                                                var parent =
-                                                    GameObject.Find(field.value.Substring(0,
-                                                        field.value.IndexOf('/'))); //寻找父物体
-                                                try
-                                                {
-                                                    var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
-                                                    go = parent.transform
-                                                        .Find(newPath.Substring(0,newPath.LastIndexOf('.')))
-                                                        .gameObject;
-                                                }
-                                                catch(Exception exx)
-                                                {
-                                                    Log.Print(exx);
-                                                }
-                                            }
-                                            catch
-                                            {
-                                                Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                             continue;
                                         }
                                     }
                                 }
-                                catch (Exception ex)
+                                catch (Exception ex)//找父物体（如果抛出空异常）
                                 {
-                                    if (field.value.Contains("/")) //如果有父级
+                                    go = FindSubGameObjectForScript(field);
+                                    if (go == null) //如果父物体还不存在
                                     {
-                                        try
-                                        {
-                                            var parent =
-                                                GameObject.Find(field.value.Substring(0,
-                                                    field.value.IndexOf('/'))); //寻找父物体
-                                            try
-                                            {
-                                                var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
-                                                go = parent.transform
-                                                    .Find(newPath.Substring(0,newPath.LastIndexOf('.')))
-                                                    .gameObject;
-                                            }
-                                            catch(Exception exx)
-                                            {
-                                                Log.Print(exx);
-                                            }
-                                        }
-                                        catch
-                                        {
-                                            Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Log.PrintError($"{field.value}对象被隐藏或不存在，无法获取，已跳过");
                                         continue;
                                     }
                                 }
@@ -265,6 +183,7 @@ namespace JEngine.Core
                                             break;
                                         }
                                     }
+
                                     if (component.GetType().ToString().Contains(scriptName))
                                     {
                                         obj = component;
@@ -275,32 +194,37 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.HotUpdateResource)
                             {
-                               obj = Assets.LoadAsset(field.value, typeof(UnityEngine.Object)).asset;
-                               _class.BoundData = true;
+                                obj = Assets.LoadAsset(field.value, typeof(UnityEngine.Object)).asset;
+                                _class.BoundData = true;
                             }
                         }
-                        catch(Exception except)
+                        catch (Exception except)
                         {
-                            Log.PrintError($"{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
+                            Log.PrintError($"{this.name}-自动绑定：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
                         }
 
                         //如果有数据再绑定
                         if (_class.BoundData)
                         {
-                            if (t.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Contains(t.GetField(field.fieldName,BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)))
+                            if (t.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                            BindingFlags.Static).Contains(t.GetField(field.fieldName,
+                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                BindingFlags.Static)))
                             {
                                 try
                                 {
-                                    t.GetField(field.fieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).SetValue(clrInstance.ILInstance,obj);      
+                                    t.GetField(field.fieldName,
+                                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                        BindingFlags.Static).SetValue(clrInstance.ILInstance, obj);
                                 }
                                 catch (Exception e)
                                 {
-                                    Log.PrintError($"{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
+                                    Log.PrintError($"{this.name}-自动绑定：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
                                 }
                             }
                             else
                             {
-                                Log.PrintError($"{classType}不存在{field.fieldName}，已跳过");
+                                Log.PrintError($"{this.name}-自动绑定：{classType}不存在{field.fieldName}，已跳过");
                             }
                         }
                     }
@@ -311,17 +235,72 @@ namespace JEngine.Core
                 {
                     if (_class.BoundData == false && _class.RequireBindFields)
                     {
-                        Log.PrintError($"{classType}没有成功绑定数据，无法自动激活，请手动！");
+                        Log.PrintError($"{this.name}-自动绑定：{classType}没有成功绑定数据，无法自动激活，请手动！");
                         continue;
                     }
+
                     clrInstance.enabled = true;
                     clrInstance.Awake();
                 }
-                
+
                 Destroy(cb);
             }
         }
+
+        private GameObject FindSubGameObject(_ClassField field)
+        {
+            if (field.value.Contains("/")) //如果有父级
+            {
+                try
+                {
+                    var parent =
+                        GameObject.Find(field.value.Substring(0,
+                            field.value.IndexOf('/'))); //寻找父物体
+                    var go = parent.transform
+                        .Find(field.value.Substring(field.value.IndexOf('/') + 1))
+                        .gameObject;
+                    return go;
+                }
+                catch
+                {
+                    Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                }
+            }
+            else
+            {
+                Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+            }
+            return null;
+        }
+        
+        private GameObject FindSubGameObjectForScript(_ClassField field)
+        {
+            if (field.value.Contains("/")) //如果有父级
+            {
+                try
+                {
+                    var parent =
+                        GameObject.Find(field.value.Substring(0,
+                            field.value.IndexOf('/'))); //寻找父物体
+                    var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
+                    var go = parent.transform
+                        .Find(newPath.Substring(0, newPath.LastIndexOf('.')))
+                        .gameObject;
+                    return go;
+                }
+                catch
+                {
+                    Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                }
+            }
+            else
+            {
+                Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+            }
+            return null;
+        }
     }
+
 
     [System.Serializable]
     public class _ClassBind

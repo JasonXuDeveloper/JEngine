@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -184,6 +185,7 @@ namespace JEngine.Core
         /// Whether object is alive or not
         /// </summary>
         private bool _alive { get; set; }
+
         /// <summary>
         /// Do the loop
         /// </summary>
