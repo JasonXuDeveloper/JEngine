@@ -100,6 +100,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 appdomain.Invoke(mUpdateMethod, instance, null);
             }
+            
         }
         
         IMethod mDestroyMethod;

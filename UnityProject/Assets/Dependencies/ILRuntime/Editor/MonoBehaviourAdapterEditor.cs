@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Threading.Tasks;
 using ILRuntime.Runtime.Intepreter;
 using LitJson;
 using UnityEditor;
@@ -9,16 +10,34 @@ using UnityEngine;
 // using LitJson;
 
 [CustomEditor(typeof(MonoBehaviourAdapter.Adaptor), true)]
-public class MonoBehaviourAdapterEditor : UnityEditor.UI.GraphicEditor
+public class MonoBehaviourAdapterEditor : Editor
 {
+    private bool displaying;   
+    
     // 每个动画都需要一个AnimBool
     private AnimBool fadeGroup;
-
-    private void OnEnable()
+    private async void OnEnable()
     {
         this.fadeGroup = new AnimBool(true);
         // 注册动画监听
         this.fadeGroup.valueChanged.AddListener(this.Repaint);
+
+        displaying = true;
+        
+        while (true && Application.isEditor && Application.isPlaying && displaying)
+        {
+            try
+            {
+                this.Repaint();
+            }
+            catch{}
+            await Task.Delay(1000);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        displaying = false;
     }
 
     private void OnDisable()
