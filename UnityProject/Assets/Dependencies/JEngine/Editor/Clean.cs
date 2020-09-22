@@ -32,6 +32,7 @@ using UnityEngine;
 using System.IO;
 using System.Linq;
 using JEngine.Core;
+using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
@@ -74,26 +75,40 @@ namespace JEngine.Editor
                 int counts = 0;
                 List<string> fileNames = Directory.GetFiles("Assets/",
                     "*.dll", SearchOption.AllDirectories).ToList();
+                fileNames = fileNames.FindAll((x) => !x.Contains("~"));
                 var watch = new Stopwatch();
                 watch.Start();
                 foreach (var file in files)
                 {
                     var name = file.Name;
-                    if(!File.Exists(library.FullName + "/" + name) && !name.Contains("HotUpdateScripts") &&
-                       !name.Contains("Unity") && ((name.Contains(".pdb") || name.Contains(".dll"))))
+                    if(!File.Exists(library.FullName + "/" + name) && !name.Contains("netstandard")  && !name.Contains("HotUpdateScripts") && !name.Contains("Unity") && !name.Contains("System") && ((name.Contains(".pdb") || name.Contains(".dll"))))
                     {
-                        if (fileNames.Find(x => x.Contains(name)).Length == 0 ) //不存在就添加
+                        if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
                         {
-                            File.Move(file.FullName, file.FullName.Replace("/Hidden~", ""));
-                            Log.Print($"Find new referenced dll `{name}`, note that your hot update code may not be able " +
-                                      $"to run without rebuild application\n" +
-                                      $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
+                            DLLMgr.Delete(file.FullName.Replace("Hidden~", "../Dll"));
+                            File.Move(file.FullName, file.FullName.Replace("Hidden~", "../Dll"));
+                            Log.Print(
+                                $"Find new referenced dll `{name}`, note that your hot update code may not be able " +
+                                $"to run without rebuild application\n" +
+                                $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
+                        }
+                        else
+                        {
+                            DLLMgr.Delete(file.FullName);
+                            counts++;
                         }
                     }
                     else if (!name.Contains("HotUpdateScripts"))
                     {
                         DLLMgr.Delete(file.FullName);
                         counts++;
+                    }
+                    else
+                    {
+                        if (!name.Contains("HotUpdateScripts"))
+                        {
+                            Log.PrintError($"无法删除{file.FullName}，请手动删除");   
+                        }
                     }
                 }
                 watch.Stop();
