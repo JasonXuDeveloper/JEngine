@@ -66,6 +66,10 @@ namespace JEngine.Editor
             var files = di.GetFiles();
             if (files.Length > 1)
             {
+                if (files.Length == 2)
+                {
+                    return;
+                }
                 isDone = false;
                 int counts = 0;
                 List<string> fileNames = Directory.GetFiles("Assets/",
