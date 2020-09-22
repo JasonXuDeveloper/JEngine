@@ -76,6 +76,7 @@ namespace JEngine.Editor
                 List<string> fileNames = Directory.GetFiles("Assets/",
                     "*.dll", SearchOption.AllDirectories).ToList();
                 fileNames = fileNames.FindAll((x) => !x.Contains("~"));
+
                 var watch = new Stopwatch();
                 watch.Start();
                 foreach (var file in files)
@@ -93,6 +94,11 @@ namespace JEngine.Editor
                                 $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
                         }
                         else
+                        {
+                            DLLMgr.Delete(file.FullName);
+                            counts++;
+                        }
+                        else//存在就删了
                         {
                             DLLMgr.Delete(file.FullName);
                             counts++;
