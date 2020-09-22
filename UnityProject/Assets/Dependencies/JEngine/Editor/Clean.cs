@@ -35,86 +35,95 @@ using JEngine.Core;
 
 namespace JEngine.Editor
 {
-[InitializeOnLoad]
-class Clean
-{
-    static Clean()
+    [InitializeOnLoad]
+    class Clean
     {
-        isDone = true;
-        EditorApplication.update += Update;
-    }
-
-    private static bool isDone;
-
-    static void Update()
-    {
-        if (!isDone)
+        static Clean()
         {
-            return;
+            isDone = true;
+            EditorApplication.update += Update;
+            library = new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
+            di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
         }
 
-        if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~"))//DLL导入到隐藏文件夹，防止每次加载浪费时间
+        private static bool isDone;
+
+        private static DirectoryInfo library;
+        private static DirectoryInfo di;
+
+        static void Update()
         {
-            Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
-        }
-        
-        DirectoryInfo library = new DirectoryInfo(Application.dataPath+"/../Library/ScriptAssemblies");
-        DirectoryInfo di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
-        var files = di.GetFiles();
-        if (files.Length > 1)
-        {
-            isDone = false;
-            int counts = 0;
-            List<string> fileNames = Directory.GetFiles("Assets/",
-                "*.*", SearchOption.AllDirectories).ToList();
-            var watch = new Stopwatch();
-            watch.Start();
-            foreach (var file in files)
+            if (!isDone || EditorApplication.isPlaying)
             {
-                var name = file.Name;
-
-                if(fileNames.Find(x=>x.Contains(name)).Length == 0 && !File.Exists(library.FullName+"/"+name) && !name.Contains("HotUpdateScripts")&&!name.Contains("Unity")&&(name.Contains(".pdb")||name.Contains(".dll")))//不存在就添加
-                {
-                    File.Move(file.FullName,file.FullName.Replace("/Hidden~",""));
-                }
-                else if(!name.Contains("HotUpdateScripts"))
-                {
-                    DLLMgr.Delete(file.FullName);
-                    counts++;
-                }
+                return;
             }
 
-            watch.Stop();
-            if (counts > 0)//如果删除过东西，就代表DLL更新了，就需要生成文件
+            if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~")) //DLL导入到隐藏文件夹，防止每次加载浪费时间
             {
-                Log.Print("Cleaned: " + counts + " files in: " + watch.ElapsedMilliseconds + " ms.");
-                DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-                watch = new Stopwatch();
+                Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
+            }
+            
+            var files = di.GetFiles();
+            if (files.Length > 1)
+            {
+                isDone = false;
+                int counts = 0;
+                List<string> fileNames = Directory.GetFiles("Assets/",
+                    "*.dll", SearchOption.AllDirectories).ToList();
+                var watch = new Stopwatch();
+                watch.Start();
+                foreach (var file in files)
+                {
+                    var name = file.Name;
+                    if(!File.Exists(library.FullName + "/" + name) && !name.Contains("HotUpdateScripts") &&
+                       !name.Contains("Unity") && ((name.Contains(".pdb") || name.Contains(".dll"))))
+                    {
+                        if (fileNames.Find(x => x.Contains(name)).Length == 0 ) //不存在就添加
+                        {
+                            File.Move(file.FullName, file.FullName.Replace("/Hidden~", ""));
+                            Log.Print($"Find new referenced dll `{name}`, note that your hot update code may not be able " +
+                                      $"to run without rebuild application\n" +
+                                      $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
+                        }
+                    }
+                    else if (!name.Contains("HotUpdateScripts"))
+                    {
+                        DLLMgr.Delete(file.FullName);
+                        counts++;
+                    }
+                }
+                watch.Stop();
+                if (counts > 0) //如果删除过东西，就代表DLL更新了，就需要生成文件
+                {
+                    Log.Print("Cleaned: " + counts + " files in: " + watch.ElapsedMilliseconds + " ms.");
+                    DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+                    watch = new Stopwatch();
+                    DLLMgr.MakeBytes();
+                    watch.Stop();
+                    if (watch.ElapsedMilliseconds > 0)
+                    {
+                        Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
+                    }
+
+                    AssetDatabase.Refresh();
+                }
+
+                isDone = true;
+            }
+
+            if (!File.Exists("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes"))
+            {
+                isDone = false;
+                var watch = new Stopwatch();
                 DLLMgr.MakeBytes();
                 watch.Stop();
-                if (watch.ElapsedMilliseconds > 0)
-                {
-                    Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");   
-                }
+                Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
                 AssetDatabase.Refresh();
+                isDone = true;
             }
-
-            isDone = true;
         }
 
-        if (!File.Exists("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes"))
-        {
-            isDone = false;
-            var watch = new Stopwatch();
-            DLLMgr.MakeBytes();
-            watch.Stop();
-            Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
-            AssetDatabase.Refresh();
-            isDone = true;
-        }
+
+
     }
-
-    
-    
-}
 }
