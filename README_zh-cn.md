@@ -12,11 +12,16 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架
 
 [English Document](README.md)
 
-[Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)，框架教程在这里
 
-[知乎文章](https://zhuanlan.zhihu.com/p/218105381)
-
-[Gitee码云链接 （国内快速克隆通道）](https://gitee.com/JasonXuDeveloper/JEngine)
+## 框架相关
+ | 主题| 地址| 
+ | ---- | ---- | 
+ | 教学视频：介绍+使用+更新+入门| [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)| 
+ | 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案| [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)| 
+ | 框架文档| [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)|
+ | 知乎文章| [点击跳转](https://zhuanlan.zhihu.com/p/218105381)|
+ | 国内镜像| [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)|
+ | QQ群聊| [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)|
 
 ## 近期star趋势
 
