@@ -139,7 +139,7 @@ namespace JEngine.Core
 
         public JAction Execute(bool onMainThread = false)
         {
-            if (_executing == true)
+            if (_executing == true && !_parallel)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
             }
@@ -158,7 +158,7 @@ namespace JEngine.Core
 
         private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
         {
-            if (_executing == true)
+            if (_executing == true && !_parallel)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsync()");
             }
