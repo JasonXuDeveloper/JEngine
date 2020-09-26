@@ -36,9 +36,19 @@ namespace JEngine.Core
 {
     public class Localization
     {
+        private static List<LocalizedText> _texts;
+        
         private static Dictionary<string, Dictionary<string, string>> _phrases;//language,key,value
 
-        private static string _language = "zh-CN";
+        private static string _language;
+
+        public static string CurrentLanguage
+        {
+            get
+            {
+                return _language;
+            }
+        }
 
         private static void Init()
         {
@@ -61,7 +71,7 @@ namespace JEngine.Core
 
             //获取语言
             var header = Regex.Split(AllRows[0],pattern);
-            
+
             for (int i = 1; i < header.Length; i++)
             {
                 //某语言
@@ -106,6 +116,15 @@ namespace JEngine.Core
         {
             _language = lang.ToLower();
             PlayerPrefs.SetString("JEngine.Core.Localization.language", _language);
+        }
+
+        public static void AddText(LocalizedText lt)
+        {
+            if (_texts == null)
+            {
+                _texts = new List<LocalizedText>();
+            }
+            _texts.Add(lt);
         }
 
         /// <summary>

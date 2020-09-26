@@ -38,7 +38,6 @@ namespace JEngine.ThridParty
     public class Loom : MonoBehaviour
     {
         public static int maxThreads = 8;
-        static int numThreads;
 
         private static Loom _current;
         //private int _count;

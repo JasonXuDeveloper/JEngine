@@ -23,6 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace JEngine.Core
@@ -31,18 +34,27 @@ namespace JEngine.Core
     public class LocalizedText : MonoBehaviour
     {
         public string key;
+        private string curLang;
 
-        private UnityEngine.UI.Text _text;
-        
-        void Start()
+        [HideInInspector]public UnityEngine.UI.Text _text;
+
+        private void Awake()
         {
+            Localization.AddText(this);
             _text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
-            SetText();
         }
 
-        public void SetText()
+        private async void Start()
         {
-            _text.text = Localization.GetString(key);
+            while (Application.isPlaying)
+            {
+                if (Localization.CurrentLanguage != curLang)
+                {
+                    _text.text = Localization.GetString(key);
+                    curLang = Localization.CurrentLanguage;
+                }
+                await Task.Delay(100);
+            }
         }
     }
 }
