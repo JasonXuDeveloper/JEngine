@@ -3349,16 +3349,16 @@ MonoBehaviour:
         value: Canvas/JBehaviour
       - fieldType: 12
         fieldName: FrequencyNumber
-        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u9891\u7387.InputField"
+        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u9891\u7387"
       - fieldType: 12
         fieldName: OnFrameMode
-        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u5E27\u5FAA\u73AF.Toggle"
+        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u5E27\u5FAA\u73AF"
       - fieldType: 12
         fieldName: DemoText
-        value: "Canvas/JBehaviour/\u533A\u57DF/Text.Text"
+        value: "Canvas/JBehaviour/\u533A\u57DF/Text"
       - fieldType: 12
         fieldName: DescText
-        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u9891\u7387/Text (1).Text"
+        value: "Canvas/JBehaviour/\u533A\u57DF/Buttons/\u9891\u7387/Text (1)"
 --- !u!4 &1493771057
 Transform:
   m_ObjectHideFlags: 0
@@ -3877,16 +3877,16 @@ MonoBehaviour:
       array:
       - fieldType: 12
         fieldName: Value
-        value: "Canvas/JSaver/\u533A\u57DF/\u52A0\u5BC6\u7ED3\u679C.Text"
+        value: "Canvas/JSaver/\u533A\u57DF/\u52A0\u5BC6\u7ED3\u679C"
       - fieldType: 12
         fieldName: SaveAsStrBtn
-        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveStr.Button"
+        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveStr"
       - fieldType: 12
         fieldName: SaveAsJSONBtn
-        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveJSON.Button"
+        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveJSON"
       - fieldType: 12
         fieldName: SaveAsProtobufBtn
-        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveProtobuf.Button"
+        value: "Canvas/JSaver/\u533A\u57DF/Buttons/SaveProtobuf"
 --- !u!4 &1766134456
 Transform:
   m_ObjectHideFlags: 0
@@ -4455,6 +4455,7 @@ GameObject:
   - component: {fileID: 2046311236}
   - component: {fileID: 2046311238}
   - component: {fileID: 2046311237}
+  - component: {fileID: 2046311239}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -4522,6 +4523,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2046311235}
   m_CullTransparentMesh: 0
+--- !u!114 &2046311239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046311235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 415984c4fd756495d9155459c6c5d41b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: GameSceneTitle
 --- !u!1 &2048244361
 GameObject:
   m_ObjectHideFlags: 0
@@ -4765,10 +4779,10 @@ MonoBehaviour:
       array:
       - fieldType: 12
         fieldName: JUIVal
-        value: "Canvas/JUI/\u533A\u57DF/JUIText.Text"
+        value: "Canvas/JUI/\u533A\u57DF/JUIText"
       - fieldType: 12
         fieldName: NormalVal
-        value: "Canvas/JUI/\u533A\u57DF/NormalText.Text"
+        value: "Canvas/JUI/\u533A\u57DF/NormalText.a"
   - Namespace: JEngine.Examples
     Class: DataModifyExample
     ActiveAfter: 1

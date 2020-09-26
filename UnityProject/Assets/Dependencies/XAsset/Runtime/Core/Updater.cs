@@ -620,7 +620,6 @@ namespace libx
             Assets.runtimeMode = !development;
             var init = Assets.Initialize();
             yield return init;
-            
             if (string.IsNullOrEmpty(init.error))
             {
                 Assets.AddSearchPath("Assets/HotUpdateResources/Controller");

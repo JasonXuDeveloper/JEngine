@@ -216,7 +216,6 @@ namespace JEngine.Core
             _alive = false;
             End();
         }
-
         #endregion
 
 

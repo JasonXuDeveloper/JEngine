@@ -1,2 +1,0 @@
-Drop .txt, .json, etc. files here. (Any text files)
-

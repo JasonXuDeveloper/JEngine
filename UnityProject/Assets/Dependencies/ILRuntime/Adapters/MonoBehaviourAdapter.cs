@@ -6,6 +6,7 @@ using System.Collections;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.CLR.Method;
+using JEngine.Core;
 
 public class MonoBehaviourAdapter : CrossBindingAdaptor
 {
@@ -102,6 +103,76 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             }
             
         }
+
+        IMethod mFixedUpdateMethod;
+        bool mFixedUpdateMethodGot;
+        void FixedUpdate()
+        {
+            if (!mFixedUpdateMethodGot)
+            {
+                mFixedUpdateMethod = instance.Type.GetMethod("FixedUpdate", 0);
+                mFixedUpdateMethodGot = true;
+            }
+
+            if (mFixedUpdateMethod != null)
+            {
+                appdomain.Invoke(mFixedUpdateMethod, instance, null);
+            }
+        }
+        
+        IMethod mLateUpdateMethod;
+        bool mLateUpdateMethodGot;
+        void LateUpdate()
+        {
+            if (!mLateUpdateMethodGot)
+            {
+                mLateUpdateMethod = instance.Type.GetMethod("LateUpdate", 0);
+                mLateUpdateMethodGot = true;
+            }
+
+            if (mLateUpdateMethod != null)
+            {
+                appdomain.Invoke(mLateUpdateMethod, instance, null);
+            }
+        }
+        
+        IMethod mOnEnableMethod;
+        bool mOnEnableMethodGot;
+        void OnEnable()
+        {
+            if (instance != null)
+            {
+                if (!mOnEnableMethodGot)
+                {
+                    mOnEnableMethod = instance.Type.GetMethod("OnEnable", 0);
+                    mOnEnableMethodGot = true;
+                }
+
+                if (mOnEnableMethod != null)
+                {
+                    appdomain.Invoke(mOnEnableMethod, instance, null);
+                }
+            }
+        }
+        
+        IMethod mOnDisableMethod;
+        bool mOnDisableMethodGot;
+        void OnDisable()
+        {
+            if (instance != null)
+            {
+                if (!mOnDisableMethodGot)
+                {
+                    mOnDisableMethod = instance.Type.GetMethod("OnDisable", 0);
+                    mOnDisableMethodGot = true;
+                }
+
+                if (mOnDisableMethod != null)
+                {
+                    appdomain.Invoke(mOnDisableMethod, instance, null);
+                }
+            }
+        }
         
         IMethod mDestroyMethod;
         bool mDestroyMethodGot;
@@ -118,7 +189,102 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 appdomain.Invoke(mDestroyMethod, instance, null);
             }
         }
+        
+        IMethod mOnTriggerEnterMethod;
+        bool mOnTriggerEnterMethodGot;
+        void OnTriggerEnter(Collider other)
+        {
+            if (!mOnTriggerEnterMethodGot)
+            {
+                mOnTriggerEnterMethod = instance.Type.GetMethod("OnTriggerEnter", 1);
+                mOnTriggerEnterMethodGot = true;
+            }
 
+            if (mOnTriggerEnterMethod != null)
+            {
+                appdomain.Invoke(mOnTriggerEnterMethod, instance, other);
+            }
+        }
+        
+        IMethod mOnTriggerStayMethod;
+        bool mOnTriggerStayMethodGot;
+        void OnTriggerStay(Collider other)
+        {
+            if (!mOnTriggerStayMethodGot)
+            {
+                mOnTriggerStayMethod = instance.Type.GetMethod("OnTriggerStay", 1);
+                mOnTriggerStayMethodGot = true;
+            }
+
+            if (mOnTriggerStayMethod != null)
+            {
+                appdomain.Invoke(mOnTriggerStayMethod, instance, other);
+            }
+        }
+        
+        IMethod mOnTriggerExitMethod;
+        bool mOnTriggerExitMethodGot;
+        void OnTriggerExit(Collider other)
+        {
+            if (!mOnTriggerExitMethodGot)
+            {
+                mOnTriggerExitMethod = instance.Type.GetMethod("OnTriggerExit", 1);
+                mOnTriggerExitMethodGot = true;
+            }
+
+            if (mOnTriggerExitMethod != null)
+            {
+                appdomain.Invoke(mOnTriggerExitMethod, instance, other);
+            }
+        }
+        
+        IMethod mOnCollisionEnterMethod;
+        bool mOnCollisionEnterMethodGot;
+        void OnCollisionEnter(Collision other)
+        {
+            if (!mOnCollisionEnterMethodGot)
+            {
+                mOnCollisionEnterMethod = instance.Type.GetMethod("OnCollisionEnter", 1);
+                mOnCollisionEnterMethodGot = true;
+            }
+
+            if (mOnCollisionEnterMethod != null)
+            {
+                appdomain.Invoke(mOnCollisionEnterMethod, instance, other);
+            }
+        }
+
+        IMethod mOnCollisionStayMethod;
+        bool mOnCollisionStayMethodGot;
+        void OnCollisionStay(Collision other)
+        {
+            if (!mOnCollisionStayMethodGot)
+            {
+                mOnCollisionStayMethod = instance.Type.GetMethod("OnCollisionStay", 1);
+                mOnCollisionStayMethodGot = true;
+            }
+
+            if (mOnCollisionStayMethod != null)
+            {
+                appdomain.Invoke(mOnCollisionStayMethod, instance, other);
+            }
+        }
+        
+        IMethod mOnCollisionExitMethod;
+        bool mOnCollisionExitMethodGot;
+        void OnCollisionExit(Collision other)
+        {
+            if (!mOnCollisionExitMethodGot)
+            {
+                mOnCollisionExitMethod = instance.Type.GetMethod("OnCollisionExit", 1);
+                mOnCollisionExitMethodGot = true;
+            }
+
+            if (mOnCollisionExitMethod != null)
+            {
+                appdomain.Invoke(mOnCollisionExitMethod, instance, other);
+            }
+        }
         public override string ToString()
         {
             IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);

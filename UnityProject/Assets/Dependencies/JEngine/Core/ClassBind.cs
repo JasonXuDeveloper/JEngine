@@ -1,4 +1,29 @@
-﻿using System;
+﻿//
+// ClassBind.cs
+//
+// Author:
+//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
+//
+// Copyright (c) 2020 JEngine
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +37,7 @@ using UnityEngine;
 
 namespace JEngine.Core
 {
+    [DisallowMultipleComponent]
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
@@ -35,7 +61,7 @@ namespace JEngine.Core
                 string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
                 if (!InitILrt.appDomain.LoadedTypes.ContainsKey(classType))
                 {
-                    Log.PrintError($"{this.name}-自动绑定：{classType}不存在，已跳过");
+                    Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
                     continue;
                 }
 
@@ -149,12 +175,16 @@ namespace JEngine.Core
                                 GameObject go = null;
                                 try
                                 {
-                                    go = field.value.Substring(0, 7) == "${this}"
+                                    if (field.value.Contains("."))
+                                    {
+                                        field.value = field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                                    }
+                                    go = field.value == "${this}"
                                         ? this.gameObject
-                                        : GameObject.Find(field.value.Substring(0, field.value.LastIndexOf('.')));
+                                        : GameObject.Find(field.value);
                                     if (go == null)//找父物体
                                     {
-                                        go = FindSubGameObjectForScript(field);
+                                        go = FindSubGameObject(field);
                                         if (go == null) //如果父物体还不存在
                                         {
                                             continue;
@@ -163,32 +193,41 @@ namespace JEngine.Core
                                 }
                                 catch (Exception ex)//找父物体（如果抛出空异常）
                                 {
-                                    go = FindSubGameObjectForScript(field);
+                                    go = FindSubGameObject(field);
                                     if (go == null) //如果父物体还不存在
                                     {
                                         continue;
                                     }
                                 }
 
-                                foreach (var component in go.GetComponents<Component>())
+                                var tp = t.GetField(field.fieldName,
+                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                    BindingFlags.Static);
+                                if (tp!=null)
                                 {
-                                    string scriptName = field.value.Substring(field.value.LastIndexOf('.'));
-                                    if (component.GetType() == typeof(MonoBehaviourAdapter.Adaptor))
+                                    string tName = tp.FieldType.Name;
+                                    if (tp.FieldType.Assembly.ToString().Contains("ILRuntime"))//如果在热更中
                                     {
-                                        MonoBehaviourAdapter.Adaptor c = (MonoBehaviourAdapter.Adaptor) component;
-                                        if (c.ILInstance.Type.ToString().Contains(scriptName))
+                                        var components = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                                        foreach (var c in components)
                                         {
-                                            obj = c.ILInstance;
-                                            _class.BoundData = true;
-                                            break;
+                                            if (c.ILInstance.Type.Name == tName)
+                                            {
+                                                obj = c.ILInstance;
+                                                _class.BoundData = true;
+                                                break;
+                                            }
                                         }
                                     }
-
-                                    if (component.GetType().ToString().Contains(scriptName))
+                                    else
                                     {
-                                        obj = component;
-                                        _class.BoundData = true;
-                                        break;
+                                        var component = go.GetComponents<Component>().ToList()
+                                            .Find(c => c.GetType().ToString().Contains(tName));
+                                        if (component != null)
+                                        {
+                                            obj = component;
+                                            _class.BoundData = true;
+                                        }
                                     }
                                 }
                             }
@@ -200,31 +239,30 @@ namespace JEngine.Core
                         }
                         catch (Exception except)
                         {
-                            Log.PrintError($"{this.name}-自动绑定：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
+                            Log.PrintError($"自动绑定{this.name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
                         }
 
                         //如果有数据再绑定
                         if (_class.BoundData)
                         {
-                            if (t.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                            BindingFlags.Static).Contains(t.GetField(field.fieldName,
+                            var fi = t.GetField(field.fieldName,
                                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                BindingFlags.Static)))
+                                BindingFlags.Static);
+                            if (fi != null)
                             {
                                 try
                                 {
-                                    t.GetField(field.fieldName,
-                                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                        BindingFlags.Static).SetValue(clrInstance.ILInstance, obj);
+                                    fi.SetValue(clrInstance.ILInstance, obj);
                                 }
                                 catch (Exception e)
                                 {
-                                    Log.PrintError($"{this.name}-自动绑定：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
+                                    Log.PrintError(
+                                        $"自动绑定{this.name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
                                 }
                             }
                             else
                             {
-                                Log.PrintError($"{this.name}-自动绑定：{classType}不存在{field.fieldName}，已跳过");
+                                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在{field.fieldName}，已跳过");
                             }
                         }
                     }
@@ -235,7 +273,7 @@ namespace JEngine.Core
                 {
                     if (_class.BoundData == false && _class.RequireBindFields)
                     {
-                        Log.PrintError($"{this.name}-自动绑定：{classType}没有成功绑定数据，无法自动激活，请手动！");
+                        Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，无法自动激活，请手动！");
                         continue;
                     }
 
@@ -263,39 +301,12 @@ namespace JEngine.Core
                 }
                 catch
                 {
-                    Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                    Log.PrintError($"自动绑定{this.name}出错：{field.value}对象被隐藏或不存在，无法获取，已跳过");
                 }
             }
             else
             {
-                Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
-            }
-            return null;
-        }
-        
-        private GameObject FindSubGameObjectForScript(_ClassField field)
-        {
-            if (field.value.Contains("/")) //如果有父级
-            {
-                try
-                {
-                    var parent =
-                        GameObject.Find(field.value.Substring(0,
-                            field.value.IndexOf('/'))); //寻找父物体
-                    var newPath = field.value.Substring(field.value.IndexOf('/') + 1);
-                    var go = parent.transform
-                        .Find(newPath.Substring(0, newPath.LastIndexOf('.')))
-                        .gameObject;
-                    return go;
-                }
-                catch
-                {
-                    Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
-                }
-            }
-            else
-            {
-                Log.PrintError($"{this.name}-自动绑定：{field.value}对象被隐藏或不存在，无法获取，已跳过");
+                Log.PrintError($"自动绑定{this.name}出错：{field.value}对象被隐藏或不存在，无法获取，已跳过");
             }
             return null;
         }
