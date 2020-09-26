@@ -1,4 +1,4 @@
-# JENGINE v0.5.0
+# JENGINE v0.5.1
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -14,14 +14,15 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，小白也能*
 
 
 ## 框架相关
- | 主题| 地址| 
- | ---- | ---- | 
- | 教学视频：介绍+使用+更新+入门| [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)| 
- | 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案| [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)| 
- | 框架文档| [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)|
- | 知乎文章| [点击跳转](https://zhuanlan.zhihu.com/p/218105381)|
- | 国内镜像| [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)|
- | QQ群聊| [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)|
+| 主题| 地址|
+| ---- | ---- |
+| 教学视频：介绍+使用+更新+入门| [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)|
+| 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案| [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)|
+| 教学视频：核心功能（中）JAction队列解决方案全系列 | [点击跳转](https://www.bilibili.com/video/BV1Pt4y1q7X2/) |
+| 框架文档| [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)|
+| 知乎文章| [点击跳转](https://zhuanlan.zhihu.com/p/218105381)|
+| 国内镜像| [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)|
+| QQ群聊| [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)|
 
 ## 近期star趋势
 
@@ -118,21 +119,9 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ## 最新功能
 
-- **重构** demos
-- **重写** **StringifyHelper**
-- **更新** ILRuntime
-- **重写** JSaver
-- **优化** 自动绑定
-- **优化** 自动清理编辑器下热更工程
-- **优化** LitJson当序列化和反序列化**BindableProperty可绑定数据** (**减少 80%字符长度** 当序列化可绑定数据)
-- **适配** protobuf-net
-- **Proto2CS** 转换生成器
-- **重新整理** 热更工程
-- **JResource** 先已支持**异步加载场景** 以及 **获取加载场景的进度**
-- **合并** JBehaviour & JUI到JEngine.Core
-- **优化** JBehaviour
-- **优化** BindableProperty的ToString方法
-- **优化** MonoBehaviour Adapter编辑器界面
+- **多语言本地化 ** 让你的游戏支持多种语言
+- **更智能** 自动绑定，使赋值Unity Component更简便
+- **更多周期** MonoBehaviour先已支持全部周期
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -144,16 +133,11 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 - ~~加密解密DLL~~
 - ~~对象池~~
 - JPrefab，一个更容易管理热更预制体的解决方案
+- Socket
+- 内存加密类
 - JUI延伸API
 - UI特效
 - 优化算法、代码（一直在优化）
-- Unity内置FTP工具（可能会做）
-
-
-
-## 为何热更新
-
-[点击阅读](Docs/zh-cn/WhyHotUpdate.md)
 
 
 
@@ -184,12 +168,6 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 ├── DLC
 ├── HotUpdateScrpts
 ```
-
-### 目录介绍
-
-[点击阅读](Docs/zh-cn/DirectoriesDiscription.md)
-
-
 
 ## JEngine热更逻辑
 

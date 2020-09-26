@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.5.1 (Sepetember 26 2020)
+
+- **Localization** supports multiple languages in your game
+- **Smarter** autobind, easier to set value of a Unity Component
+- **More** event functions for MonoBehaviour in HotUpdate
+
+
+
 ### v0.5.0 (Sepetember 19 2020)
 
 - **Rebuilt** demos

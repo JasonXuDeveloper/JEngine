@@ -1,4 +1,4 @@
-# JENGINE v0.5.0
+# JENGINE v0.5.1
 
 
 
@@ -104,21 +104,9 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Rebuilt** demos
-- **Rewrote** **StringifyHelper**
-- **Updated** ILRuntime
-- **Rewrote** JSaver
-- **Enhanced** Auto Class Bind
-- **Enhanced** Cleaning Hot Update Solution in Unity Editor
-- **Enhanced** LitJson to serialize and deserialize **BindableProperty** (**Decreases 80%** of size when **converting BindableProperty to JSON**)
-- **Adapt** protobuf-net
-- **Proto2CS** converter
-- **Rearranged** hot update solution
-- **JResource** now supports **load scene async** and **get progress when loading scene**
-- **Combined** JBehaviour & JUI to JEngine.Core
-- **Enhanced** JBehaviour
-- **Enhanced** BindableProperty ToString method
-- **Enhanced** MonoBehaviour Adapter Inspector Window
+- **Localization** supports multiple languages in your game
+- **Smarter** autobind, easier to set value of a Unity Component
+- **More** event functions for MonoBehaviour in HotUpdate
 
 [Click here to see all version updates](CHANGE.md)
 
