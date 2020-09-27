@@ -19,6 +19,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，小白也能*
 | 教学视频：介绍+使用+更新+入门| [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)|
 | 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案| [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)|
 | 教学视频：核心功能（中）JAction队列解决方案全系列 | [点击跳转](https://www.bilibili.com/video/BV1Pt4y1q7X2/) |
+| 教学视频：核心功能（下）数据持久化+对象池+助手类+面板 | [点击跳转](https://www.bilibili.com/video/BV12Z4y1N7eG/) |
 | 框架文档| [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki)|
 | 知乎文章| [点击跳转](https://zhuanlan.zhihu.com/p/218105381)|
 | 国内镜像| [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)|
