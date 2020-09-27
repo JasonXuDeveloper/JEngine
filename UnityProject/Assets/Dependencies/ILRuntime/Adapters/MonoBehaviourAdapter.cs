@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ILRuntime.Other;
 using System;
 using System.Collections;
+using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.CLR.Method;

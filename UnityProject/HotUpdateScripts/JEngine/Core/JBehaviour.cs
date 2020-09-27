@@ -55,18 +55,6 @@ namespace JEngine.Core
         [HideInInspector] private bool Paused { get; set; } = false;
 
         /// <summary>
-        /// Whether inited or not
-        /// 是否完成初始化
-        /// </summary>
-        [HideInInspector] private bool Inited { get; set; } = false;
-
-        /// <summary>
-        /// Whether has run or not
-        /// 是否完成Run
-        /// </summary>
-        [HideInInspector] private bool HasRun { get; set; } = false;
-
-        /// <summary>
         /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called
         /// JUI运行模式，Loop模式下UI将在特定频率更新，Message模式UI将在被通知后更新
         /// </summary>
@@ -145,13 +133,7 @@ namespace JEngine.Core
             {
                 Log.Print($"Init failed: {e.Message}, skipped init");
             }
-            
-            Inited = true;
 
-            while (!Inited)
-            {
-                await Task.Delay(25);
-            }
             try
             {
                 Run();
@@ -160,15 +142,9 @@ namespace JEngine.Core
             {
                 Log.Print($"Run failed: {e.Message}, skipped run");
             }
-            HasRun = true;
 
             if (!NotLoop)
             {
-                while (!HasRun)
-                {
-                    await Task.Delay(25);
-                }
-
                 try
                 {
                     DoLoop();
@@ -201,7 +177,7 @@ namespace JEngine.Core
                 if (Paused) break;
                 Loop();
                 if (FrameMode)
-                    await Task.Delay((int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStat.fps : Application.targetFrameRate)) * 1000f));
+                    await Task.Delay((int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f));
                 else
                     await Task.Delay(Frequency);
             }

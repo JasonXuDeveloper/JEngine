@@ -37,7 +37,7 @@ public class Init : MonoBehaviour
         timer -= Time.deltaTime;
         if (timer <= 0)
         {
-            GameStat.fps = frames;
+            GameStats.fps = frames;
             frames = 0;
             timer = 1;
         }
@@ -120,9 +120,9 @@ public class Init : MonoBehaviour
     }
 }
 
-public class GameStat
+public class GameStats
 {
-    public GameStat()
+    public GameStats()
     {
         fps = 0;
     }

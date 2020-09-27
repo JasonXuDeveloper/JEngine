@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using libx;
 using UnityEngine;
 using System.Text.RegularExpressions;
@@ -49,7 +51,7 @@ namespace JEngine.Core
                 return _language;
             }
         }
-
+        
         private static void Init()
         {
             if (!MonoBehaviour.FindObjectOfType<Assets>())
@@ -65,7 +67,16 @@ namespace JEngine.Core
             TextAsset file = (TextAsset)req.asset;
             
             //获取全部行
-            string[] AllRows = file.text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries); //忽略空行
+            List<string> AllRows = new List<string>(0);
+            byte[] array = Encoding.UTF8.GetBytes(file.text);            
+            MemoryStream stream = new MemoryStream(array);
+            System.IO.StreamReader sr = new System.IO.StreamReader(stream, Encoding.Default);
+            String line;
+            while ((line = sr.ReadLine()) != null)
+            {  
+                AllRows.Add(line);
+            }
+            sr.Close();
 
             string pattern = ",(?=(?:[^\\" + '"' + "]*\\" + '"' + "[^\\" + '"' + "]*\\" + '"' + ")*[^\\" + '"' + "]*$)";
 
@@ -78,7 +89,7 @@ namespace JEngine.Core
                 string lang = _getExactValue(header[i]).ToLower();
                 //获取key和value
                 Dictionary<string,string> _p = new Dictionary<string, string>();
-                for (int j = 1; j < AllRows.Length; j++)
+                for (int j = 1; j < AllRows.Count; j++)
                 {
                     //某一行
                     string row = AllRows[j];
@@ -90,7 +101,6 @@ namespace JEngine.Core
                 //添加lang
                 _phrases.Add(lang,_p);
             }
-
         }
 
         private static string _getExactValue(string val)
@@ -139,7 +149,7 @@ namespace JEngine.Core
             {
                 Init();
             }
-
+            
             if (!_phrases.ContainsKey(_language))
             {
                 string newLang = _phrases.Keys.ToList().Find(k => k.Split('-')[0] == _language.Split('-')[0]);

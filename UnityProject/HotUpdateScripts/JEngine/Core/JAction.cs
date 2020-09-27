@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using JEngine.ThridParty;
 using UnityEngine;
 
 namespace JEngine.Core
@@ -152,7 +151,7 @@ namespace JEngine.Core
 
         public JAction ExecuteAsync(Action callback = null, bool onMainThread = false)
         {
-            _ = _ExecuteAsync(callback,onMainThread);
+            _ = _ExecuteAsync(callback, onMainThread);
             return this;
         }
 
@@ -267,7 +266,10 @@ namespace JEngine.Core
                         {
                             await Task.Run(() =>
                             {
-                                Loom.QueueOnMainThread(_action);
+                                Loom.QueueOnMainThread(p =>
+                                {
+                                    _action();
+                                }, null);
                             }, _cancellationTokenSource.Token);
                         }
                         else
@@ -288,7 +290,10 @@ namespace JEngine.Core
                     {
                         await Task.Run(() =>
                         {
-                            Loom.QueueOnMainThread(_toDo[index]);
+                            Loom.QueueOnMainThread(p =>
+                            {
+                                _toDo[index]();
+                            }, null);
                         }, _cancellationTokenSource.Token);
                     }
                     else

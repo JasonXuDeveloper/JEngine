@@ -1,45 +1,21 @@
-﻿//
-// Loom.cs
-//
-// Author:
-//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
-//
-// Copyright (c) 2020 JEngine
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace JEngine.ThridParty
+namespace JEngine.Core
 {
-    
-
     public class Loom : MonoBehaviour
     {
         public static int maxThreads = 8;
+        static int numThreads;
 
         private static Loom _current;
+
         //private int _count;
         public static Loom Current
         {
@@ -54,10 +30,7 @@ namespace JEngine.ThridParty
         {
             _current = this;
             initialized = true;
-            _actions = new List<NoDelayedQueueItem>();
-            _delayed = new List<DelayedQueueItem>();
-            _currentDelayed = new List<DelayedQueueItem>();
-            _currentActions = new List<NoDelayedQueueItem>();
+            UnityEngine.Object.DontDestroyOnLoad(this.gameObject);
         }
 
         static bool initialized;
@@ -78,41 +51,77 @@ namespace JEngine.ThridParty
             }
 
         }
+
         public struct NoDelayedQueueItem
         {
-            public Action action;
+            public Action<object> action;
+            public object param;
         }
 
         private List<NoDelayedQueueItem> _actions = new List<NoDelayedQueueItem>();
+
         public struct DelayedQueueItem
         {
             public float time;
-            public Action action;
+            public Action<object> action;
+            public object param;
         }
+
         private List<DelayedQueueItem> _delayed = new List<DelayedQueueItem>();
 
         List<DelayedQueueItem> _currentDelayed = new List<DelayedQueueItem>();
 
-        public static void QueueOnMainThread(Action taction)
+        public static void QueueOnMainThread(Action<object> taction, object tparam)
         {
-            QueueOnMainThread(taction, 0f);
+            QueueOnMainThread(taction, tparam, 0f);
         }
-        public static void QueueOnMainThread(Action taction, float time)
+
+        public static void QueueOnMainThread(Action<object> taction, object tparam, float time)
         {
             if (time != 0)
             {
                 lock (Current._delayed)
                 {
-                    Current._delayed.Add(new DelayedQueueItem { time = Time.time + time, action = taction});
+                    Current._delayed.Add(new DelayedQueueItem
+                        {time = Time.time + time, action = taction, param = tparam});
                 }
             }
             else
             {
                 lock (Current._actions)
                 {
-                    Current._actions.Add(new NoDelayedQueueItem { action = taction });
+                    Current._actions.Add(new NoDelayedQueueItem {action = taction, param = tparam});
                 }
             }
+        }
+
+        public static Thread RunAsync(Action a)
+        {
+            Initialize();
+            while (numThreads >= maxThreads)
+            {
+                Thread.Sleep(100);
+            }
+
+            Interlocked.Increment(ref numThreads);
+            ThreadPool.QueueUserWorkItem(RunAction, a);
+            return null;
+        }
+
+        private static void RunAction(object action)
+        {
+            try
+            {
+                ((Action) action)();
+            }
+            catch
+            {
+            }
+            finally
+            {
+                Interlocked.Decrement(ref numThreads);
+            }
+
         }
 
 
@@ -138,7 +147,6 @@ namespace JEngine.ThridParty
         // Update is called once per frame
         void Update()
         {
-
             if (_actions.Count > 0)
             {
                 lock (_actions)
@@ -147,9 +155,10 @@ namespace JEngine.ThridParty
                     _currentActions.AddRange(_actions);
                     _actions.Clear();
                 }
+
                 for (int i = 0; i < _currentActions.Count; i++)
                 {
-                    _currentActions[i].action();
+                    _currentActions[i].action(_currentActions[i].param);
                 }
             }
 
@@ -167,7 +176,7 @@ namespace JEngine.ThridParty
 
                 for (int i = 0; i < _currentDelayed.Count; i++)
                 {
-                    _currentDelayed[i].action();
+                    _currentDelayed[i].action(_currentDelayed[i].param);
                 }
             }
         }

@@ -46,6 +46,8 @@ namespace JEngine.Core
 
         private async void Start()
         {
+            _text.text = Localization.GetString(key);
+            curLang = Localization.CurrentLanguage;
             while (Application.isPlaying)
             {
                 if (Localization.CurrentLanguage != curLang)

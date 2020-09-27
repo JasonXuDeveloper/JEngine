@@ -37,7 +37,6 @@
     <Compile Include="JEngine\Core\JResource.cs" />
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\BindableProperty.cs" />
-    <Compile Include="JEngine\3rdParty\Loom.cs" />
     <Compile Include="Examples\AutoBindDemo.cs" />
     <Compile Include="JEngine\Core\JSaver.cs" />
     <Compile Include="Examples\DataClass.cs" />

@@ -13,20 +13,17 @@ namespace ILRuntime.Runtime.Generated
         /// </summary>
         public static void Initialize(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
-            System_Collections_Generic_List_1_ILTypeInstance_Binding.Register(app);
-            UnityEngine_Application_Binding.Register(app);
-            UnityEngine_GameObject_Binding.Register(app);
             UnityEngine_Object_Binding.Register(app);
-            System_Threading_Monitor_Binding.Register(app);
-            UnityEngine_Time_Binding.Register(app);
-            System_Threading_Thread_Binding.Register(app);
-            System_Threading_Interlocked_Binding.Register(app);
-            System_Threading_ThreadPool_Binding.Register(app);
-            System_Action_Binding.Register(app);
-            System_Linq_Enumerable_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
+            UnityEngine_GameObject_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
+            System_Runtime_CompilerServices_AsyncVoidMethodBuilder_Binding.Register(app);
             System_String_Binding.Register(app);
+            System_Action_Binding.Register(app);
+            libx_Assets_Binding.Register(app);
+            libx_AssetRequest_Binding.Register(app);
+            System_Threading_Tasks_Task_Binding.Register(app);
+            System_Runtime_CompilerServices_TaskAwaiter_Binding.Register(app);
             System_Collections_Generic_List_1_Action_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Single_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Func_1_Boolean_Binding.Register(app);
@@ -35,11 +32,10 @@ namespace ILRuntime.Runtime.Generated
             JEngine_Core_Log_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);
             System_Func_1_Boolean_Binding.Register(app);
-            System_Runtime_CompilerServices_AsyncVoidMethodBuilder_Binding.Register(app);
             System_Threading_Tasks_Task_1_ILTypeInstance_Binding.Register(app);
             System_Runtime_CompilerServices_TaskAwaiter_1_ILTypeInstance_Binding.Register(app);
-            System_Threading_Tasks_Task_Binding.Register(app);
-            System_Runtime_CompilerServices_TaskAwaiter_Binding.Register(app);
+            JEngine_Core_Loom_Binding.Register(app);
+            UnityEngine_Application_Binding.Register(app);
             System_TimeoutException_Binding.Register(app);
             Init_Binding.Register(app);
             System_Exception_Binding.Register(app);
@@ -61,6 +57,9 @@ namespace ILRuntime.Runtime.Generated
             ProtoBuf_Serializer_Binding.Register(app);
             LitJson_JsonMapper_Binding.Register(app);
             UnityEngine_Behaviour_Binding.Register(app);
+            System_AppDomain_Binding.Register(app);
+            GameStats_Binding.Register(app);
+            System_UnhandledExceptionEventArgs_Binding.Register(app);
             System_Action_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
             UnityEngine_UI_Text_Binding.Register(app);
