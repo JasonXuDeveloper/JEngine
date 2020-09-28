@@ -23,9 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using UnityEngine;
-using UnityEngine.UI;
 using JEngine.Core;
+using System;
+using System.Threading.Tasks;
 
 namespace HotUpdateScripts
 {
@@ -33,7 +33,7 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
-
+            
         }
     }
 }
