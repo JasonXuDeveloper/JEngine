@@ -280,9 +280,8 @@ namespace JEngine.Core
                     clrInstance.enabled = true;
                     clrInstance.Awake();
                 }
-
-                Destroy(cb);
             }
+            Destroy(cb);
         }
 
         private GameObject FindSubGameObject(_ClassField field)
