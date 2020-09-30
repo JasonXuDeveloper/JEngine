@@ -25,6 +25,12 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，小白也能*
 | 国内镜像| [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)|
 | QQ群聊| [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)|
 
+## 框架实战
+| 主题| 地址|
+| ---- | ---- |
+| 【Unity x JEngine 开发可热更爆款小游戏】第一集（系列介绍及游戏策划）| [点击跳转](https://www.bilibili.com/video/BV1sV41117ka/)|
+| 【Unity x JEngine 开发可热更爆款小游戏】第二集（构建项目及界面设计）| [点击跳转](https://www.bilibili.com/video/BV1m54y117vz/)|
+
 ## 近期star趋势
 
 [![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
