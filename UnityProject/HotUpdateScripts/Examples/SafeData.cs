@@ -1,5 +1,5 @@
 ﻿//
-// Program.cs
+// SafeData.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,16 +23,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using JEngine.Core;
+using System;
 using JEngine.AntiCheat;
 
-namespace HotUpdateScripts
+namespace JEngine.Examples
 {
-    public static class Program
+    [ProtoBuf.ProtoContract]
+    public class SafeData
     {
-        public static void RunGame()
+        //Use this format to serialize and deserialize safe data
+        [global::ProtoBuf.ProtoMember(1)]
+        private float realA
         {
-
+            get => a;
+            set
+            {
+                a = value;
+            }
         }
+        [global::ProtoBuf.ProtoMember(2)]
+        private long realB
+        {
+            get => b;
+            set
+            {
+                b = value;
+            }
+        }
+
+        //Use this format to declare safe data
+        public JFloat a;
+        public JLong b;
     }
 }

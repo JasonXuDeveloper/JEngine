@@ -1,5 +1,5 @@
-﻿//
-// Program.cs
+//
+// JRandom.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,16 +23,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using JEngine.Core;
-using JEngine.AntiCheat;
 
-namespace HotUpdateScripts
+using System;
+using JEngine.Core;
+
+namespace JEngine.AntiCheat
 {
-    public static class Program
+    public class JRandom
     {
-        public static void RunGame()
+        private static Random _random = new Random();
+
+        private JRandom()
         {
 
+        }
+
+        public static int RandomNum(int max = 1024)
+        {
+            return _random.Next(0, max < 0 ? 1024 : (int) max);
+        }
+
+        public static int RandomNum(uint max = 1024)
+        {
+            return _random.Next(0, max > int.MaxValue ? int.MaxValue : (int) max);
+        }
+
+        public static int RandomNum(long max = 1024)
+        {
+            return _random.Next(0, max > int.MaxValue || max < int.MaxValue? int.MaxValue : (int) max);
+        }
+
+        public static int RandomNum(ulong max = 1024)
+        {
+            return _random.Next(0, max > int.MaxValue || max < int.MaxValue ? int.MaxValue : (int) max);
+        }
+
+        public static int RandomNum(float max = 1024)
+        {
+            return _random.Next(0, max > int.MaxValue || max < int.MaxValue ? int.MaxValue : (int) max);
         }
     }
 }

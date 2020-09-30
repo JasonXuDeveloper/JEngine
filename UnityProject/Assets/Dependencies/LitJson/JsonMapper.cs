@@ -20,6 +20,7 @@ using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using JEngine.AntiCheat;
 using UnityEngine;
 using Object = System.Object;
 
