@@ -24,8 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using JEngine.Core;
-using System;
-using System.Threading.Tasks;
+using JEngine.AntiCheat;
 
 namespace HotUpdateScripts
 {
@@ -33,7 +32,7 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
-            
+
         }
     }
 }

@@ -38,6 +38,7 @@ using UnityEngine;
 namespace JEngine.Core
 {
     [DisallowMultipleComponent]
+    [HelpURL("https://github.com/JasonXuDeveloper/JEngine/wiki/%e4%bb%a3%e7%a0%81%e7%bb%91%e5%ae%9a")]
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
@@ -143,13 +144,24 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.GameObject)
                             {
-                                GameObject go = null;
-                                try
+                                GameObject go = field.gameObject;
+                                if (go == null)
                                 {
-                                    go = field.value == "${this}"
-                                        ? this.gameObject
-                                        : GameObject.Find(field.value);
-                                    if (go == null)//找父物体
+                                    try
+                                    {
+                                        go = field.value == "${this}"
+                                            ? this.gameObject
+                                            : GameObject.Find(field.value);
+                                        if (go == null)//找父物体
+                                        {
+                                            go = FindSubGameObject(field);
+                                            if (go == null) //如果父物体还不存在
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)//找父物体（如果抛出空异常）
                                     {
                                         go = FindSubGameObject(field);
                                         if (go == null) //如果父物体还不存在
@@ -158,45 +170,41 @@ namespace JEngine.Core
                                         }
                                     }
                                 }
-                                catch (Exception ex)//找父物体（如果抛出空异常）
-                                {
-                                    go = FindSubGameObject(field);
-                                    if (go == null) //如果父物体还不存在
-                                    {
-                                        continue;
-                                    }
-                                }
-
                                 obj = go;
                                 _class.BoundData = true;
                             }
                             else if (field.fieldType == _ClassField.FieldType.UnityComponent)
                             {
-                                GameObject go = null;
-                                try
+                                GameObject go = field.gameObject;
+                                if (go == null)
                                 {
-                                    if (field.value.Contains("."))
+                                    try
                                     {
-                                        field.value = field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                                        if (field.value.Contains("."))
+                                        {
+                                            field.value =
+                                                field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                                        }
+
+                                        go = field.value == "${this}"
+                                            ? this.gameObject
+                                            : GameObject.Find(field.value);
+                                        if (go == null) //找父物体
+                                        {
+                                            go = FindSubGameObject(field);
+                                            if (go == null) //如果父物体还不存在
+                                            {
+                                                continue;
+                                            }
+                                        }
                                     }
-                                    go = field.value == "${this}"
-                                        ? this.gameObject
-                                        : GameObject.Find(field.value);
-                                    if (go == null)//找父物体
+                                    catch (Exception ex) //找父物体（如果抛出空异常）
                                     {
                                         go = FindSubGameObject(field);
                                         if (go == null) //如果父物体还不存在
                                         {
                                             continue;
                                         }
-                                    }
-                                }
-                                catch (Exception ex)//找父物体（如果抛出空异常）
-                                {
-                                    go = FindSubGameObject(field);
-                                    if (go == null) //如果父物体还不存在
-                                    {
-                                        continue;
                                     }
                                 }
 
@@ -309,6 +317,57 @@ namespace JEngine.Core
             }
             return null;
         }
+
+        [ContextMenu("Convert Path to GameObject")]
+        private void Convert()
+        {
+            foreach (var _class in ScriptsToBind)
+            {
+                Log.Print($"<color=#34ebc9>==========Start processing {_class.Namespace}.{_class.Class}==========</color>");
+                foreach (var field in _class.Fields)
+                {
+                    if (field.fieldType == _ClassField.FieldType.GameObject ||
+                        field.fieldType == _ClassField.FieldType.UnityComponent)
+                    {
+                        if (field.value != null)
+                        {
+                            if (field.value.Contains("."))
+                            {
+                                field.value =
+                                    field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                            }
+                            GameObject go = field.gameObject;
+                            try
+                            {
+                                go = field.value == "${this}"
+                                    ? this.gameObject
+                                    : GameObject.Find(field.value);
+                                if (go == null)//找父物体
+                                {
+                                    go = FindSubGameObject(field);
+                                }
+                            }
+                            catch (Exception ex)//找父物体（如果抛出空异常）
+                            {
+                                go = FindSubGameObject(field);
+                            }
+
+                            if (go != null)
+                            {
+                                field.gameObject = go;
+                                Log.Print($"Convert path {field.value} to GameObject <color=green>successfully</color>");
+                                field.value = "";
+                            }
+                            else
+                            {
+                                Log.PrintError($"Convert path {field.value} to GameObject failed: path does not exists");
+                            }
+                        }
+                    }
+                }
+                Log.Print($"<color=#34ebc9>==========Finish processing {_class.Namespace}.{_class.Class}==========</color>");
+            }
+        }
     }
 
 
@@ -319,9 +378,9 @@ namespace JEngine.Core
         public string Class = "";
         public bool ActiveAfter = false;
         public bool RequireBindFields = false;
-        [Tooltip("如果是GameObject，请填写完整路径，并且Active为true;\r\n" +
-                 "如果是Unity脚本，需要填写GameObject全路径.脚本名称（脚本名称无空格，例如：Canvas/Text.Text，并且GameObject的Active为true）")]
-        [Reorderable]public FieldList Fields;
+        [Tooltip("如果是GameObject，请填写完整路径，如果没有父物体，请务必为Active，如果有父物体，请确保父物体是Active;\r\n" +
+                 "如果是Unity脚本，请填写该脚本所属的GameObject完整路径，参考GameObject写法")]
+        [Reorderable(elementNameProperty = "fieldName")]public FieldList Fields;
         public bool BoundData
         {
             get;
@@ -351,8 +410,17 @@ namespace JEngine.Core
         }
 
         public FieldType fieldType;
+        
+        [Tooltip("需要赋值的键的名字")]
         public string fieldName;
+ 
+        [Header("For Normal Value and Hot Update Resource Field Type")]
+        [Tooltip("非GameObject和UnityComponent的fieldType的值")]
         public string value;
+        
+        [Header("For GameObject or Unity Component Field Type")]
+        [Tooltip("如果fieldType是GameObject或UnityComponent，此处可填，否则无效")]
+        public GameObject gameObject;
     }
     
     [System.Serializable]

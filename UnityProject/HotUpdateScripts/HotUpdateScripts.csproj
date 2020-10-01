@@ -45,6 +45,7 @@
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JBehaviour.cs" />
     <Compile Include="JEngine\Core\JUI.cs" />
+    <Compile Include="Examples\SafeData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

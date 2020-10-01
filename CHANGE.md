@@ -1,5 +1,13 @@
 ## All Versions
 
+### v0.5.2 (October 1 2020)
+
+- **Anti-Cheat Structs** which prevents cheating tools change data stores in memory
+  - **Drag 'n drop** on Class Bind
+  - **LitJSON Serialize and Desirialize Float**
+
+
+
 ### v0.5.1 (Sepetember 26 2020)
 
 - **Localization** supports multiple languages in your game
