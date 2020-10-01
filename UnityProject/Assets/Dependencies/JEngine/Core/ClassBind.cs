@@ -331,6 +331,11 @@ namespace JEngine.Core
                     {
                         if (field.value != null)
                         {
+                            if (field.value.Contains("."))
+                            {
+                                field.value =
+                                    field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                            }
                             GameObject go = field.gameObject;
                             try
                             {
