@@ -130,10 +130,15 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 支持二进制
 
 
+  - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+    - CSV配表
+    - 轻松转换语种
+    - 可通过静态方法获取key对应的字符串
+    - 可让Text自动根据语言切换文字
 
 
 
-  - **内存加密**解决方案
+  - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
     - 支持90%数值类型
     - 偏移值加密
     - 转JSON和Protobuf于普通数据结构一样
