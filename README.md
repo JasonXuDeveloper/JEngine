@@ -151,8 +151,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 - 面板类
   - ILRuntime适配器自动生成
-  - ILRuntime CLR绑定自动生成
-  - Protobfuf文件转JS
+  - Protobfuf文件转CS
 
 
 
