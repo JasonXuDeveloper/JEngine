@@ -31,6 +31,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | 【Unity x JEngine 开发可热更爆款小游戏】第一集（系列介绍及游戏策划） | [点击跳转](https://www.bilibili.com/video/BV1sV41117ka/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第二集（构建项目及界面设计） | [点击跳转](https://www.bilibili.com/video/BV1m54y117vz/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第三集（场景界面设计） | [点击跳转](https://www.bilibili.com/video/BV1sk4y1C7b5/) |
+| 【Unity x JEngine 开发可热更爆款小游戏】第四集（界面设计及代码开发） | [点击跳转](https://www.bilibili.com/video/BV1hv411y7iC/) |
 
   ## 近期star趋势
 
@@ -53,7 +54,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
   - **[Action队列解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
 
     - **更少的代码，实现更多功能，效率大幅度提高**！
-- 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
+    - 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
     - **主线程运行代码**
 
 
@@ -61,7 +62,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
   - **[UI生命周期解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
-- **轻松**管理**UI周期**，**链式编程**让代码**更美观**
+    - **轻松**管理**UI周期**，**链式编程**让代码**更美观**
     - UI**定期循环**更新，可以选择**毫秒更新或帧更新**，可以指定更新**频率**
 
     - UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
@@ -122,7 +123,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-  - 加密解密解决方案
+  - **加密解密**解决方案
 
     - AES加密
     - 支持字符串
@@ -132,14 +133,14 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-- 内存加密解决方案
-  - 支持90%数值类型
-  - 偏移值加密
-  - 转JSON和Protobuf于普通数据结构一样
+  - **内存加密**解决方案
+    - 支持90%数值类型
+    - 偏移值加密
+    - 转JSON和Protobuf于普通数据结构一样
 
 
 
-  - 序列化解决方案
+  - **序列化**解决方案
 
     - 转String
     - 转JSON
