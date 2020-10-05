@@ -114,9 +114,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 转JSON
     - 转Protobuf-net二进制
 
-- 面板类
-  - ILRuntime适配器自动生成
-  - Protobfuf文件转CS
+  - 面板类
+    - ILRuntime适配器自动生成
+    - Protobfuf文件转CS
 
   - 还有更多功能，尽情自行探索！
 
@@ -132,10 +132,10 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## 最新功能
 
-> v0.5.3由XAsset作者推出
+  > v0.5.3由XAsset作者推出
 
   - 支持 **复制DLC文件至Streaming Assets**，更容易过App Store审核
-- 支持 **复制本地Streaming Asstes热更资源到persistence path** 让用户可以增量更新，有更好的游戏体验
+  - 支持 **复制本地Streaming Asstes热更资源到persistence path** 让用户可以增量更新，有更好的游戏体验
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
