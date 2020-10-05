@@ -88,16 +88,16 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 自带加密
 
   - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
-- CSV配表
+    - CSV配表
     - 轻松转换语种
     - 可通过静态方法获取key对应的字符串
     - 可让Text自动根据语言切换文字
   - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
-- 支持90%数值类型
+    - 支持90%数值类型
     - 偏移值加密
     - 转JSON和Protobuf于普通数据结构一样
   - **对象池**解决方案
-- 大幅度提升性能及内存开销，相比于常规Instantiate操作
+    - 大幅度提升性能及内存开销，相比于常规Instantiate操作
     - **无需重复**创建新对象！
     - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
     - 简单友好
