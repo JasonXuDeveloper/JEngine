@@ -143,7 +143,7 @@ namespace libx
         public static void CopyAssetBundlesTo (string path, bool vfs = true)
         {
 #if UNITY_IPHONE
-                enableVFS = false;
+                vfs = false;
 #endif
             
             if (!Directory.Exists (path)) {
