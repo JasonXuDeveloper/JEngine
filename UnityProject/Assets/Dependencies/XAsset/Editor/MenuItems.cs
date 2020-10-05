@@ -39,11 +39,23 @@ namespace libx
     public static class MenuItems
     {
         private const string KBuildAssetBundles = "JEngine/XAsset/Bundles/Build Bundles %#&B";
+        private const string KCopyAssetBundles = "JEngine/XAsset/Bundles/Copy Bundles";
+        private const string KCopyAssetBundlesWithVFS = "JEngine/XAsset/Bundles/Copy Bundles VFS";
         private const string KViewCachePath = "JEngine/XAsset/Bundles/View Caches";
         private const string KViewDataPath = "JEngine/XAsset/Bundles/View Bundles";
         private const string KCleanData = "JEngine/XAsset/Bundles/Clean Bundles";
+
+        [MenuItem(KCopyAssetBundles)]
+        private static void CopyAssetBundles()
+        {
+            BuildScript.CopyAssetBundlesTo(Application.streamingAssetsPath);
+        }
         
-        
+        [MenuItem(KCopyAssetBundlesWithVFS)]
+        private static void CopyAssetBundlesWithVFS()
+        {
+            BuildScript.CopyAssetBundlesTo(Application.streamingAssetsPath, true);
+        }
 
         [MenuItem(KBuildAssetBundles)]
         private static void BuildAssetBundles()

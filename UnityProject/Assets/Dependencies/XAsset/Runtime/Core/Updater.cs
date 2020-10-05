@@ -63,8 +63,8 @@ namespace libx
             Download,
         }
 
-        [SerializeField]private Step _step;
-        
+        [SerializeField] private Step _step;
+
         [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
         [SerializeField] private string gameScene = "Game.unity";
         [SerializeField] private bool enableVFS = true;
@@ -183,7 +183,8 @@ namespace libx
                         else
                         {
                             StartUpdate();
-                        } 
+                        }
+
                         _reachabilityChanged = false;
                     }
                     else
@@ -201,7 +202,8 @@ namespace libx
                 else
                 {
                     StartUpdate();
-                } 
+                }
+
                 _reachabilityChanged = false;
                 MessageBox.CloseAll();
             }
@@ -255,7 +257,7 @@ namespace libx
             {
                 listener.OnStart();
             }
-        } 
+        }
 
         private IEnumerator _checking;
 
@@ -310,10 +312,10 @@ namespace libx
                 }
             }
         }
-        
+
         private static string GetPlatformForAssetBundles(RuntimePlatform target)
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             var t = EditorUserBuildSettings.activeBuildTarget;
             switch (t)
             {
@@ -338,8 +340,8 @@ namespace libx
                 default:
                     return null;
             }
-            #endif
-            
+#endif
+
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (target)
             {
@@ -390,7 +392,7 @@ namespace libx
             {
                 var path = _savePath + Versions.Filename + ".tmp";
                 var versions = Versions.LoadVersions(path);
-                var basePath = GetStreamingAssetsPath() + "/";
+                var basePath = GetBasePath();
                 yield return UpdateCopy(versions, basePath);
                 _step = Step.Versions;
             }
@@ -417,13 +419,13 @@ namespace libx
                     else
                     {
                         Quit();
-                    } 
+                    }
                 }
                 else
                 {
                     OnComplete();
                 }
-            } 
+            }
         }
 
         private IEnumerator RequestVersions()
@@ -440,7 +442,8 @@ namespace libx
                 else
                 {
                     Quit();
-                } 
+                }
+
                 yield break;
             }
 
@@ -460,9 +463,11 @@ namespace libx
                 else
                 {
                     Quit();
-                } 
-                yield break; 
-            } 
+                }
+
+                yield break;
+            }
+
             try
             {
                 _versions = Versions.LoadVersions(_savePath + Versions.Filename, true);
@@ -494,26 +499,26 @@ namespace libx
             }
         }
 
-        private static string GetStreamingAssetsPath()
+        private static string GetBasePath()
         {
             if (Application.platform == RuntimePlatform.Android)
             {
-                return Application.streamingAssetsPath;
+                return Application.streamingAssetsPath + "/";
             }
 
             if (Application.platform == RuntimePlatform.WindowsPlayer ||
                 Application.platform == RuntimePlatform.WindowsEditor)
             {
-                return "file:///" + Application.streamingAssetsPath;
+                return "file:///" + Application.streamingAssetsPath + "/";
             }
 
-            return "file://" + Application.streamingAssetsPath;
+            return "file://" + Application.streamingAssetsPath + "/";
         }
 
         private IEnumerator RequestCopy()
         {
             var v1 = Versions.LoadVersion(_savePath + Versions.Filename);
-            var basePath = GetStreamingAssetsPath() + "/";
+            var basePath = GetBasePath();
             var request = UnityWebRequest.Get(basePath + Versions.Filename);
             var path = _savePath + Versions.Filename + ".tmp";
             request.downloadHandler = new DownloadHandlerFile(path);
@@ -536,7 +541,8 @@ namespace libx
             else
             {
                 _step = Step.Versions;
-            } 
+            }
+
             request.Dispose();
         }
 
@@ -607,7 +613,7 @@ namespace libx
             var version = Versions.LoadVersion(_savePath + Versions.Filename);
             if (version > 0)
             {
-                OnVersion("资源版本号: v"+Application.version+"res"+version.ToString());
+                OnVersion("资源版本号: v" + Application.version + "res" + version.ToString());
             }
 
             StartCoroutine(LoadGameScene());
@@ -632,15 +638,12 @@ namespace libx
                 Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
                 Assets.AddSearchPath("Assets/HotUpdateResources/UI");
                 init.Release();
-                
+
                 OnProgress(0);
                 OnMessage("加载游戏场景");
-                
+
                 var scene = Assets.LoadSceneAsync(gameScene, false);
-                scene.completed+= (AssetRequest request) =>
-                {
-                    FindObjectOfType<Init>().enabled = true;
-                };
+                scene.completed += (AssetRequest request) => { FindObjectOfType<Init>().enabled = true; };
                 while (!scene.isDone)
                 {
                     OnProgress(scene.progress);
