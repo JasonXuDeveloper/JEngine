@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
@@ -388,7 +389,12 @@ namespace libx
 
         internal static bool GetAssetBundleName(string path, out string assetBundleName)
         {
-            return _assetToBundles.TryGetValue(path, out assetBundleName);
+            if (runtimeMode)
+            {
+                return _assetToBundles.TryGetValue(path, out assetBundleName);
+            }
+            assetBundleName = null;
+            return false;
         }
 
         private static string[] GetAllDependencies(string bundle)
