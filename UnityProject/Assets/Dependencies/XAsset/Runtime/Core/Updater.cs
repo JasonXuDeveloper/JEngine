@@ -523,26 +523,7 @@ namespace libx
             var path = _savePath + Versions.Filename + ".tmp";
             request.downloadHandler = new DownloadHandlerFile(path);
             yield return request.SendWebRequest();
-            if (string.IsNullOrEmpty(request.error))
-            {
-                var v2 = Versions.LoadVersion(path);
-                if (v2 > v1)
-                {
-                    var mb = MessageBox.Show("提示", "是否将资源解压到本地？", "解压", "跳过");
-                    yield return mb;
-                    _step = mb.isOk ? Step.Coping : Step.Versions;
-                }
-                else
-                {
-                    Versions.LoadVersions(path);
-                    _step = Step.Versions;
-                }
-            }
-            else
-            {
-                _step = Step.Versions;
-            }
-
+            _step = string.IsNullOrEmpty(request.error) ? Step.Coping : Step.Versions;
             request.Dispose();
         }
 

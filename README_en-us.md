@@ -1,4 +1,4 @@
-# JENGINE v0.5.2
+# JENGINE v0.5.3
 
 
 
@@ -104,9 +104,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Anti-Cheat Structs** which prevents cheating tools change data stores in memory
-  - **Drag 'n drop** on Class Bind
-  - **LitJSON Serialize and Desirialize Float**
+> v0.5.3 is made by XAsset's author
+
+- Supports **copy DLC files to Streaming Assets**, which can pass App Store review easier
+- Supports **move local Streaming Asstes hot update resouces to persistence path** which user don't need to download any old things from server
 
 [Click here to see all version updates](CHANGE.md)
 

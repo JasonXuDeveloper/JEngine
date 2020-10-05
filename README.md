@@ -1,4 +1,4 @@
-# JENGINE v0.5.2
+# JENGINE v0.5.3
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -32,6 +32,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | 【Unity x JEngine 开发可热更爆款小游戏】第二集（构建项目及界面设计） | [点击跳转](https://www.bilibili.com/video/BV1m54y117vz/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第三集（场景界面设计） | [点击跳转](https://www.bilibili.com/video/BV1sk4y1C7b5/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第四集（界面设计及代码开发） | [点击跳转](https://www.bilibili.com/video/BV1hv411y7iC/) |
+| 【Unity x JEngine 开发可热更爆款小游戏】第五集（首页UI代码开发） | [点击跳转](https://www.bilibili.com/video/BV1ZT4y1c7t7/) |
+| 【Unity x JEngine 开发可热更爆款小游戏】第六集（Bug修复+代码开发+音乐配置） | [点击跳转](https://www.bilibili.com/video/BV1bi4y1E7e7/) |
+| 【Unity x JEngine 开发可热更爆款小游戏】第七集（关卡设计+编辑器开发+数据生成） | [点击跳转](https://www.bilibili.com/video/BV1sv411y7gF/) |
 
   ## 近期star趋势
 
@@ -47,19 +50,11 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
     - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
 
-
-
-
-
   - **[Action队列解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
 
     - **更少的代码，实现更多功能，效率大幅度提高**！
     - 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
     - **主线程运行代码**
-
-
-
-
 
   - **[UI生命周期解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
     - **轻松**管理**UI周期**，**链式编程**让代码**更美观**
@@ -67,17 +62,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
     - UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
 
-
-
-
-
   - **[基于MonoBehaviour扩展的生命周期](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
 
     - **轻松管理**生命周期，JUI基类，可以**调整循环频率**，或者**不循环**
-
-
-
-
 
   - **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
 
@@ -87,10 +74,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 获取场景加载进度
     - 智能匹配
 
-
-
-
-
   - **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
 
     - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
@@ -98,30 +81,26 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 可对该脚本public/private/static数值进行赋值
     - 支持自动赋值
 
+  - **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
+    - 字符串存本地
+    - JSON存本地
+    - Protobuf二进制存本地
+    - 自带加密
 
-
-
-
+  - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+- CSV配表
+    - 轻松转换语种
+    - 可通过静态方法获取key对应的字符串
+    - 可让Text自动根据语言切换文字
+  - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
+- 支持90%数值类型
+    - 偏移值加密
+    - 转JSON和Protobuf于普通数据结构一样
   - **对象池**解决方案
-
-    - 大幅度提升性能及内存开销，相比于常规Instantiate操作
+- 大幅度提升性能及内存开销，相比于常规Instantiate操作
     - **无需重复**创建新对象！
     - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
     - 简单友好
-
-
-
-
-
-  - **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
-      - 字符串存本地
-      - JSON存本地
-      - Protobuf二进制存本地
-      - 自带加密
-
-
-
-
 
   - **加密解密**解决方案
 
@@ -129,37 +108,15 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - 支持字符串
     - 支持二进制
 
-
-  - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
-    - CSV配表
-    - 轻松转换语种
-    - 可通过静态方法获取key对应的字符串
-    - 可让Text自动根据语言切换文字
-
-
-
-  - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
-    - 支持90%数值类型
-    - 偏移值加密
-    - 转JSON和Protobuf于普通数据结构一样
-
-
-
   - **序列化**解决方案
 
     - 转String
     - 转JSON
     - 转Protobuf-net二进制
 
-
-
-
-
 - 面板类
   - ILRuntime适配器自动生成
   - Protobfuf文件转CS
-
-
 
   - 还有更多功能，尽情自行探索！
 
@@ -175,9 +132,10 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## 最新功能
 
-  - **内存加密**
-  - **自动绑定拖拽赋值**
-  - **LitJSON序列化Float**
+> v0.5.3由XAsset作者推出
+
+  - 支持 **复制DLC文件至Streaming Assets**，更容易过App Store审核
+- 支持 **复制本地Streaming Asstes热更资源到persistence path** 让用户可以增量更新，有更好的游戏体验
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

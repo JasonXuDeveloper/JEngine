@@ -370,10 +370,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _step: 0
-  baseURL: http://127.0.0.1/DLC/
+  baseURL: http://139.99.133.209/DLC/
   gameScene: Game.unity
   enableVFS: 1
-  development: 1
+  development: 0
 --- !u!4 &964396227
 Transform:
   m_ObjectHideFlags: 0

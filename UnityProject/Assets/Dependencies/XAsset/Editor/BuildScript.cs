@@ -140,8 +140,12 @@ namespace libx
             return rule;
         }
 
-        public static void CopyAssetBundlesTo (string path, bool vfs = false)
+        public static void CopyAssetBundlesTo (string path, bool vfs = true)
         {
+#if UNITY_IPHONE
+                enableVFS = false;
+#endif
+            
             if (!Directory.Exists (path)) {
                 Directory.CreateDirectory (path);
             } 
@@ -169,6 +173,8 @@ namespace libx
                     File.Copy(src, dest, true);
                 }
             }  
+            
+            AssetDatabase.Refresh();
         }
 
         public static string GetPlatformName()
