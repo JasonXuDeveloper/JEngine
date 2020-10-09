@@ -2,7 +2,7 @@
 
 
 
-JEngine is a **streamlined and easy-to-use** framework designed for Unity Programmers.
+JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
