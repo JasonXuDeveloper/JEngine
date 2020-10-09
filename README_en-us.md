@@ -1,6 +1,4 @@
-# JENGINE v0.5.3
-
-
+# JENGINE v0.5.4
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -19,6 +17,8 @@ JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity 
 [Zhihu Article](https://zhuanlan.zhihu.com/p/218105381)
 
 [Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
+
+![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
 
 ## Stargazers over time
 

@@ -1,5 +1,5 @@
 //
-// JRandom.cs
+// AntiCheatHelper.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -25,41 +25,30 @@
 // THE SOFTWARE.
 
 using System;
+using JEngine.Core;
 
 namespace JEngine.AntiCheat
 {
-    public class JRandom
+    public class AntiCheatHelper
     {
-        private static Random _random = new Random();
-
-        private JRandom()
+        private AntiCheatHelper()
         {
-
+            _onDetected = () =>
+            {
+                Log.Print("被抓到修改内存了哦~");
+            };
         }
 
-        public static int RandomNum(int max = 1024)
+        private static Action _onDetected;
+
+        public static void OnMemoryCheatDetected(Action toDo)
         {
-            return _random.Next(0, max < 0 ? 1024 : (int) max);
+            _onDetected = toDo;
         }
 
-        public static int RandomNum(uint max = 1024)
+        internal static void OnDetected()
         {
-            return _random.Next(0, max > int.MaxValue ? int.MaxValue : (int) max);
-        }
-
-        public static int RandomNum(long max = 1024)
-        {
-            return _random.Next(0, max > int.MaxValue || max < int.MaxValue? int.MaxValue : (int) max);
-        }
-
-        public static int RandomNum(ulong max = 1024)
-        {
-            return _random.Next(0, max > int.MaxValue || max < int.MaxValue ? int.MaxValue : (int) max);
-        }
-
-        public static int RandomNum(float max = 1024)
-        {
-            return _random.Next(0, max > int.MaxValue || max < int.MaxValue ? int.MaxValue : (int) max);
+            _onDetected?.Invoke();
         }
     }
 }

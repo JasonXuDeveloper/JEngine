@@ -30,13 +30,23 @@ namespace JEngine.AntiCheat
     {
         private long _obscuredLong;
         private long _obscuredKey;
+        private long _originalValue;
 
         private long Value
         {
-            get => (long)(_obscuredLong-_obscuredKey);
+            get
+            {
+                var result =(long)(_obscuredLong-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (long) JRandom.RandomNum(long.MaxValue - value);
@@ -49,6 +59,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredLong = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         
@@ -56,6 +67,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredLong = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = long.TryParse(val,out var _value);
             if (!result)
             {

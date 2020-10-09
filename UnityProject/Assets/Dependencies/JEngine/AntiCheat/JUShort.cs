@@ -29,13 +29,24 @@ namespace JEngine.AntiCheat
     {
         private ushort _obscuredUShort;
         private ushort _obscuredKey;
+        private ushort _originalValue;
 
         private ushort Value
         {
-            get => (ushort)(_obscuredUShort-_obscuredKey);
-            
+            get
+            {
+                var result = (ushort)(_obscuredUShort-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+
+                return result;
+            }
+
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (ushort) JRandom.RandomNum(ushort.MaxValue - value);
@@ -48,12 +59,14 @@ namespace JEngine.AntiCheat
         {
             _obscuredUShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         public JUShort(int val = 0)
         {
             _obscuredUShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val > ushort.MaxValue ? ushort.MaxValue : (ushort) val;
         }
         
@@ -61,6 +74,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredUShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = ushort.TryParse(val,out var _value);
             if (!result)
             {

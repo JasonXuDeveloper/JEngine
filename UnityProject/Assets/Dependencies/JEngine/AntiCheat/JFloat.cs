@@ -30,13 +30,23 @@ namespace JEngine.AntiCheat
     {
         private float _obscuredFloat;
         private int _obscuredKey;
+        private float _originalValue;
 
         private float Value
         {
-            get => (float)(_obscuredFloat-_obscuredKey);
+            get
+            {
+                var result = (float)(_obscuredFloat-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = JRandom.RandomNum((int)value);
@@ -49,6 +59,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredFloat = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         
@@ -56,6 +67,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredFloat = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = float.TryParse(val,out var _value);
             if (!result)
             {

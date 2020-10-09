@@ -30,16 +30,27 @@ namespace JEngine.AntiCheat
     {
         private decimal _obscuredDecimal;
         private int _obscuredKey;
+        private decimal _originalValue;
 
         private decimal Value
         {
-            get => (decimal)(_obscuredDecimal-_obscuredKey);
-            
+            get
+            {
+                var result = (decimal) (_obscuredDecimal - _obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+
+                return result;
+            }
+
             set
             {
+                _originalValue = value;
                 unchecked
                 {
-                    _obscuredKey = JRandom.RandomNum((int)value);
+                    _obscuredKey = JRandom.RandomNum((int) value);
                     _obscuredDecimal = (decimal) (value + _obscuredKey);
                 }
             }
@@ -49,6 +60,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredDecimal = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         
@@ -56,6 +68,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredDecimal = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = decimal.TryParse(val,out var _value);
             if (!result)
             {

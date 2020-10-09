@@ -29,13 +29,23 @@ namespace JEngine.AntiCheat
     {
         private byte _obscuredByte;
         private byte _obscuredKey;
+        private byte _originalValue;
 
         private byte Value
         {
-            get => (byte)(_obscuredByte-_obscuredKey);
-            
+            get
+            {
+                var result = (byte) (_obscuredByte - _obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
+
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (byte) JRandom.RandomNum(byte.MaxValue - value);
@@ -48,12 +58,14 @@ namespace JEngine.AntiCheat
         {
             _obscuredByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         public JByte(int val = 0)
         {
             _obscuredByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val > byte.MaxValue ? byte.MaxValue : (byte) val;
         }
         
@@ -61,6 +73,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = byte.TryParse(val,out var _value);
             if (!result)
             {

@@ -23,17 +23,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using libx;
 using System;
+using Malee.List;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
-using libx;
-using Malee.List;
+
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
 namespace JEngine.Core
 {
@@ -152,7 +155,7 @@ namespace JEngine.Core
                                         go = field.value == "${this}"
                                             ? this.gameObject
                                             : GameObject.Find(field.value);
-                                        if (go == null)//找父物体
+                                        if (go == null) //找父物体
                                         {
                                             go = FindSubGameObject(field);
                                             if (go == null) //如果父物体还不存在
@@ -161,7 +164,7 @@ namespace JEngine.Core
                                             }
                                         }
                                     }
-                                    catch (Exception ex)//找父物体（如果抛出空异常）
+                                    catch (Exception ex) //找父物体（如果抛出空异常）
                                     {
                                         go = FindSubGameObject(field);
                                         if (go == null) //如果父物体还不存在
@@ -170,6 +173,7 @@ namespace JEngine.Core
                                         }
                                     }
                                 }
+
                                 obj = go;
                                 _class.BoundData = true;
                             }
@@ -211,10 +215,10 @@ namespace JEngine.Core
                                 var tp = t.GetField(field.fieldName,
                                     BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                                     BindingFlags.Static);
-                                if (tp!=null)
+                                if (tp != null)
                                 {
                                     string tName = tp.FieldType.Name;
-                                    if (tp.FieldType.Assembly.ToString().Contains("ILRuntime"))//如果在热更中
+                                    if (tp.FieldType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
                                     {
                                         var components = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
                                         foreach (var c in components)
@@ -247,7 +251,8 @@ namespace JEngine.Core
                         }
                         catch (Exception except)
                         {
-                            Log.PrintError($"自动绑定{this.name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
+                            Log.PrintError(
+                                $"自动绑定{this.name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
                         }
 
                         //如果有数据再绑定
@@ -289,6 +294,7 @@ namespace JEngine.Core
                     clrInstance.Awake();
                 }
             }
+
             Destroy(cb);
         }
 
@@ -315,39 +321,43 @@ namespace JEngine.Core
             {
                 Log.PrintError($"自动绑定{this.name}出错：{field.value}对象被隐藏或不存在，无法获取，已跳过");
             }
+
             return null;
         }
 
+#if UNITY_EDITOR
         [ContextMenu("Convert Path to GameObject")]
         private void Convert()
         {
             foreach (var _class in ScriptsToBind)
             {
-                Log.Print($"<color=#34ebc9>==========Start processing {_class.Namespace}.{_class.Class}==========</color>");
+                Log.Print(
+                    $"<color=#34ebc9>==========Start processing {_class.Namespace}.{_class.Class}==========</color>");
                 foreach (var field in _class.Fields)
                 {
                     if (field.fieldType == _ClassField.FieldType.GameObject ||
                         field.fieldType == _ClassField.FieldType.UnityComponent)
                     {
-                        if (field.value != null)
+                        if (!string.IsNullOrEmpty(field.value))
                         {
                             if (field.value.Contains("."))
                             {
                                 field.value =
                                     field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
                             }
+
                             GameObject go = field.gameObject;
                             try
                             {
                                 go = field.value == "${this}"
                                     ? this.gameObject
                                     : GameObject.Find(field.value);
-                                if (go == null)//找父物体
+                                if (go == null) //找父物体
                                 {
                                     go = FindSubGameObject(field);
                                 }
                             }
-                            catch (Exception ex)//找父物体（如果抛出空异常）
+                            catch (Exception ex) //找父物体（如果抛出空异常）
                             {
                                 go = FindSubGameObject(field);
                             }
@@ -355,19 +365,29 @@ namespace JEngine.Core
                             if (go != null)
                             {
                                 field.gameObject = go;
-                                Log.Print($"Convert path {field.value} to GameObject <color=green>successfully</color>");
+                                Log.Print(
+                                    $"Convert path {field.value} to GameObject <color=green>successfully</color>");
                                 field.value = "";
                             }
                             else
                             {
-                                Log.PrintError($"Convert path {field.value} to GameObject failed: path does not exists");
+                                Log.PrintError(
+                                    $"Convert path {field.value} to GameObject failed: path does not exists");
                             }
                         }
                     }
                 }
-                Log.Print($"<color=#34ebc9>==========Finish processing {_class.Namespace}.{_class.Class}==========</color>");
+
+                Log.Print(
+                    $"<color=#34ebc9>==========Finish processing {_class.Namespace}.{_class.Class}==========</color>");
             }
+
+            //转换后保存场景
+            var scene = EditorSceneManager.GetActiveScene();
+            bool saveResult = EditorSceneManager.SaveScene(scene,scene.path);
+            Debug.Log("Saved Scene " + scene.path + " " +(saveResult ? "Success" : "Failed!"));
         }
+#endif
     }
 
 
@@ -378,14 +398,13 @@ namespace JEngine.Core
         public string Class = "";
         public bool ActiveAfter = false;
         public bool RequireBindFields = false;
+
         [Tooltip("如果是GameObject，请填写完整路径，如果没有父物体，请务必为Active，如果有父物体，请确保父物体是Active;\r\n" +
                  "如果是Unity脚本，请填写该脚本所属的GameObject完整路径，参考GameObject写法")]
-        [Reorderable(elementNameProperty = "fieldName")]public FieldList Fields;
-        public bool BoundData
-        {
-            get;
-            set;
-        } = false;
+        [Reorderable(elementNameProperty = "fieldName")]
+        public FieldList Fields;
+
+        public bool BoundData { get; set; } = false;
     }
 
     [System.Serializable]
@@ -410,20 +429,20 @@ namespace JEngine.Core
         }
 
         public FieldType fieldType;
-        
-        [Tooltip("需要赋值的键的名字")]
-        public string fieldName;
- 
+
+        [Tooltip("需要赋值的键的名字")] public string fieldName;
+
         [Header("For Normal Value and Hot Update Resource Field Type")]
         [Tooltip("非GameObject和UnityComponent的fieldType的值")]
         public string value;
-        
+
         [Header("For GameObject or Unity Component Field Type")]
         [Tooltip("如果fieldType是GameObject或UnityComponent，此处可填，否则无效")]
         public GameObject gameObject;
     }
-    
+
     [System.Serializable]
-    public class FieldList : ReorderableArray<_ClassField> {
+    public class FieldList : ReorderableArray<_ClassField>
+    {
     }
 }

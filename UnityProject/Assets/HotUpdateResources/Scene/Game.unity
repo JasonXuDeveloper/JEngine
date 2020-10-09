@@ -4789,11 +4789,11 @@ MonoBehaviour:
       array:
       - fieldType: 12
         fieldName: JUIVal
-        value: "Canvas/JUI/\u533A\u57DF/JUIText"
+        value: 
         gameObject: {fileID: 129498209}
       - fieldType: 12
         fieldName: NormalVal
-        value: "Canvas/JUI/\u533A\u57DF/NormalText"
+        value: 
         gameObject: {fileID: 1022627434}
   - Namespace: JEngine.Examples
     Class: DataModifyExample
@@ -4803,7 +4803,7 @@ MonoBehaviour:
       array:
       - fieldType: 11
         fieldName: Panel
-        value: Canvas/JUI
+        value: 
         gameObject: {fileID: 1096967048}
 --- !u!4 &2092933240
 Transform:

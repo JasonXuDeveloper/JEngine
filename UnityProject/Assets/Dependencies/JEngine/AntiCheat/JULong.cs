@@ -29,13 +29,23 @@ namespace JEngine.AntiCheat
     {
         private ulong _obscuredULong;
         private ulong _obscuredKey;
+        private ulong _originalValue;
 
         private ulong Value
         {
-            get => (ulong)(_obscuredULong-(ulong)_obscuredKey);
+            get
+            {
+                var result = (ulong)(_obscuredULong-(ulong)_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (ulong) JRandom.RandomNum(ulong.MaxValue - value);
@@ -48,12 +58,14 @@ namespace JEngine.AntiCheat
         {
             _obscuredULong = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         public JULong(int val = 0)
         {
             _obscuredULong = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = (ulong) val;
         }
         
@@ -61,6 +73,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredULong = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = ulong.TryParse(val,out var _value);
             if (!result)
             {

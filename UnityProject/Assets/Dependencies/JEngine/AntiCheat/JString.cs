@@ -31,12 +31,22 @@ namespace JEngine.AntiCheat
     public struct JString
     {
         private string _obscuredString;
-        private string Value
-        {
-            get => JEngine.Core.CryptoHelper.DecryptStr(_obscuredString,Init.Instance.Key);
+        private string _originalValue;
+
+        private string Value {
+            get
+            {
+                var result = JEngine.Core.CryptoHelper.DecryptStr(_obscuredString,Init.Instance.Key);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredString = JEngine.Core.CryptoHelper.EncryptStr(value, Init.Instance.Key);
@@ -47,6 +57,7 @@ namespace JEngine.AntiCheat
         public JString(string val = "")
         {
             _obscuredString = "";
+            _originalValue = "";
             Value = val;
         }
 

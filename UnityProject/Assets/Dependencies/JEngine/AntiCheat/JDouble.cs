@@ -30,13 +30,23 @@ namespace JEngine.AntiCheat
     {
         private double _obscuredDouble;
         private int _obscuredKey;
+        private double _originalValue;
 
         private double Value
         {
-            get => (double)(_obscuredDouble-_obscuredKey);
+            get
+            {
+                var result =  (double)(_obscuredDouble-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = JRandom.RandomNum((int)value);
@@ -49,6 +59,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredDouble = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         
@@ -56,6 +67,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredDouble = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = double.TryParse(val,out var _value);
             if (!result)
             {

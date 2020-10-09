@@ -29,13 +29,23 @@ namespace JEngine.AntiCheat
     {
         private sbyte _obscuredSByte;
         private sbyte _obscuredKey;
+        private sbyte _originalValue;
 
         private sbyte Value
         {
-            get => (sbyte)(_obscuredSByte-_obscuredKey);
+            get
+            {
+                var result=(sbyte)(_obscuredSByte-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (sbyte) JRandom.RandomNum(sbyte.MaxValue - value);
@@ -48,12 +58,15 @@ namespace JEngine.AntiCheat
         {
             _obscuredSByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         public JSByte(int val = 0)
         {
             _obscuredSByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
+            
             Value = val > sbyte.MaxValue ? sbyte.MaxValue : (sbyte) val;
         }
         
@@ -61,6 +74,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredSByte = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = sbyte.TryParse(val,out var _value);
             if (!result)
             {

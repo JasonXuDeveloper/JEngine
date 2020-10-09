@@ -29,6 +29,7 @@ namespace JEngine.AntiCheat
     {
         private int _value;
         private int _randomValue;
+        private bool _originalValue;
 
         private bool Value
         {
@@ -36,12 +37,18 @@ namespace JEngine.AntiCheat
             {
                 unchecked
                 {
-                    return _value - _randomValue != 0;
+                    var result = _value - _randomValue != 0;
+                    if (!_originalValue.Equals(result))
+                    {
+                        AntiCheatHelper.OnDetected();
+                    }
+                    return result;
                 }
             }
 
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _randomValue = JRandom.RandomNum(1024);
@@ -55,6 +62,7 @@ namespace JEngine.AntiCheat
         {
             _value = 0;
             _randomValue = 0;
+            _originalValue = true;
             Value = value;
         }
 
@@ -62,6 +70,7 @@ namespace JEngine.AntiCheat
         {
             _value = 0;
             _randomValue = 0;
+            _originalValue = true;
             Value = value == "True";
         }
 

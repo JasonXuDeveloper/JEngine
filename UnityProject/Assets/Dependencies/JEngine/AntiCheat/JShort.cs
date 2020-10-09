@@ -29,13 +29,23 @@ namespace JEngine.AntiCheat
     {
         private short _obscuredShort;
         private short _obscuredKey;
+        private short _originalValue;
 
         private short Value
         {
-            get => (short)(_obscuredShort-_obscuredKey);
+            get
+            {
+                var result = (short)(_obscuredShort-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (short) JRandom.RandomNum(short.MaxValue - value);
@@ -48,12 +58,14 @@ namespace JEngine.AntiCheat
         {
             _obscuredShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val;
         }
         public JShort(int val = 0)
         {
             _obscuredShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             Value = val > short.MaxValue ? short.MaxValue : (short) val;
         }
         
@@ -61,6 +73,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredShort = 0;
             _obscuredKey = 0;
+            _originalValue = 0;
             var result = short.TryParse(val,out var _value);
             if (!result)
             {

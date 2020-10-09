@@ -1,4 +1,4 @@
-# JENGINE v0.5.3
+# JENGINE v0.5.4
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -11,6 +11,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
 [English Document](README_en-us.md)
+
+![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
 
 
   ## 框架相关
@@ -132,10 +134,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## 最新功能
 
-  > v0.5.3由XAsset作者推出
-
-  - 支持 **复制DLC文件至Streaming Assets**，更容易过App Store审核
-  - 支持 **复制本地Streaming Asstes热更资源到persistence path** 让用户可以增量更新，有更好的游戏体验
+- **内存加密结构** 现在可以检测内存修改了，加上回调，立即封号作弊玩家！
+- **自动绑定优化** 从老版本升级更友好
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

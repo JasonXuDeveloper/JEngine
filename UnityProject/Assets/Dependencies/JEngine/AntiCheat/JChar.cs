@@ -32,13 +32,23 @@ namespace JEngine.AntiCheat
     {
         private int _obscuredChar;
         private int _obscuredKey;
+        private char _originalValue;
 
         private char Value
         {
-            get => (char)(_obscuredChar-_obscuredKey);
+            get
+            {
+                var result = (char)(_obscuredChar-_obscuredKey);
+                if (!_originalValue.Equals(result))
+                {
+                    AntiCheatHelper.OnDetected();
+                }
+                return result;
+            }
             
             set
             {
+                _originalValue = value;
                 unchecked
                 {
                     _obscuredKey = (int) JRandom.RandomNum((int)value);
@@ -51,6 +61,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredChar = 0;
             _obscuredKey = 0;
+            _originalValue = ' ';
             try
             {
                 Value = System.Convert.ToChar(val);
@@ -66,6 +77,7 @@ namespace JEngine.AntiCheat
         {
             _obscuredChar = 0;
             _obscuredKey = 0;
+            _originalValue = ' ';
             var result = char.TryParse(val,out var _value);
             if (!result)
             {

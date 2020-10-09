@@ -1,5 +1,12 @@
 ## All Versions
 
+### v0.5.4 (October 10 2020)
+
+- **Anti-Cheat Structs** allows detect hackers who hacks your game
+- **ClassBind improvements** more friendly to update from old versions to latests
+
+
+
 ### v0.5.3 (October 6 2020) (Support by XAsset's Author)
 
 - Supports **copy DLC files to Streaming Assets**, which can pass App Store review easier
