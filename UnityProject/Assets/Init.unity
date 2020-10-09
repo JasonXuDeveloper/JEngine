@@ -1859,8 +1859,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -225}
-  m_SizeDelta: {x: 1000, y: 0}
+  m_AnchoredPosition: {x: 0, y: -245}
+  m_SizeDelta: {x: 1200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2078874960
 MonoBehaviour:
@@ -1909,7 +1909,8 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "JEngine is a streamlined and easy-to-use framework designed for Unity
-    Programmers  JEngine\u662F\u9488\u5BF9Unity\u5F00\u53D1\u8005\u8BBE\u8BA1\u7684\u5F00\u7BB1\u5373\u7528\u7684\u6846\u67B6\uFF0C\u652F\u6301\u8D44\u6E90+\u4EE3\u7801\u70ED\u66F4"
+    Programmers which contains powerful features, beginners can start up quickliy
+    and making hot updateable games easily \n\nJEngine\u662F\u9488\u5BF9Unity\u5F00\u53D1\u8005\u8BBE\u8BA1\u7684\u5F00\u7BB1\u5373\u7528\u7684\u6846\u67B6\uFF0C\u5C01\u88C5\u4E86\u5F3A\u5927\u7684\u529F\u80FD\uFF0C\n\u5C0F\u767D\u4E5F\u80FD\u5FEB\u901F\u4E0A\u624B\uFF0C\u8F7B\u677E\u5236\u4F5C\u53EF\u4EE5\u70ED\u66F4\u65B0\u7684\u6E38\u620F"
 --- !u!222 &2078874962
 CanvasRenderer:
   m_ObjectHideFlags: 0
