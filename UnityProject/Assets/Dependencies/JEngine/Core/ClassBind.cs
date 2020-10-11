@@ -68,9 +68,13 @@ namespace JEngine.Core
                     Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
                     continue;
                 }
-
+                
                 IType type = InitILrt.appDomain.LoadedTypes[classType];
-                var instance = new ILTypeInstance(type as ILType, false);
+                Type t = type.ReflectionType;//获取实际属性
+                var instance = _class.UseConstructor
+                    ? InitILrt.appDomain.Instantiate(classType)
+                    : new ILTypeInstance(type as ILType, false);
+                
                 var clrInstance = cb.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
                 clrInstance.enabled = false;
                 clrInstance.ILInstance = instance;
@@ -81,9 +85,6 @@ namespace JEngine.Core
                 if (_class.RequireBindFields)
                 {
                     _class.BoundData = false;
-
-                    //获取实际属性
-                    Type t = type.ReflectionType;
 
                     foreach (var field in _class.Fields)
                     {
@@ -142,6 +143,7 @@ namespace JEngine.Core
                             }
                             else if (field.fieldType == _ClassField.FieldType.Bool)
                             {
+                                field.value = field.value.ToLower();
                                 obj = field.value == "true";
                                 _class.BoundData = true;
                             }
@@ -398,6 +400,9 @@ namespace JEngine.Core
         public string Class = "";
         public bool ActiveAfter = false;
         public bool RequireBindFields = false;
+
+        [Tooltip("是否使用构造函数，JBehaviour类请选false")]
+        public bool UseConstructor = false;
 
         [Tooltip("如果是GameObject，请填写完整路径，如果没有父物体，请务必为Active，如果有父物体，请确保父物体是Active;\r\n" +
                  "如果是Unity脚本，请填写该脚本所属的GameObject完整路径，参考GameObject写法")]

@@ -1,7 +1,9 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.Runtime.Intepreter;
+using JEngine.Core;
 using LitJson;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
@@ -64,6 +66,7 @@ public class MonoBehaviourAdapterEditor : Editor
                 index++;
 
                 var cType = type.TypeForCLR;
+                object obj = instance[i.Value];
                 if (cType.IsPrimitive) //如果是基础类型
                 {
                     try
@@ -71,6 +74,10 @@ public class MonoBehaviourAdapterEditor : Editor
                         if (cType == typeof(float))
                         {
                             instance[i.Value] = EditorGUILayout.FloatField(name, (float) instance[i.Value]);
+                        }
+                        else if (cType == typeof(double))
+                        {
+                            instance[i.Value] = EditorGUILayout.DoubleField(name, (float) instance[i.Value]);
                         }
                         else if (cType == typeof(int))
                         {
@@ -80,54 +87,59 @@ public class MonoBehaviourAdapterEditor : Editor
                         {
                             instance[i.Value] = EditorGUILayout.LongField(name, (long) instance[i.Value]);
                         }
-                        else if (cType == typeof(string))
+                        else if (cType == typeof(bool))
                         {
-                            instance[i.Value] = EditorGUILayout.TextArea(name, (string) instance[i.Value]);
+                            var result = bool.TryParse(instance[i.Value].ToString(), out var value);
+                            if (!result)
+                            {
+                                value = instance[i.Value].ToString() == "1";
+                            }
+                            instance[i.Value] = EditorGUILayout.Toggle(name, value );
                         }
                         else
                         {
-                            //剩下的大家自己补吧
-                            instance[i.Value] = EditorGUILayout.TextArea(name, instance[i.Value].ToString());
+                            EditorGUILayout.LabelField(name, instance[i.Value].ToString());
                         }
                     }
                     catch (Exception e)
                     {
-                        instance[i.Value] = EditorGUILayout.TextArea(name, "(null)");
+                        Log.PrintError($"无法序列化{name}，{e.Message}");
+                        EditorGUILayout.LabelField(name, instance[i.Value].ToString());
                     }
                 }
                 else
                 {
-                    if (cType == typeof(JsonData))
+                    if (cType == typeof(string))
+                    {
+                        if (obj != null)
+                        {
+                            instance[i.Value] = EditorGUILayout.TextField(name, (string) instance[i.Value]);
+                        }
+                        else
+                        {
+                            instance[i.Value] = EditorGUILayout.TextField(name, "");
+                        }
+                    }
+                    else if (cType == typeof(JsonData))
                     {
                         if (instance[i.Value] != null)
                         {
-                            // target控制动画开始播放
                             this.fadeGroup.target = EditorGUILayout.Foldout(this.fadeGroup.target, name, true);
-                    
-                            // 系统使用tween渐变faded数值
                             if (EditorGUILayout.BeginFadeGroup(this.fadeGroup.faded))
                             {
                                 EditorGUILayout.TextArea(
                                     ((JsonData) instance[i.Value]).ToString()
                                 );
                             }
-                            // begin - end 之间元素会进行动画
                             EditorGUILayout.EndFadeGroup();
-                            
                             EditorGUILayout.Space();
-                            
                         }
                         else
                         {
                             EditorGUILayout.LabelField(name, "暂无值的JsonData");
                         }
-                    
-                        continue;
                     }
-
-                    object obj = instance[i.Value];
-                    
-                    if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
+                    else if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
                     {
                         if (obj == null && cType == typeof(MonoBehaviourAdapter.Adaptor))
                         {
@@ -139,11 +151,17 @@ public class MonoBehaviourAdapterEditor : Editor
                         var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
                         instance[i.Value] = res;
                     }
+                    else if (type.ReflectionType.ToString().Contains("BindableProperty") && obj != null)
+                    {
+                        PropertyInfo fi = type.ReflectionType.GetProperty("Value");
+                        object val = fi.GetValue(obj);
+                        EditorGUILayout.LabelField(name, val.ToString());
+                    }
                     else
                     {
                         //其他类型现在没法处理
                         if (obj != null)
-                            EditorGUILayout.TextField(name, obj.ToString());
+                            EditorGUILayout.LabelField(name, obj.ToString());
                         else
                             EditorGUILayout.LabelField(name, "(null)");
                     }

@@ -33,26 +33,24 @@ namespace JEngine.Examples
     {
         //Use this format to serialize and deserialize safe data
         [global::ProtoBuf.ProtoMember(1)]
-        private float realA
-        {
-            get => a;
-            set
-            {
-                a = value;
-            }
-        }
+        private float realA;
         [global::ProtoBuf.ProtoMember(2)]
-        private long realB
-        {
-            get => b;
-            set
-            {
-                b = value;
-            }
-        }
+        private long realB;
 
         //Use this format to declare safe data
         public JFloat a;
         public JLong b;
+
+        public SafeData()
+        {
+            a = realA;
+            b = realB;
+        }
+
+        public void BeforeSerialize()
+        {
+            realA = a;
+            realB = b;
+        }
     }
 }

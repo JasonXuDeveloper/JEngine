@@ -1,4 +1,4 @@
-# JENGINE v0.5.4
+# JENGINE v0.5.5
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -104,10 +104,11 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-> v0.5.3 is made by XAsset's author
-
-- Supports **copy DLC files to Streaming Assets**, which can pass App Store review easier
-- Supports **move local Streaming Asstes hot update resouces to persistence path** which user don't need to download any old things from server
+- **ClassBind** allows auto **attach any class** to a GameObject
+- **ClassBind** allows use **consturcor** as a initial of fields of a class
+- **ClassBind** allows call ```Active()``` method whether the bound class inherited MonoBehaviour or JBehaviour or not
+- **Editor** for **Hot Update Scripts to GameObject** supports present **more stuffs**
+- **Demo** for using **AntiCheat Struct** & **Bindable Property** improves
 
 [Click here to see all version updates](CHANGE.md)
 

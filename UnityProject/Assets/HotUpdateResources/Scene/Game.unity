@@ -3342,6 +3342,7 @@ MonoBehaviour:
     Class: JBehaviourExample
     ActiveAfter: 1
     RequireBindFields: 1
+    UseConstructor: 0
     Fields:
       array:
       - fieldType: 11
@@ -3878,6 +3879,7 @@ MonoBehaviour:
     Class: JSaverExample
     ActiveAfter: 1
     RequireBindFields: 1
+    UseConstructor: 0
     Fields:
       array:
       - fieldType: 12
@@ -3896,6 +3898,17 @@ MonoBehaviour:
         fieldName: SaveAsProtobufBtn
         value: 
         gameObject: {fileID: 1289204602}
+  - Namespace: JEngine.Examples
+    Class: DataClass
+    ActiveAfter: 1
+    RequireBindFields: 1
+    UseConstructor: 1
+    Fields:
+      array:
+      - fieldType: 10
+        fieldName: gm
+        value: true
+        gameObject: {fileID: 0}
 --- !u!4 &1766134456
 Transform:
   m_ObjectHideFlags: 0
@@ -4785,6 +4798,7 @@ MonoBehaviour:
     Class: JUIExample
     ActiveAfter: 1
     RequireBindFields: 1
+    UseConstructor: 0
     Fields:
       array:
       - fieldType: 12
@@ -4799,6 +4813,7 @@ MonoBehaviour:
     Class: DataModifyExample
     ActiveAfter: 1
     RequireBindFields: 1
+    UseConstructor: 0
     Fields:
       array:
       - fieldType: 11

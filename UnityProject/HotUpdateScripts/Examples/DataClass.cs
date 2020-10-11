@@ -37,15 +37,46 @@ namespace JEngine.Examples
         [global::ProtoBuf.ProtoMember(3)] private long money = 0;
         [global::ProtoBuf.ProtoMember(4)] public bool gm = false;
 
+        /// <summary>
+        /// Property which holds the real value
+        /// </summary>
+        public long Money
+        {
+            get
+            {
+                return money;
+            }
+            set
+            {
+                money = value;
+                if (BindableMoney != null)
+                {
+                    BindableMoney.Value = value;
+                }
+                else
+                {
+                    BindableMoney = new BindableProperty<long>(value);
+                }
+            }
+        }
+
         /*
-         * Fields to bind
-         */
-        public BindableProperty<long> Money;
+        * Fields to bind
+        */
+        internal BindableProperty<long> BindableMoney;
+
 
         //将可序列化的值变可绑定的值
         public DataClass()
         {
-            Money = new BindableProperty<long>(money);
+            id = 0;
+            money = 0;
+            BindableMoney = new BindableProperty<long>(money);
+        }
+
+        public void Awake()
+        {
+            Log.Print("DataClass 被 Active After了");
         }
     }
 }

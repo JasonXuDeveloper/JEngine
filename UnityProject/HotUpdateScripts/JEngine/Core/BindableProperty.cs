@@ -50,7 +50,7 @@ namespace JEngine.Core
 
         public BindableProperty(T val)
         {
-            _value =  val;
+            _value = val;
             OnChange = null;
         }
 

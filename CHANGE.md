@@ -1,5 +1,15 @@
 ## All Versions
 
+### v0.5.5 (October 11 2020)
+
+- **ClassBind** allows auto **attach any class** to a GameObject
+- **ClassBind** allows use **consturcor** as a initial of fields of a class
+- **ClassBind** allows call ```Active()``` method whether the bound class inherited MonoBehaviour or JBehaviour or not
+- **Editor** for **Hot Update Scripts to GameObject** supports present **more stuffs**
+- **Demo** for using **AntiCheat Struct** & **Bindable Property** improves
+
+
+
 ### v0.5.4 (October 10 2020)
 
 - **Anti-Cheat Structs** allows detect hackers who hacks your game

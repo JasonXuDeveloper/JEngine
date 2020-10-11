@@ -61,12 +61,12 @@ namespace JEngine.Examples
 
             //使用JUI绑定数据，已达到更新的目的 | JUI to bind data
             JUI jui = JUIVal.gameObject.AddComponent<JUI>();//添加脚本 | Add JUI
-            jui.Bind(DataModifyExample.data.Money)//绑定数据 | Bind Data
+            jui.Bind(DataModifyExample.data.BindableMoney)//绑定数据 | Bind Data
                 .onMessage(j =>
                 {
                     //数据更新后做什么 | What to do when data updated 
                     JUITimes++;
-                    JUIVal.text = $"Money = {DataModifyExample.data.Money}\n" +
+                    JUIVal.text = $"Money = {DataModifyExample.data.BindableMoney}\n" +
                     $"JUI绑定方法，UI更新了{JUITimes}次";
                 })
                 .Activate();//激活 | Run JUI
@@ -77,7 +77,7 @@ namespace JEngine.Examples
         {
             if (!DataModifyExample.Panel.activeSelf) return;
             NormalTimes++;
-            NormalVal.text = $"Money = {DataModifyExample.data.Money}\n" +
+            NormalVal.text = $"Money = {DataModifyExample.data.BindableMoney}\n" +
             $"常规Update方法，UI更新了{NormalTimes}次";
         }
 
@@ -108,7 +108,7 @@ namespace JEngine.Examples
         public override void Loop()
         {
             if (!Panel.activeSelf) return;
-            data.Money.Value++;
+            data.BindableMoney.Value++;
             this.Frequency = UnityEngine.Random.Range(100, 5000);
         }
     }
