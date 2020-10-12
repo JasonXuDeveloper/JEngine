@@ -7,6 +7,7 @@ using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.AntiCheat;
+using JEngine.Helper;
 using LitJson;
 using ProtoBuf;
 using UnityEngine;
@@ -30,117 +31,11 @@ public class InitILrt : MonoBehaviour
         appdomain.DebugService.StartDebugService(56000);
 #endif
 
-        #region 这里添加ILRuntime的注册 HERE TO ADD ILRuntime Registerations
-
-        appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
-        appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
-        appdomain.RegisterCrossBindingAdaptor(new IExtensibleAdapter());
-        
-        appdomain.DelegateManager.RegisterMethodDelegate<libx.AssetRequest>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Object>();
-        appdomain.DelegateManager.RegisterMethodDelegate<System.Object>();
-        appdomain.DelegateManager
-            .RegisterFunctionDelegate<ILTypeInstance, Boolean>();
-        appdomain.DelegateManager.RegisterMethodDelegate<List<Object>>();
-        appdomain.DelegateManager
-            .RegisterMethodDelegate<IDictionary<String, UnityEngine.Object>>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Boolean>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Single>();
-        appdomain.DelegateManager.RegisterMethodDelegate<System.Object, System.UnhandledExceptionEventArgs>();
-        appdomain.DelegateManager.RegisterMethodDelegate<System.Boolean>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Boolean, GameObject>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Int32, Int32>();
-        appdomain.DelegateManager.RegisterMethodDelegate<String>();
-        appdomain.DelegateManager.RegisterMethodDelegate<ILTypeInstance>();
-        appdomain.DelegateManager.RegisterMethodDelegate<GameObject>();
-        appdomain.DelegateManager.RegisterMethodDelegate<UIBehaviour, Object>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Transform, Object>();
-        appdomain.DelegateManager.RegisterMethodDelegate<GameObject>();
-        appdomain.DelegateManager.RegisterMethodDelegate<Int32>();
-        appdomain.DelegateManager.RegisterMethodDelegate<GameObject, Action>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<Object, Boolean>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<Boolean>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<float>();
-        appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
-        
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.String>>((act) =>
-        {
-            return new UnityEngine.Events.UnityAction<System.String>((arg0) =>
-            {
-                ((Action<System.String>)act)(arg0);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.Boolean>>((act) =>
-        {
-            return new UnityEngine.Events.UnityAction<System.Boolean>((arg0) =>
-            {
-                ((Action<System.Boolean>)act)(arg0);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.WaitCallback>((act) =>
-        {
-            return new System.Threading.WaitCallback((state) =>
-            {
-                ((Action<System.Object>)act)(state);
-            });
-        });
-        
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
-        {
-            return new UnityAction(() => { ((Action) act)(); });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Single>>(act =>
-        {
-            return new UnityAction<Single>(arg0 =>
-            {
-                ((Action<Single>) act)(arg0);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<System.UnhandledExceptionEventHandler>((act) =>
-        {
-            return new System.UnhandledExceptionEventHandler((sender, e) =>
-            {
-                ((Action<System.Object, System.UnhandledExceptionEventArgs>)act)(sender, e);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<Object>>(act =>
-        {
-            return new Predicate<Object>(obj =>
-            {
-                return ((Func<Object, Boolean>) act)(obj);
-            });
-        });
-        appdomain.DelegateManager
-            .RegisterDelegateConvertor<Predicate<ILTypeInstance>>(act =>
-            {
-                return new Predicate<ILTypeInstance>(obj =>
-                {
-                    return ((Func<ILTypeInstance, Boolean>) act)(obj);
-                });
-            });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Int32>>(act =>
-        {
-            return new UnityAction<Int32>(arg0 =>
-            {
-                ((Action<Int32>) act)(arg0);
-            });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
-        {
-            return new Action<JsonData>(a => { ((Action<JsonData>) action)(a); });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
-        {
-            return new UnityAction(async () => { ((Action) act)(); });
-        });
-        appdomain.DelegateManager.RegisterDelegateConvertor<ThreadStart>(act =>
-        {
-            return new ThreadStart(() => { ((Action) act)(); });
-        });
-        
+        RegisterCrossBindingAdaptorHelper.HelperRegister(appdomain);
+        RegisterMethodDelegateHelper.HelperRegister(appdomain);
+        RegisterFunctionDelegateHelper.HelperRegister(appdomain);
+        RegisterDelegateConvertorHelper.HelperRegister(appdomain);
+        RegisterLitJsonHelper.HelperRegister(appdomain);
 
         //添加MonoBehaviour核心方法
         var arr = typeof(GameObject).GetMethods();
@@ -159,51 +54,17 @@ public class InitILrt : MonoBehaviour
                 appdomain.RegisterCLRMethodRedirection(i, GetComponent);
             }
         }
+        
+        //Protobuf适配
         ProtoBuf.PType.RegisterFunctionCreateInstance(PType_CreateInstance);
         ProtoBuf.PType.RegisterFunctionGetRealType(PType_GetRealType);
-        JsonMapper.RegisterILRuntimeCLRRedirection(appdomain); //绑定LitJson
-        CLRBindings.Initialize(appdomain); //CLR绑定
-
-        #endregion
         
-        InitLitJSON();
+        //LitJson适配
+        JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
+        
+        //CLR绑定
+        CLRBindings.Initialize(appdomain); 
     }
-
-    private static void InitLitJSON()
-    {
-        //转格式
-        JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(obj.ToString()));//float->string
-        JsonMapper.RegisterImporter<string, float>(input => float.Parse(input));//string->float
-        JsonMapper.RegisterExporter<JInt>((obj, writer) => writer.Write(obj.ToString()));//JInt->string
-        JsonMapper.RegisterImporter<string, JInt>(input => new JInt(input));//string->JInt
-        JsonMapper.RegisterExporter<JBool>((obj, writer) => writer.Write(obj.ToString()));//JBool->string
-        JsonMapper.RegisterImporter<string, JBool>(input => new JBool(input));//string->JBool
-        JsonMapper.RegisterExporter<JByte>((obj, writer) => writer.Write(obj.ToString()));//JByte->string
-        JsonMapper.RegisterImporter<string, JByte>(input => new JByte(input));//string->JByte
-        JsonMapper.RegisterExporter<JLong>((obj, writer) => writer.Write(obj.ToString()));//JLong->string
-        JsonMapper.RegisterImporter<string, JLong>(input => new JLong(input));//string->JLong
-        JsonMapper.RegisterExporter<JSByte>((obj, writer) => writer.Write(obj.ToString()));//JSByte->string
-        JsonMapper.RegisterImporter<string, JSByte>(input => new JSByte(input));//string->JSByte
-        JsonMapper.RegisterExporter<JShort>((obj, writer) => writer.Write(obj.ToString()));//JShort->string
-        JsonMapper.RegisterImporter<string, JShort>(input => new JShort(input));//string->JShort
-        JsonMapper.RegisterExporter<JUInt>((obj, writer) => writer.Write(obj.ToString()));//JUInt->string
-        JsonMapper.RegisterImporter<string, JUInt>(input => new JUInt(input));//string->JUInt
-        JsonMapper.RegisterExporter<JULong>((obj, writer) => writer.Write(obj.ToString()));//JULong->string
-        JsonMapper.RegisterImporter<string, JULong>(input => new JULong(input));//string->JULong
-        JsonMapper.RegisterExporter<JUShort>((obj, writer) => writer.Write(obj.ToString()));//JUShort->string
-        JsonMapper.RegisterImporter<string, JUShort>(input => new JUShort(input));//string->JUShort
-        JsonMapper.RegisterExporter<JChar>((obj, writer) => writer.Write(obj.ToString()));//JChar->string
-        JsonMapper.RegisterImporter<string, JChar>(input => new JChar(input));//string->JChar
-        JsonMapper.RegisterExporter<JString>((obj, writer) => writer.Write(obj.ToString()));//JString->string
-        JsonMapper.RegisterImporter<string, JString>(input => new JString(input));//string->JString
-        JsonMapper.RegisterExporter<JFloat>((obj, writer) => writer.Write(obj.ToString()));//JFloat->string
-        JsonMapper.RegisterImporter<string, JFloat>(input => new JFloat(input));//string->JFloat
-        JsonMapper.RegisterExporter<JDecimal>((obj, writer) => writer.Write(obj.ToString()));//JDecimal->string
-        JsonMapper.RegisterImporter<string, JDecimal>(input => new JDecimal(input));//string->JDecimal
-        JsonMapper.RegisterExporter<JDouble>((obj, writer) => writer.Write(obj.ToString()));//JDouble->string
-        JsonMapper.RegisterImporter<string, JDouble>(input => new JDouble(input));//string->JDouble
-    }
-
     
     static object PType_CreateInstance(string typeName){
         return appDomain.Instantiate (typeName);

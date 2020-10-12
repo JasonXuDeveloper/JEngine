@@ -2,6 +2,7 @@
 using System.IO;
 using ILRuntime.Mono.Cecil.Pdb;
 using JEngine.Core;
+using JEngine.Helper;
 using libx;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -117,6 +118,7 @@ public class Init : MonoBehaviour
     void OnHotFixLoaded()
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
+        HotFixLoadedHelper.Init();
     }
 }
 

@@ -34,23 +34,24 @@ using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
-    public class ILRuntimeCrossBinding : EditorWindow
+    public class ILRuntimeCrossBindingAdapterGenerator : EditorWindow
     {
-        private static ILRuntimeCrossBinding window;
-        
-        [MenuItem("JEngine/ILRuntime/Generate Cross bind Adapter",priority = 1001)]
+        private static ILRuntimeCrossBindingAdapterGenerator window;
+        private const string OUTPUT_PATH = "Assets/Scripts/Adapters";
+
+        [MenuItem("JEngine/ILRuntime/Generate Cross bind Adapter", priority = 1001)]
         public static void ShowWindow()
         {
-            window = GetWindow<ILRuntimeCrossBinding>();
+            window = GetWindow<ILRuntimeCrossBindingAdapterGenerator>();
             window.titleContent = new GUIContent("Generate Cross bind Adapter");
-            window.minSize = new Vector2(300,150);
+            window.minSize = new Vector2(300, 150);
             window.Show();
         }
 
         private string _assembly = "Assembly-CSharp";
         private string _class;
         private string _namespace = "ProjectAdapter";
-        
+
         private void OnGUI()
         {
             //绘制标题
@@ -60,17 +61,16 @@ namespace JEngine.Editor
             GUILayout.Label("ILRuntime适配器生成");
             GUI.skin.label.fontSize = 18;
             GUILayout.Label("ILRuntime Adapter Generator");
-            
+
             //程序集
             GUILayout.Space(50);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _assembly = "Assembly-CSharp";
             EditorGUILayout.LabelField("Assembly 适配器命名空间");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _assembly= EditorGUILayout.TextField("",_assembly);
+            _assembly = EditorGUILayout.TextField("", _assembly);
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
 
@@ -78,10 +78,10 @@ namespace JEngine.Editor
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _class = EditorGUILayout.TextField("Class name 类名",_class);
+            _class = EditorGUILayout.TextField("Class name 类名", _class);
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
-            
+
             //命名空间
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
@@ -91,10 +91,10 @@ namespace JEngine.Editor
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _namespace= EditorGUILayout.TextField("",_namespace);
+            _namespace = EditorGUILayout.TextField("", _namespace);
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
-            
+
             //生成
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
@@ -103,6 +103,7 @@ namespace JEngine.Editor
             {
                 GenAdapter();
             }
+
             GUILayout.Space(25);
             GUILayout.EndHorizontal();
         }
@@ -110,34 +111,51 @@ namespace JEngine.Editor
         private void GenAdapter()
         {
             //获取主工程DLL的类
-            Type t = Assembly.LoadFile(new DirectoryInfo(Application.dataPath).Parent.FullName+$"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
-            
+            Type t = Assembly
+                .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                          $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
+
             //判断空
-            if (t ==null)
+            if (t == null)
             {
-                EditorUtility.DisplayDialog("Error", $"Invalid Class {_class}!\r\n{_class}类不存在！","Ok");
+                EditorUtility.DisplayDialog("Error", $"Invalid Class {_class}!\r\n{_class}类不存在！", "Ok");
                 return;
             }
-            
-            //如果有先删除
-            if (File.Exists($"Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs"))
+
+            if (Directory.Exists(OUTPUT_PATH))
             {
-                File.Delete($"Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs");
-                if (File.Exists($"Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs.meta"))
+                Directory.CreateDirectory(OUTPUT_PATH);
+            }
+
+            //如果有先删除
+            if (File.Exists($"{OUTPUT_PATH}/{_class}Adapter.cs"))
+            {
+                File.Delete($"{OUTPUT_PATH}/{_class}Adapter.cs");
+                if (File.Exists($"{OUTPUT_PATH}/{_class}Adapter.cs.meta"))
                 {
-                    File.Delete($"Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs.meta");
+                    File.Delete($"{OUTPUT_PATH}/{_class}Adapter.cs.meta");
                 }
+
                 AssetDatabase.Refresh();
             }
-            
+
             //生成
-            using(System.IO.StreamWriter sw = new System.IO.StreamWriter($"Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs"))
+            using (System.IO.StreamWriter sw =
+                new System.IO.StreamWriter($"{OUTPUT_PATH}/{_class}Adapter.cs"))
             {
                 Stopwatch watch = new Stopwatch();
-                sw.WriteLine(ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,_namespace));
+                sw.WriteLine(
+                    ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,
+                        _namespace));
                 watch.Stop();
-                Log.Print($"Generated Assets/Dependencies/ILRuntime/Adapters/{_class}Adapter.cs in: " + watch.ElapsedMilliseconds + " ms.");  
-            } 
+                Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +
+                          watch.ElapsedMilliseconds + " ms.");
+                Log.Print($"Please insert " +
+                          $"'appdomain.RegisterCrossBindingAdaptor(new {_class}Adapter());' " +
+                          $"into 'Register(AppDomain appdomain)' method in " +
+                          $"Scripts/Helpers/RegisterCrossBindingAdaptorHelper.cs");
+            }
+
 
             AssetDatabase.Refresh();
         }
