@@ -28,14 +28,15 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_Int32_Single_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Func_1_Boolean_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Action_Binding.Register(app);
-            System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_ILTypeInstance_Binding.Register(app);
-            JEngine_Core_Log_Binding.Register(app);
+            System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);
-            System_Func_1_Boolean_Binding.Register(app);
-            System_Threading_Tasks_Task_1_ILTypeInstance_Binding.Register(app);
-            System_Runtime_CompilerServices_TaskAwaiter_1_ILTypeInstance_Binding.Register(app);
-            JEngine_Core_Loom_Binding.Register(app);
             UnityEngine_Application_Binding.Register(app);
+            JEngine_Core_Log_Binding.Register(app);
+            System_GC_Binding.Register(app);
+            System_Func_1_Boolean_Binding.Register(app);
+            System_Threading_Tasks_Task_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_Runtime_CompilerServices_TaskAwaiter_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            JEngine_Core_Loom_Binding.Register(app);
             System_TimeoutException_Binding.Register(app);
             Init_Binding.Register(app);
             System_Exception_Binding.Register(app);
@@ -58,7 +59,7 @@ namespace ILRuntime.Runtime.Generated
             LitJson_JsonMapper_Binding.Register(app);
             UnityEngine_Behaviour_Binding.Register(app);
             System_AppDomain_Binding.Register(app);
-            GameStats_Binding.Register(app);
+            JEngine_Core_GameStats_Binding.Register(app);
             System_UnhandledExceptionEventArgs_Binding.Register(app);
             System_Action_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
@@ -71,6 +72,8 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_TextAsset_Binding.Register(app);
             UnityEngine_UI_Button_Binding.Register(app);
             UnityEngine_Events_UnityEvent_Binding.Register(app);
+            JEngine_AntiCheat_JFloat_Binding.Register(app);
+            JEngine_AntiCheat_JLong_Binding.Register(app);
 
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
         }

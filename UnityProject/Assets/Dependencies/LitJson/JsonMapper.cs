@@ -371,7 +371,7 @@ namespace LitJson
                     //泛型赋值的参数
                     parameters[0] = Convert.ChangeType(reader.Value,GenericType);
                     //生成实例且赋值
-                    object _instance = InitILrt.appDomain.Instantiate(vt.FullName,parameters);
+                    object _instance = Init.appdomain.Instantiate(vt.FullName,parameters);
                     //返回可绑定数据
                     return _instance;
                 }

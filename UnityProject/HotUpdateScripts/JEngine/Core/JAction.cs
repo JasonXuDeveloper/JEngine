@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,51 +32,32 @@ using UnityEngine;
 
 namespace JEngine.Core
 {
-    public class JAction
+    public class JAction : IDisposable
     {
         public JAction()
         {
-            _executing = false;
-            _parallel = false;
-            _cancel = false;
-            _toDo = new List<Action>();
-            _onCancel = new Action(() => { });
-            _delays = new Dictionary<int, float>();
-            _waits = new Dictionary<int, Func<bool>>();
-            _frequency = new Dictionary<int, float>();
-            _timeout = new Dictionary<int, float>();
-            _whens = new Dictionary<int, Action>();
-            _whenCauses = new Dictionary<int, Func<bool>>();
-            _whenFrequency = new Dictionary<int, float>();
-            _whenTimeout = new Dictionary<int, float>();
-            _cancellationTokenSource = new CancellationTokenSource();
+            Reset();
         }
 
-        private JAction _reset(JAction j)
-        {
-            j = new JAction();
-            return j;
-        }
+        private bool _executing = false;
+        private bool _parallel = false;
+        private bool _cancel = false;
 
-        private bool _executing;
-        private bool _parallel;
-        private bool _cancel;
+        private List<Action> _toDo = new List<Action>();
+        private Action _onCancel = new Action(() => { });
 
-        private List<Action> _toDo;
-        private Action _onCancel;
+        private Dictionary<int, float> _delays = new Dictionary<int, float>();
 
-        private Dictionary<int, float> _delays;
+        private Dictionary<int, Func<bool>> _waits = new Dictionary<int, Func<bool>>();
+        private Dictionary<int, float> _frequency = new Dictionary<int, float>();
+        private Dictionary<int, float> _timeout = new Dictionary<int, float>();
 
-        private Dictionary<int, Func<bool>> _waits;
-        private Dictionary<int, float> _frequency;
-        private Dictionary<int, float> _timeout;
+        private Dictionary<int, Action> _whens = new Dictionary<int, Action>();
+        private Dictionary<int, Func<bool>> _whenCauses = new Dictionary<int, Func<bool>>();
+        private Dictionary<int, float> _whenFrequency = new Dictionary<int, float>();
+        private Dictionary<int, float> _whenTimeout = new Dictionary<int, float>();
 
-        private Dictionary<int, Action> _whens;
-        private Dictionary<int, Func<bool>> _whenCauses;
-        private Dictionary<int, float> _whenFrequency;
-        private Dictionary<int, float> _whenTimeout;
-
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
 
         public JAction Delay(float time)
@@ -116,7 +98,7 @@ namespace JEngine.Core
 
         public JAction Repeat(Action action, int counts, float duration = 0)
         {
-            for(int i = 0; i < counts; i++)
+            for (int i = 0; i < counts; i++)
             {
                 Do(action);
                 Delay(duration);
@@ -138,34 +120,25 @@ namespace JEngine.Core
 
         public JAction Execute(bool onMainThread = false)
         {
-            if (_executing == true && !_parallel)
-            {
-                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
-            }
-            else
-            {
-                _ = Do(onMainThread);
-            }
+            _ = Do(onMainThread);
             return this;
         }
 
-        public JAction ExecuteAsync(Action callback = null, bool onMainThread = false)
+        public JAction ExecuteAsyncParallel(Action callback = null, bool onMainThread = false)
         {
             _ = _ExecuteAsync(callback, onMainThread);
             return this;
         }
 
+        public async Task<JAction> ExecuteAsync(bool onMainThread = false)
+        {
+            return await Do(onMainThread);
+        }
+
         private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
         {
-            if (_executing == true && !_parallel)
-            {
-                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling ExecuteAsync()");
-            }
-            else
-            {
-                await Do(onMainThread);
-                callback?.Invoke();
-            }
+            await Do(onMainThread);
+            callback?.Invoke();
             return this;
         }
 
@@ -180,7 +153,10 @@ namespace JEngine.Core
         {
             _cancel = true;
             _cancellationTokenSource.Cancel();
-            _onCancel?.Invoke();
+            if (Application.isPlaying)
+            {
+                _onCancel?.Invoke();
+            }
             return this;
         }
 
@@ -189,7 +165,7 @@ namespace JEngine.Core
             if (force)
             {
                 Cancel();
-                _reset(this);
+                _reset();
             }
             else
             {
@@ -200,23 +176,48 @@ namespace JEngine.Core
                 else
                 {
                     Cancel();
-                    _reset(this);
+                    _reset();
                 }
             }
             return this;
         }
 
+        private void _reset()
+        {
+            _executing = false;
+            _parallel = false;
+            _cancel = false;
+            _toDo = new List<Action>();
+            _onCancel = new Action(() => { });
+            _delays = new Dictionary<int, float>();
+            _waits = new Dictionary<int, Func<bool>>();
+            _frequency = new Dictionary<int, float>();
+            _timeout = new Dictionary<int, float>();
+            _whens = new Dictionary<int, Action>();
+            _whenCauses = new Dictionary<int, Func<bool>>();
+            _whenFrequency = new Dictionary<int, float>();
+            _whenTimeout = new Dictionary<int, float>();
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+
 
         private async Task<JAction> Do(bool onMainThread)
         {
+            if (_executing == true && !_parallel)
+            {
+                Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
+                return this;
+            }
             if (!_parallel)
             {
                 _executing = true;
             }
             _cancel = false;
 
-            for(int index = 0;index< _toDo.Count;index++ )
+            for (int i = 0; i < _toDo.Count; i++)
             {
+                int index = i;
+
                 if (_cancel || !Application.isPlaying) return this;
 
                 //Delay
@@ -276,7 +277,7 @@ namespace JEngine.Core
                         {
                             await Task.Run(_action, _cancellationTokenSource.Token);
                         }
-                        
+
 
                         await Task.Delay((int)(_frequency * 1000));
                         _time += _frequency;
@@ -304,6 +305,37 @@ namespace JEngine.Core
             }
             _executing = false;
             return this;
+        }
+
+        ~JAction()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+            _toDo = null;
+            _onCancel = null;
+            _delays = null;
+            _waits = null;
+            _frequency = null;
+            _timeout = null;
+            _whens = null;
+            _whenCauses = null;
+            _whenFrequency = null;
+            _whenTimeout = null;
+            _cancellationTokenSource = null;
+            GC.Collect();
+            GC.SuppressFinalize(this);
         }
     }
 }

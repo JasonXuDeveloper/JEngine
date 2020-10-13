@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using ILRuntime.Mono.Cecil.Pdb;
 using JEngine.Core;
@@ -10,50 +11,33 @@ using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 public class Init : MonoBehaviour
 {
     public static Init Instance;
-    AppDomain appdomain;
-    MemoryStream fs;
-    MemoryStream pdb;
+    public static AppDomain appdomain;
+    
     private const string dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
     private const string pdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
     [SerializeField] public string Key;
-    [SerializeField] public bool UsePdb = true;
-
+    [SerializeField] public bool UsePdb = false;
     
-    /*
-     *获取FPS
-     */
-    private int frames = 0;
-    private float timer = 1;
+    MemoryStream fs;
+    MemoryStream pdb;
 
     void Start()
     {
         Instance = this;
+        GameStats.Init();
         LoadHotFixAssembly();
     }
-
-    void FixedUpdate()
-    {
-        ++frames;
-        timer -= Time.deltaTime;
-        if (timer <= 0)
-        {
-            GameStats.fps = frames;
-            frames = 0;
-            timer = 1;
-        }
-    }
-
     void LoadHotFixAssembly()
     {
         appdomain = new AppDomain();
 
         pdb = null;
         
-        //编译模式
+        //开发模式
         if (!Assets.runtimeMode)
         {
-            if (File.Exists(dllPath))
+            if (File.Exists(dllPath))//直接读DLL
             {
                 fs = new MemoryStream(DLLMgr.FileToByte(dllPath));
             }
@@ -69,7 +53,7 @@ public class Init : MonoBehaviour
                 pdb = new MemoryStream(DLLMgr.FileToByte(pdbPath));
             }
         }
-        else//解密加载
+        else//真机模式解密加载
         {
             var dllAsset = Assets.LoadAsset("HotUpdateScripts.bytes", typeof(TextAsset));
             if (dllAsset.error != null)
@@ -113,20 +97,9 @@ public class Init : MonoBehaviour
         OnHotFixLoaded();
     }
 
-    
-
     void OnHotFixLoaded()
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
         HotFixLoadedHelper.Init();
     }
-}
-
-public class GameStats
-{
-    public GameStats()
-    {
-        fps = 0;
-    }
-    public static float fps;
 }

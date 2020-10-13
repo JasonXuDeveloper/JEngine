@@ -48,7 +48,7 @@ namespace JEngine.Core
 
         private async void Awake()
         {
-            while (InitILrt.appDomain == null)
+            while (Init.appdomain == null)
             {
                 await Task.Delay(50);
             }
@@ -63,22 +63,22 @@ namespace JEngine.Core
             {
                 //添加脚本
                 string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
-                if (!InitILrt.appDomain.LoadedTypes.ContainsKey(classType))
+                if (!Init.appdomain.LoadedTypes.ContainsKey(classType))
                 {
                     Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
                     continue;
                 }
                 
-                IType type = InitILrt.appDomain.LoadedTypes[classType];
+                IType type = Init.appdomain.LoadedTypes[classType];
                 Type t = type.ReflectionType;//获取实际属性
                 var instance = _class.UseConstructor
-                    ? InitILrt.appDomain.Instantiate(classType)
+                    ? Init.appdomain.Instantiate(classType)
                     : new ILTypeInstance(type as ILType, false);
                 
                 var clrInstance = cb.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
                 clrInstance.enabled = false;
                 clrInstance.ILInstance = instance;
-                clrInstance.AppDomain = InitILrt.appDomain;
+                clrInstance.AppDomain = Init.appdomain;
                 instance.CLRInstance = clrInstance;
 
                 //绑定数据

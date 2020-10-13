@@ -1,30 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
+using LitJson;
+using UnityEngine;
+using JEngine.Helper;
 using System.Threading;
 using ILRuntime.CLR.Method;
+using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.TypeSystem;
+using System.Collections.Generic;
 using ILRuntime.Runtime.Generated;
 using ILRuntime.Runtime.Intepreter;
-using ILRuntime.Runtime.Stack;
-using JEngine.AntiCheat;
-using JEngine.Helper;
-using LitJson;
-using ProtoBuf;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
-using Object = UnityEngine.Object;
-// using LitJson;
 
-public class InitILrt : MonoBehaviour
+public static class InitILrt
 {
-    public static AppDomain appDomain;
-    
     public static unsafe void InitializeILRuntime(AppDomain appdomain)
     {
-        appDomain = appdomain;
-        
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
         //由于Unity的Profiler接口只允许在主线程使用，为了避免出异常，需要告诉ILRuntime主线程的线程ID才能正确将函数运行耗时报告给Profiler
         appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
@@ -67,7 +57,7 @@ public class InitILrt : MonoBehaviour
     }
     
     static object PType_CreateInstance(string typeName){
-        return appDomain.Instantiate (typeName);
+        return Init.appdomain.Instantiate (typeName);
     }
     static Type PType_GetRealType(object o){
         var type = o.GetType ();
@@ -83,9 +73,9 @@ public class InitILrt : MonoBehaviour
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    MonoBehaviourAdapter.Adaptor GetComponent(ILType type)
+    static MonoBehaviourAdapter.Adaptor GetComponent(ILType type)
     {
-        var arr = GetComponents<MonoBehaviourAdapter.Adaptor>();
+        var arr = Init.Instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
         for(int i = 0; i < arr.Length; i++)
         {
             var instance = arr[i];
@@ -102,9 +92,9 @@ public class InitILrt : MonoBehaviour
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    MonoBehaviourAdapter.Adaptor GetComponentInChildren(ILType type)
+    static MonoBehaviourAdapter.Adaptor GetComponentInChildren(ILType type)
     {
-        var arr = GetComponents<MonoBehaviourAdapter.Adaptor>();
+        var arr = Init.Instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
         for(int i = 0; i < arr.Length; i++)
         {
             var instance = arr[i];

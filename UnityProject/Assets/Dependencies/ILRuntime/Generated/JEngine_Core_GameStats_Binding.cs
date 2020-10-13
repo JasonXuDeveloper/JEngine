@@ -14,14 +14,14 @@ using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.Generated
 {
-    unsafe class GameStats_Binding
+    unsafe class JEngine_Core_GameStats_Binding
     {
         public static void Register(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
             FieldInfo field;
             Type[] args;
-            Type type = typeof(global::GameStats);
+            Type type = typeof(JEngine.Core.GameStats);
 
             field = type.GetField("fps", flag);
             app.RegisterCLRFieldGetter(field, get_fps_0);
@@ -35,12 +35,12 @@ namespace ILRuntime.Runtime.Generated
 
         static object get_fps_0(ref object o)
         {
-            return global::GameStats.fps;
+            return JEngine.Core.GameStats.fps;
         }
 
         static StackObject* CopyToStack_fps_0(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = global::GameStats.fps;
+            var result_of_this_method = JEngine.Core.GameStats.fps;
             __ret->ObjectType = ObjectTypes.Float;
             *(float*)&__ret->Value = result_of_this_method;
             return __ret + 1;
@@ -48,14 +48,14 @@ namespace ILRuntime.Runtime.Generated
 
         static void set_fps_0(ref object o, object v)
         {
-            global::GameStats.fps = (System.Single)v;
+            JEngine.Core.GameStats.fps = (System.Single)v;
         }
 
         static StackObject* AssignFromStack_fps_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Single @fps = *(float*)&ptr_of_this_method->Value;
-            global::GameStats.fps = @fps;
+            JEngine.Core.GameStats.fps = @fps;
             return ptr_of_this_method;
         }
 
