@@ -87,6 +87,11 @@ namespace ILRuntime.Runtime.Intepreter
                             if ((short)f.Constant == intVal)
                                 return f.Name;
                         }
+                        else if(f.Constant is long)
+                        {
+                            if ((long)f.Constant == longVal)
+                                return f.Name;
+                        }
                         else if (f.Constant is byte)
                         {
                             if ((byte)f.Constant == intVal)
@@ -450,6 +455,17 @@ namespace ILRuntime.Runtime.Intepreter
             InitializeFields(type);
         }
 
+        internal void InitializeField(int fieldIdx)
+        {
+            if (fieldIdx < fields.Length && fieldIdx >= 0)
+            {
+                var ft = type.FieldTypes[fieldIdx];
+                StackObject.Initialized(ref fields[fieldIdx], fieldIdx, ft.TypeForCLR, ft, managedObjs);
+            }
+            else
+                throw new NotImplementedException();
+        }
+
         internal unsafe void AssignFromStack(int fieldIdx, StackObject* esp, Enviorment.AppDomain appdomain, IList<object> managedStack)
         {
             if (fieldIdx < fields.Length && fieldIdx >= 0)
@@ -487,6 +503,7 @@ namespace ILRuntime.Runtime.Intepreter
                 case ObjectTypes.Object:
                 case ObjectTypes.ArrayReference:
                 case ObjectTypes.FieldReference:
+                    field.ObjectType = ObjectTypes.Object;
                     field.Value = fieldIdx;
                     managedObjs[fieldIdx] = ILIntepreter.CheckAndCloneValueType(managedStack[esp->Value], Type.AppDomain);
                     break;
