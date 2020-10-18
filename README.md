@@ -24,6 +24,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | 教学视频：核心功能（下）数据持久化+对象池+助手类+面板 | [点击跳转](https://www.bilibili.com/video/BV12Z4y1N7eG/)     |
 | 框架文档                                              | [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki) |
 | 知乎文章                                              | [点击跳转](https://zhuanlan.zhihu.com/p/218105381)           |
+| 项目地址                                              | [GitHub地址](https://github.com/JasonXuDeveloper/JEngine)    |
 | 国内镜像                                              | [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)      |
 | QQ群聊                                                | [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)           |
 
@@ -37,6 +38,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | 【Unity x JEngine 开发可热更爆款小游戏】第五集（首页UI代码开发） | [点击跳转](https://www.bilibili.com/video/BV1ZT4y1c7t7/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第六集（Bug修复+代码开发+音乐配置） | [点击跳转](https://www.bilibili.com/video/BV1bi4y1E7e7/) |
 | 【Unity x JEngine 开发可热更爆款小游戏】第七集（关卡设计+编辑器开发+数据生成） | [点击跳转](https://www.bilibili.com/video/BV1sv411y7gF/) |
+| 【Unity x JEngine 开发可热更爆款小游戏】第八集（关卡读取+界面生成） | [点击跳转](https://www.bilibili.com/video/BV15f4y1B7oQ/) |
 
   ## 近期star趋势
 
