@@ -165,7 +165,9 @@ Please clone this framework into your project and keep this directory structure
 
 - Debuging Unity Engine Version: 2019.3.13f1 (Please use at least this version)
 
-- .net Environment: .net 2.0 standard
+- U3D .net Environment: .net 4.x
+
+- Hot Update Solution .net Environment: .net 2.0 standard
 
 - Operating System: MacOS 10.15.5
 
