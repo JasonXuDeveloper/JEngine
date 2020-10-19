@@ -1,4 +1,5 @@
 using JEngine.Interface;
+using ProjectAdapter;
 using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -24,6 +25,7 @@ namespace JEngine.Helper
             appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
             appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
             appdomain.RegisterCrossBindingAdaptor(new IExtensibleAdapter()); 
+            appdomain.RegisterCrossBindingAdaptor(new ExampleAPIAdapter());
         }
     }
 }

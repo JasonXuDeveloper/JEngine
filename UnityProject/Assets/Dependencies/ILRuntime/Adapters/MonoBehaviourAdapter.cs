@@ -52,6 +52,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         public ILRuntime.Runtime.Enviorment.AppDomain AppDomain { get { return appdomain; } set { appdomain = value; } }
 
+        object[] param0 = new object[0];
+        
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
         public void Awake()
@@ -67,7 +69,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
                 if (mAwakeMethod != null)
                 {
-                    appdomain.Invoke(mAwakeMethod, instance, null);
+                    appdomain.Invoke(mAwakeMethod, instance, param0);
                 }
             }
         }
@@ -84,7 +86,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
             if (mStartMethod != null)
             {
-                appdomain.Invoke(mStartMethod, instance, null);
+                appdomain.Invoke(mStartMethod, instance, param0);
             }
         }
 
@@ -100,7 +102,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
             if (mUpdateMethod != null)
             {
-                appdomain.Invoke(mUpdateMethod, instance, null);
+                appdomain.Invoke(mUpdateMethod, instance, param0);
             }
             
         }
@@ -117,7 +119,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
             if (mFixedUpdateMethod != null)
             {
-                appdomain.Invoke(mFixedUpdateMethod, instance, null);
+                appdomain.Invoke(mFixedUpdateMethod, instance, param0);
             }
         }
         
@@ -133,7 +135,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
             if (mLateUpdateMethod != null)
             {
-                appdomain.Invoke(mLateUpdateMethod, instance, null);
+                appdomain.Invoke(mLateUpdateMethod, instance, param0);
             }
         }
         
@@ -151,7 +153,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
                 if (mOnEnableMethod != null)
                 {
-                    appdomain.Invoke(mOnEnableMethod, instance, null);
+                    appdomain.Invoke(mOnEnableMethod, instance, param0);
                 }
             }
         }
@@ -170,7 +172,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
                 if (mOnDisableMethod != null)
                 {
-                    appdomain.Invoke(mOnDisableMethod, instance, null);
+                    appdomain.Invoke(mOnDisableMethod, instance, param0);
                 }
             }
         }
@@ -187,7 +189,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
             if (mDestroyMethod != null)
             {
-                appdomain.Invoke(mDestroyMethod, instance, null);
+                appdomain.Invoke(mDestroyMethod, instance, param0);
             }
         }
         

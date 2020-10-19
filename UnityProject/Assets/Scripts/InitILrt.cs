@@ -26,6 +26,7 @@ public static class InitILrt
         RegisterFunctionDelegateHelper.HelperRegister(appdomain);
         RegisterDelegateConvertorHelper.HelperRegister(appdomain);
         RegisterLitJsonHelper.HelperRegister(appdomain);
+        RegisterValueTypeBinderHelper.HelperRegister(appdomain);
 
         //添加MonoBehaviour核心方法
         var arr = typeof(GameObject).GetMethods();

@@ -34,29 +34,20 @@ namespace JEngine.Core
     public class LocalizedText : MonoBehaviour
     {
         public string key;
-        private string curLang;
 
         [HideInInspector]public UnityEngine.UI.Text _text;
 
-        private void Awake()
+        private void Start()
         {
             Localization.AddText(this);
             _text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
+            SetText();
         }
 
-        private async void Start()
+        public async void SetText()
         {
+            await Task.Delay(100);
             _text.text = Localization.GetString(key);
-            curLang = Localization.CurrentLanguage;
-            while (Application.isPlaying)
-            {
-                if (Localization.CurrentLanguage != curLang)
-                {
-                    _text.text = Localization.GetString(key);
-                    curLang = Localization.CurrentLanguage;
-                }
-                await Task.Delay(100);
-            }
         }
     }
 }

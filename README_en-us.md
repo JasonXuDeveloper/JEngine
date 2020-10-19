@@ -1,4 +1,4 @@
-# JENGINE v0.5.5
+# JENGINE v0.5.6
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -104,11 +104,16 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **ClassBind** allows auto **attach any class** to a GameObject
-- **ClassBind** allows use **consturcor** as a initial of fields of a class
-- **ClassBind** allows call ```Active()``` method whether the bound class inherited MonoBehaviour or JBehaviour or not
-- **Editor** for **Hot Update Scripts to GameObject** supports present **more stuffs**
-- **Demo** for using **AntiCheat Struct** & **Bindable Property** improves
+- **Less GC** to inherit MonoBehaviour in Hot Update Solution
+- **Value Type Binder Register Helper** allows register value type binders, which typically decreases GC on Value Types (EG. Vector3/2)
+- **ClassBind improvements** which increases the performence
+- **ClassBind supports properties** which allows set properties just like setting fields
+- **Localization improvements** which increases the performence
+- **Localization Text improvements** which spends less memory and GC
+- **Bug fix** on ILRuntime Cross Bind Adapter Generator
+- **JBehaviour improvements** which decreases GC and runs better
+- **Bug fix** on JBehaviour when calls ```pause()``` and ```resume()```
+- **JPrefab** which is a new solution for managing hot update prefabs
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -119,7 +124,7 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - ~~Supports local hot-update resources development in Unity Editor (Done)~~
 - ~~Encrypt Hot-update DLL and decrypt in runtime~~
 - ~~Object Pool which significantly improves performance rather than using Instantiate method~~
-- JPrefab, a better way to manage Prefab from Resources
+- ~~JPrefab, a better way to manage Prefab from Resources~~
 - JUI with more extended APIs
 - UI Special Effects
 - Optiimize logics which can improve process speed (As always doing it)

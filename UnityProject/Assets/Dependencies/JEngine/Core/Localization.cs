@@ -126,6 +126,14 @@ namespace JEngine.Core
         {
             _language = lang.ToLower();
             PlayerPrefs.SetString("JEngine.Core.Localization.language", _language);
+
+            if (_phrases != null && _texts != null && _texts.Count > 0)
+            {
+                for (int i = 0; i < _texts.Count; i++)
+                {
+                    _texts[i].SetText();
+                }
+            }
         }
 
         public static void AddText(LocalizedText lt)
@@ -150,7 +158,7 @@ namespace JEngine.Core
                 Init();
             }
             
-            if (!_phrases.ContainsKey(_language))
+            if (_phrases != null && !_phrases.TryGetValue(_language,out var dic))
             {
                 string newLang = _phrases.Keys.ToList().Find(k => k.Split('-')[0] == _language.Split('-')[0]);
                 if (newLang == null)
@@ -161,12 +169,9 @@ namespace JEngine.Core
                 ChangeLanguage(newLang);
             }
 
-            if (!_phrases[_language].ContainsKey(key))
-            {
-                return $"[invalid key: {key}]";
-            }
-
-            return _phrases[_language][key];
+            var value = $"[invalid key: {key}]";
+            _phrases[_language].TryGetValue(key, out value);
+            return value;
         }
     }
 }

@@ -1,5 +1,24 @@
 ## All Versions
 
+
+
+### v0.5.6 (October 19 2020)
+
+- **Less GC** to inherit MonoBehaviour in Hot Update Solution
+- **Value Type Binder Register Helper** allows register value type binders, which typically decreases GC on Value Types (EG. Vector3/2)
+- **ClassBind improvements** which increases the performence
+- **ClassBind supports properties** which allows set properties just like setting fields
+- **Localization improvements** which increases the performence
+- **Localization Text improvements** which spends less memory and GC
+- **Bug fix** on ILRuntime Cross Bind Adapter Generator
+- **JBehaviour improvements** which decreases GC and runs better
+- **Bug fix** on JBehaviour when calls ```pause()``` and ```resume()```
+- **JPrefab** which is a new solution for managing hot update prefabs
+
+
+
+
+
 ### v0.5.5 (October 11 2020)
 
 - **ClassBind** allows auto **attach any class** to a GameObject

@@ -33,32 +33,32 @@ namespace JEngine.Core
     /// <summary>
     /// JEngine's Behaviour
     /// </summary>
-    public class JBehaviour : MonoBehaviour, IJBehaviour
+    public class JBehaviour : MonoBehaviour, IJBehaviour, IDisposable
     {
         #region FIELDS
         /// <summary>
         /// Loop in frame or millisecond
         /// 帧模式或毫秒模式
         /// </summary>
-        [HideInInspector] public bool FrameMode { get; set; } = true;
+        [HideInInspector] public bool FrameMode = true;
 
         /// <summary>
         /// Frequency of loop, if frame = false, this field stands for milliseconds
         /// 循环频率，如果是毫秒模式，单位就是ms
         /// </summary>
-        [HideInInspector] public int Frequency { get; set; } = 1;
+        [HideInInspector] public int Frequency = 1;
 
         /// <summary>
         /// Pause before init
         /// 在初始化之前暂停
         /// </summary>
-        [HideInInspector] private bool Paused { get; set; } = false;
+        [HideInInspector] private bool Paused = false;
 
         /// <summary>
         /// JUI runing mode, loop means the UI will loop in specific frequency, message mode means UI will update when it has been called
         /// JUI运行模式，Loop模式下UI将在特定频率更新，Message模式UI将在被通知后更新
         /// </summary>
-        [HideInInspector] public bool NotLoop { get; set; } = false;
+        [HideInInspector] public bool NotLoop = false;
         #endregion
 
         #region METHODS
@@ -100,6 +100,7 @@ namespace JEngine.Core
 
         /// <summary>
         /// Resume the loop
+        /// 恢复循环
         /// </summary>
         public JBehaviour Resume()
         {
@@ -107,6 +108,11 @@ namespace JEngine.Core
             return this;
         }
 
+        /// <summary>
+        /// Activate the JBehaviour
+        /// 激活
+        /// </summary>
+        /// <returns></returns>
         public JBehaviour Activate()
         {
             this.enabled = true;
@@ -160,7 +166,7 @@ namespace JEngine.Core
         /// <summary>
         /// Whether object is alive or not
         /// </summary>
-        private bool _alive { get; set; }
+        private bool _alive;
 
         /// <summary>
         /// Do the loop
@@ -172,10 +178,21 @@ namespace JEngine.Core
             {
                 Frequency = 1;
             }
-            while (true && Application.isPlaying && _alive)
+            while (Application.isPlaying && _alive)
             {
-                if (Paused) break;
-                Loop();
+                if (Paused)
+                {
+                    await Task.Delay(25);
+                    continue;
+                }
+                try
+                {
+                    Loop();
+                }
+                catch(Exception ex)
+                {
+                    Log.PrintError($"Loop failed: {ex.Message}");
+                }
                 if (FrameMode)
                     await Task.Delay((int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f));
                 else
@@ -191,6 +208,7 @@ namespace JEngine.Core
         {
             _alive = false;
             End();
+            Dispose();
         }
         #endregion
 
@@ -227,6 +245,21 @@ namespace JEngine.Core
         public virtual void End()
         {
 
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+            GC.Collect();
+            GC.SuppressFinalize(this);
         }
 
         #endregion

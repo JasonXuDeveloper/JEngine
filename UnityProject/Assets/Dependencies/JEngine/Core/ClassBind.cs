@@ -59,7 +59,7 @@ namespace JEngine.Core
         private void Bind()
         {
             var cb = this;
-            foreach (var _class in cb.ScriptsToBind)
+            foreach (_ClassBind _class in cb.ScriptsToBind)
             {
                 //添加脚本
                 string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
@@ -85,8 +85,9 @@ namespace JEngine.Core
                 if (_class.RequireBindFields)
                 {
                     _class.BoundData = false;
+                    var fields = _class.Fields.ToArray();
 
-                    foreach (var field in _class.Fields)
+                    foreach (_ClassField field in fields)
                     {
                         object obj = new object();
                         try
@@ -277,7 +278,18 @@ namespace JEngine.Core
                             }
                             else
                             {
-                                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在{field.fieldName}，已跳过");
+                                //没FieldInfo尝试PropertyInfo
+                                var pi = t.GetProperty(field.fieldName,
+                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                    BindingFlags.Static);
+                                if (pi != null)
+                                {
+                                    pi.SetValue(clrInstance.ILInstance, obj);
+                                }
+                                else
+                                {
+                                    Log.PrintError($"自动绑定{this.name}出错：{classType}不存在{field.fieldName}，已跳过");   
+                                }
                             }
                         }
                     }
@@ -331,11 +343,12 @@ namespace JEngine.Core
         [ContextMenu("Convert Path to GameObject")]
         private void Convert()
         {
-            foreach (var _class in ScriptsToBind)
+            foreach (_ClassBind _class in ScriptsToBind)
             {
                 Log.Print(
                     $"<color=#34ebc9>==========Start processing {_class.Namespace}.{_class.Class}==========</color>");
-                foreach (var field in _class.Fields)
+                var fields = _class.Fields.ToArray();
+                foreach (_ClassField field in fields)
                 {
                     if (field.fieldType == _ClassField.FieldType.GameObject ||
                         field.fieldType == _ClassField.FieldType.UnityComponent)

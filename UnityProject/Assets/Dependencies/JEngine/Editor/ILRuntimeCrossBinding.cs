@@ -140,21 +140,21 @@ namespace JEngine.Editor
             }
 
             //生成
-            using (System.IO.StreamWriter sw =
-                new System.IO.StreamWriter($"{OUTPUT_PATH}/{_class}Adapter.cs"))
-            {
-                Stopwatch watch = new Stopwatch();
-                sw.WriteLine(
-                    ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,
-                        _namespace));
-                watch.Stop();
-                Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +
-                          watch.ElapsedMilliseconds + " ms.");
-                Log.Print($"Please insert " +
-                          $"'appdomain.RegisterCrossBindingAdaptor(new {_class}Adapter());' " +
-                          $"into 'Register(AppDomain appdomain)' method in " +
-                          $"Scripts/Helpers/RegisterCrossBindingAdaptorHelper.cs");
-            }
+            FileStream stream = new FileStream($"{OUTPUT_PATH}/{_class}Adapter.cs", FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(stream);
+            Stopwatch watch = new Stopwatch();
+            sw.WriteLine(
+                ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,
+                    _namespace));
+            watch.Stop();
+            Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +
+                      watch.ElapsedMilliseconds + " ms.");
+            Log.Print($"Please insert " +
+                      $"'appdomain.RegisterCrossBindingAdaptor(new {_class}Adapter());' " +
+                      $"into 'Register(AppDomain appdomain)' method in " +
+                      $"Scripts/Helpers/RegisterCrossBindingAdaptorHelper.cs");
+
+            sw.Dispose();
 
 
             AssetDatabase.Refresh();

@@ -40,6 +40,14 @@ namespace JEngine.Examples
 
         public GameObject GameObjectField1;
 
+        public bool BoolProperty
+        {
+            get => BoolPropertyInstance;
+            set => BoolPropertyInstance = value;
+        }
+
+        [SerializeField] private bool BoolPropertyInstance;
+
 
         public override void Init()
         {

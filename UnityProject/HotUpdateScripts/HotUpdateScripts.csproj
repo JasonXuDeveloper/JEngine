@@ -46,6 +46,7 @@
     <Compile Include="JEngine\Core\JBehaviour.cs" />
     <Compile Include="JEngine\Core\JUI.cs" />
     <Compile Include="Examples\SafeData.cs" />
+    <Compile Include="JEngine\Core\JPrefab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
