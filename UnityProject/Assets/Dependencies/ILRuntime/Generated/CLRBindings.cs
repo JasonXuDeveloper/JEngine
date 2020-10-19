@@ -63,6 +63,8 @@ namespace ILRuntime.Runtime.Generated
             System_UnhandledExceptionEventArgs_Binding.Register(app);
             System_Action_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
+            libx_Reference_Binding.Register(app);
+            System_Text_StringBuilder_Binding.Register(app);
             UnityEngine_UI_Text_Binding.Register(app);
             UnityEngine_Random_Binding.Register(app);
             UnityEngine_UI_InputField_Binding.Register(app);
