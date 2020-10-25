@@ -4867,7 +4867,7 @@ MonoBehaviour:
   ScriptsToBind:
   - Namespace: JEngine.Examples
     Class: JUIExample
-    ActiveAfter: 0
+    ActiveAfter: 1
     RequireBindFields: 1
     UseConstructor: 1
     Fields:

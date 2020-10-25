@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using UnityEngine;
+using System.Threading;
 
 namespace JEngine.Core
 {
@@ -166,6 +167,12 @@ namespace JEngine.Core
         private GameObject _gameObject;
 
         /// <summary>
+        /// Cancel the loop
+        /// 取消循环
+        /// </summary>
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
+        /// <summary>
         /// Loop in frame or millisecond
         /// 帧模式或毫秒模式
         /// </summary>
@@ -184,10 +191,17 @@ namespace JEngine.Core
         public float TotalTime = 0;
 
         /// <summary>
+        /// Deltatime of loop
+        /// 循环耗时
+        /// </summary>
+        public float LoopDeltaTime = 0;
+
+        /// <summary>
         /// Loop counts
         /// 循环次数
         /// </summary>
         public long LoopCounts = 0;
+
 
         /// <summary>
         /// Time scale
@@ -298,6 +312,20 @@ namespace JEngine.Core
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
 
+            //监听销毁
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    if(_gameObject == null)
+                    {
+                        _cancellationTokenSource.Cancel();
+                        return;
+                    }
+                    await Task.Delay(25);
+                }
+            });
+
             DoLoop();
         }
 
@@ -307,16 +335,10 @@ namespace JEngine.Core
         private protected async void DoLoop()
         {
             Stopwatch sw = new Stopwatch();
-            while (true)
+            while (true && _gameObject != null)
             {
                 sw.Reset();
                 sw.Start();
-
-                if (_gameObject == null)//没GameObject就呼唤销毁
-                {
-                    Destroy();
-                    break;
-                }
 
                 if (Paused)//暂停
                 {
@@ -353,14 +375,18 @@ namespace JEngine.Core
                 {
                     duration = 1;
                 }
-                await Task.Delay(duration);
+                await Task.Delay(duration,_cancellationTokenSource.Token);
 
                 sw.Stop();
 
                 //操作时间
+                var time = sw.ElapsedMilliseconds / 1000f;
                 LoopCounts++;
-                TotalTime += sw.ElapsedMilliseconds / 1000f;
+                LoopDeltaTime = time;
+                TotalTime += time;
             }
+
+            Destroy();
         }
 
         /// <summary>

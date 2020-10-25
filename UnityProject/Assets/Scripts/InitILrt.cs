@@ -24,12 +24,12 @@ public static class InitILrt
 #endif
 
         RegisterCrossBindingAdaptorHelper.HelperRegister(appdomain);
+        RegisterCLRMethodRedirectionHelper.HelperRegister(appdomain);
         RegisterMethodDelegateHelper.HelperRegister(appdomain);
         RegisterFunctionDelegateHelper.HelperRegister(appdomain);
         RegisterDelegateConvertorHelper.HelperRegister(appdomain);
         RegisterLitJsonHelper.HelperRegister(appdomain);
         RegisterValueTypeBinderHelper.HelperRegister(appdomain);
-        RegisterCLRMethodRedirectionHelper.HelperRegister(appdomain);
 
         //Protobuf适配
         ProtoBuf.PType.RegisterFunctionCreateInstance(PType_CreateInstance);
@@ -40,6 +40,8 @@ public static class InitILrt
         
         //CLR绑定
         CLRBindings.Initialize(appdomain);
+
+        Init.Inited = true;
     }
 
     

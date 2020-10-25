@@ -12,6 +12,8 @@ public class Init : MonoBehaviour
 {
     public static Init Instance;
     public static AppDomain appdomain;
+
+    public static bool Inited = false;
     
     private const string dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
     private const string pdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";

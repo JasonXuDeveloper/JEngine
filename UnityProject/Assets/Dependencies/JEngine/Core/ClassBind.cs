@@ -49,7 +49,7 @@ namespace JEngine.Core
 
         private async void Awake()
         {
-            while (Init.appdomain == null)
+            while (!Init.Inited)
             {
                 await Task.Delay(10);
             }
