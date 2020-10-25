@@ -3342,7 +3342,7 @@ MonoBehaviour:
     Class: JBehaviourExample
     ActiveAfter: 1
     RequireBindFields: 1
-    UseConstructor: 0
+    UseConstructor: 1
     Fields:
       array:
       - fieldType: 11
@@ -3879,7 +3879,7 @@ MonoBehaviour:
     Class: JSaverExample
     ActiveAfter: 1
     RequireBindFields: 1
-    UseConstructor: 0
+    UseConstructor: 1
     Fields:
       array:
       - fieldType: 12
@@ -4274,7 +4274,7 @@ MonoBehaviour:
     Class: AutoBindDemo1
     ActiveAfter: 1
     RequireBindFields: 1
-    UseConstructor: 0
+    UseConstructor: 1
     Fields:
       array:
       - fieldType: 10
@@ -4867,9 +4867,9 @@ MonoBehaviour:
   ScriptsToBind:
   - Namespace: JEngine.Examples
     Class: JUIExample
-    ActiveAfter: 1
+    ActiveAfter: 0
     RequireBindFields: 1
-    UseConstructor: 0
+    UseConstructor: 1
     Fields:
       array:
       - fieldType: 12
@@ -4884,7 +4884,7 @@ MonoBehaviour:
     Class: DataModifyExample
     ActiveAfter: 1
     RequireBindFields: 1
-    UseConstructor: 0
+    UseConstructor: 1
     Fields:
       array:
       - fieldType: 11

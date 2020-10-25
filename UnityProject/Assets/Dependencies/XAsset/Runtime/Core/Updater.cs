@@ -624,7 +624,10 @@ namespace libx
                 OnMessage("加载游戏场景");
 
                 var scene = Assets.LoadSceneAsync(gameScene, false);
-                scene.completed += (AssetRequest request) => { FindObjectOfType<Init>().enabled = true; };
+                scene.completed += (AssetRequest request) =>
+                {
+                    FindObjectOfType<Init>().Load();
+                };
                 while (!scene.isDone)
                 {
                     OnProgress(scene.progress);

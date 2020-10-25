@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace JEngine.Core
@@ -57,14 +58,14 @@ namespace JEngine.Core
 
             T result;
             //Add
-            if (!this.GetComponent<T>())
+            if (!this.gameObject.GetComponent<T>())
             {
                 result = this.gameObject.AddComponent<T>();
             }
             //Get
             else
             {
-                result = this.GetComponent<T>();
+                result = this.gameObject.GetComponent<T>();
             }
 
             //Store
@@ -88,7 +89,7 @@ namespace JEngine.Core
         public JUI Bind<T>(BindableProperty<T> val)
         {
             _bind = true;
-            val.OnChange = new Action (Message);
+            val.OnChange = new Action(Message);
             return this;
         }
 
@@ -164,7 +165,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public new JUI Activate()
         {
-            Resume();
+            base.Activate();
 
             if (_bind)//Call message() once to init UI
             {
@@ -172,6 +173,11 @@ namespace JEngine.Core
             }
 
             return this;
+        }
+
+        public static JUI CreateOn(GameObject gameObject)
+        {
+            return JBehaviour.CreateOn<JUI>(gameObject, false);
         }
 
         /// <summary>
@@ -187,12 +193,6 @@ namespace JEngine.Core
         }
 
         #region OVERRIDE METHODS
-        private new void Awake()
-        {
-            Pause();
-            base.Awake();
-        }
-
         private Action<JUI> _init;
         private new void Init()
         {
@@ -202,7 +202,10 @@ namespace JEngine.Core
         private Action<JUI> _run;
         private new void Run()
         {
-            NotLoop = _bind;
+            if (_bind)
+            {
+                Pause();
+            }
             _run?.Invoke(this);
         }
 
@@ -222,6 +225,7 @@ namespace JEngine.Core
         private Action<JUI> _message;
         private void Message()
         {
+            if (!_bind) return;
             _message?.Invoke(this);
         }
     }

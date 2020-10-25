@@ -1,5 +1,12 @@
 ## All Versions
 
+###  v0.5.7 (October 25 2020)
+
+- **JBehaviour** got rid of MonoBehaviour, a significant increasement of performance has been developed
+- **JUI** got rid of MonoBehaviour
+- **Register Helper** for CLR Method Redirection
+- **ClassBind** enhancement
+
 
 
 ### v0.5.6 (October 19 2020)

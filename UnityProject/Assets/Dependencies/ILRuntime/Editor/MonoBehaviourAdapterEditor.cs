@@ -33,7 +33,7 @@ public class MonoBehaviourAdapterEditor : Editor
                 this.Repaint();
             }
             catch{}
-            await Task.Delay(1000);
+            await Task.Delay(500);
         }
     }
 
@@ -56,6 +56,21 @@ public class MonoBehaviourAdapterEditor : Editor
         if (instance != null)
         {
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
+            
+            //如果JBehaviour
+            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+            var t = instance.Type.ReflectionType;
+            if (t.IsSubclassOf(JBehaviourType.ReflectionType))
+            {
+                var f = t.GetField("_instanceID", BindingFlags.NonPublic);
+                var id =  f.GetValue(instance).ToString();
+                EditorGUILayout.LabelField("InstanceID", id);
+
+                GUI.enabled = false;
+                var paused = t.GetField("Paused", BindingFlags.NonPublic);
+                EditorGUILayout.Toggle("Paused", (bool)paused.GetValue(instance));
+                GUI.enabled = true;
+            }
             
             int index = 0;
             foreach (var i in instance.Type.FieldMapping)

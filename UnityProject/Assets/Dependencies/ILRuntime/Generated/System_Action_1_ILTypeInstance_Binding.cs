@@ -14,15 +14,15 @@ using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.Generated
 {
-    unsafe class System_Action_1_MonoBehaviourAdapter_Binding_Adaptor_Binding
+    unsafe class System_Action_1_ILTypeInstance_Binding
     {
         public static void Register(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
             MethodBase method;
             Type[] args;
-            Type type = typeof(System.Action<global::MonoBehaviourAdapter.Adaptor>);
-            args = new Type[]{typeof(global::MonoBehaviourAdapter.Adaptor)};
+            Type type = typeof(System.Action<ILRuntime.Runtime.Intepreter.ILTypeInstance>);
+            args = new Type[]{typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance)};
             method = type.GetMethod("Invoke", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Invoke_0);
 
@@ -37,11 +37,11 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            global::MonoBehaviourAdapter.Adaptor @obj = (global::MonoBehaviourAdapter.Adaptor)typeof(global::MonoBehaviourAdapter.Adaptor).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            ILRuntime.Runtime.Intepreter.ILTypeInstance @obj = (ILRuntime.Runtime.Intepreter.ILTypeInstance)typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Action<global::MonoBehaviourAdapter.Adaptor> instance_of_this_method = (System.Action<global::MonoBehaviourAdapter.Adaptor>)typeof(System.Action<global::MonoBehaviourAdapter.Adaptor>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.Action<ILRuntime.Runtime.Intepreter.ILTypeInstance> instance_of_this_method = (System.Action<ILRuntime.Runtime.Intepreter.ILTypeInstance>)typeof(System.Action<ILRuntime.Runtime.Intepreter.ILTypeInstance>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             instance_of_this_method.Invoke(@obj);

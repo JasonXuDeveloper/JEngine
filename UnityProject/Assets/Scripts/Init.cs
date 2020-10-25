@@ -22,12 +22,13 @@ public class Init : MonoBehaviour
     MemoryStream fs;
     MemoryStream pdb;
 
-    void Start()
+    public void Load()
     {
         Instance = this;
         GameStats.Init();
         LoadHotFixAssembly();
     }
+    
     void LoadHotFixAssembly()
     {
         appdomain = new AppDomain();

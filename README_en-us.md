@@ -1,4 +1,4 @@
-# JENGINE v0.5.6
+# JENGINE v0.5.7
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -104,16 +104,10 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **Less GC** to inherit MonoBehaviour in Hot Update Solution
-- **Value Type Binder Register Helper** allows register value type binders, which typically decreases GC on Value Types (EG. Vector3/2)
-- **ClassBind improvements** which increases the performence
-- **ClassBind supports properties** which allows set properties just like setting fields
-- **Localization improvements** which increases the performence
-- **Localization Text improvements** which spends less memory and GC
-- **Bug fix** on ILRuntime Cross Bind Adapter Generator
-- **JBehaviour improvements** which decreases GC and runs better
-- **Bug fix** on JBehaviour when calls ```pause()``` and ```resume()```
-- **JPrefab** which is a new solution for managing hot update prefabs
+- **JBehaviour** got rid of MonoBehaviour, a significant increasement of performance has been developed
+- **JUI** got rid of MonoBehaviour
+- **Register Helper** for CLR Method Redirection
+- **ClassBind** enhancement
 
 [Click here to see all version updates](CHANGE.md)
 

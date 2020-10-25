@@ -34,7 +34,7 @@ namespace JEngine.Examples
     /// JUI的示例及对比
     /// JUI showcase, including comparasions to the normal way
     /// </summary>
-    public class JUIExample: MonoBehaviour
+    public class JUIExample : MonoBehaviour
     {
         /*
          * 显示文字
@@ -60,7 +60,7 @@ namespace JEngine.Examples
             NormalTimes = 0;
 
             //使用JUI绑定数据，已达到更新的目的 | JUI to bind data
-            JUI jui = JUIVal.gameObject.AddComponent<JUI>();//添加脚本 | Add JUI
+            JUI jui = JUI.CreateOn(JUIVal.gameObject);//添加脚本 | Add JUI
             jui.Bind(DataModifyExample.data.BindableMoney)//绑定数据 | Bind Data
                 .onMessage(j =>
                 {

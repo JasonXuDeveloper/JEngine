@@ -1,4 +1,4 @@
-# JENGINE v0.5.6
+# JENGINE v0.5.7
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -139,25 +139,13 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## 最新功能
 
-- **减少GC** 当热更工程继承MonoBehaviour的时候
+- **JBehaviour** 脱离了MonoBehaviour，极大幅度的提高了性能，却保留了Mono方便管理的特性，同时可以被添加到GameObject，支持可视化管理等
 
-- **Value Type Binder注册助手** 支持热更工程使用Value Types类型时减少GC开销 (例：Vector3/2)
+- **JUI** 脱离了MonoBehaviour，极大幅度的提高了性能
 
-- **自动绑定优化** 提高性能
+- **CLR方法重定向助手** 提供了定位Log
 
-- **自动绑定支持属性** 像赋值字段一样赋值属性
-
-- **多语言本地化优化** 提升了多语言加载时的性能
-
-- **多语言本地化Text优化** 减少了消耗的内存，减少了GC
-
-- **Bug修复** 关于 ILRuntime 跨域适配器生成
-
-- **JBehaviour优化** 将其变得消耗更少GC，但性能更好
-
-- **Bug修复** 关于JBehaviour调用 ```pause()``` 和 ```resume()```
-
-- **JPrefab** 是一个管理热更预制体的解决方案
+- **自动绑定** 优化
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

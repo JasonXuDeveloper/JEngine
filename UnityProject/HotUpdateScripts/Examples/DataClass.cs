@@ -63,16 +63,8 @@ namespace JEngine.Examples
         /*
         * Fields to bind
         */
-        internal BindableProperty<long> BindableMoney;
+        internal BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
 
-
-        //将可序列化的值变可绑定的值
-        public DataClass()
-        {
-            id = 0;
-            money = 0;
-            BindableMoney = new BindableProperty<long>(money);
-        }
 
         public void Awake()
         {

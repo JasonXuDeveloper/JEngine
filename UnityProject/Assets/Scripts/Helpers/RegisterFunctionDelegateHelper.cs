@@ -25,6 +25,10 @@ namespace JEngine.Helper
             appdomain.DelegateManager.RegisterFunctionDelegate<Boolean>();
             appdomain.DelegateManager.RegisterFunctionDelegate<float>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<global::CoroutineAdapter.Adaptor, System.Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<global::CoroutineAdapter.Adaptor, System.String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<global::MonoBehaviourAdapter.Adaptor, System.Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<ILRuntime.Runtime.Intepreter.ILTypeInstance, System.String>();
         }
     }
 }
