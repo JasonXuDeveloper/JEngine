@@ -76,55 +76,61 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - **简单好用**
 
   - **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
-- 支持**同步/异步加载**资源
+    - 支持**同步/异步加载**资源
     - **泛型**方法，轻松使用
     - **异步加载**热更**场景**
     - 获取场景加载进度
     - 智能匹配
-    
-  - **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
 
-    - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
-    - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
-    - 可对**该脚本public/private/static数值进行赋值**
-    - **支持拖拽赋值**
+- **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
 
-  - **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
-    - 字符串存本地
-    - **JSON**存本地
-    - **Protobuf**二进制存本地
-    - **自带加密**
+  - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
+  - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
+  - 可对**该脚本public/private/static数值进行赋值**
+  - **支持拖拽赋值**
 
-  - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
-    - **CSV配表**
-    - 轻松**转换语种**
-    - 可通过静态方法**获取key对应的字符串**
-    - 可让Text**自动根据语言切换文字**
-  - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
-    - 支持90%数值类型
-    - 偏移值加密
-    - 转JSON和Protobuf于普通数据结构一样
-  - **对象池**解决方案
-    - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
-    - **无需重复**创建新对象！
-    - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
-    - 简单友好
+- **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
 
-  - **加密解密**解决方案
+  - 字符串存本地
+  - **JSON**存本地
+  - **Protobuf**二进制存本地
+  - **自带加密**
 
-    - AES加密
-    - 支持字符串
-    - 支持二进制
+- **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
 
-  - **序列化**解决方案
+  - **CSV配表**
+  - 轻松**转换语种**
+  - 可通过静态方法**获取key对应的字符串**
+  - 可让Text**自动根据语言切换文字**
 
-    - 转String
-    - 转JSON
-    - 转Protobuf-net二进制
+- **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
 
-  - 面板类
-    - ILRuntime适配器自动生成
-    - Protobfuf文件转CS
+  - 支持90%数值类型
+  - 偏移值加密
+  - 转JSON和Protobuf于普通数据结构一样
+
+- **对象池**解决方案
+
+  - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
+  - **无需重复**创建新对象！
+  - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
+  - 简单友好
+
+- **加密解密**解决方案
+
+  - AES加密
+  - 支持字符串
+  - 支持二进制
+
+- **序列化**解决方案
+
+  - 转String
+  - 转JSON
+  - 转Protobuf-net二进制
+
+- 面板类
+  - ILRuntime适配器自动生成
+  - Protobfuf文件转CS
 
   - 还有更多功能，尽情自行探索！
 
