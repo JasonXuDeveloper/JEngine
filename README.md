@@ -69,36 +69,37 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
     - UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
 
-  - **[基于MonoBehaviour扩展的生命周期](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
-
-    - **轻松管理**生命周期，JUI基类，可以**调整循环频率**，或者**不循环**
+  - **[基类解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
+    - **轻松管理**生命周期
+    - 可以**帧循环**，或者**毫秒循环**
+    - **不依赖MonoBehaviour**
+    - **简单好用**
 
   - **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
-
-    - 支持**同步/异步加载**资源
+- 支持**同步/异步加载**资源
     - **泛型**方法，轻松使用
-    - 异步加载热更场景
+    - **异步加载**热更**场景**
     - 获取场景加载进度
     - 智能匹配
-
+    
   - **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
 
     - 热更工程脚本想添加到GameObject太复杂？一个脚本，直接搞定！
-    - 输入命名空间，类名，即可自动绑定热更脚本至物体
-    - 可对该脚本public/private/static数值进行赋值
-    - 支持自动赋值
+    - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
+    - 可对**该脚本public/private/static数值进行赋值**
+    - **支持拖拽赋值**
 
   - **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
     - 字符串存本地
-    - JSON存本地
-    - Protobuf二进制存本地
-    - 自带加密
+    - **JSON**存本地
+    - **Protobuf**二进制存本地
+    - **自带加密**
 
   - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
-    - CSV配表
-    - 轻松转换语种
-    - 可通过静态方法获取key对应的字符串
-    - 可让Text自动根据语言切换文字
+    - **CSV配表**
+    - 轻松**转换语种**
+    - 可通过静态方法**获取key对应的字符串**
+    - 可让Text**自动根据语言切换文字**
   - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
     - 支持90%数值类型
     - 偏移值加密

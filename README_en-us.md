@@ -54,11 +54,12 @@ JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity 
     - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
     
   
-- **[Behaviour](Docs/en-us/JBehaviour.md)** based on MonoBehaviour
+- **[Behaviour](Docs/en-us/JBehaviour.md)** base class
 
-  - **More friendly to manage lifecycle**
-
-    - You can make loop easier using JEngine
+  - **Easy to manager **life cycle
+  - Can choose **Loop in frame** or **Loop in milliseconds **
+  - **No need of MonoBehaviour**
+  - **Easy to use**
 
 - **[Resource Management](Docs/en-us/JResource.md)** based on XAsset
 
