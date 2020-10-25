@@ -148,7 +148,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-  ## 最新功能
+## 最新功能
 
 - **JBehaviour** 脱离了MonoBehaviour，极大幅度的提高了性能，却保留了Mono方便管理的特性，同时可以被添加到GameObject，支持可视化管理等
 
