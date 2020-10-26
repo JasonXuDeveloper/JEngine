@@ -100,6 +100,13 @@ namespace JEngine.Helper
                     return ((Func<global::MonoBehaviourAdapter.Adaptor, System.Boolean>)act)(obj);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Timers.ElapsedEventHandler>((act) =>
+            {
+                return new System.Timers.ElapsedEventHandler((sender, e) =>
+                {
+                    ((Action<System.Object, System.Timers.ElapsedEventArgs>)act)(sender, e);
+                });
+            });
         }
     }
 }

@@ -24,13 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using UnityEngine;
+using System.Linq;
 using System.Threading;
+using System.Reflection;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace JEngine.Core
 {
@@ -45,12 +45,19 @@ namespace JEngine.Core
         /// </summary>
         public JBehaviour()
         {
+            //启动线程
+            if(DestoryListner.ThreadState == System.Threading.ThreadState.Unstarted)
+            {
+                DestoryListner.Start();
+            }
+
+            //添加实例ID
             _instanceID = System.Guid.NewGuid().ToString("N");
-            while (JBehaviours.ContainsKey(InstanceID))
+            while (JBehaviours.ContainsKey(_instanceID))
             {
                 _instanceID = System.Guid.NewGuid().ToString("N");
             }
-            JBehaviours.Add(InstanceID, this);
+            JBehaviours.Add(_instanceID, this);
         }
 
         #region STATIC METHODS
@@ -87,7 +94,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb.gameObject == gameObject);
+            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject);
         }
 
         /// <summary>
@@ -99,7 +106,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(string instanceID) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb.InstanceID == instanceID);
+            return (T)JBehaviours.Values.ToList().Find(jb => jb._instanceID == instanceID);
         }
 
         /// <summary>
@@ -111,7 +118,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T[] GetJBehaviours<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb.gameObject == gameObject).ToArray();
+            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject).ToArray();
         }
 
         /// <summary>
@@ -132,11 +139,11 @@ namespace JEngine.Core
         private static MonoBehaviourAdapter.Adaptor GetJBehaviourInEditor(JBehaviour jBehaviour)
         {
             var f = typeof(JBehaviour).GetField("_instanceID", BindingFlags.NonPublic);
-            return jBehaviour.gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
+            return jBehaviour._gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
                 .ToList()
                 .Find(a =>
                 f != null &&
-                f.GetValue(a.ILInstance).ToString() == jBehaviour.InstanceID);
+                f.GetValue(a.ILInstance).ToString() == jBehaviour._instanceID);
         }
 
 
@@ -151,6 +158,33 @@ namespace JEngine.Core
         /// 全部JBehaviour
         /// </summary>
         private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(0);
+
+
+        /// <summary>
+        /// Destory Thread
+        /// 销毁JBehaviour的线程
+        /// </summary>
+        private static Thread DestoryListner = new Thread(ListenDestroy);
+
+        /// <summary>
+        /// Listen to destory
+        /// 监听销毁
+        /// </summary>
+        private async static void ListenDestroy()
+        {
+            while (JBehaviours != null)
+            {
+                var e = JBehaviours.GetEnumerator();
+                while (e.MoveNext())
+                {
+                    if (e.Current.Value._gameObject == null)
+                    {
+                        e.Current.Value._cancellationTokenSource.Cancel();
+                    }
+                }
+                await Task.Delay(5);
+            }
+        }
 
         /// <summary>
         /// Instance ID
@@ -224,9 +258,9 @@ namespace JEngine.Core
         /// </summary>
         public JBehaviour Hide()
         {
-            if (this.gameObject != null)
+            if (this._gameObject != null)
             {
-                this.gameObject.SetActive(false);
+                this._gameObject.SetActive(false);
             }
             return this;
         }
@@ -237,9 +271,9 @@ namespace JEngine.Core
         /// </summary>
         public JBehaviour Show()
         {
-            if (this.gameObject != null)
+            if (this._gameObject != null)
             {
-                this.gameObject.SetActive(true);
+                this._gameObject.SetActive(true);
             }
             return this;
         }
@@ -292,7 +326,7 @@ namespace JEngine.Core
             }
             catch(Exception e)
             {
-                Log.PrintError($"{gameObject.name}<{InstanceID}> Init failed: {e.Message}, skipped init");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e.Message}, skipped init");
             }
 
             try
@@ -301,7 +335,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                Log.PrintError($"{gameObject.name}<{InstanceID}> Run failed: {e.Message}, skipped run");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e.Message}, skipped run");
             }
 
             if (Frequency == 0)
@@ -312,20 +346,6 @@ namespace JEngine.Core
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
 
-            //监听销毁
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    if(_gameObject == null)
-                    {
-                        _cancellationTokenSource.Cancel();
-                        return;
-                    }
-                    await Task.Delay(25);
-                }
-            });
-
             DoLoop();
         }
 
@@ -335,7 +355,8 @@ namespace JEngine.Core
         private protected async void DoLoop()
         {
             Stopwatch sw = new Stopwatch();
-            while (true && _gameObject != null)
+
+            while (_gameObject != null)
             {
                 sw.Reset();
                 sw.Start();
@@ -350,9 +371,9 @@ namespace JEngine.Core
                 {
                     Loop();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Log.PrintError($"{gameObject.name}<{InstanceID}> Loop failed: {ex.Message}");
+                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex.Message}");
                 }
 
                 if (TimeScale < 0.1f)
@@ -375,7 +396,7 @@ namespace JEngine.Core
                 {
                     duration = 1;
                 }
-                await Task.Delay(duration,_cancellationTokenSource.Token);
+                await Task.Delay(duration, _cancellationTokenSource.Token);
 
                 sw.Stop();
 
@@ -395,7 +416,7 @@ namespace JEngine.Core
         /// </summary>
         private protected void Destroy()
         {
-            JBehaviours.Remove(this.InstanceID);
+            JBehaviours.Remove(this._instanceID);
             End();
         }
 
@@ -405,13 +426,13 @@ namespace JEngine.Core
         /// </summary>
         private protected void Awake()
         {
-            if (gameObject == null)
+            if (_gameObject == null)
             {
                 Log.Print($"JBehaviour can't be created by new JBehaviour()," +
-                    $" therefore, a new GameObject {InstanceID} has been created");
-                Log.Print($"GameObject {InstanceID} will not show " +
+                    $" therefore, a new GameObject {_instanceID} has been created");
+                Log.Print($"GameObject {_instanceID} will not show " +
                     $"anything that you created by new() in inspector");
-                _gameObject = new GameObject(InstanceID);
+                _gameObject = new GameObject(_instanceID);
             }
             Launch();
         }

@@ -91,6 +91,11 @@ namespace JEngine.Core
 
         private static string ResPath(string path, MatchMode mode)
         {
+            if (path.Contains("Assets/HotUpdateResources/"))
+            {
+                path = path.Replace("Assets/HotUpdateResources/", "");
+                path = path.Substring(path.IndexOf("/") + 1);
+            }
             switch (mode)
             {
                 case MatchMode.AutoMatch:
