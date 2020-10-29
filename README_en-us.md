@@ -1,4 +1,4 @@
-# JENGINE v0.5.7
+# JENGINE v0.5.8
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -105,10 +105,13 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 
 ## Latest Features
 
-- **JBehaviour** got rid of MonoBehaviour, a significant increasement of performance has been developed
-- **JUI** got rid of MonoBehaviour
-- **Register Helper** for CLR Method Redirection
-- **ClassBind** enhancement
+- **Bug fix** when copying streaming asset
+- **C# type to Proto file** converter
+- **Rearrange** menuitems
+- **Enhance** ClassBind
+- **More advanced** JBehaviour Editor
+- **JBehaviour** supports create by call ```new()```
+- **BindableProperty** supports binding on multiple events
 
 [Click here to see all version updates](CHANGE.md)
 
@@ -167,7 +170,7 @@ Please clone this framework into your project and keep this directory structure
 
 - U3D .net Environment: .net 4.x
 
-- Hot Update Solution .net Environment: .net 2.0 standard
+- Hot Update Solution .net Environment: .net 4.x
 
 - Operating System: MacOS 10.15.5
 

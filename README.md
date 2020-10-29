@@ -1,4 +1,4 @@
-# JENGINE v0.5.7
+# JENGINE v0.5.8
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -150,13 +150,19 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 ## 最新功能
 
-- **JBehaviour** 脱离了MonoBehaviour，极大幅度的提高了性能，却保留了Mono方便管理的特性，同时可以被添加到GameObject，支持可视化管理等
+- **Bug修复** 当复制streaming asset时安卓可能会出现错误
 
-- **JUI** 脱离了MonoBehaviour，极大幅度的提高了性能
+- **C# type 转 Proto 文件** 转换器
 
-- **CLR方法重定向助手** 提供了定位Log
+- **重新排序** 菜单栏
 
-- **自动绑定** 优化
+- **优化** 自动绑定
+
+- **更高级的** JBehaviour编辑器
+
+- **JBehaviour** 支持通过 ```new()```创建对象
+
+- **BindableProperty** 支持绑定多个事件（被多个值绑定）
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -176,34 +182,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## 目录结构（重要）
-
-请Clone该项目并保持Project目录结构
-
-```
-.
-├── Assets
-│   ├── Dependencies
-│   ├── HotUpdateResources
-│   │   ├── Controller
-│   │   ├── Dll
-│   │   ├── Material
-│   │   ├── Other
-│   │   ├── Prefab
-│   │   ├── Scene
-│   │   ├── ScriptableObject
-│   │   ├── TextAsset
-│   │   └── UI
-│   ├── Init.unity
-│   └── Scripts
-│       ├── Init.cs
-│       ├── InitILrt.cs
-│       └── APIs
-├── Builds
-├── DLC
-├── HotUpdateScrpts
-```
-
 ## JEngine热更逻辑
 
 ![flowchart](https://s1.ax1x.com/2020/09/06/wenIpV.png)
@@ -216,7 +194,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 - U3D工程.net环境： .net 4.x
 
-- 热更工程.net环境： .net 2.0 standard
+- 热更工程.net环境： .net 4.x
 
 - 开发系统：MacOS 10.15.5
 

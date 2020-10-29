@@ -1,5 +1,19 @@
 ## All Versions
 
+### v0.5.8 (October 29 2020)
+
+- **Bug fix** when copying streaming asset
+- **C# type to Proto file** converter
+- **Rearrange** menuitems
+- **Enhance** ClassBind
+- **More advanced** JBehaviour Editor
+- **JBehaviour** supports create by call ```new()```
+- **BindableProperty** supports binding on multiple events
+
+
+
+
+
 ###  v0.5.7 (October 25 2020)
 
 - **JBehaviour** got rid of MonoBehaviour, a significant increasement of performance has been developed

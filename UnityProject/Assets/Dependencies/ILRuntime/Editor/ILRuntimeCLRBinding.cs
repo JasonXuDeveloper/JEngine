@@ -9,7 +9,7 @@ using JEngine.Helper;
 [System.Reflection.Obfuscation(Exclude = true)]
 public class ILRuntimeCLRBinding
 {
-    [UnityEditor.MenuItem("JEngine/ILRuntime/Generate CLR Biding by DLL",priority = 1002)]
+    [UnityEditor.MenuItem("JEngine/ILRuntime/Generate/CLR Binding",priority = 1002)]
     static void GenerateCLRBindingByAnalysis()
     {
         //用新的分析热更dll调用引用来生成绑定代码

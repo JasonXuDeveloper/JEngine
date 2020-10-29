@@ -519,7 +519,7 @@ namespace libx
         {
             var v1 = Versions.LoadVersion(_savePath + Versions.Filename);
             var basePath = GetBasePath();
-            var request = UnityWebRequest.Get(basePath + Versions.Filename);
+            var request = UnityWebRequest.Get(Path.Combine(basePath , Versions.Filename));
             var path = _savePath + Versions.Filename + ".tmp";
             request.downloadHandler = new DownloadHandlerFile(path);
             yield return request.SendWebRequest();
@@ -532,7 +532,7 @@ namespace libx
             var version = versions[0];
             if (version.name.Equals(Versions.Dataname))
             {
-                var request = UnityWebRequest.Get(basePath + version.name);
+                var request = UnityWebRequest.Get(Path.Combine(basePath, version.name));
                 request.downloadHandler = new DownloadHandlerFile(_savePath + version.name);
                 var req = request.SendWebRequest();
                 while (!req.isDone)
@@ -549,7 +549,7 @@ namespace libx
                 for (var index = 0; index < versions.Count; index++)
                 {
                     var item = versions[index];
-                    var request = UnityWebRequest.Get(basePath + item.name);
+                    var request = UnityWebRequest.Get(Path.Combine(basePath, item.name));
                     request.downloadHandler = new DownloadHandlerFile(_savePath + item.name);
                     yield return request.SendWebRequest();
                     request.Dispose();

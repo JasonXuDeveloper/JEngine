@@ -89,7 +89,7 @@ namespace JEngine.Core
         public JUI Bind<T>(BindableProperty<T> val)
         {
             _bind = true;
-            val.OnChange = new Action(Message);
+            val.OnChange += () => Message();
             return this;
         }
 

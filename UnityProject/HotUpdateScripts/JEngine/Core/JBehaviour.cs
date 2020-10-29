@@ -46,9 +46,10 @@ namespace JEngine.Core
         public JBehaviour()
         {
             //启动线程
-            if(DestoryListner.ThreadState == System.Threading.ThreadState.Unstarted)
+            if (!Listening)
             {
-                DestoryListner.Start();
+                Task.Run(ListenDestroy);
+                Listening = true;
             }
 
             //添加实例ID
@@ -60,7 +61,9 @@ namespace JEngine.Core
             JBehaviours.Add(_instanceID, this);
         }
 
+
         #region STATIC METHODS
+
         /// <summary>
         /// Create a JBehaviour on a gameObject
         /// 在游戏对象上创建JBehaviour
@@ -71,18 +74,32 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T CreateOn<T>(GameObject gameObject, bool activeAfter = true) where T : JBehaviour
         {
-            var jBehaviour = typeof(T);
+            var id = AddClassBind(gameObject, activeAfter, typeof(T));
+            return (T)JBehaviours[id];
+        }
+
+        /// <summary>
+        /// Add a classbind to gameobject to visualize
+        /// 加ClassBind至GameObject以可视化
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="activeAfter"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static string AddClassBind(GameObject gameObject,bool activeAfter,Type type)
+        {
+            var jBehaviour = type;
             var cb = gameObject.AddComponent<ClassBind>();
             var _cb = new _ClassBind()
             {
                 Namespace = jBehaviour.Namespace,
                 Class = jBehaviour.Name,
-                ActiveAfter = activeAfter,
+                ActiveAfter = false,
                 UseConstructor = true
-            }; ;
+            };
             var id = cb.AddClass(_cb);
             UnityEngine.Object.Destroy(cb);
-            return (T)JBehaviours[id];
+            return id;
         }
 
         /// <summary>
@@ -142,11 +159,9 @@ namespace JEngine.Core
             return jBehaviour._gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
                 .ToList()
                 .Find(a =>
-                f != null &&
-                f.GetValue(a.ILInstance).ToString() == jBehaviour._instanceID);
+                a.isJBehaviour &&
+                f?.GetValue(a.ILInstance).ToString() == jBehaviour._instanceID);
         }
-
-
 
         #endregion
 
@@ -160,17 +175,13 @@ namespace JEngine.Core
         private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(0);
 
 
-        /// <summary>
-        /// Destory Thread
-        /// 销毁JBehaviour的线程
-        /// </summary>
-        private static Thread DestoryListner = new Thread(ListenDestroy);
+        private static bool Listening = false;
 
         /// <summary>
         /// Listen to destory
         /// 监听销毁
         /// </summary>
-        private async static void ListenDestroy()
+        private static void ListenDestroy()
         {
             while (JBehaviours != null)
             {
@@ -182,7 +193,6 @@ namespace JEngine.Core
                         e.Current.Value._cancellationTokenSource.Cancel();
                     }
                 }
-                await Task.Delay(5);
             }
         }
 
@@ -428,11 +438,16 @@ namespace JEngine.Core
         {
             if (_gameObject == null)
             {
-                Log.Print($"JBehaviour can't be created by new JBehaviour()," +
-                    $" therefore, a new GameObject {_instanceID} has been created");
-                Log.Print($"GameObject {_instanceID} will not show " +
-                    $"anything that you created by new() in inspector");
-                _gameObject = new GameObject(_instanceID);
+                _gameObject = new GameObject(_instanceID);//生成GameObject
+
+                //绑定上去
+                var id = AddClassBind(_gameObject, false, this.GetType());
+
+                //替换自己本身的id
+                JBehaviours.Remove(_instanceID);//移除构造函数创的自己的JBehaviour
+                this._instanceID = id;//更改id
+                this._gameObject.name = id;//改名
+                JBehaviours[id] = this;//覆盖字典里的值
             }
             Launch();
         }

@@ -29,7 +29,8 @@ namespace JEngine.Core
 {
     public class BindableProperty<T>
     {
-        public Action OnChange = null;
+        public delegate void onChange();
+        public onChange OnChange;
 
         private T _value = default(T);
         public T Value

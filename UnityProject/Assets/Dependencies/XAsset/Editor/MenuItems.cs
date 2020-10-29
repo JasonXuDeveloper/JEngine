@@ -39,10 +39,10 @@ namespace libx
     public static class MenuItems
     {
         private const string KBuildAssetBundles = "JEngine/XAsset/Bundles/Build Bundles %#&B";
-        private const string KCopyAssetBundles = "JEngine/XAsset/Bundles/Copy Bundles to Streaming Assets";
-        private const string KViewCachePath = "JEngine/XAsset/Bundles/View Caches";
-        private const string KViewDataPath = "JEngine/XAsset/Bundles/View Bundles";
-        private const string KCleanData = "JEngine/XAsset/Bundles/Clean Bundles";
+        private const string KCopyAssetBundles = "JEngine/XAsset/Bundles/Copy Bundles to Streaming Assets (Suggest for iOS review)";
+        private const string KViewCachePath = "JEngine/XAsset/View/Caches";
+        private const string KViewDataPath = "JEngine/XAsset/View/Built Bundles";
+        private const string KCleanData = "JEngine/XAsset/Bundles/Clean Built Bundles";
 
         [MenuItem(KBuildAssetBundles)]
         private static void BuildAssetBundles()
@@ -80,12 +80,6 @@ namespace libx
             };
         }
         
-        [MenuItem(KCopyAssetBundles)]
-        private static void CopyAssetBundles()
-        {
-            BuildScript.CopyAssetBundlesTo(Application.streamingAssetsPath);
-        }
-        
         [MenuItem(KCleanData)]
         private static void CleanBundles()
         {
@@ -114,6 +108,12 @@ namespace libx
         private static void ViewCachePath()
         {
             EditorUtility.OpenWithDefaultApp(Application.persistentDataPath);
+        }
+        
+        [MenuItem(KCopyAssetBundles)]
+        private static void CopyAssetBundles()
+        {
+            BuildScript.CopyAssetBundlesTo(Application.streamingAssetsPath);
         }
 
         #region Tools 

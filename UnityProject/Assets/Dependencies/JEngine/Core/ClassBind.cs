@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using libx;
 using System;
+using System.ComponentModel;
 using Malee.List;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,7 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
 using ProjectAdapter;
 using UnityEngine;
+using Component = UnityEngine.Component;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -90,7 +92,6 @@ namespace JEngine.Core
                 
                 
                 
-                
             //JBehaviour需自动赋值一个值
             var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
@@ -100,6 +101,9 @@ namespace JEngine.Core
             clrInstance.ILInstance = instance;
             clrInstance.AppDomain = Init.appdomain;
             instance.CLRInstance = clrInstance;
+            
+            //判断类型
+            clrInstance.isMonoBehaviour = t.IsSubclassOf(typeof(MonoBehaviour));
             
             if (isJBehaviour)
             {
@@ -117,6 +121,7 @@ namespace JEngine.Core
                 foreach (_ClassField field in fields)
                 {
                     object obj = new object();
+
                     try
                     {
                         if (field.fieldType == _ClassField.FieldType.Short)
@@ -175,7 +180,7 @@ namespace JEngine.Core
                             obj = field.value == "true";
                             _class.BoundData = true;
                         }
-                        else if (field.fieldType == _ClassField.FieldType.GameObject)
+                        if (field.fieldType == _ClassField.FieldType.GameObject)
                         {
                             GameObject go = field.gameObject;
                             if (go == null)
@@ -270,6 +275,43 @@ namespace JEngine.Core
                                         obj = component;
                                         _class.BoundData = true;
                                     }
+                                }
+                            }
+                            else
+                            {
+                                var pi = t.GetProperty(field.fieldName,
+                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                    BindingFlags.Static);
+                                if (pi != null)
+                                {
+                                    string tName = pi.PropertyType.Name;
+                                    if (pi.PropertyType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
+                                    {
+                                        var components = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                                        foreach (var c in components)
+                                        {
+                                            if (c.ILInstance.Type.Name == tName)
+                                            {
+                                                obj = c.ILInstance;
+                                                _class.BoundData = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var component = go.GetComponents<Component>().ToList()
+                                            .Find(c => c.GetType().ToString().Contains(tName));
+                                        if (component != null)
+                                        {
+                                            obj = component;
+                                            _class.BoundData = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Log.PrintError($"自动绑定{this.name}出错：{classType}.{field.fieldName}赋值出错：{field.fieldName}不存在");
                                 }
                             }
                         }

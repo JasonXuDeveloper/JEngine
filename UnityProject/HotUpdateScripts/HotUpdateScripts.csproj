@@ -108,6 +108,9 @@
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
     </Reference>
+    <Reference Include="Malee.ReorderableList">
+      <HintPath>..\Library\ScriptAssemblies\Malee.ReorderableList.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\" />

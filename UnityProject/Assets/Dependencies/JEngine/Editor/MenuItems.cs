@@ -30,6 +30,12 @@ namespace JEngine.Editor
     [System.Reflection.Obfuscation(Exclude = true)]
     public class MenuItems
     {
+        [UnityEditor.MenuItem("JEngine/Open Documents",priority = 1999)]
+        static void OpenWiki()
+        {
+            Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine/wiki");
+        }
+        
         [UnityEditor.MenuItem("JEngine/Open on Github",priority = 2000)]
         static void OpenGithub()
         {

@@ -62,6 +62,9 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{};
             method = type.GetMethod("get_name", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, get_name_4);
+            args = new Type[]{typeof(System.String)};
+            method = type.GetMethod("set_name", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, set_name_5);
             args = new Type[]{typeof(UnityEngine.GameObject)};
             if (genericMethods.TryGetValue("Instantiate", out lst))
             {
@@ -70,15 +73,12 @@ namespace ILRuntime.Runtime.Generated
                     if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject)))
                     {
                         method = m.MakeGenericMethod(args);
-                        app.RegisterCLRMethodRedirection(method, Instantiate_5);
+                        app.RegisterCLRMethodRedirection(method, Instantiate_6);
 
                         break;
                     }
                 }
             }
-            args = new Type[]{typeof(System.String)};
-            method = type.GetMethod("set_name", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, set_name_6);
             args = new Type[]{typeof(UnityEngine.GameObject)};
             if (genericMethods.TryGetValue("Instantiate", out lst))
             {
@@ -221,23 +221,7 @@ namespace ILRuntime.Runtime.Generated
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
-        static StackObject* Instantiate_5(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            __intp.Free(ptr_of_this_method);
-
-
-            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original);
-
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
-        }
-
-        static StackObject* set_name_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* set_name_5(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -254,6 +238,22 @@ namespace ILRuntime.Runtime.Generated
             instance_of_this_method.name = value;
 
             return __ret;
+        }
+
+        static StackObject* Instantiate_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original);
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static StackObject* Instantiate_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)

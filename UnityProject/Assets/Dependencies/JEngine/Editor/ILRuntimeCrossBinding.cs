@@ -39,7 +39,7 @@ namespace JEngine.Editor
         private static ILRuntimeCrossBindingAdapterGenerator window;
         private const string OUTPUT_PATH = "Assets/Scripts/Adapters";
 
-        [MenuItem("JEngine/ILRuntime/Generate Cross bind Adapter", priority = 1001)]
+        [MenuItem("JEngine/ILRuntime/Generate/Cross bind Adapter", priority = 1001)]
         public static void ShowWindow()
         {
             window = GetWindow<ILRuntimeCrossBindingAdapterGenerator>();

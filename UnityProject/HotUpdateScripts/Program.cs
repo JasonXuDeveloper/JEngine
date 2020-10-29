@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using JEngine.Core;
 using JEngine.AntiCheat;
+using JEngine.Examples;
 
 namespace HotUpdateScripts
 {
