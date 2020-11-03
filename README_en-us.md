@@ -1,6 +1,8 @@
-# JENGINE v0.5.8
+# JENGINE v0.5.x LTS
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
+
+This is branch is ```v0.5``` series branch, which is a Long term support (**LTS**) version, although **no updates will be added**, however, **bugs will be fixed**, feel free to commit PR and issue
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
@@ -12,13 +14,39 @@ JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity 
 
 [中文文档](README.md)
 
-[Wiki Page](https://github.com/JasonXuDeveloper/JEngine/wiki), tutorials are in here
-
-[Zhihu Article](https://zhuanlan.zhihu.com/p/218105381)
-
-[Gitee link (Clone faster in China)](https://gitee.com/JasonXuDeveloper/JEngine)
-
 ![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
+
+  ## About JEngine (Chinese)
+
+| Theme                                                 | Location                                                     |
+| ----------------------------------------------------- | ------------------------------------------------------------ |
+| 教学视频：介绍+使用+更新+入门                         | [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)     |
+| 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案 | [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)     |
+| 教学视频：核心功能（中）JAction队列解决方案全系列     | [点击跳转](https://www.bilibili.com/video/BV1Pt4y1q7X2/)     |
+| 教学视频：核心功能（下）数据持久化+对象池+助手类+面板 | [点击跳转](https://www.bilibili.com/video/BV12Z4y1N7eG/)     |
+| 框架文档                                              | [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki) |
+| 知乎文章                                              | [点击跳转](https://zhuanlan.zhihu.com/p/218105381)           |
+| 项目地址                                              | [GitHub地址](https://github.com/JasonXuDeveloper/JEngine)    |
+| 国内镜像                                              | [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)      |
+| QQ群聊                                                | [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)           |
+
+  ## JEngine Practice
+
+| 主题                                                         | 地址                                                      |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| 【Unity x JEngine 开发可热更爆款小游戏】第一集（系列介绍及游戏策划） | [点击跳转](https://www.bilibili.com/video/BV1sV41117ka/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第二集（构建项目及界面设计） | [点击跳转](https://www.bilibili.com/video/BV1m54y117vz/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第三集（场景界面设计） | [点击跳转](https://www.bilibili.com/video/BV1sk4y1C7b5/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第四集（界面设计及代码开发） | [点击跳转](https://www.bilibili.com/video/BV1hv411y7iC/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第五集（首页UI代码开发） | [点击跳转](https://www.bilibili.com/video/BV1ZT4y1c7t7/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第六集（Bug修复+代码开发+音乐配置） | [点击跳转](https://www.bilibili.com/video/BV1bi4y1E7e7/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第七集（关卡设计+编辑器开发+数据生成） | [点击跳转](https://www.bilibili.com/video/BV1sv411y7gF/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第八集（关卡读取+界面生成） | [点击跳转](https://www.bilibili.com/video/BV15f4y1B7oQ/)  |
+| 【Unity x JEngine 开发可热更爆款小游戏】第九集（关卡生成+按钮事件+游戏管理类） | [点击跳转 ](https://www.bilibili.com/video/BV1zp4y1Y7cF/) |
+
+
+
+
 
 ## Stargazers over time
 
@@ -26,84 +54,89 @@ JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity 
 
 ## What can JEngine do?
 
-- **[Hot-update](Docs/en-us/WhyHotUpdate.md) solution**
+  - **[Hot Update Solution ](https://github.com/JasonXuDeveloper/JEngine/wiki/开始使用)**
+    - **Resource update** based on [**XAsset**](https://github.com/xasset/xasset), which JEngine's author is a contributor of this repo
+    - **C# code update** based on [**ILRuntime**](https://github.com/Ourpalm/ILRuntime),  which JEngine's author is a contributor of this repo's Unity Demo
+    - **Hot update code encryption**, Hot update **DLL** will be encrypted wiithin **AES-128-ECB** toAssetbundle, and will be decrypted while loading the game
+    - **Resource encryption**, XAsset contains the feature of VFS, which can make some sort of encyption on resource, which AssetStudio is not able to hack resource
+    - **Auto Class Bind**, scripts from hot update project is able to bind onto a gameObject/prefab, and can set values
 
-  - **Resource hot update & management** is based on **[XAsset](https://github.com/xasset/xasset)** which JEngine's author has contributed into.
-  - **Code hot update** is based on **[ILRuntime](https://github.com/Ourpalm/ILRuntime)** which JEngine's author has also contributed into its Unity Project.
-  - **Encrypts** your hot-updatable **codes and resources**, codes will go into your assetbundles, assetbundles will be encrypt within **VFS by XAsset**, and also, your **codes will be encrypted in AES-128 ECB mode**
-  - **Auto bind** hot update scripts to gameObject, no need to write codes to add stuffs
+  - **[Action Sequence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
+    - **Less code, more powerful**
+    - Codes are able to **runs, delay, wait, loop in counts, loop in conditions, run async/non-blocking**
+    - **Can run in main thread**
 
-- **[Action](Docs/en-us/JAction.md) solution**
+  - **[UI Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
+    - **Easy to manage** life cycle of an UI, **support chaining-style** which makes codes **prettier**
+    - Supports **Loop in frequency**, can choose **Loop in frames or milliseconds**
 
-  - **Less code, does more**
+    - UI is **bindable to data**, when **data updates**, will **call the bound method of an UI**
 
-  - Can be **Run in Main Thread**
-  
-    > As we know Task.Run in Unity will run in a new thread, which is not able to call most Unity APIs, now JAction found a solution of using Loom.
-  
-- **[UI](Docs/en-us/JUI.md) solution**
+  - **[Base Class Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
+    - **Easy to manage** lifecycle
+    - Can **Loop in frame**, or **Loop in milliseconds**
+    - **Does not need MonoBehaviour**
+    - **Easy to use**
 
-  - **Method-Chaining** style makes codes prettier and easier to visualize
+  - **[Resource solution based on XAsset](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
+    - Support **Load resource sync/async**
+    - **Generic method**, easy to get different format of resources
+    - **Load scene async**
 
-  - **Easier to manage** lifecycle
-  
-    - Can **easily set up** **what** you want the UI element **to do in specific time**
-  
-  - **Bindable to data**
-    
-    - **UI can be binded to a data**, once data  has changed, it will call the method that you has binded
-    
-  
-- **[Behaviour](Docs/en-us/JBehaviour.md)** base class
+- **[Auto Class Bind](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
+  - Write namespance, and class name, than it will **auto add hot update component** to a **gameObject/prefab**
+  - Can set value **on public/private/static fields and properties**
+  - **Support drag & drop on specific types**
+  - **Does not require class to inherit MonoBehaviour**
 
-  - **Easy to manager **life cycle
-  - Can choose **Loop in frame** or **Loop in milliseconds **
-  - **No need of MonoBehaviour**
-  - **Easy to use**
+- **[Data Persistence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
+  - Save string to local
+  - Save **JSON**
+  - Save **Protobuf**
+  - **Auto encrypt**
 
-- **[Resource Management](Docs/en-us/JResource.md)** based on XAsset
+- **[Localization](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+  - **CSV document to visualize and set up the words**
+  - Easy to **switch language**
+  - Can **get strings for differen keys in specific language**
+  - **Text** can **bind to specific key**
 
-  - Support generic method
-  - Async/Sync methods
+- **[Anti-Memory Cheat solution](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
+  - Support **90% of data stucts**
+  - **Offset** encryption
+  - **Same size** while serialize to **JSON & Protobuf**
+  - Allow to **catch hacker**
 
-- **[Auto bind](Docs/en-us/AutoBind.md)** scripts from Hot-Update DLL to GameObjects & Prefabs
+- **GameObject Pool Solution**
+  - Compare to Instantiate, this saves memory and enhanced performance
+  - **No need to create a GameObject repeatly**
+  - **Auto match gameObject**
 
-  - Want to make scripts from hot-update project on to GameObject? Too much to write codes to add it? Here is a solution!
-  - Fill in namespace, and class of a hotupdate scripts, it will automatically bind to a GameObject
-  - Can set values of public/private/static fields automatically
-  - Supports numbers, bools, strings, GameObject and Components on GameObject
+- **Encryption Solution**
+  - **AES** encrypt
+  - Support encrypt **string**
+  - Support encrypt **binary**
 
-- **Object Pool soulution**
+- **Serialization Solution**
+  - Convert to **String**
+  - Convert to **JSON**
+  - Convert to **Protobuf binary**
 
-  - MUCH MORE Enhances the performencerather than using**Instantiate method**
-    - With this solution, **you don't have to repeat instantiate gameObject**
-    - Just **tell JObjectPool what gameObject you will repeatedly create**, and **how many you except to create at the start**, it will do it for you
-    - Request **PoolObject** to get the GameObject
-  - Easy and powerful
-  - With algorithm which fairly controls gameObjects
+- **Editor Windows**
+  - **ILRuntime Adapter auto generator**
+  - **Protobfuf file** and **CS type** **two-way converter**
 
-- **[Data persistence solution](Docs/zh-cn/JSaver.md)**
-
-  > JEngine now supports JSaver, which is a data persistance tool
-  >
-  > What can JSaver do?
-  >
-  > - Convert data into string/JSON string
-  > - AES encryption
-  > - Save to local storage
-  > - Load data from local storage (supports generic method)
-  > - Judge if has key in local
-  > - Delete local Key data
-
-- **More to explore!!!**
-
-JEngine has its own purpose to help developers **write powerful codes which are streamlined and beautiful**; and to **help developers easier making their games**.
-
-**If you enjoy using JEngine, please give this repo a star!**
-
+  - More to explore!
 
 
-## Latest Features
+
+JEngine has its aim to support game developers with **streamlined, pretty and high-performance features**, and can help developers **make games easier**.
+
+**If JEngine helps you, please give JEngine a star!**
+
+
+
+## v0.5.8 Latest Features
 
 - **Bug fix** when copying streaming asset
 - **C# type to Proto file** converter
@@ -129,34 +162,6 @@ JEngine has its own purpose to help developers **write powerful codes which are 
 - *Unity Editor FTP Tool (Maybe)*
 
 
-
-## Directory Structure **(IMPORTANT)**
-
-Please clone this framework into your project and keep this directory structure
-
-```
-.
-├── Assets
-│   ├── Dependencies
-│   ├── HotUpdateResources
-│   │   ├── Controller
-│   │   ├── Dll
-│   │   ├── Material
-│   │   ├── Other
-│   │   ├── Prefab
-│   │   ├── Scene
-│   │   ├── ScriptableObject
-│   │   ├── TextAsset
-│   │   └── UI
-│   ├── Init.unity
-│   └── Scripts
-│       ├── Init.cs
-│       ├── InitILrt.cs
-│       └── APIs
-├── Builds
-├── DLC
-├── HotUpdateScrpts
-```
 
 ## JEngine Hot Update Logics
 
@@ -192,3 +197,4 @@ Please clone this framework into your project and keep this directory structure
 - 默默的奶爸 (Sponsorship + Promote)
 - 马三 (Sponsorship)
 - 清行（Documents）
+- 阿飞  (Sponsorship)
