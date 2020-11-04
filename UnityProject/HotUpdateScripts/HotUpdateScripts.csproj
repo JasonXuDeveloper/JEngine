@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -47,6 +47,29 @@
     <Compile Include="JEngine\Core\JUI.cs" />
     <Compile Include="Examples\SafeData.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
+    <Compile Include="UIDemo\JumpToDemo.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\AResRefer.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\AssetTaskNode.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\GameResMgr.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\LoadResMgr.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\ReferInfo.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\ResPath.cs" />
+    <Compile Include="UIDemo\Tools\LoadResKits\UIResRefer.cs" />
+    <Compile Include="UIDemo\Tools\Singleton.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIExpand\Expand\UIGroup.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\AItemBase.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\APanelBase.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\UIMgr.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\UIPanel\UIAnchorControl.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\UIPanel\UIDataBase.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\UIPanel\UIReleaseControl.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIManager\UIPanel\UISoundControl.cs" />
+    <Compile Include="UIDemo\Tools\UIKits\UIUtility.cs" />
+    <Compile Include="UIDemo\View\JBehaviourView\JBehaviourView.cs" />
+    <Compile Include="UIDemo\View\JSaveView\JSaveView.cs" />
+    <Compile Include="UIDemo\View\JTestView\JTestView.cs" />
+    <Compile Include="UIDemo\View\JUIView\JUIView.cs" />
+    <Compile Include="UIDemo\View\UIRootView\UIRootView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
@@ -113,7 +136,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Examples\" />
     <Folder Include="Proto2cs\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
