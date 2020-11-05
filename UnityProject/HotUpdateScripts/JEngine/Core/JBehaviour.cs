@@ -94,7 +94,7 @@ namespace JEngine.Core
             {
                 Namespace = jBehaviour.Namespace,
                 Class = jBehaviour.Name,
-                ActiveAfter = false,
+                ActiveAfter = activeAfter,
                 UseConstructor = true
             };
             var id = cb.AddClass(_cb);
