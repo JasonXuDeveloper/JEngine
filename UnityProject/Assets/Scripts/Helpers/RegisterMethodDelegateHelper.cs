@@ -46,6 +46,8 @@ namespace JEngine.Helper
             appdomain.DelegateManager.RegisterMethodDelegate<GameObject>();
             appdomain.DelegateManager.RegisterMethodDelegate<Int32>();
             appdomain.DelegateManager.RegisterMethodDelegate<GameObject, Action>();
+            appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.GameObject, UnityEngine.EventSystems.PointerEventData>();
+
         }
     }
 }

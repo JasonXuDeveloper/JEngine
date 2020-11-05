@@ -107,6 +107,14 @@ namespace JEngine.Helper
                     ((Action<System.Object, System.Timers.ElapsedEventArgs>)act)(sender, e);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<global::UIEventHandle<UnityEngine.EventSystems.PointerEventData>>((act) =>
+            {
+                return new global::UIEventHandle<UnityEngine.EventSystems.PointerEventData>((go, eventData) =>
+                {
+                    ((Action<UnityEngine.GameObject, UnityEngine.EventSystems.PointerEventData>)act)(go, eventData);
+                });
+            });
+
         }
     }
 }
