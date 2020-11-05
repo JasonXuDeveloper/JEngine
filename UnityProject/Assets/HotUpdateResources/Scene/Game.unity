@@ -1183,7 +1183,7 @@ GameObject:
   - component: {fileID: 394855432}
   - component: {fileID: 394855431}
   m_Layer: 0
-  m_Name: JumpToDemo
+  m_Name: JumpToUIDemo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1202,8 +1202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScriptsToBind:
-  - Namespace: HotUpdateScripts
-    Class: JumpToDemo
+  - Namespace: JEngine.Examples
+    Class: JumpToUIDemo
     ActiveAfter: 1
     RequireBindFields: 1
     UseConstructor: 1
