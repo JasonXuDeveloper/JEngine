@@ -94,7 +94,7 @@ namespace JEngine.Core
             {
                 Namespace = jBehaviour.Namespace,
                 Class = jBehaviour.Name,
-                ActiveAfter = activeAfter,
+                ActiveAfter = false,
                 UseConstructor = true
             };
             var id = cb.AddClass(_cb);
@@ -215,8 +215,6 @@ namespace JEngine.Core
         /// 取消循环
         /// </summary>
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-
-        private CancellationTokenSource _loopTokenSource = new CancellationTokenSource();
 
         /// <summary>
         /// Loop in frame or millisecond
@@ -358,13 +356,13 @@ namespace JEngine.Core
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
 
-            DoLoop(_loopTokenSource.Token);
+            DoLoop();
         }
 
         /// <summary>
         /// Do the loop
         /// </summary>
-        private protected async void DoLoop(CancellationToken Token)
+        private protected async void DoLoop()
         {
             Stopwatch sw = new Stopwatch();
 
@@ -408,16 +406,7 @@ namespace JEngine.Core
                 {
                     duration = 1;
                 }
-
-                try
-                {
-                    await Task.Delay(duration, Token);
-                }
-                catch (Exception ex)
-                {
-                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Task.Delay duration failed: {ex.Message}");
-                    break;
-                }
+                await Task.Delay(duration, _cancellationTokenSource.Token);
 
                 sw.Stop();
 
@@ -438,7 +427,6 @@ namespace JEngine.Core
         private protected void Destroy()
         {
             JBehaviours.Remove(this._instanceID);
-            _loopTokenSource.Cancel();
             End();
         }
 
