@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,13 +31,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="Examples\UI\JumpToUIDemo.cs" />
+    <Compile Include="Examples\UI\JUIExample.cs" />
+    <Compile Include="Examples\UI\View\JBtnView.cs" />
+    <Compile Include="Examples\UI\View\JTestView.cs" />
     <Compile Include="Examples\Core\JBehaviourExample.cs" />
     <Compile Include="Examples\Core\JSaverExample.cs" />
     <Compile Include="Examples\Core\AutoBindDemo.cs" />
     <Compile Include="Examples\Data\DataClass.cs" />
     <Compile Include="Examples\Data\SafeData.cs" />
-    <Compile Include="Examples\UI\JUIExample.cs" />
-    <Compile Include="Examples\UI\JumpToUIDemo.cs" />
+    <Compile Include="JEngine\UI\JUI.cs" />
+    <Compile Include="JEngine\UI\UIRootView.cs" />
+    <Compile Include="JEngine\UI\ResKit\LoadResMgr.cs" />
+    <Compile Include="JEngine\UI\ResKit\AResRefer.cs" />
+    <Compile Include="JEngine\UI\ResKit\GameResMgr.cs" />
+    <Compile Include="JEngine\UI\ResKit\ReferInfo.cs" />
+    <Compile Include="JEngine\UI\ResKit\AssetTaskNode.cs" />
+    <Compile Include="JEngine\UI\ResKit\ResPath.cs" />
+    <Compile Include="JEngine\UI\ResKit\UIResRefer.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIUtility.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIExpand\UIGroup.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIManager\AItemBase.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UISoundControl.cs" />
+    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIReleaseControl.cs" />
     <Compile Include="JEngine\Core\ProtoTypeRegister.cs" />
     <Compile Include="JEngine\Core\JSaver.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
@@ -46,26 +64,8 @@
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
-    <Compile Include="JEngine\Core\BindableProperty.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIUtility.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\AItemBase.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UISoundControl.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIReleaseControl.cs" />
-    <Compile Include="JEngine\UI\ResKit\LoadResMgr.cs" />
-    <Compile Include="JEngine\UI\ResKit\AResRefer.cs" />
-    <Compile Include="JEngine\UI\ResKit\GameResMgr.cs" />
-    <Compile Include="JEngine\UI\ResKit\ReferInfo.cs" />
-    <Compile Include="JEngine\UI\ResKit\AssetTaskNode.cs" />
-    <Compile Include="JEngine\UI\ResKit\ResPath.cs" />
-    <Compile Include="JEngine\UI\ResKit\UIResRefer.cs" />
-    <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\Singleton.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIExpand\UIGroup.cs" />
-    <Compile Include="Examples\UI\View\JTestView.cs" />
-    <Compile Include="Examples\UI\View\JBtnView.cs" />
-    <Compile Include="JEngine\UI\UIRootView.cs" />
+    <Compile Include="JEngine\Core\BindableProperty.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
