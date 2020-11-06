@@ -288,7 +288,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Jump To Demo
+  m_Text: Jump To UI Demo
 --- !u!222 &81770424
 CanvasRenderer:
   m_ObjectHideFlags: 0

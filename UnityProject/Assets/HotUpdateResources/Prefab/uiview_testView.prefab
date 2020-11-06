@@ -152,7 +152,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'JBtn '
+  m_Text: JBtn Events
 --- !u!95 &7646347570503627576
 Animator:
   serializedVersion: 3

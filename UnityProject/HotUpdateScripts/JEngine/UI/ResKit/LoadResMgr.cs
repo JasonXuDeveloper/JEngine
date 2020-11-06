@@ -202,6 +202,8 @@ namespace JEngine.UI.ResKit
             {
                 for (int i = _listTaskObj.Count - 1; i >= 0; i--)
                 {
+                    _listTaskObj[i].Update();
+
                     if (_listTaskObj[i].m_IsLoadCompleted)
                     {
                         _listTaskObj[i].m_CallBack?.Invoke();

@@ -75,10 +75,8 @@ namespace JEngine.UI.UIKit
             {
                 Action Call = () =>
                 {
-                    Log.Print(1);
                     if (!isSaveShow)
                     {
-                        Log.Print(2);
                         if (!m_uIbaseDic[uibaseName].isFilm && isClearAll)
                             CloseAllUI(false);
 

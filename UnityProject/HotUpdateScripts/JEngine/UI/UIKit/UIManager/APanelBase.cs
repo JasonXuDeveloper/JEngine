@@ -125,7 +125,6 @@ namespace JEngine.UI.UIKit
             if (m_gameobj == null)
             {
                 BindObj(LoadResMgr.Instance.GetObject<GameObject>(ResType.UI, m_strPanelViewName));
-                Log.Print(uiName);
             }
 
             m_gameobj.SetActive(true);
