@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -51,10 +51,7 @@
     <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\AItemBase.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIAnchorControl.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UISoundControl.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIReleaseControl.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIDataBase.cs" />
     <Compile Include="JEngine\UI\ResKit\LoadResMgr.cs" />
     <Compile Include="JEngine\UI\ResKit\AResRefer.cs" />
     <Compile Include="JEngine\UI\ResKit\GameResMgr.cs" />
