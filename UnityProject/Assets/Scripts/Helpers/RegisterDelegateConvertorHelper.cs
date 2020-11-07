@@ -114,7 +114,14 @@ namespace JEngine.Helper
                     ((Action<UnityEngine.GameObject, UnityEngine.EventSystems.PointerEventData>)act)(go, eventData);
                 });
             });
-
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Predicate<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>((act) =>
+            {
+                return new System.Predicate<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>((obj) =>
+                {
+                    return ((Func<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Boolean>)act)(obj);
+                });
+            });
+            
         }
     }
 }

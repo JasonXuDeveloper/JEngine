@@ -24,6 +24,7 @@ namespace JEngine.Helper
         
         public void Register(AppDomain appdomain)
         {
+            appdomain.DelegateManager.RegisterMethodDelegate<System.Object, System.Timers.ElapsedEventArgs>();
             appdomain.DelegateManager.RegisterMethodDelegate<libx.AssetRequest>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object>();
             appdomain.DelegateManager.RegisterMethodDelegate<System.Object>();
