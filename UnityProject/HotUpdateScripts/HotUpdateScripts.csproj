@@ -30,6 +30,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Examples\UI\View\JTestItem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Examples\Core\JBehaviourExample.cs" />
     <Compile Include="Examples\Core\JSaverExample.cs" />
