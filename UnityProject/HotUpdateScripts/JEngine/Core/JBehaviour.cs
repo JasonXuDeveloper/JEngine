@@ -174,7 +174,7 @@ namespace JEngine.Core
                 ActiveAfter = activeAfter,
                 UseConstructor = true
             };
-            var id = cb.AddClassInHotUpdate(_cb);
+            var id = cb.AddClass(_cb);
             cb.Active(_cb);
             UnityEngine.Object.Destroy(cb);
             return id;

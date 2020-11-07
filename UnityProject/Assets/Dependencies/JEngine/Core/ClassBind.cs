@@ -404,64 +404,6 @@ namespace JEngine.Core
             return null;
         }
         
-        /// <summary>
-        /// Add class in Hotupdate
-        /// </summary>
-        /// <param name="_class"></param>
-        /// <returns></returns>
-        public string AddClassInHotUpdate(_ClassBind _class)
-        {
-            //添加脚本
-            string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
-            if (!Init.appdomain.LoadedTypes.ContainsKey(classType))
-            {
-                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
-                return null;
-            }
-            IType type = Init.appdomain.LoadedTypes[classType];
-            Type t = type.ReflectionType;//获取实际属性
-            var instance = _class.UseConstructor
-                ? Init.appdomain.Instantiate(classType)
-                : new ILTypeInstance(type as ILType, false);
-            
-            //JBehaviour需自动赋值一个值
-            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
-            bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
-            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
-
-
-            if (_class.UseConstructor && isMono)
-            {
-                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
-
-            }
-                
-            var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
-            clrInstance.enabled = false;
-            clrInstance.ILInstance = instance;
-            clrInstance.AppDomain = Init.appdomain;
-            instance.CLRInstance = clrInstance;
-            
-            //判断类型
-            clrInstance.isMonoBehaviour = isMono;
-            
-            if (isJBehaviour)
-            {
-                clrInstance.isJBehaviour = true;
-                var go = t.GetField("_gameObject",BindingFlags.Public);
-                go.SetValue(clrInstance.ILInstance, this.gameObject);
-            }
-                
-            //JBehaviour返回实例ID
-            if (isJBehaviour)
-            {
-                var f = t.GetField("_instanceID", BindingFlags.NonPublic);
-                var id = f.GetValue(clrInstance.ILInstance).ToString();
-                return id;
-            }
-                
-            return null;
-        }
 
         private GameObject FindSubGameObject(_ClassField field)
         {
