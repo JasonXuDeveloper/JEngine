@@ -24,8 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using JEngine.Core;
-using System;
-using System.Collections;
+using JEngine.UI.ResKit;
+using JEngine.UI.UIKit;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,7 +44,7 @@ namespace JEngine.UI
     /// </summary>
     public class UIRootView : JBehaviour
     {
-        private static UIRootView _instance;
+        private static UIRootView _instance = null;
         public static UIRootView Instance { get { return _instance; } }
 
         /// <summary> 存储所有根节点 </summary>
@@ -56,7 +56,26 @@ namespace JEngine.UI
         public Camera UICamera;
         public Canvas UICanvas;
 
-        public Action OnComplete { get; set; }
+        public static void InitUIRoot()
+        {
+            if(_instance != null)
+            {
+                Log.PrintError("UI Root已存在");
+                return;
+            }
+            JPrefab UIRootPrefab = new JPrefab("UI Root.prefab",
+                (success, prefab) =>
+                {
+                    if (!success)
+                    {
+                        Log.PrintError("UI Root预制体加载失败");
+                        return;
+                    }
+                    GameObject root = prefab.Instantiate("UI Root");
+                    JBehaviour.CreateOn<UIRootView>(root);
+                });
+            
+        }
 
         public override void Init()
         {
@@ -84,7 +103,12 @@ namespace JEngine.UI
                 SetRectTransform(rect);
                 _roots.Add(i, go);
             }
-            OnComplete?.Invoke();
+        }
+
+        public override void Loop()
+        {
+            UIMgr.Instance.Update();
+            LoadResMgr.Instance.Update();
         }
 
         private void SetRectTransform(RectTransform rect)

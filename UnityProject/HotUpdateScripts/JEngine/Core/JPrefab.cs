@@ -55,6 +55,30 @@ namespace JEngine.Core
             this.path = path;
         }
 
+        /// <summary>
+        /// Load a prefab from hot update resources
+        /// 从热更资源里读取prefab
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="complete">Action<bool,JPrefab>, success 与 JPrefab</param>
+        public JPrefab(string path,Action<bool,JPrefab> complete)
+        {
+            if (!path.Contains(".prefab"))
+            {
+                path = new StringBuilder(path).Append(".prefab").ToString();
+            }
+            _request = Assets.LoadAssetAsync(path, typeof(GameObject));
+            Loaded = false;
+            _request.completed += (AssetRequest request) =>
+            {
+                Loaded = true;
+                Instance = (GameObject)request.asset;
+                ErrorMessage = _request.error;
+                complete?.Invoke(String.IsNullOrEmpty(ErrorMessage), this);
+            };
+            this.path = path;
+        }
+
         private string path;
 
         private AssetRequest _request;
@@ -109,7 +133,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public GameObject Instantiate(string name = "")
         {
-            if (!Loaded)
+            while (!Loaded)
             {
                 throw new Exception($"{path} has not been loaded yet");
             }

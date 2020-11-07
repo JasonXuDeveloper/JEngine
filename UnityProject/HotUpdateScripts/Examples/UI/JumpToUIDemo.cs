@@ -39,8 +39,6 @@ namespace JEngine.Examples
         /// <summary> class binding </summary>
         public GameObject btn_JumpTo;
 
-        private GameObject _rootPrefab;
-
         #region 声明界面
         public static string JTestViewPath = "uiview_testView";
         public static string JBtnViewPath = "uiview_btnview";
@@ -48,11 +46,9 @@ namespace JEngine.Examples
 
         public override void Init()
         {
-            JResource.LoadResAsync<GameObject>("UI Root.prefab",(obj)=> { _rootPrefab = obj; }, JResource.MatchMode.Prefab);
             UIUtility.BindClickEvent(btn_JumpTo, OnJumpToDemo);
-            GameObject.DontDestroyOnLoad(gameObject);
 
-            //UIMgr注册界面
+            //UIMgr注册界面（需要的）
             UIMgr.Instance.Register(
                 (JTestViewPath, JTestView.Instance),
                 (JBtnViewPath, JBtnView.Instance));
@@ -60,19 +56,11 @@ namespace JEngine.Examples
 
         private void OnJumpToDemo(GameObject go, PointerEventData eventData)
         {
-            if (_rootPrefab == null) { return; }
             JResource.LoadSceneAsync("UIDemo.unity", () =>
              {
-                 GameObject root = GameObject.Instantiate(_rootPrefab);
-                 var uiroot = JBehaviour.CreateOn<UIRootView>(root);
+                 UIRootView.InitUIRoot();//初始化UIRoot是需要的
                  UIMgr.Instance.ShowUI(JTestViewPath);
              });
-        }
-
-        public override void Loop()
-        {
-            UIMgr.Instance.Update();
-            LoadResMgr.Instance.Update();
         }
     }
 }

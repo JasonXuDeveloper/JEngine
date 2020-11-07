@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using UnityEngine;
 namespace JEngine.Core
 {
     /// <summary>
@@ -40,6 +41,26 @@ namespace JEngine.Core
             {
                 if (null == _inst)
                     _inst = new T();
+                return _inst;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 单例Mono基类
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class MonoSingleton<T> where T : UnityEngine.Component
+    {
+        protected MonoSingleton() { }
+
+        protected static T _inst = null;
+        public static T Instance
+        {
+            get
+            {
+                if (null == _inst)
+                    _inst = new GameObject(typeof(T).Name + "GO").AddComponent<T>();
                 return _inst;
             }
         }
