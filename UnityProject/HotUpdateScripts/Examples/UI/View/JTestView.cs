@@ -49,6 +49,8 @@ namespace JEngine.Examples
 
         private GameObject JBtnButton;
 
+        private JTestItem testItem;
+
         /// <summary>
         /// 注册函数，相当于Awake
         /// </summary>
@@ -57,6 +59,9 @@ namespace JEngine.Examples
             base.Init();
 
             JBtnButton = UIUtility.BindClickEvent(Trans, "JBtnButton", OnClick);
+
+            //注册子部件
+            //JTestItem item = UIUtility.CreateItemNoClone<JTestItem>(Trans, "子部件名字");
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace JEngine.Examples
         /// </summary>
         public override void Refresh()
         {
-            base.Refresh();
+            base.Refresh();            
         }
 
         private void OnOpenJBtnExample()
@@ -98,5 +103,7 @@ namespace JEngine.Examples
         {
             base.CloseUI();
         }
+
+       
     }
 }

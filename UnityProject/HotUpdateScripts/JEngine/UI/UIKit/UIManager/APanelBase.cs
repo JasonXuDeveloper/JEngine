@@ -76,15 +76,6 @@ namespace JEngine.UI.UIKit
             this.m_Release = new UIReleaseControl(this);
         }
 
-        /// <summary>
-        ///界面打开对挂机战斗有影响
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool IsRelateBattleUIEffect()
-        {
-            return true;
-        }
-
         public string Name
         {
             private set;
@@ -94,12 +85,7 @@ namespace JEngine.UI.UIKit
         public override void Refer()
         {
             ReferInfo refer = new ReferInfo(ResType.UI, m_strPanelViewName, AssetType.Prefab);
-            _referList.Add(refer);
-
-            //if (m_IsLoadFromResources)
-            //    AddRefer(AssetPrefabType.UI, ResType.F_UI, m_strPanelViewName, true, typeof(GameObject));
-            //else
-            //    AddRefer(AssetPrefabType.UI, ResType.UI, m_strPanelViewName, GameMain.IsUnityEditor, typeof(GameObject));
+            _referList.Add(refer);           
         }
 
         public virtual void Init()
