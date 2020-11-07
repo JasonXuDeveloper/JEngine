@@ -627,6 +627,7 @@ namespace libx
                 scene.completed += (AssetRequest request) =>
                 {
                     FindObjectOfType<Init>().Load();
+                    ClassBindMgr.Instantiate();
                 };
                 while (!scene.isDone)
                 {

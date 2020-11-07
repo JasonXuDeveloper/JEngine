@@ -5,7 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class ItemSizeGroup
+namespace JEngine.UI
+{
+    public class ItemSizeGroup
 {
 
     public float[] mItemSizeArray = null;
@@ -309,4 +311,5 @@ public class ItemPosMgr
         }
     }
 
+}
 }

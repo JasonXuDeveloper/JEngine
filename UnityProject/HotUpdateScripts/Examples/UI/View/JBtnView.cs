@@ -96,6 +96,10 @@ namespace JEngine.Examples
         private void OnDragEndEvent(GameObject go, PointerEventData eventData)
         {
             UIUtility.Safe_UGUI(ref button_text, "结束拖拽");
+            JAction j = new JAction()
+                .Delay(1)
+                .Do(() => UIUtility.Safe_UGUI(ref button_text, "按住可以拖拽"))
+                .Execute(true);
         }
 
         private void OnDragEvent(GameObject go, PointerEventData eventData)

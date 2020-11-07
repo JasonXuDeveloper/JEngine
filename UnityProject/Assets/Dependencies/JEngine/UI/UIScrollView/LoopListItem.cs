@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoopListItem : MonoBehaviour
+namespace JEngine.UI
+{
+    public class LoopListItem : MonoBehaviour
 {
     public int Index { get; set; }
     int mItemIndex = -1;
@@ -235,5 +237,7 @@ public class LoopListItem : MonoBehaviour
             return ItemSize + mPadding;
         }
     }
+
+}
 
 }
