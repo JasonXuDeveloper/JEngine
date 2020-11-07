@@ -46,78 +46,18 @@ namespace JEngine.Core
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
-
-        private bool _binding = false;
-
-        private async void Awake()
+        
+        /// <summary>
+        /// Set value
+        /// </summary>
+        /// <param name="_class"></param>
+        public void SetVal(_ClassBind _class)
         {
-            while (!Init.Inited)
-            {
-                await Task.Delay(10);
-            }
-
-            Bind();
-        }
-
-        public void Bind()
-        {
-            if(_binding) return;
-            _binding = true;
-            
-            var cb = this;
-            foreach (_ClassBind _class in cb.ScriptsToBind)
-            {
-                if (_class == null) return;
-                AddClass(_class);
-            }
-            
-            //添加后删除
-            Destroy(cb);
-        }
-
-        public string AddClass(_ClassBind _class)
-        {
-            //添加脚本
             string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
-            if (!Init.appdomain.LoadedTypes.ContainsKey(classType))
-            {
-                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
-                return null;
-            }
             IType type = Init.appdomain.LoadedTypes[classType];
             Type t = type.ReflectionType;//获取实际属性
-            var instance = _class.UseConstructor
-                ? Init.appdomain.Instantiate(classType)
-                : new ILTypeInstance(type as ILType, false);
-            
-            //JBehaviour需自动赋值一个值
-            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
-            bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
-            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
-
-
-            if (_class.UseConstructor && isMono)
-            {
-                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
-
-            }
-                
-            var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
-            clrInstance.enabled = false;
-            clrInstance.ILInstance = instance;
-            clrInstance.AppDomain = Init.appdomain;
-            instance.CLRInstance = clrInstance;
-            
-            //判断类型
-            clrInstance.isMonoBehaviour = isMono;
-            
-            if (isJBehaviour)
-            {
-                clrInstance.isJBehaviour = true;
-                var go = t.GetField("_gameObject",BindingFlags.Public);
-                go.SetValue(clrInstance.ILInstance, this.gameObject);
-            }
-                
+            var clrInstance = this.gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
+                .Last(clr => clr.ILInstance.Type == type as ILType);
             //绑定数据
             if (_class.RequireBindFields)
             {
@@ -369,18 +309,147 @@ namespace JEngine.Core
                     }
                 }
             }
+        }
 
+        /// <summary>
+        /// Active
+        /// </summary>
+        /// <param name="_class"></param>
+        public void Active(_ClassBind _class)
+        {
+            string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
+            IType type = Init.appdomain.LoadedTypes[classType];
+            Type t = type.ReflectionType;//获取实际属性
+            var clrInstance = this.gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
+                .Last(clr => clr.ILInstance.Type == type as ILType);
             //是否激活
             if (_class.ActiveAfter)
             {
                 if (_class.BoundData == false && _class.RequireBindFields)
                 {
                     Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，无法自动激活，请手动！");
-                    return null;
+                    return;
                 }
 
                 clrInstance.enabled = true;
                 clrInstance.Awake();
+            }
+        }
+
+        /// <summary>
+        /// Remove cb
+        /// </summary>
+        public void Remove()
+        {
+            //添加后删除
+            Destroy(this);
+        }
+
+        /// <summary>
+        /// Add class
+        /// </summary>
+        /// <param name="_class"></param>
+        /// <returns></returns>
+        public string AddClass(_ClassBind _class)
+        {
+            //添加脚本
+            string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
+            if (!Init.appdomain.LoadedTypes.ContainsKey(classType))
+            {
+                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
+                return null;
+            }
+            IType type = Init.appdomain.LoadedTypes[classType];
+            Type t = type.ReflectionType;//获取实际属性
+            var instance = _class.UseConstructor
+                ? Init.appdomain.Instantiate(classType)
+                : new ILTypeInstance(type as ILType, false);
+            
+            //JBehaviour需自动赋值一个值
+            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+            bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
+            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
+
+
+            if (_class.UseConstructor && isMono)
+            {
+                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
+
+            }
+                
+            var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+            clrInstance.enabled = false;
+            clrInstance.ILInstance = instance;
+            clrInstance.AppDomain = Init.appdomain;
+            instance.CLRInstance = clrInstance;
+            
+            //判断类型
+            clrInstance.isMonoBehaviour = isMono;
+            
+            if (isJBehaviour)
+            {
+                clrInstance.isJBehaviour = true;
+                var go = t.GetField("_gameObject",BindingFlags.Public);
+                go.SetValue(clrInstance.ILInstance, this.gameObject);
+            }
+                
+            //JBehaviour返回实例ID
+            if (isJBehaviour)
+            {
+                var f = t.GetField("_instanceID", BindingFlags.NonPublic);
+                var id = f.GetValue(clrInstance.ILInstance).ToString();
+                return id;
+            }
+                
+            return null;
+        }
+        
+        /// <summary>
+        /// Add class in Hotupdate
+        /// </summary>
+        /// <param name="_class"></param>
+        /// <returns></returns>
+        public string AddClassInHotUpdate(_ClassBind _class)
+        {
+            //添加脚本
+            string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
+            if (!Init.appdomain.LoadedTypes.ContainsKey(classType))
+            {
+                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
+                return null;
+            }
+            IType type = Init.appdomain.LoadedTypes[classType];
+            Type t = type.ReflectionType;//获取实际属性
+            var instance = _class.UseConstructor
+                ? Init.appdomain.Instantiate(classType)
+                : new ILTypeInstance(type as ILType, false);
+            
+            //JBehaviour需自动赋值一个值
+            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+            bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
+            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
+
+
+            if (_class.UseConstructor && isMono)
+            {
+                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
+
+            }
+                
+            var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+            clrInstance.enabled = false;
+            clrInstance.ILInstance = instance;
+            clrInstance.AppDomain = Init.appdomain;
+            instance.CLRInstance = clrInstance;
+            
+            //判断类型
+            clrInstance.isMonoBehaviour = isMono;
+            
+            if (isJBehaviour)
+            {
+                clrInstance.isJBehaviour = true;
+                var go = t.GetField("_gameObject",BindingFlags.Public);
+                go.SetValue(clrInstance.ILInstance, this.gameObject);
             }
                 
             //JBehaviour返回实例ID

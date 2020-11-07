@@ -39,7 +39,7 @@ namespace JEngine.Core
         /// <returns>Saved value</returns>
         public static string SaveAsString<T>(string dataName, T val, string encryptKey = null)
         {
-            if(encryptKey == null)
+            if(String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }
@@ -64,7 +64,7 @@ namespace JEngine.Core
         /// <returns>Saved value</returns>
         public static byte[] SaveAsProtobufBytes<T>(string dataName, T val, string encryptKey = null) where T : class
         {
-            if (encryptKey == null)
+            if(String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }
@@ -97,7 +97,7 @@ namespace JEngine.Core
         /// <returns>Saved value</returns>
         public static string SaveAsJSON<T>(string dataName, T val, string encryptKey = null)
         {
-            if (encryptKey == null)
+            if(String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }
@@ -129,13 +129,21 @@ namespace JEngine.Core
         /// <returns>Saved value</returns>
         public static string GetString(string dataName, string encryptKey = null)
         {
-            if (encryptKey == null)
+            if (!HasData(dataName))
+            {
+                var ex = new Exception($"<{dataName}> does not exist\n" +
+                    $"<{dataName}>不存在");
+                Log.PrintError(ex);
+                return null;
+            }
+            if(String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }
             if (encryptKey.Length != 16)
             {
-                var ex = new Exception("encryptKey needs to be 16 characters!");
+                var ex = new Exception("encryptKey needs to be 16 characters!\n" +
+                    "秘钥长度不对");
                 Log.PrintError(ex);
                 return null;
             }
@@ -147,8 +155,9 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                Log.PrintError(ex);
-                return null;
+                Log.PrintError($"can not decrypt <{dataName}>, error message: {ex.Message}, returns local data: {result}" +
+                    $"无法解密<{dataName}>，错误：{ex.Message}，已返回本地数据：{result}");
+                return result;
             }
         }
 
@@ -236,9 +245,16 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static T GetObjectFromJSON<T>(string dataName, string encryptKey = null)
+        public static T GetObjectFromJSON<T>(string dataName, string encryptKey = null) where T: class
         {
-            if (encryptKey == null)
+            if (!HasData(dataName))
+            {
+                var ex = new Exception($"<{dataName}> does not exist\n" +
+                    $"<{dataName}>不存在");
+                Log.PrintError(ex);
+                return null;
+            }
+            if (String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }
@@ -268,7 +284,14 @@ namespace JEngine.Core
         /// <returns>Saved value</returns>
         public static T GetObjectFromProtobuf<T>(string dataName, string encryptKey = null) where T : class
         {
-            if (encryptKey == null)
+            if (!HasData(dataName))
+            {
+                var ex = new Exception($"<{dataName}> does not exist\n" +
+                    $"<{dataName}>不存在");
+                Log.PrintError(ex);
+                return null;
+            }
+            if (String.IsNullOrEmpty(encryptKey))
             {
                 encryptKey = Init.Instance.Key;
             }

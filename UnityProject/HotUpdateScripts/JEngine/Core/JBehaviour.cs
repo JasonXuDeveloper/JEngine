@@ -51,7 +51,10 @@ namespace JEngine.Core
             JBehaviours.Add(_instanceID, this);
         }
 
-        public class JBehaviourMgr : MonoBehaviour
+        /// <summary>
+        /// Manager for JBehaviours
+        /// </summary>
+        private class JBehaviourMgr : MonoBehaviour
         {
             /// <summary>
             /// JBehaviour管理实例
@@ -92,6 +95,10 @@ namespace JEngine.Core
                 StartCoroutine(RepeatCheckJBehaviour());
             }
 
+            /// <summary>
+            /// Coroutine to check JBehaviour
+            /// </summary>
+            /// <returns></returns>
             IEnumerator RepeatCheckJBehaviour()
             {
                 while (true)
@@ -117,16 +124,6 @@ namespace JEngine.Core
                         i--;
                     }
                 }
-            }
-
-            /// <summary>
-            /// When destory, cancel loop and Check and cancel task.delay
-            /// </summary>
-            private void OnDestroy()
-            {
-                Log.Print("被销毁了");
-                StopCoroutine(RepeatCheckJBehaviour());
-                CheckJBehaviour();
             }
         }
 
@@ -177,7 +174,8 @@ namespace JEngine.Core
                 ActiveAfter = activeAfter,
                 UseConstructor = true
             };
-            var id = cb.AddClass(_cb);
+            var id = cb.AddClassInHotUpdate(_cb);
+            cb.Active(_cb);
             UnityEngine.Object.Destroy(cb);
             return id;
         }
@@ -389,7 +387,7 @@ namespace JEngine.Core
             }
             catch(Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e.Message}, skipped init");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e}, skipped init");
             }
 
             try
@@ -398,7 +396,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e.Message}, skipped run");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e}, skipped run");
             }
 
             sw.Stop();
@@ -447,7 +445,8 @@ namespace JEngine.Core
                 }
                 catch (Exception ex)
                 {
-                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex.Message}");
+                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex}");
+                    return;
                 }
 
                 int duration;
@@ -531,10 +530,6 @@ namespace JEngine.Core
         }
         #endregion
 
-        ~JBehaviour()
-        {
-            Log.Print($"{_instanceID}被折构");
-        }
 
         #region METHODS THAT ARE REWRITABLE
 
