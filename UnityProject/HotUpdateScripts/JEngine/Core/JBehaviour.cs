@@ -28,6 +28,7 @@ using UnityEngine;
 using System.Linq;
 using System.Threading;
 using System.Reflection;
+using System.Collections;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace JEngine.Core
             JBehaviours.Add(_instanceID, this);
         }
 
-        class JBehaviourMgr : MonoBehaviour
+        public class JBehaviourMgr : MonoBehaviour
         {
             /// <summary>
             /// JBehaviour管理实例
@@ -67,11 +68,6 @@ namespace JEngine.Core
                 }
             }
             private static JBehaviourMgr _instance;
-
-            /// <summary>
-            /// 取消JBehaviour等待Token
-            /// </summary>
-            private CancellationTokenSource MgrCancelToken;
 
             /// <summary>
             /// Get Instance ID for JBehaviour
@@ -92,19 +88,16 @@ namespace JEngine.Core
             /// </summary>
             private void Awake()
             {
-                MgrCancelToken = new CancellationTokenSource();
-                Task.Run(RepeateCheckJBehaviour,MgrCancelToken.Token);
                 DontDestroyOnLoad(this);
+                StartCoroutine(RepeatCheckJBehaviour());
             }
 
-            /// <summary>
-            /// loop to check
-            /// </summary>
-            private void RepeateCheckJBehaviour()
+            IEnumerator RepeatCheckJBehaviour()
             {
-                while (!MgrCancelToken.IsCancellationRequested)
+                while (true)
                 {
                     CheckJBehaviour();
+                    yield return null;
                 }
             }
 
@@ -113,12 +106,15 @@ namespace JEngine.Core
             /// </summary>
             private void CheckJBehaviour()
             {
-                var ie = JBehaviours.GetEnumerator();
-                while (ie.MoveNext())
+                for(int i = 0; i < JBehaviours.Count; i++)
                 {
-                    if(ie.Current.Value._gameObject == null)
+                    var jb = JBehaviours.ElementAt(i);
+                    if (jb.Value._gameObject == null)
                     {
-                        ie.Current.Value.LoopAwaitToken.Cancel();
+                        jb.Value.LoopAwaitToken.Cancel();
+                        JBehaviours[jb.Value._instanceID] = null;
+                        JBehaviours.Remove(jb.Value._instanceID);
+                        i--;
                     }
                 }
             }
@@ -128,7 +124,8 @@ namespace JEngine.Core
             /// </summary>
             private void OnDestroy()
             {
-                MgrCancelToken.Cancel();
+                Log.Print("被销毁了");
+                StopCoroutine(RepeatCheckJBehaviour());
                 CheckJBehaviour();
             }
         }
@@ -468,7 +465,20 @@ namespace JEngine.Core
                 {
                     duration = 1;
                 }
-                await Task.Delay(duration,LoopAwaitToken.Token);
+                try
+                {
+                    await Task.Delay(duration, LoopAwaitToken.Token);
+                }
+                catch(Exception ex)
+                {
+                    //会抛出TaskCanceledException，表示等待被取消，直接Destory
+                    if(ex is TaskCanceledException)
+                    {
+                        Destroy();
+                        return;
+                    }
+                }
+
                 sw.Stop();
 
                 //操作时间
@@ -477,7 +487,6 @@ namespace JEngine.Core
                 LoopDeltaTime = time;
                 TotalTime += time;
             }
-
             Destroy();
         }
 
@@ -487,9 +496,12 @@ namespace JEngine.Core
         /// </summary>
         private protected void Destroy()
         {
-            JBehaviours.Remove(this._instanceID);
             _gameObject = null;
-            End();
+            if (Application.isPlaying)
+            {
+                End();
+            }
+            GC.Collect();
         }
 
         /// <summary>
@@ -519,6 +531,10 @@ namespace JEngine.Core
         }
         #endregion
 
+        ~JBehaviour()
+        {
+            Log.Print($"{_instanceID}被折构");
+        }
 
         #region METHODS THAT ARE REWRITABLE
 
