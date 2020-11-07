@@ -61,7 +61,7 @@ namespace JEngine.Examples
             JBtnButton = UIUtility.BindClickEvent(Trans, "JBtnButton", OnClick);
 
             //注册子部件
-            JTestItem item = UIUtility.CreateItemNoClone<JTestItem>(Trans, "子部件名字");
+            //JTestItem item = UIUtility.CreateItemNoClone<JTestItem>(Trans, "子部件名字");
         }
 
         /// <summary>
