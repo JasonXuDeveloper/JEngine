@@ -34,7 +34,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         AppDomain appdomain;
 
         public bool isJBehaviour;
-        public bool isMonoBehaviour;
+        public bool isMonoBehaviour = true;
 
         public Adaptor()
         {

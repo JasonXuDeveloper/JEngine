@@ -247,8 +247,8 @@ namespace JEngine.Helper
                 else
                 {
                     //热更DLL内的类型比较麻烦。首先我们得自己手动创建实例
-                    var ilInstance =
-                        new ILTypeInstance(type as ILType, false); //手动创建实例是因为默认方式会new MonoBehaviour，这在Unity里不允许
+                    ILTypeInstance ilInstance = Init.appdomain.Instantiate(type.ReflectionType.FullName);
+                    JEngine.Core.Log.PrintWarning($"{type.ReflectionType.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略"); 
                     //接下来创建Adapter实例
                     var clrInstance = instance.AddComponent<MonoBehaviourAdapter.Adaptor>();
                     //unity创建的实例并没有热更DLL里面的实例，所以需要手动赋值

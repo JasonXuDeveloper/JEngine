@@ -31,6 +31,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace JEngine.Core
 {
@@ -45,20 +46,85 @@ namespace JEngine.Core
         /// </summary>
         public JBehaviour()
         {
-            //启动线程
-            if (!Listening)
+            //添加实例ID
+            _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
+            JBehaviours.Add(_instanceID, this);
+        }
+
+        /// <summary>
+        /// Manager for JBehaviours
+        /// </summary>
+        private class JBehaviourMgr : MonoBehaviour
+        {
+            /// <summary>
+            /// JBehaviour管理实例
+            /// </summary>
+            public static JBehaviourMgr Instance
             {
-                Task.Run(ListenDestroy);
-                Listening = true;
+                get
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new GameObject("JBehaviourMgr").AddComponent<JBehaviourMgr>();
+                    }
+                    return _instance;
+                }
+            }
+            private static JBehaviourMgr _instance;
+
+            /// <summary>
+            /// Get Instance ID for JBehaviour
+            /// </summary>
+            /// <returns></returns>
+            public string GetJBehaviourInstanceID()
+            {
+                var _instanceID = System.Guid.NewGuid().ToString("N");
+                while (JBehaviours.ContainsKey(_instanceID))
+                {
+                    _instanceID = System.Guid.NewGuid().ToString("N");
+                }
+                return _instanceID;
             }
 
-            //添加实例ID
-            _instanceID = System.Guid.NewGuid().ToString("N");
-            while (JBehaviours.ContainsKey(_instanceID))
+            /// <summary>
+            /// Create new thread to cancel task.delay
+            /// </summary>
+            private void Awake()
             {
-                _instanceID = System.Guid.NewGuid().ToString("N");
+                DontDestroyOnLoad(this);
+                StartCoroutine(RepeatCheckJBehaviour());
             }
-            JBehaviours.Add(_instanceID, this);
+
+            /// <summary>
+            /// Coroutine to check JBehaviour
+            /// </summary>
+            /// <returns></returns>
+            IEnumerator RepeatCheckJBehaviour()
+            {
+                while (true)
+                {
+                    CheckJBehaviour();
+                    yield return null;
+                }
+            }
+
+            /// <summary>
+            /// Check and cancel task.delay
+            /// </summary>
+            private void CheckJBehaviour()
+            {
+                for (int i = 0; i < JBehaviours.Count; i++)
+                {
+                    var jb = JBehaviours.ElementAt(i);
+                    if (jb.Value._gameObject == null)
+                    {
+                        jb.Value.LoopAwaitToken.Cancel();
+                        JBehaviours[jb.Value._instanceID] = null;
+                        JBehaviours.Remove(jb.Value._instanceID);
+                        i--;
+                    }
+                }
+            }
         }
 
 
@@ -174,27 +240,6 @@ namespace JEngine.Core
         /// </summary>
         private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(0);
 
-
-        private static bool Listening = false;
-
-        /// <summary>
-        /// Listen to destory
-        /// 监听销毁
-        /// </summary>
-        private static void ListenDestroy()
-        {
-            while (JBehaviours != null)
-            {
-                var e = JBehaviours.GetEnumerator();
-                while (e.MoveNext())
-                {
-                    if (e.Current.Value._gameObject == null)
-                    {
-                        e.Current.Value._cancellationTokenSource.Cancel();
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Instance ID
@@ -336,7 +381,7 @@ namespace JEngine.Core
             }
             catch(Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e.Message}, skipped init");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e}, skipped init");
             }
 
             try
@@ -345,7 +390,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e.Message}, skipped run");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e}, skipped run");
             }
 
             if (Frequency == 0)
@@ -355,9 +400,15 @@ namespace JEngine.Core
 
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
-
+            LoopAwaitToken = new CancellationTokenSource();
             DoLoop();
         }
+
+        /// <summary>
+        /// Cancel delay
+        /// 取消延迟
+        /// </summary>
+        private CancellationTokenSource LoopAwaitToken;
 
         /// <summary>
         /// Do the loop
@@ -366,16 +417,26 @@ namespace JEngine.Core
         {
             Stopwatch sw = new Stopwatch();
 
-            while (_gameObject != null)
+            while (_gameObject != null && !LoopAwaitToken.IsCancellationRequested)
             {
-                sw.Reset();
-                sw.Start();
-
                 if (Paused)//暂停
                 {
                     await Task.Delay(25);
                     continue;
                 }
+
+                //调整参数
+                if (TimeScale < 0.001f)
+                {
+                    TimeScale = 1;
+                }
+                if (Frequency <= 0)
+                {
+                    Frequency = 1;
+                }
+
+                sw.Reset();
+                sw.Start();
 
                 try//循环
                 {
@@ -383,12 +444,8 @@ namespace JEngine.Core
                 }
                 catch (Exception ex)
                 {
-                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex.Message}");
-                }
-
-                if (TimeScale < 0.1f)
-                {
-                    TimeScale = 1;
+                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex}");
+                    return;
                 }
 
                 int duration;
@@ -406,7 +463,19 @@ namespace JEngine.Core
                 {
                     duration = 1;
                 }
-                await Task.Delay(duration, _cancellationTokenSource.Token);
+                try
+                {
+                    await Task.Delay(duration, LoopAwaitToken.Token);
+                }
+                catch (Exception ex)
+                {
+                    //会抛出TaskCanceledException，表示等待被取消，直接Destory
+                    if (ex is TaskCanceledException)
+                    {
+                        Destroy();
+                        return;
+                    }
+                }
 
                 sw.Stop();
 
@@ -416,7 +485,6 @@ namespace JEngine.Core
                 LoopDeltaTime = time;
                 TotalTime += time;
             }
-
             Destroy();
         }
 
@@ -426,8 +494,12 @@ namespace JEngine.Core
         /// </summary>
         private protected void Destroy()
         {
-            JBehaviours.Remove(this._instanceID);
-            End();
+            _gameObject = null;
+            LoopAwaitToken = null;
+            if (Application.isPlaying)
+            {
+                End();
+            }
         }
 
         /// <summary>

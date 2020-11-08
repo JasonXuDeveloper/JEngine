@@ -63,10 +63,11 @@ namespace ILRuntime.Runtime.Generated
             JEngine_Core_ClassBind_Binding.Register(app);
             System_Linq_Enumerable_Binding.Register(app);
             System_Collections_Generic_List_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
-            System_Collections_Generic_Dictionary_2_String_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
-            System_Collections_Generic_KeyValuePair_2_String_ILTypeInstance_Binding.Register(app);
             System_Diagnostics_Stopwatch_Binding.Register(app);
             System_Guid_Binding.Register(app);
+            UnityEngine_MonoBehaviour_Binding.Register(app);
+            System_Collections_Generic_KeyValuePair_2_String_ILTypeInstance_Binding.Register(app);
+            System_NotSupportedException_Binding.Register(app);
             MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Reflection_FieldInfo_Binding.Register(app);
             JEngine_Core_GameStats_Binding.Register(app);

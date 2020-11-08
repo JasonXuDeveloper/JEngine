@@ -95,6 +95,13 @@ namespace JEngine.Core
             //JBehaviour需自动赋值一个值
             var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
+            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
+            
+            if (_class.UseConstructor && isMono)
+            {
+                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
+
+            }
 
             var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
             clrInstance.enabled = false;
@@ -103,7 +110,7 @@ namespace JEngine.Core
             instance.CLRInstance = clrInstance;
             
             //判断类型
-            clrInstance.isMonoBehaviour = t.IsSubclassOf(typeof(MonoBehaviour));
+            clrInstance.isMonoBehaviour = isMono;
             
             if (isJBehaviour)
             {

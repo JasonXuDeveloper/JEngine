@@ -111,9 +111,13 @@ namespace JEngine.Editor
         private void GenAdapter()
         {
             //获取主工程DLL的类
-            Type t = Assembly
-                .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
-                          $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
+            Type t = Type.GetType(_class);
+            if (t == null)
+            {
+                t = Assembly
+                    .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                              $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);   
+            }
 
             //判断空
             if (t == null)
@@ -121,8 +125,10 @@ namespace JEngine.Editor
                 EditorUtility.DisplayDialog("Error", $"Invalid Class {_class}!\r\n{_class}类不存在！", "Ok");
                 return;
             }
+            
+            _class = t.FullName.Replace(".","_");
 
-            if (Directory.Exists(OUTPUT_PATH))
+            if (!Directory.Exists(OUTPUT_PATH))
             {
                 Directory.CreateDirectory(OUTPUT_PATH);
             }
