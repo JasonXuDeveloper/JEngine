@@ -496,11 +496,11 @@ namespace JEngine.Core
         private protected void Destroy()
         {
             _gameObject = null;
+            LoopAwaitToken = null;
             if (Application.isPlaying)
             {
                 End();
             }
-            GC.Collect();
         }
 
         /// <summary>
