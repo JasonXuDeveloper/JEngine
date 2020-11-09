@@ -59,48 +59,46 @@ namespace JEngine.Core
             while (true)
             {
                 cbs = FindObjectsOfTypeAll<ClassBind>();
+
                 foreach (var cb in cbs)
                 {
-                    var done = true;
                     //先添加
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
                         if (_class == null)
                         {
-                            done = false;
                             continue;
                         }
 
                         cb.AddClass(_class);
                     }
+                }
 
+                foreach (var cb in cbs)
+                {
                     //再赋值
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
                         if (_class == null)
                         {
-                            done = false;
                             continue;
                         }
 
                         cb.SetVal(_class);
                     }
+                }
 
-                    //激活
+                //激活
+                foreach (var cb in cbs)
+                {
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
                         if (_class == null)
                         {
-                            done = false;
                             continue;
                         }
 
                         cb.Active(_class);
-                    }
-
-                    if (done)
-                    {
-                        cb.Remove();
                     }
                 }
 

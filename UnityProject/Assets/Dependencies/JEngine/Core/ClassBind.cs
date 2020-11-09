@@ -334,6 +334,7 @@ namespace JEngine.Core
                 clrInstance.enabled = true;
                 clrInstance.Awake();
             }
+            Remove();
         }
 
         /// <summary>
