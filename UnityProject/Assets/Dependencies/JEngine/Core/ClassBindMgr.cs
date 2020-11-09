@@ -58,9 +58,9 @@ namespace JEngine.Core
         {
             while (true)
             {
-                for(int i = 0; i < cbs.Count; i++)
+                cbs = FindObjectsOfTypeAll<ClassBind>();
+                foreach (var cb in cbs)
                 {
-                    var cb = cbs.ElementAt(i);
                     var done = true;
                     //先添加
                     foreach (_ClassBind _class in cb.ScriptsToBind)
@@ -70,8 +70,10 @@ namespace JEngine.Core
                             done = false;
                             continue;
                         }
+
                         cb.AddClass(_class);
                     }
+
                     //再赋值
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
@@ -80,8 +82,10 @@ namespace JEngine.Core
                             done = false;
                             continue;
                         }
+
                         cb.SetVal(_class);
                     }
+
                     //激活
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
@@ -90,15 +94,16 @@ namespace JEngine.Core
                             done = false;
                             continue;
                         }
+
                         cb.Active(_class);
                     }
-                    
+
                     if (done)
                     {
                         cb.Remove();
-                        i--;
                     }
                 }
+
                 yield return null;
             }
         }

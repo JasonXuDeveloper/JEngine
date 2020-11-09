@@ -4577,7 +4577,7 @@ MonoBehaviour:
     Class: AutoBindDemo2
     ActiveAfter: 0
     RequireBindFields: 0
-    UseConstructor: 1
+    UseConstructor: 0
     Fields:
       array:
       - fieldType: 10
