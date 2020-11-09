@@ -256,7 +256,21 @@ public class MonoBehaviourAdapterEditor : Editor
                     {
                         //其他类型现在没法处理
                         if (obj != null)
-                            EditorGUILayout.LabelField(name, obj.ToString());
+                        {
+                            var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                .Find(adaptor =>
+                                    adaptor.ILInstance == instance[i.Value]);
+                            if (clrInstance != null)
+                            {
+                                GUI.enabled = true;
+                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
+                                GUI.enabled = false;
+                            }
+                            else
+                            {
+                                EditorGUILayout.LabelField(name, obj.ToString());
+                            }
+                        }
                         else
                             EditorGUILayout.LabelField(name, "(null)");
                     }

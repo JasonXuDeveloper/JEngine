@@ -60,11 +60,9 @@ namespace JEngine.Examples
 
     public class AutoBindDemo2 : MonoBehaviour
     {
-        public int PublicField2;
-
-        public string AttributeField2;
-
         public TextAsset txtFile;
+
+        AutoBindDemo1 a1;
 
         public void Awake()
         {
