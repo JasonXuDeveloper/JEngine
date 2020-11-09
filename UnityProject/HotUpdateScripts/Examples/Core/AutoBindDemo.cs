@@ -48,6 +48,8 @@ namespace JEngine.Examples
 
         [SerializeField] private bool BoolPropertyInstance;
 
+        AutoBindDemo2 a2;
+
 
         public override void Init()
         {

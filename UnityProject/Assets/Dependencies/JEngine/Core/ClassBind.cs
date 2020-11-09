@@ -46,7 +46,12 @@ namespace JEngine.Core
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
-        
+
+        private void Awake()
+        {
+            ClassBindMgr.cbs.Add(this);
+        }
+
         /// <summary>
         /// Set value
         /// </summary>
@@ -341,6 +346,7 @@ namespace JEngine.Core
         /// </summary>
         public void Remove()
         {
+            ClassBindMgr.cbs.Remove(this);
             //添加后删除
             Destroy(this);
         }

@@ -43,6 +43,8 @@ namespace JEngine.Core
 
         private static ClassBindMgr _instance;
 
+        public static List<ClassBind> cbs = new List<ClassBind>(0);
+
         private void Awake()
         {
             if (_instance != null)
@@ -54,48 +56,51 @@ namespace JEngine.Core
 
         IEnumerator CheckClassBind()
         {
-            var cbs = FindObjectsOfTypeAll<ClassBind>();
-            foreach (var cb in cbs)
+            while (true)
             {
-                var done = true;
-                //先添加
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                for(int i = 0; i < cbs.Count; i++)
                 {
-                    if (_class == null)
+                    var cb = cbs.ElementAt(i);
+                    var done = true;
+                    //先添加
+                    foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
-                        done = false;
-                        continue;
+                        if (_class == null)
+                        {
+                            done = false;
+                            continue;
+                        }
+                        cb.AddClass(_class);
                     }
-                    cb.AddClass(_class);
-                }
-                //再赋值
-                foreach (_ClassBind _class in cb.ScriptsToBind)
-                {
-                    if (_class == null)
+                    //再赋值
+                    foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
-                        done = false;
-                        continue;
+                        if (_class == null)
+                        {
+                            done = false;
+                            continue;
+                        }
+                        cb.SetVal(_class);
                     }
-                    cb.SetVal(_class);
-                }
-                //激活
-                foreach (_ClassBind _class in cb.ScriptsToBind)
-                {
-                    if (_class == null)
+                    //激活
+                    foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
-                        done = false;
-                        continue;
+                        if (_class == null)
+                        {
+                            done = false;
+                            continue;
+                        }
+                        cb.Active(_class);
                     }
-                    cb.Active(_class);
+                    
+                    if (done)
+                    {
+                        cb.Remove();
+                        i--;
+                    }
                 }
-
-                if (done)
-                {
-                    cb.Remove();
-                }
+                yield return null;
             }
-
-            yield return null;
         }
 
         public static List<T> FindObjectsOfTypeAll<T>()

@@ -4569,6 +4569,37 @@ MonoBehaviour:
         fieldName: GameObjectField1
         value: 
         gameObject: {fileID: 1925922024}
+      - fieldType: 12
+        fieldName: a2
+        value: 
+        gameObject: {fileID: 1925922024}
+  - Namespace: JEngine.Examples
+    Class: AutoBindDemo2
+    ActiveAfter: 0
+    RequireBindFields: 0
+    UseConstructor: 1
+    Fields:
+      array:
+      - fieldType: 10
+        fieldName: BoolProperty
+        value: true
+        gameObject: {fileID: 0}
+      - fieldType: 2
+        fieldName: IntField1
+        value: 100
+        gameObject: {fileID: 0}
+      - fieldType: 9
+        fieldName: StringField1
+        value: this is a string
+        gameObject: {fileID: 0}
+      - fieldType: 12
+        fieldName: EventSystemField1
+        value: 
+        gameObject: {fileID: 1732224119}
+      - fieldType: 11
+        fieldName: GameObjectField1
+        value: 
+        gameObject: {fileID: 1925922024}
 --- !u!4 &1925922026
 Transform:
   m_ObjectHideFlags: 0
