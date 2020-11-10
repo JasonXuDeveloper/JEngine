@@ -80,6 +80,8 @@ namespace JEngine.Core
             //添加实例ID
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
+
+            LoopAwaitToken = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -155,6 +157,12 @@ namespace JEngine.Core
                         i--;
                     }
                 }
+            }
+
+            private void OnDestroy()
+            {
+                CheckJBehaviour();
+                JBehaviours = null;
             }
         }
 
@@ -410,9 +418,29 @@ namespace JEngine.Core
         /// </summary>
         private protected async void Launch()
         {
-            if (!_gameObject.activeSelf)
+            while (!LoopAwaitToken.IsCancellationRequested)
             {
-                await Task.Delay(10);
+                if (JBehaviours is null || _gameObject.activeSelf)
+                {
+                    break;
+                }
+
+                try
+                {
+                    await Task.Delay(10, LoopAwaitToken.Token);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is TaskCanceledException)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            if (JBehaviours is null || _gameObject is null)
+            {
+                return;
             }
 
             Stopwatch sw = new Stopwatch();
@@ -437,7 +465,6 @@ namespace JEngine.Core
 
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
-            LoopAwaitToken = new CancellationTokenSource();
             DoLoop();
         }
 
@@ -456,11 +483,26 @@ namespace JEngine.Core
 
             while (_gameObject != null && !LoopAwaitToken.IsCancellationRequested)
             {
-                if (Paused)//暂停
+                while (Paused)
                 {
-                    await Task.Delay(25);
-                    continue;
+                    if (JBehaviours is null)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        await Task.Delay(25, LoopAwaitToken.Token);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is TaskCanceledException)
+                        {
+                            return;
+                        }
+                    }
                 }
+
 
                 //调整参数
                 if (TimeScale < 0.001f)

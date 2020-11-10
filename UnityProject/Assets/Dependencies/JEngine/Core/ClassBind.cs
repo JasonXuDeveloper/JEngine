@@ -399,6 +399,8 @@ namespace JEngine.Core
                 var go = t.GetField("_gameObject",BindingFlags.Public);
                 go.SetValue(clrInstance.ILInstance, this.gameObject);
             }
+
+            _class.Added = true;
                 
             //JBehaviour返回实例ID
             if (isJBehaviour)
@@ -523,6 +525,7 @@ namespace JEngine.Core
         public FieldList Fields;
 
         public bool BoundData { get; set; } = false;
+        public bool Added { get; set; } = false;
     }
 
     [System.Serializable]

@@ -78,7 +78,7 @@ namespace JEngine.Core
                     //先添加
                     foreach (_ClassBind _class in cb.ScriptsToBind)
                     {
-                        if (_class == null)
+                        if (_class == null || _class.Added)
                         {
                             continue;
                         }

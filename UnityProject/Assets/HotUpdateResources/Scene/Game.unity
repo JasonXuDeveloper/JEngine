@@ -4614,7 +4614,7 @@ MonoBehaviour:
         gameObject: {fileID: 0}
       - fieldType: 12
         fieldName: EventSystemField1
-        value: 
+        value: EventSystem
         gameObject: {fileID: 1732224119}
       - fieldType: 11
         fieldName: GameObjectField1

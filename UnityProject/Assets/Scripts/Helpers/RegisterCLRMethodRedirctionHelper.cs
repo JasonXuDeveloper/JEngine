@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
@@ -307,6 +309,31 @@ namespace JEngine.Helper
                 {
                     //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
                     var clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                    for (int i = 0; i < clrInstances.Length; i++)
+                    {
+                        var clrInstance = clrInstances[i];
+                        if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                        {
+                            if (clrInstance.ILInstance.Type == type)
+                            {
+                                res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                                break;
+                            }
+                        }
+                    }
+
+                    if (res == null)//如果是null，但有classBind，就先绑定
+                    {
+                        Type hotType = type.ReflectionType;
+                        var cb = instance.GetComponent<ClassBind>();
+                        var _classBind = cb.ScriptsToBind.ToList().Find(_cb =>
+                            _cb.Namespace == hotType.Namespace && _cb.Class == hotType.Name);
+                        cb.AddClass(_classBind);
+                        _classBind.Added = true;
+                    }
+                    
+                    //再次循环
+                    clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
                     for (int i = 0; i < clrInstances.Length; i++)
                     {
                         var clrInstance = clrInstances[i];
