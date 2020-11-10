@@ -1,6 +1,8 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.Runtime.Intepreter;
@@ -9,6 +11,7 @@ using LitJson;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // using LitJson;
 
@@ -199,7 +202,26 @@ public class MonoBehaviourAdapterEditor : Editor
                     {
                         if (obj == null && cType == typeof(MonoBehaviourAdapter.Adaptor))
                         {
-                            EditorGUILayout.LabelField(name, "未赋值或自动赋值的热更类");
+                            EditorGUILayout.LabelField(name, "未赋值的热更类");
+                            break;
+                        }
+
+                        if (cType == typeof(MonoBehaviourAdapter.Adaptor))
+                        {
+                            try
+                            {
+                                var clrInstance = ClassBind.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                    .Find(adaptor =>
+                                        adaptor.ILInstance == instance[i.Value]);
+                                GUI.enabled = true;
+                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
+                                GUI.enabled = false;
+                            }
+                            catch
+                            {
+                                EditorGUILayout.LabelField(name, "未赋值的热更类");
+                            }
+                            
                             break;
                         }
                         
@@ -234,7 +256,21 @@ public class MonoBehaviourAdapterEditor : Editor
                     {
                         //其他类型现在没法处理
                         if (obj != null)
-                            EditorGUILayout.LabelField(name, obj.ToString());
+                        {
+                            var clrInstance = ClassBind.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                .Find(adaptor =>
+                                    adaptor.ILInstance == instance[i.Value]);
+                            if (clrInstance != null)
+                            {
+                                GUI.enabled = true;
+                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
+                                GUI.enabled = false;
+                            }
+                            else
+                            {
+                                EditorGUILayout.LabelField(name, obj.ToString());
+                            }
+                        }
                         else
                             EditorGUILayout.LabelField(name, "(null)");
                     }
@@ -245,7 +281,7 @@ public class MonoBehaviourAdapterEditor : Editor
         // 应用属性修改
         this.serializedObject.ApplyModifiedProperties();
     }
-    
+
     private object ConvertSimpleType(object value, Type destinationType) 
     { 
         object returnValue; 

@@ -3923,6 +3923,57 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1813329111
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1813329113}
+  - component: {fileID: 1813329112}
+  m_Layer: 0
+  m_Name: ConvertDemo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1813329112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813329111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScriptsToBind:
+  - Namespace: JEngine.Examples
+    Class: ConvertDemo
+    ActiveAfter: 1
+    RequireBindFields: 1
+    UseConstructor: 1
+    Fields:
+      array: []
+--- !u!4 &1813329113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1813329111}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1823805411
 GameObject:
   m_ObjectHideFlags: 0
@@ -4295,6 +4346,25 @@ MonoBehaviour:
         gameObject: {fileID: 1732224119}
       - fieldType: 11
         fieldName: GameObjectField1
+        value: 
+        gameObject: {fileID: 1925922024}
+      - fieldType: 12
+        fieldName: a2
+        value: 
+        gameObject: {fileID: 1925922024}
+  - Namespace: JEngine.Examples
+    Class: AutoBindDemo2
+    ActiveAfter: 0
+    RequireBindFields: 1
+    UseConstructor: 1
+    Fields:
+      array:
+      - fieldType: 13
+        fieldName: txtFile
+        value: Controller.txt
+        gameObject: {fileID: 0}
+      - fieldType: 12
+        fieldName: a1
         value: 
         gameObject: {fileID: 1925922024}
 --- !u!4 &1925922026

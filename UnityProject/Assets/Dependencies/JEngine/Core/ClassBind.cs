@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using libx;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Malee.List;
 using System.Linq;
@@ -34,6 +35,7 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
 using ProjectAdapter;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Component = UnityEngine.Component;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -75,6 +77,13 @@ namespace JEngine.Core
             Destroy(cb);
         }
 
+        public static List<T> FindObjectsOfTypeAll<T>()
+        {
+            return SceneManager.GetActiveScene().GetRootGameObjects()
+                .SelectMany(g => g.GetComponentsInChildren<T>(true))
+                .ToList();
+        }
+        
         public string AddClass(_ClassBind _class)
         {
             //添加脚本
@@ -107,7 +116,14 @@ namespace JEngine.Core
             clrInstance.enabled = false;
             clrInstance.ILInstance = instance;
             clrInstance.AppDomain = Init.appdomain;
-            instance.CLRInstance = clrInstance;
+            if (isMono)
+            {
+                instance.CLRInstance = clrInstance;
+            }
+            else
+            {
+                instance.CLRInstance = instance;
+            }
             
             //判断类型
             clrInstance.isMonoBehaviour = isMono;
@@ -374,10 +390,9 @@ namespace JEngine.Core
             //是否激活
             if (_class.ActiveAfter)
             {
-                if (_class.BoundData == false && _class.RequireBindFields)
+                if (_class.BoundData == false && _class.RequireBindFields && _class.Fields.Count > 0)
                 {
-                    Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，无法自动激活，请手动！");
-                    return null;
+                    Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
                 clrInstance.enabled = true;

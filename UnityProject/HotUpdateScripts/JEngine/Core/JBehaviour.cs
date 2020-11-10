@@ -36,6 +36,36 @@ using System.Collections.Generic;
 namespace JEngine.Core
 {
     /// <summary>
+    /// Extension methods for JBehaviour
+    /// </summary>
+    public static class JBehaviourExtension
+    {
+        /// <summary>
+        /// Create a JBehaviour on a gameObject
+        /// 在游戏对象上创建JBehaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="gameObject"></param>
+        /// <param name="activeAfter"></param>
+        /// <returns></returns>
+        public static T CreateJBehaviour<T>(this GameObject gameObject, bool activeAfter = true) where T : JBehaviour
+        {
+            return JBehaviour.CreateOn<T>(gameObject, activeAfter);
+        }
+
+        /// <summary>
+        /// Create JUI on a gameObject
+        /// 在游戏对象上创建JUI
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
+        public static JUI CreateJUI(this GameObject gameObject)
+        {
+            return JBehaviour.CreateOn<JUI>(gameObject, false);
+        }
+    }
+
+    /// <summary>
     /// JEngine's Behaviour
     /// </summary>
     public class JBehaviour : IJBehaviour
