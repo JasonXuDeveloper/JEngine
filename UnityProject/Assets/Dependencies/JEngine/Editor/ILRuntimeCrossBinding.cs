@@ -92,7 +92,6 @@ namespace JEngine.Editor
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _namespace = "ProjectAdapter";
             EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
