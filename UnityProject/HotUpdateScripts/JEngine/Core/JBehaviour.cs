@@ -413,7 +413,7 @@ namespace JEngine.Core
         /// </summary>
         private protected async void Launch()
         {
-            if (!_gameObject.activeSelf)
+            while (!_gameObject.activeSelf)
             {
                 await Task.Delay(10);
             }
