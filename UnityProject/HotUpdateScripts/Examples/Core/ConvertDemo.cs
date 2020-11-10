@@ -1,10 +1,10 @@
 ﻿//
-// AutoBindDemo.cs
+// ConvertDemo.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
 //
-// Copyright (c) 2020 
+// Copyright (c) 2020 JEngine
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,52 +24,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using JEngine.Core;
-using UnityEngine;
-using UnityEngine.EventSystems;
-
 namespace JEngine.Examples
 {
-    public class AutoBindDemo1 : JBehaviour
+    public interface IDemo { }
+
+    public class OtherClass { }
+
+    public class Demo1 : JBehaviour, IDemo { }
+
+    public class Demo2 : OtherClass, IDemo { }
+
+    public class ConvertDemo : JBehaviour
     {
-        public int IntField1;
-
-        public string StringField1;
-
-        public EventSystem EventSystemField1;
-
-        public GameObject GameObjectField1;
-
-        public bool BoolProperty
-        {
-            get => BoolPropertyInstance;
-            set => BoolPropertyInstance = value;
-        }
-
-        [SerializeField] private bool BoolPropertyInstance;
-
-        AutoBindDemo2 a2 = null;
-
-
         public override void Init()
         {
-            Log.Print("[Autobind] AutoBindDemo1::Inited");
-            GameObjectField1.SetActive(!GameObjectField1.activeSelf);
-            Log.Print($"[Autobind] a2 is null? {a2 is null}");
-        }
-    }
+            List<IDemo> list = new List<IDemo>(0);
 
-    public class AutoBindDemo2 : MonoBehaviour
-    {
-        public TextAsset txtFile;
+            var go = new UnityEngine.GameObject("demo1");
+            go.transform.SetParent(UnityEngine.GameObject.Find("ConvertDemo").transform);
 
-        AutoBindDemo1 a1 = null;
+            Demo1 d1 = go.CreateJBehaviour<Demo1>();
+            Demo2 d2 = new Demo2();
 
-        public void Awake()
-        {
-            Log.Print("[Autobind] AutoBindDemo2::Started");
-            Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
-            Log.Print($"[Autobind] a1 is null? {a1 is null}");
+            list.Add(d1);
+            list.Add(d2);
+
+
+            Log.Print($"[ConvertDemo] list 有{list.Count}个元素");
         }
     }
 }

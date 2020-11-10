@@ -66,6 +66,7 @@
     <Compile Include="Examples\UI\View\JTestView.cs" />
     <Compile Include="Examples\UI\View\JBtnView.cs" />
     <Compile Include="JEngine\UI\UIRootView.cs" />
+    <Compile Include="Examples\Core\ConvertDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

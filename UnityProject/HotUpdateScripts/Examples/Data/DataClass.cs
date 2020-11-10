@@ -68,7 +68,7 @@ namespace JEngine.Examples
 
         public void Awake()
         {
-            Log.Print("DataClass 被 Active After了");
+            Log.Print("[DataClass] DataClass 被 Active After了");
         }
     }
 }

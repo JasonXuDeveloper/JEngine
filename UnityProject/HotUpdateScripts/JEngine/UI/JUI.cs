@@ -176,6 +176,12 @@ namespace JEngine.UI
             return this;
         }
 
+        /// <summary>
+        /// Create JUI on a gameObject
+        /// 在游戏对象上创建JUI
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
         public static JUI CreateOn(GameObject gameObject)
         {
             return JBehaviour.CreateOn<JUI>(gameObject, false);
