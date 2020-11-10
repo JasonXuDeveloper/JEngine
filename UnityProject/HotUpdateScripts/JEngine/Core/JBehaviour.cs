@@ -413,9 +413,26 @@ namespace JEngine.Core
         /// </summary>
         private protected async void Launch()
         {
-            while (!_gameObject.activeSelf)
+            LoopAwaitToken = new CancellationTokenSource();
+
+            while (!LoopAwaitToken.IsCancellationRequested)
             {
-                await Task.Delay(10);
+                if (JBehaviours is null || _gameObject.activeSelf)
+                {
+                    break;
+                }
+
+                try
+                {
+                    await Task.Delay(10, LoopAwaitToken.Token);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is TaskCanceledException)
+                    {
+                        return;
+                    }
+                }
             }
 
             Stopwatch sw = new Stopwatch();
