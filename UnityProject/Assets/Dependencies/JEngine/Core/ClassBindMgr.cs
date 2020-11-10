@@ -33,7 +33,7 @@ using UnityEngine.SceneManagement;
 
 namespace JEngine.Core
 {
-    public class ClassBindMgr:MonoBehaviour
+    public class ClassBindMgr : MonoBehaviour
     {
         public static void Instantiate()
         {
@@ -42,8 +42,7 @@ namespace JEngine.Core
         }
 
         private static ClassBindMgr _instance;
-
-        public static List<ClassBind> cbs = new List<ClassBind>(0);
+        private static List<Scene> _loadedScenes;
 
         private void Awake()
         {
@@ -51,6 +50,20 @@ namespace JEngine.Core
             {
                 Destroy(this);
             }
+            
+            _loadedScenes = new List<Scene>(0);
+            _loadedScenes.Add(SceneManager.GetActiveScene());
+
+            SceneManager.sceneLoaded += (scene, mode) =>
+            {
+                _loadedScenes.Add(scene);
+            };
+            
+            SceneManager.sceneUnloaded+=(scene) =>
+            {
+                _loadedScenes.Remove(scene);
+            };
+
             StartCoroutine(CheckClassBind());
         }
 
@@ -58,7 +71,7 @@ namespace JEngine.Core
         {
             while (true)
             {
-                cbs = FindObjectsOfTypeAll<ClassBind>();
+                var cbs = FindObjectsOfTypeAll<ClassBind>();
 
                 foreach (var cb in cbs)
                 {
@@ -108,7 +121,7 @@ namespace JEngine.Core
 
         public static List<T> FindObjectsOfTypeAll<T>()
         {
-            return SceneManager.GetActiveScene().GetRootGameObjects()
+            return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
         }

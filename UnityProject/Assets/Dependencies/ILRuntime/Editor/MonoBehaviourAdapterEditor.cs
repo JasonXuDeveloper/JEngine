@@ -259,7 +259,7 @@ public class MonoBehaviourAdapterEditor : Editor
                         {
                             var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
                                 .Find(adaptor =>
-                                    adaptor.ILInstance == instance[i.Value]);
+                                    adaptor.ILInstance.Equals(instance[i.Value]));
                             if (clrInstance != null)
                             {
                                 GUI.enabled = true;
