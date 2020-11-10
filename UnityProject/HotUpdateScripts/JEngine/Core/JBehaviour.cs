@@ -411,8 +411,13 @@ namespace JEngine.Core
         /// Launch the lifecycle
         /// 开始生命周期
         /// </summary>
-        private protected void Launch()
+        private protected async void Launch()
         {
+            if (!_gameObject.activeSelf)
+            {
+                await Task.Delay(10);
+            }
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try

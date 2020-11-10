@@ -62,11 +62,17 @@ namespace JEngine.Editor
             GUI.skin.label.fontSize = 18;
             GUILayout.Label("ILRuntime Adapter Generator");
 
+            //介绍
+            EditorGUILayout.HelpBox("本地工程类（没生成asmdef的），Assembly一栏不需要改，Class name一栏写类名（有命名空间带上）；\n" +
+                                    "有生成asmdef的工程类，Assembly一栏写asmdef里写的名字，Class name一栏写类名（有命名空间带上）；\n" +
+                                    "最后的Namespace是生成的适配器的命名空间，随便写，只要在适配器Helper引用激活即可\n\n" +
+                                    "如果要生成Unity类的适配器，请确定找到了对应的module，并添加进热更工程，HotUpdateScripts/Dlls文件夹内，不然无法获取",MessageType.Info);
+            
             //程序集
             GUILayout.Space(50);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            EditorGUILayout.LabelField("Assembly 适配器命名空间");
+            EditorGUILayout.LabelField("Assembly 类的程序集");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
@@ -86,7 +92,6 @@ namespace JEngine.Editor
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(25);
-            _namespace = "ProjectAdapter";
             EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
@@ -117,6 +122,15 @@ namespace JEngine.Editor
                 t = Assembly
                     .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
                               $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);   
+                
+                if (t == null)
+                {
+                
+                
+                    t = Assembly
+                        .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                                  $"/HotUpdateScripts/Dlls/{_assembly}.dll").GetType(_class);   
+                }
             }
 
             //判断空
@@ -125,9 +139,9 @@ namespace JEngine.Editor
                 EditorUtility.DisplayDialog("Error", $"Invalid Class {_class}!\r\n{_class}类不存在！", "Ok");
                 return;
             }
-            
-            _class = t.FullName.Replace(".","_");
 
+            _class = t.FullName.Replace(".","_");
+            
             if (!Directory.Exists(OUTPUT_PATH))
             {
                 Directory.CreateDirectory(OUTPUT_PATH);
