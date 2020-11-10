@@ -326,25 +326,29 @@ namespace JEngine.Helper
                     {
                         Type hotType = type.ReflectionType;
                         var cb = instance.GetComponent<ClassBind>();
-                        var _classBind = cb.ScriptsToBind.ToList().Find(_cb =>
-                            _cb.Namespace == hotType.Namespace && _cb.Class == hotType.Name);
-                        cb.AddClass(_classBind);
-                        _classBind.Added = true;
-                    }
-                    
-                    //再次循环
-                    clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
-                    for (int i = 0; i < clrInstances.Length; i++)
-                    {
-                        var clrInstance = clrInstances[i];
-                        if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                        if (cb != null)
                         {
-                            if (clrInstance.ILInstance.Type == type)
+                            var _classBind = cb.ScriptsToBind.ToList().Find(_cb =>
+                                _cb.Namespace == hotType.Namespace && _cb.Class == hotType.Name);
+                            cb.AddClass(_classBind);
+                            _classBind.Added = true;
+                            
+                            //再次循环
+                            clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                            for (int i = 0; i < clrInstances.Length; i++)
                             {
-                                res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                                break;
+                                var clrInstance = clrInstances[i];
+                                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                                {
+                                    if (clrInstance.ILInstance.Type == type)
+                                    {
+                                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                                        break;
+                                    }
+                                }
                             }
                         }
+                        
                     }
                 }
 
