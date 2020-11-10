@@ -483,24 +483,10 @@ namespace JEngine.Core
 
             while (_gameObject != null && !LoopAwaitToken.IsCancellationRequested)
             {
-                while (Paused)
+                if (Paused)//暂停
                 {
-                    if (JBehaviours is null)
-                    {
-                        break;
-                    }
-
-                    try
-                    {
-                        await Task.Delay(25, LoopAwaitToken.Token);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is TaskCanceledException)
-                        {
-                            return;
-                        }
-                    }
+                    await Task.Delay(25);
+                    continue;
                 }
 
 
