@@ -79,6 +79,8 @@ namespace JEngine.Core
             //添加实例ID
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
+
+            LoopAwaitToken = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -413,8 +415,6 @@ namespace JEngine.Core
         /// </summary>
         private protected async void Launch()
         {
-            LoopAwaitToken = new CancellationTokenSource();
-
             while (!LoopAwaitToken.IsCancellationRequested)
             {
                 if (JBehaviours is null || _gameObject.activeSelf)
