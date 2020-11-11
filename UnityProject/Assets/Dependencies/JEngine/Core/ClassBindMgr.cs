@@ -71,51 +71,56 @@ namespace JEngine.Core
         {
             while (true)
             {
-                var cbs = FindObjectsOfTypeAll<ClassBind>();
-
-                foreach (var cb in cbs)
-                {
-                    //先添加
-                    foreach (_ClassBind _class in cb.ScriptsToBind)
-                    {
-                        if (_class == null || _class.Added)
-                        {
-                            continue;
-                        }
-
-                        cb.AddClass(_class);
-                    }
-                }
-
-                foreach (var cb in cbs)
-                {
-                    //再赋值
-                    foreach (_ClassBind _class in cb.ScriptsToBind)
-                    {
-                        if (_class == null)
-                        {
-                            continue;
-                        }
-
-                        cb.SetVal(_class);
-                    }
-                }
-
-                //激活
-                foreach (var cb in cbs)
-                {
-                    foreach (_ClassBind _class in cb.ScriptsToBind)
-                    {
-                        if (_class == null)
-                        {
-                            continue;
-                        }
-
-                        cb.Active(_class);
-                    }
-                }
+                DoBind();
 
                 yield return null;
+            }
+        }
+
+        public static void DoBind()
+        {
+            var cbs = FindObjectsOfTypeAll<ClassBind>();
+
+            foreach (var cb in cbs)
+            {
+                //先添加
+                foreach (_ClassBind _class in cb.ScriptsToBind)
+                {
+                    if (_class == null || _class.Added)
+                    {
+                        continue;
+                    }
+
+                    cb.AddClass(_class);
+                }
+            }
+
+            foreach (var cb in cbs)
+            {
+                //再赋值
+                foreach (_ClassBind _class in cb.ScriptsToBind)
+                {
+                    if (_class == null)
+                    {
+                        continue;
+                    }
+
+                    cb.SetVal(_class);
+                }
+            }
+
+            //激活
+            foreach (var cb in cbs)
+            {
+                foreach (_ClassBind _class in cb.ScriptsToBind)
+                {
+                    if (_class == null)
+                    {
+                        continue;
+                    }
+
+                    cb.Active(_class);
+                }
             }
         }
 

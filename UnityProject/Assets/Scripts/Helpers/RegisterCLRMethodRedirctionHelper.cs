@@ -328,10 +328,8 @@ namespace JEngine.Helper
                         var cb = instance.GetComponent<ClassBind>();
                         if (cb != null)
                         {
-                            var _classBind = cb.ScriptsToBind.ToList().Find(_cb =>
-                                _cb.Namespace == hotType.Namespace && _cb.Class == hotType.Name);
-                            cb.AddClass(_classBind);
-                            _classBind.Added = true;
+                            //执行绑定
+                            ClassBindMgr.DoBind();
                             
                             //再次循环
                             clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
