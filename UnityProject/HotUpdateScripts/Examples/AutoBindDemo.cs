@@ -67,7 +67,7 @@ namespace JEngine.Examples
 
         public void Awake()
         {
-            Log.Print("[Autobind] AutoBindDemo2::Started");
+            Log.Print("[Autobind] AutoBindDemo2::Awake");
             Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
             Log.Print($"[Autobind] a1 is null? {a1 is null}");
         }

@@ -55,6 +55,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
+        private bool awaked = false;
         public void Awake()
         {
             //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
@@ -69,6 +70,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 if (mAwakeMethod != null)
                 {
                     appdomain.Invoke(mAwakeMethod, instance, param0);
+                    awaked = true;
+                    OnEnable();
                 }
             }
         }
@@ -160,7 +163,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     mOnEnableMethodGot = true;
                 }
 
-                if (mOnEnableMethod != null)
+                if (mOnEnableMethod != null && awaked)
                 {
                     appdomain.Invoke(mOnEnableMethod, instance, param0);
                 }
