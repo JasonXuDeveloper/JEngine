@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using ILRuntime.Runtime;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
 using JEngine.Interface;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+using Object = UnityEngine.Object;
 
 namespace JEngine.Helper
 {
@@ -59,7 +59,206 @@ namespace JEngine.Helper
             var printErrorMethod = printType.GetMethod("PrintError", new[] {typeof(object)});
             appdomain.RegisterCLRMethodRedirection(printErrorMethod, PrintError);
 
+            //注册Instantiate
+            Type unityObjectType = typeof(UnityEngine.Object);
+            var instantiateMethods = unityObjectType.GetMethods().ToList()
+                .FindAll(i => i.Name == "Instantiate");
+            foreach (var instantiateMethod in instantiateMethods)
+            {
+                appdomain.RegisterCLRMethodRedirection(instantiateMethod,Instantiate);
+            }
+        }
+        
+        
+        private static void SetGOForInstantiate(object instance,out GameObject ins,out bool returnScipt, out ILType returnType)
+        {
+            returnType = null;
+            returnScipt = false;
 
+            //判断类
+            if (instance is GameObject)
+            {
+                ins = instance as GameObject;
+            }
+            else if(instance is ILTypeInstance)//如果是热更类需要处理
+            {
+                returnScipt = true;
+                returnType = (instance as ILTypeInstance).Type;
+                var pi = returnType.ReflectionType.GetProperty("gameObject");
+                ins = pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+            }
+            else//如果本地类那简单
+            {
+                returnScipt = true;
+                ins = (instance as Component).gameObject;
+            }
+        }
+        
+        /// <summary>
+        /// Instantiate 实现
+        /// </summary>
+        /// <param name="__intp"></param>
+        /// <param name="__esp"></param>
+        /// <param name="__mStack"></param>
+        /// <param name="__method"></param>
+        /// <param name="isNewObj"></param>
+        /// <returns></returns>
+        /// <exception cref="System.NullReferenceException"></exception>
+        unsafe static StackObject* Instantiate(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+            CLRMethod __method, bool isNewObj)
+        {
+            //CLR重定向的说明请看相关文档和教程，这里不多做解释
+            AppDomain __domain = __intp.AppDomain;
+
+            var ptr = __esp - 1;
+            var instance = StackObject.ToObject(ptr, __domain, __mStack) as object;
+            if (instance == null)
+                throw new NullReferenceException();
+            __intp.Free(ptr);
+
+            bool returnScipt = false;
+            ILType returnType = null;
+            object scriptResult = null;
+
+            GameObject ins = null;
+            Transform parent = null;
+            Vector3 position = Vector3.zero;
+            Quaternion rotation = Quaternion.identity;
+            bool gotRot = false;
+            bool instantiateInWorldSpace = false;
+            bool gotIWS = false;
+
+
+            //处理参数
+            if (instance is Transform)//gameobject, transform
+            {
+                parent = instance as Transform;
+                //获取真正的gameObject
+                var ptr2 = __esp - 2;
+                var param2 = StackObject.ToObject(ptr2, __domain, __mStack) as object;
+                __intp.Free(ptr2);
+                if (param2 is GameObject)
+                {
+                    instance = param2;
+                }
+                else// gameobject, v3, quaternion, transform
+                {
+                    gotRot = true;
+                    rotation = (Quaternion)param2;
+                    var ptr3 = __esp - 3;
+                    position = (Vector3)StackObject.ToObject(ptr3, __domain, __mStack);
+                    __intp.Free(ptr3);
+                }
+            }
+            if (instance is Quaternion)//gameobject, v3, quaternion
+            {
+                gotRot = true;
+                rotation = (Quaternion) instance;
+                //获取v3
+                var ptr2 = __esp - 2;
+                var param2 = StackObject.ToObject(ptr2, __domain, __mStack) as object;
+                position = (Vector3)param2;
+                __intp.Free(ptr2);
+                //获取真正的gameObject
+                var ptr3 = __esp - 3;
+                instance = StackObject.ToObject(ptr3, __domain, __mStack);
+                __intp.Free(ptr3);
+            }
+            if (instance is int)//gameobject, transform, bool，ILRuntime把热更的bool变int传了，1是true，0是false
+            {
+                instantiateInWorldSpace = instance.ToString() == "1";
+                Debug.Log(instantiateInWorldSpace);
+                gotIWS = true;
+                //获取parent
+                var ptr2 = __esp - 2;  
+                parent = StackObject.ToObject(ptr2, __domain, __mStack) as Transform;
+                __intp.Free(ptr2);
+                //获取真正的gameObject
+                var ptr3 = __esp - 3;
+                instance = StackObject.ToObject(ptr3, __domain, __mStack) as object;
+                __intp.Free(ptr3);
+            }
+
+            
+            
+            //处理对象
+            SetGOForInstantiate(instance, out ins, out returnScipt, out returnType);
+            
+            //处理clasBind
+            var cb = ins.GetComponent<ClassBind>();
+            if (cb != null)
+            {
+                //执行绑定
+                ClassBindMgr.DoBind();
+            }
+
+            //处理返回对象
+            GameObject res = null;
+            if (parent == null && !gotRot)//1参数
+            {
+               res = UnityEngine.Object.Instantiate(ins);//生成
+            }
+            else if (gotRot && parent == null)
+            {
+                res = UnityEngine.Object.Instantiate(ins,position,rotation); //生成
+            }
+            else if (gotRot && parent != null)
+            {
+                res = UnityEngine.Object.Instantiate(ins,position,rotation,parent); //生成
+            }
+            else if(gotIWS)//gameobject,transform,bool
+            {
+                res = UnityEngine.Object.Instantiate(ins,parent,instantiateInWorldSpace);//生成
+            }
+            else if (parent != null)//gameobject,transform
+            {
+               res = UnityEngine.Object.Instantiate(ins,parent);//生成
+            }
+            
+            
+            UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
+                
+            //重新赋值instance的热更脚本
+            var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
+            var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                //获取对照适配器
+                var clrInstance = clrInstances[i];
+                var clrInstance4Ins = clrInstances4Ins[i];
+                    
+                clrInstance.Reset();//重置clone的
+
+                //重新搞ILInstance
+                ILTypeInstance ilInstance = clrInstance4Ins.ILInstance.Clone();//这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
+                clrInstance.ILInstance = ilInstance;
+                clrInstance.AppDomain = __domain;
+                    
+                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins)//clr指向
+                {
+                    ilInstance.CLRInstance = clrInstance;
+                }
+                else
+                {
+                    ilInstance.CLRInstance = ilInstance;
+                }
+                
+                if (ilInstance.Type == returnType && scriptResult == null)
+                {
+                    scriptResult = ilInstance; 
+                }
+            }
+
+            if (returnScipt)
+            {
+                //如果返回本地类
+                if (returnType == null)
+                {
+                    scriptResult = res.GetComponent(instance.GetType());
+                }
+                return ILIntepreter.PushObject(ptr, __mStack, scriptResult);
+            }
+            return ILIntepreter.PushObject(ptr, __mStack, res);
         }
 
         /// <summary>
@@ -324,7 +523,6 @@ namespace JEngine.Helper
 
                     if (res == null)//如果是null，但有classBind，就先绑定
                     {
-                        Type hotType = type.ReflectionType;
                         var cb = instance.GetComponent<ClassBind>();
                         if (cb != null)
                         {

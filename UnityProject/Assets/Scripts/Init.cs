@@ -30,7 +30,7 @@ public class Init : MonoBehaviour
         GameStats.Init();
         LoadHotFixAssembly();
     }
-    
+
     void LoadHotFixAssembly()
     {
         appdomain = new AppDomain();

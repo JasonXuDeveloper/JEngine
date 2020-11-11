@@ -51,6 +51,26 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         public AppDomain AppDomain { get { return appdomain; } set { appdomain = value; } }
 
+        public void Reset()
+        {
+            mAwakeMethodGot = false;
+            mStartMethodGot = false;
+            mUpdateMethodGot = false;
+            mFixedUpdateMethodGot = false;
+            mLateUpdateMethodGot = false;
+            mOnEnableMethodGot = false;
+            mOnDisableMethodGot = false;
+            mOnDisableMethodGot = false;
+            mOnTriggerEnterMethodGot = false;
+            mOnTriggerStayMethodGot = false;
+            mOnTriggerExitMethodGot = false;
+            mOnCollisionEnterMethodGot = false;
+            mOnCollisionStayMethodGot = false;
+            mOnCollisionExitMethodGot = false;
+            instance = null;
+            appdomain = null;
+        }
+
         object[] param0 = new object[0];
         
         IMethod mAwakeMethod;

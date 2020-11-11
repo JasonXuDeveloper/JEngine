@@ -100,7 +100,7 @@ namespace JEngine.Core
                 //再赋值
                 foreach (_ClassBind _class in cb.ScriptsToBind)
                 {
-                    if (_class == null)
+                    if (_class == null || _class.BoundData)
                     {
                         continue;
                     }
@@ -114,7 +114,7 @@ namespace JEngine.Core
             {
                 foreach (_ClassBind _class in cb.ScriptsToBind)
                 {
-                    if (_class == null)
+                    if (_class == null ||_class.Activated)
                     {
                         continue;
                     }

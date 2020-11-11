@@ -332,6 +332,7 @@ namespace JEngine.Core
 
                 clrInstance.enabled = true;
                 clrInstance.Awake();
+                _class.Activated = true;
             }
             Remove();
         }
@@ -526,6 +527,7 @@ namespace JEngine.Core
 
         public bool BoundData { get; set; } = false;
         public bool Added { get; set; } = false;
+        public bool Activated { get; set; } = false;
     }
 
     [System.Serializable]
