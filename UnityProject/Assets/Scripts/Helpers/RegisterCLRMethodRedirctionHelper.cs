@@ -33,6 +33,7 @@ namespace JEngine.Helper
         {
             //注册Get和Add Component
             Type gameObjectType = typeof(GameObject);
+            Type componentType = typeof(Component);
             var addComponentMethod = gameObjectType.GetMethods().ToList()
                 .Find(i => i.Name == "AddComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(addComponentMethod, AddComponent);
@@ -40,6 +41,9 @@ namespace JEngine.Helper
             var getComponentMethod = gameObjectType.GetMethods().ToList()
                 .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod, GetComponent);
+            var getComponentMethod2 = componentType.GetMethods().ToList()
+                .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
+            appdomain.RegisterCLRMethodRedirection(getComponentMethod2, GetComponent);
 
             //注册3种Log
             Type debugType = typeof(Debug);
@@ -488,8 +492,8 @@ namespace JEngine.Helper
 
             var ptr = __esp - 1;
             //成员方法的第一个参数为this
-            GameObject instance = StackObject.ToObject(ptr, __domain, __mStack) as GameObject;
-            if (instance == null)
+            var ins = StackObject.ToObject(ptr, __domain, __mStack);
+            if (ins == null)
                 throw new NullReferenceException();
             __intp.Free(ptr);
 
@@ -497,6 +501,29 @@ namespace JEngine.Helper
             //AddComponent应该有且只有1个泛型参数
             if (genericArgument != null && genericArgument.Length == 1)
             {
+                GameObject instance;
+                
+                if (ins is GameObject)
+                {
+                    instance = ins as GameObject;
+                }
+                else if(ins is Component)
+                {
+                    instance = ((Component) ins).gameObject;
+                }
+                else if(ins is ILTypeInstance)
+                {
+                    var pi = ((ILTypeInstance)ins).Type.ReflectionType.GetProperty("gameObject");
+                    instance = pi.GetValue((ins as ILTypeInstance).CLRInstance) as GameObject;
+                }
+                else
+                {
+                    Debug.LogError($"[GetComponent错误] 不支持的参数类型：{ins.GetType().FullName}，" +
+                                   $"请传参GameObject或继承MonoBehaviour的对象");
+                    return __esp;
+                }
+                
+                
                 var type = genericArgument[0];
                 object res = null;
                 if (type is CLRType)
