@@ -1,8 +1,10 @@
-# JENGINE v0.5.x LTS
+# JENGINE
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
-该分支是```v0.5```系列分支，是一个长期支持（**LTS**）版本，虽然**已不再继续更新**新功能，**但会修复Bug**，欢迎**PR**和提交**issue**
+该分支是```最新版本```系列分支，更新很频繁！
+
+稳定版本请使用```0.5.x```分支！
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
