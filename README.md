@@ -4,6 +4,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 该分支是```v0.5```系列分支，是一个长期支持（**LTS**）版本，虽然**已不再继续更新**新功能，**但会修复Bug**，欢迎**PR**和提交**issue**
 
+**注意：**如果```Instantiate```，```SendMessage```等方法出现错误，是CLR重定向没有实现，需要学习ILRuntime去自己实现，也可以更新最新分支（0.6.x就已经实现了）
+
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
 ![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
