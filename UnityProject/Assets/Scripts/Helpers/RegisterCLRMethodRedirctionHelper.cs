@@ -570,6 +570,41 @@ namespace JEngine.Helper
                 ins = (instance as Component).gameObject;
             }
         }
+
+        private static void CleanGoForInstantiate(ref GameObject res,GameObject ins,AppDomain __domain)
+        {
+            //如果同时有adaptor和classbind，肯定是复制的，要给删了
+            if (res.GetComponent<ClassBind>() && res.GetComponent<MonoBehaviourAdapter.Adaptor>())
+            {
+                UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
+            }
+            
+            //重新赋值instance的热更脚本
+            var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
+            var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                //获取对照适配器
+                var clrInstance = clrInstances[i];
+                var clrInstance4Ins = clrInstances4Ins[i];
+                    
+                clrInstance.Reset();//重置clone的
+
+                //重新搞ILInstance
+                ILTypeInstance ilInstance = clrInstance4Ins.ILInstance.Clone();//这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
+                clrInstance.ILInstance = ilInstance;
+                clrInstance.AppDomain = __domain;
+                    
+                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins)//clr指向
+                {
+                    ilInstance.CLRInstance = clrInstance;
+                }
+                else
+                {
+                    ilInstance.CLRInstance = ilInstance;
+                }
+            }
+        }
         
         /// <summary>
         /// Instantiate 实现
@@ -691,10 +726,13 @@ namespace JEngine.Helper
             {
                res = UnityEngine.Object.Instantiate(ins,parent);//生成
             }
+
+            //如果同时有adaptor和classbind，肯定是复制的，要给删了
+            if (res.GetComponent<ClassBind>() && res.GetComponent<MonoBehaviourAdapter.Adaptor>())
+            {
+                UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
+            }
             
-            
-            UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
-                
             //重新赋值instance的热更脚本
             var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
             var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
@@ -725,7 +763,16 @@ namespace JEngine.Helper
                     scriptResult = ilInstance; 
                 }
             }
+            
+            //处理子物体
+            var go = res.GetComponentsInChildren<Transform>(true);
 
+            foreach (var g in go)
+            {
+                var subGo = g.gameObject;
+                CleanGoForInstantiate(ref subGo,ins,__domain);
+            }
+                
             if (returnScipt)
             {
                 //如果返回本地类

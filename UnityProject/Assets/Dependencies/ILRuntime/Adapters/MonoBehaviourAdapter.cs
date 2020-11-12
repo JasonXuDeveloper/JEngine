@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -76,7 +77,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
         private bool awaked = false;
-        public void Awake()
+        private bool isAwaking = false;
+        public async void Awake()
         {
             //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
             if (instance != null)
@@ -87,8 +89,14 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     mAwakeMethodGot = true;
                 }
 
-                if (mAwakeMethod != null)
+                if (mAwakeMethod != null && !isAwaking)
                 {
+                    isAwaking = true;
+                    while (!gameObject.activeSelf)
+                    {
+                        await Task.Delay(20);
+                    }
+                    isAwaking = false;
                     appdomain.Invoke(mAwakeMethod, instance, param0);
                     awaked = true;
                     OnEnable();
