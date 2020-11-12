@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
@@ -31,19 +32,66 @@ namespace JEngine.Helper
 
         public unsafe void Register(AppDomain appdomain)
         {
-            //注册Get和Add Component
+            //从自动生成的里面复制的需要这个
+            Type[] args;
+            BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+            
+            //注册Add Component
             Type gameObjectType = typeof(GameObject);
             Type componentType = typeof(Component);
             var addComponentMethod = gameObjectType.GetMethods().ToList()
                 .Find(i => i.Name == "AddComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(addComponentMethod, AddComponent);
 
+            //注册get，有2种get component，一个是GameObject调用，一个是脚本调用
             var getComponentMethod = gameObjectType.GetMethods().ToList()
                 .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod, GetComponent);
             var getComponentMethod2 = componentType.GetMethods().ToList()
                 .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod2, GetComponent);
+            
+            //注册send message
+            args = new Type[]{typeof(System.String)};
+            var SendMessageMethod_1 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_1, SendMessage_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var SendMessageMethod_2 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_2, SendMessage_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageMethod_3 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_3, SendMessage_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageMethod_4 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_4, SendMessage_4);
+            
+            //注册send message upwards
+            args = new Type[]{typeof(System.String)};
+            var SendMessageUpwardsMethod_1 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_1, SendMessageUpwards_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var SendMessageUpwardsMethod_2 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_2, SendMessageUpwards_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageUpwardsMethod_3 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_3, SendMessageUpwards_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageUpwardsMethod_4 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_4, SendMessageUpwards_4);
+            
+            //注册BroadcastMessage
+            args = new Type[]{typeof(System.String)};
+            var BroadcastMessageMethod_1 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_1, BroadcastMessage_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var BroadcastMessageMethod_2 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_2, BroadcastMessage_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var BroadcastMessageMethod_3 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_3, BroadcastMessage_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var BroadcastMessageMethod_4 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_4, BroadcastMessage_4);
 
             //注册3种Log
             Type debugType = typeof(Debug);
@@ -72,8 +120,433 @@ namespace JEngine.Helper
                 appdomain.RegisterCLRMethodRedirection(instantiateMethod,Instantiate);
             }
         }
+
+
+        private static void DoSendMessageOnHotScode(GameObject go, string methodName, object value = null,SendMessageOptions option = SendMessageOptions.RequireReceiver)
+        {
+            bool found = false;
+            
+            var clrInstances = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                var clrInstance = clrInstances[i];
+                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                {
+                    IType t = clrInstance.ILInstance.Type;
+                    if (value == null)
+                    {
+                        IMethod m = t.GetMethod(methodName, 0);
+                        if (m != null)
+                        {
+                            Init.appdomain.Invoke(m, clrInstance.ILInstance, null);
+                            found = true;
+                        }
+                    }
+                    else
+                    {
+                        IMethod m = t.GetMethod(methodName, 1);
+                        if (m != null)
+                        {
+                            Init.appdomain.Invoke(m, clrInstance.ILInstance, value);
+                            found = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        unsafe static StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
+
+            foreach (var g in go)
+            {
+                DoSendMessageOnHotScode(g.gameObject, methodName);
+            }
+            
+            instance_of_this_method.SendMessageUpwards(@methodName);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
+
+            foreach (var g in go)
+            {
+                DoSendMessageOnHotScode(g.gameObject, methodName,value);
+            }
+
+            instance_of_this_method.SendMessageUpwards(@methodName, @value);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
+
+            foreach (var g in go)
+            {
+                DoSendMessageOnHotScode(g.gameObject,methodName,null,options);
+            }
+            
+            instance_of_this_method.SendMessageUpwards(@methodName, @options);
+
+            return __ret;
+        }
+
+        unsafe static StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName, value, options);
+            var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
+
+            foreach (var g in go)
+            {
+                DoSendMessageOnHotScode(g.gameObject,methodName, value, options);
+            }
+
+            instance_of_this_method.SendMessageUpwards(@methodName, @value,@options);
+
+            return __ret;
+        }
+        
+        unsafe static StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            try
+            {
+                var go = instance_of_this_method.transform.parent.gameObject;
+                while (go != null)
+                {
+                    DoSendMessageOnHotScode(go, methodName);
+                    go = go.transform.parent.gameObject;
+                }
+            }
+            catch{}
+            
+            instance_of_this_method.SendMessageUpwards(@methodName);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            try
+            {
+                var go = instance_of_this_method.transform.parent.gameObject;
+                while (go != null)
+                {
+                    DoSendMessageOnHotScode(go, methodName, value);
+                    go = go.transform.parent.gameObject;
+                }
+            }
+            catch{}
+
+            instance_of_this_method.SendMessageUpwards(@methodName, @value);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            try
+            {
+                var go = instance_of_this_method.transform.parent.gameObject;
+                while (go != null)
+                {
+                    DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+                    go = go.transform.parent.gameObject;
+                }
+            }
+            catch{}
+            
+            instance_of_this_method.SendMessageUpwards(@methodName, @options);
+
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName, value, options);
+            try
+            {
+                var go = instance_of_this_method.transform.parent.gameObject;
+                while (go != null)
+                {
+                    DoSendMessageOnHotScode(go, methodName, value,options);
+                    go = go.transform.parent.gameObject;
+                }
+            }
+            catch{}
+
+            instance_of_this_method.SendMessageUpwards(@methodName, @value,@options);
+
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+            
+            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            instance_of_this_method.SendMessage(@methodName);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            instance_of_this_method.SendMessage(@methodName, @value);
+            
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            instance_of_this_method.SendMessage(@methodName, @options);
+
+            return __ret;
+        }
+
+        unsafe static StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.SendMessageOptions @options = (UnityEngine.SendMessageOptions)typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
+
+            DoSendMessageOnHotScode(instance_of_this_method, methodName,value,options);
+            instance_of_this_method.SendMessage(@methodName, @value, @options);
+
+            return __ret;
+        }
         
         
+        /// <summary>
+        /// 帮助Instantiate找到GameObject
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="ins"></param>
+        /// <param name="returnScipt"></param>
+        /// <param name="returnType"></param>
         private static void SetGOForInstantiate(object instance,out GameObject ins,out bool returnScipt, out ILType returnType)
         {
             returnType = null;
