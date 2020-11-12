@@ -6,6 +6,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 稳定版本请使用```0.5.x```分支！
 
+欢迎大家fork后在```development```分支进行开发，欢迎PR和Issue！
+
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
 ![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
