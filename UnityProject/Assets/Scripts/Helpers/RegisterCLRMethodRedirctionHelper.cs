@@ -93,6 +93,48 @@ namespace JEngine.Helper
             var BroadcastMessageMethod_4 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_4, BroadcastMessage_4);
 
+            //注册send message 4 component
+            args = new Type[]{typeof(System.String)};
+            var SendMessageMethod4ComponentType_1 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_1, SendMessage_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var SendMessageMethod4ComponentType_2 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_2, SendMessage_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageMethod4ComponentType_3 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_3, SendMessage_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageMethod4ComponentType_4 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_4, SendMessage_4);
+            
+            //注册send message upwards 4 component
+            args = new Type[]{typeof(System.String)};
+            var SendMessageUpwardsMethod4ComponentType_1 = componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_1, SendMessageUpwards_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var SendMessageUpwardsMethod4ComponentType_2 = componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_2, SendMessageUpwards_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageUpwardsMethod4ComponentType_3 = componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_3, SendMessageUpwards_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var SendMessageUpwardsMethod4ComponentType_4 = componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_4, SendMessageUpwards_4);
+            
+            //注册BroadcastMessage 4 component
+            args = new Type[]{typeof(System.String)};
+            var BroadcastMessageMethod4ComponentType_1 = componentType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_1, BroadcastMessage_1);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            var BroadcastMessageMethod4ComponentType_2 = componentType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_2, BroadcastMessage_2);
+            args = new Type[]{typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
+            var BroadcastMessageMethod4ComponentType_3 = componentType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_3, BroadcastMessage_3);
+            args = new Type[]{typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
+            var BroadcastMessageMethod4ComponentType_4 = componentType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_4, BroadcastMessage_4);
+            
             //注册3种Log
             Type debugType = typeof(Debug);
             var logMethod = debugType.GetMethod("Log", new[] {typeof(object)});
@@ -121,8 +163,44 @@ namespace JEngine.Helper
             }
         }
 
+        /// <summary>
+        /// 找到热更对象的gameObject
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        private static GameObject FindGOFromHotClass(ILTypeInstance instance)
+        {
+            var returnType = (instance as ILTypeInstance).Type;
+            if (returnType.ReflectionType == typeof(MonoBehaviour))
+            {
+                Debug.Log(1);
+                var pi = returnType.ReflectionType.GetProperty("gameObject");
+                return pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+            }
+            else if (returnType.ReflectionType.IsSubclassOf(typeof(MonoBehaviour)))
+            {
+                var pi = returnType.ReflectionType.BaseType.GetProperty("gameObject");
+                return pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+            }
+            else
+            {
+                foreach (var p in returnType.ReflectionType.GetProperties())
+                {
+                    Debug.Log(p.Name);
+                }
+                return null;
+            }
+        }
 
-        private static void DoSendMessageOnHotScode(GameObject go, string methodName, object value = null,SendMessageOptions option = SendMessageOptions.RequireReceiver)
+
+        /// <summary>
+        /// 处理热更的SendMessage
+        /// </summary>
+        /// <param name="go"></param>
+        /// <param name="methodName"></param>
+        /// <param name="value"></param>
+        /// <param name="option"></param>
+        private static void DoSendMessageOnHotCode(GameObject go, string methodName, object value = null,SendMessageOptions option = SendMessageOptions.RequireReceiver)
         {
             bool found = false;
             
@@ -166,17 +244,34 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
+            
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
             foreach (var g in go)
             {
-                DoSendMessageOnHotScode(g.gameObject, methodName);
+                DoSendMessageOnHotCode(g.gameObject, methodName);
             }
             
             instance_of_this_method.SendMessageUpwards(@methodName);
@@ -199,17 +294,33 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,value);
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
             foreach (var g in go)
             {
-                DoSendMessageOnHotScode(g.gameObject, methodName,value);
+                DoSendMessageOnHotCode(g.gameObject, methodName,value);
             }
 
             instance_of_this_method.SendMessageUpwards(@methodName, @value);
@@ -232,17 +343,33 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,null,options);
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
             foreach (var g in go)
             {
-                DoSendMessageOnHotScode(g.gameObject,methodName,null,options);
+                DoSendMessageOnHotCode(g.gameObject,methodName,null,options);
             }
             
             instance_of_this_method.SendMessageUpwards(@methodName, @options);
@@ -269,17 +396,33 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"BroadcastMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName, value, options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
             foreach (var g in go)
             {
-                DoSendMessageOnHotScode(g.gameObject,methodName, value, options);
+                DoSendMessageOnHotCode(g.gameObject,methodName, value, options);
             }
 
             instance_of_this_method.SendMessageUpwards(@methodName, @value,@options);
@@ -298,18 +441,34 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
             try
             {
                 var go = instance_of_this_method.transform.parent.gameObject;
                 while (go != null)
                 {
-                    DoSendMessageOnHotScode(go, methodName);
+                    DoSendMessageOnHotCode(go, methodName);
                     go = go.transform.parent.gameObject;
                 }
             }
@@ -335,18 +494,34 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,value);
             try
             {
                 var go = instance_of_this_method.transform.parent.gameObject;
                 while (go != null)
                 {
-                    DoSendMessageOnHotScode(go, methodName, value);
+                    DoSendMessageOnHotCode(go, methodName, value);
                     go = go.transform.parent.gameObject;
                 }
             }
@@ -372,18 +547,34 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,null,options);
             try
             {
                 var go = instance_of_this_method.transform.parent.gameObject;
                 while (go != null)
                 {
-                    DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+                    DoSendMessageOnHotCode(instance_of_this_method, methodName,null,options);
                     go = go.transform.parent.gameObject;
                 }
             }
@@ -413,18 +604,34 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessageUpwards方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName, value, options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
             try
             {
                 var go = instance_of_this_method.transform.parent.gameObject;
                 while (go != null)
                 {
-                    DoSendMessageOnHotScode(go, methodName, value,options);
+                    DoSendMessageOnHotCode(go, methodName, value,options);
                     go = go.transform.parent.gameObject;
                 }
             }
@@ -446,12 +653,28 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
 
             Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
             
-            DoSendMessageOnHotScode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
             instance_of_this_method.SendMessage(@methodName);
             
             return __ret;
@@ -472,12 +695,28 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,value);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,value);
             instance_of_this_method.SendMessage(@methodName, @value);
             
             return __ret;
@@ -498,12 +737,28 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,null,options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,null,options);
             instance_of_this_method.SendMessage(@methodName, @options);
 
             return __ret;
@@ -528,12 +783,28 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            UnityEngine.GameObject instance_of_this_method;
+                
+            object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (instance is GameObject)
+            {
+                instance_of_this_method =
+                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+            }
+            else if(instance is ILTypeInstance)
+            {
+                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+            }
+            else
+            {
+                return __esp;
+            }
             __intp.Free(ptr_of_this_method);
             
             Debug.LogError($"SendMessage方法被重定向了，会尝试调用本地+热更的脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotScode(instance_of_this_method, methodName,value,options);
+            DoSendMessageOnHotCode(instance_of_this_method, methodName,value,options);
             instance_of_this_method.SendMessage(@methodName, @value, @options);
 
             return __ret;
@@ -561,8 +832,7 @@ namespace JEngine.Helper
             {
                 returnScipt = true;
                 returnType = (instance as ILTypeInstance).Type;
-                var pi = returnType.ReflectionType.GetProperty("gameObject");
-                ins = pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+                ins = FindGOFromHotClass((instance as ILTypeInstance));
             }
             else//如果本地类那简单
             {
@@ -576,12 +846,16 @@ namespace JEngine.Helper
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
             if (res.GetComponent<ClassBind>() && res.GetComponent<MonoBehaviourAdapter.Adaptor>())
             {
-                UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
+                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>());//防止重复的ClassBind
             }
             
             //重新赋值instance的热更脚本
             var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
             var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
+            
+            Debug.Log(res.name+":"+clrInstances.Length);
+            Debug.Log(ins.name+":"+clrInstances4Ins.Length);
+            
             for (int i = 0; i < clrInstances.Length; i++)
             {
                 //获取对照适配器
@@ -603,6 +877,9 @@ namespace JEngine.Helper
                 {
                     ilInstance.CLRInstance = ilInstance;
                 }
+                
+                //补上Awake
+                clrInstance.Awake();
             }
         }
         
@@ -730,9 +1007,9 @@ namespace JEngine.Helper
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
             if (res.GetComponent<ClassBind>() && res.GetComponent<MonoBehaviourAdapter.Adaptor>())
             {
-                UnityEngine.Object.Destroy(res.GetComponent<ClassBind>());//防止重复的ClassBind
+                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>());//防止重复的ClassBind
             }
-            
+
             //重新赋值instance的热更脚本
             var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
             var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
@@ -758,6 +1035,9 @@ namespace JEngine.Helper
                     ilInstance.CLRInstance = ilInstance;
                 }
                 
+                //补上Awake
+                clrInstance.Awake();
+                
                 if (ilInstance.Type == returnType && scriptResult == null)
                 {
                     scriptResult = ilInstance; 
@@ -766,11 +1046,22 @@ namespace JEngine.Helper
             
             //处理子物体
             var go = res.GetComponentsInChildren<Transform>(true);
+            var go2 = ins.GetComponentsInChildren<Transform>(true);
 
-            foreach (var g in go)
+            if (go.Length != go2.Length)
             {
-                var subGo = g.gameObject;
-                CleanGoForInstantiate(ref subGo,ins,__domain);
+                Debug.LogError("[Instantiate 错误] 生成实例与原对象脚本数量不匹配");
+                return __esp;
+            }
+
+            for (int i = 0; i < go.Length; i++)
+            {
+                if (go[i] == res)
+                {
+                    continue;
+                }
+                var subGo = go[i].gameObject;
+                CleanGoForInstantiate(ref subGo,go2[i].gameObject,__domain);
             }
                 
             if (returnScipt)
@@ -1033,8 +1324,7 @@ namespace JEngine.Helper
                 }
                 else if(ins is ILTypeInstance)
                 {
-                    var pi = ((ILTypeInstance)ins).Type.ReflectionType.GetProperty("gameObject");
-                    instance = pi.GetValue((ins as ILTypeInstance).CLRInstance) as GameObject;
+                    instance = FindGOFromHotClass(((ILTypeInstance) ins));
                 }
                 else
                 {
