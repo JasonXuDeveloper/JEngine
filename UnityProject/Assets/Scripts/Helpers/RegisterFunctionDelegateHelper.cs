@@ -23,6 +23,12 @@ namespace JEngine.Helper
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
             appdomain.DelegateManager.RegisterFunctionDelegate<Object, Boolean>();
             appdomain.DelegateManager.RegisterFunctionDelegate<Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Reflection.ParameterInfo, System.Type>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Type, System.String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Object, System.Type>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Object>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.List<ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.List<ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Collections.Generic.IEnumerable<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
             appdomain.DelegateManager.RegisterFunctionDelegate<float>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
             appdomain.DelegateManager.RegisterFunctionDelegate<global::CoroutineAdapter.Adaptor, System.Boolean>();
