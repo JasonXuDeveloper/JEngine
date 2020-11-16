@@ -63,24 +63,18 @@ namespace JEngine.Core
             {
                 _loadedScenes.Remove(scene);
             };
-
-            StartCoroutine(CheckClassBind());
         }
 
-        IEnumerator CheckClassBind()
+        private void Update()
         {
-            while (true)
-            {
-                DoBind();
-
-                yield return null;
-            }
+            DoBind();
         }
 
         public static void DoBind()
         {
+            
             var cbs = FindObjectsOfTypeAll<ClassBind>();
-
+            
             foreach (var cb in cbs)
             {
                 //先添加
@@ -126,9 +120,24 @@ namespace JEngine.Core
 
         public static List<T> FindObjectsOfTypeAll<T>()
         {
-            return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
-                .SelectMany(g => g.GetComponentsInChildren<T>(true))
-                .ToList();
+            List<T> result = new List<T>(0);
+            for (int i = 0; i < _loadedScenes.Count; i++)
+            {
+                var gos = _loadedScenes[i].GetRootGameObjects();
+                for (int j = 0; j < gos.Length; j++)
+                {
+                    T[] val = gos[i].GetComponentsInChildren<T>(true);
+                    for (int k = 0; k < val.Length; k++)
+                    {
+                        result.Add(val[k]);
+                    }
+                }
+            }
+
+            return result;
+            // return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
+            //     .SelectMany(g => g.GetComponentsInChildren<T>(true))
+            //     .ToList();
         }
     }
 }
