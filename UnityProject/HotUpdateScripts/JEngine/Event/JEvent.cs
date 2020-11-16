@@ -34,56 +34,78 @@ using System.Threading;
 
 namespace JEngine.Event
 {
-    public static class JEvent
+    public class JEvent
     {
         private delegate void Events(params object[] parameters);
 
-        private static Dictionary<string, List<Events>> _subscribeMethods = new Dictionary<string, List<Events>>(0);
-        private static Dictionary<Type, List<Events>> _typeEvents = new Dictionary<Type, List<Events>>(0);
-        private static Dictionary<Type, List<Events>> _unsubscribed = new Dictionary<Type, List<Events>>(0);
+        private Dictionary<string, List<Events>> _subscribeMethods = new Dictionary<string, List<Events>>(0);
+        private Dictionary<Type, List<Events>> _typeEvents = new Dictionary<Type, List<Events>>(0);
+        private Dictionary<Type, List<Events>> _unsubscribed = new Dictionary<Type, List<Events>>(0);
 
         public static bool ShowLog = false;
 
-        public static void Post(params object[] parameters)
+        
+        public static JEvent defaultEvent
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new JEvent();
+                }
+                return _instance;
+            }
+        }
+        private static JEvent _instance = new JEvent();
+
+        public void Post(params object[] parameters)
         {
             var ParamTypes = string.Join(",", parameters.ToList().Select(obj => obj.GetType()));
 
             if (ShowLog)
             {
-                Log.Print("[JEvent] " + $"<color=#ffa673>通知执行参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'方法</color>");
+                Log.Print($"[JEvent] <color=#ffa673>通知执行参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'方法</color>");
             }
 
-            var todo = _subscribeMethods[ParamTypes];
-
-            int index = -1;//这个用于做log，log的第一个事件是提示，需要忽略
-            foreach (var td in todo)
+            if (parameters.Contains(null))
             {
-                index++;
-                if (!_unsubscribed.Values.SelectMany(s => s.ToArray()).ToList().Contains(td))
+                Log.Print($"[JEvent] <color=#ffa673>暂时不支持包含null的参数</color>");
+                return;
+            }
+
+            if (_subscribeMethods.TryGetValue(ParamTypes, out var todo))
+            {
+                if (todo.Count == 0) return;
+                int index = 0;//这个用于做log，log的第一个事件是提示，需要忽略
+                foreach (var td in todo)
                 {
-                    try
+                    index++;
+                    if (!_unsubscribed.Values.SelectMany(s => s.ToArray()).ToList().Contains(td))
                     {
-                        td.Invoke(parameters);
-                        //这边不log的时候，空标签会报错，于是我选择了log
-                        Log.Print("[JEvent] " + $"<color=#ffa673>广播参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'的方法，目前进度" +
-                                $"{index}/{todo.Count - 1}</color>");
+                        try
+                        {
+                            td.Invoke(parameters);
+                            //这边不log的时候，空标签会报错，于是我选择了log
+                            Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'的方法，目前进度" +
+                                    $"{index - 1}/{todo.Count - 1}</color>");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.PrintError(ex);
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Log.PrintError(ex);
-                    }
-                }
-                else
-                {
-                    if (ShowLog)
-                    {
-                        Log.Print("[JEvent] " + $"<color=#ffa673>通知参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'方法被取消</color>");
+                        if (ShowLog)
+                        {
+                            Log.Print($"[JEvent] <color=#ffa673>通知参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'方法被取消</color>");
+                        }
                     }
                 }
             }
         }
 
-        public static void Unregister(Type type)
+        public void Unregister(Type type)
         {
             if (!_typeEvents.ContainsKey(type))
             {
@@ -100,26 +122,26 @@ namespace JEngine.Event
 
             if (ShowLog)
             {
-                Log.Print("[JEvent] " + $"<color=#ffa673>{type.FullName}的事件监听已被取消</color>");
+                Log.Print($"[JEvent] <color=#ffa673>{type.FullName}的事件监听已被取消</color>");
             }
         }
 
-        public static void Unregister<T>(T val)
+        public void Unregister<T>(T val)
         {
             Unregister(val.GetType());
         }
 
-        public static void Register(Type type)
+        public void Register(Type type)
         {
             Register(type, Activator.CreateInstance(type));
         }
 
-        public static void Register<T>(T val)
+        public void Register<T>(T val)
         {
             Register(val.GetType(), val);
         }
 
-        private static void Register<T>(Type type, T val)
+        private void Register<T>(Type type, T val)
         {
             if (_typeEvents.ContainsKey(type) && !_unsubscribed.ContainsKey(type))
             {
@@ -132,7 +154,7 @@ namespace JEngine.Event
             {
                 if (ShowLog)
                 {
-                    Log.Print("[JEvent] " + $"<color=#ffa673>{type.FullName}的事件监听已从缓存中复原，跳过反射操作</color>");
+                    Log.Print($"[JEvent] <color=#ffa673>{type.FullName}的事件监听已从缓存中复原，跳过反射操作</color>");
                 }
                 _unsubscribed.Remove(type);
                 return;
@@ -144,6 +166,7 @@ namespace JEngine.Event
             var typeAttr = type.GetCustomAttributes(typeof(SubscriberAttribute), false);
             bool AllMethods = typeAttr != null && typeAttr.Length > 0;
             var methods = type.GetMethods();
+            
             foreach (var method in methods)
             {
                 //是不是方法有监听
@@ -181,7 +204,7 @@ namespace JEngine.Event
                      {
                          if (ShowLog)
                          {
-                             Log.Print("[JEvent] " + $"<color=#ffa673>使用'{string.Join(",", parameters.Select(p => p.GetType()))}'参数的方法被调用了</color>");
+                             Log.Print($"[JEvent] <color=#ffa673>使用'{string.Join(",", parameters.Select(p => p.GetType()))}'参数的方法被调用了</color>");
                          }
                      }));
                     _subscribeMethods.Add(prStr, _event);
@@ -203,7 +226,7 @@ namespace JEngine.Event
 
                 if (ShowLog)
                 {
-                    Log.Print("[JEvent] " + $"<color=#ffa673>{type.Name}.{method.Name}已被加入到'{prStr}'JEvent中</color>");
+                    Log.Print($"[JEvent] <color=#ffa673>{type.Name}.{method.Name}已被加入到'{prStr}'JEvent中</color>");
                 }
             }
         }

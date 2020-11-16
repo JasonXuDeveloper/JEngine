@@ -38,24 +38,59 @@ namespace JEngine.Examples.Event
 
             //JEvent.ShowLog = true;//是否显示一些log
 
-            JEvent.Register(typeof(EventClass));//注册方法1
-            JEvent.Register(new EventClass2());//注册方法2
             
-            //广播数据
+            //广播空参数方法
             sw.Start();
-            JEvent.Post();
+            JEvent.defaultEvent.Post();
             sw.Stop();
-            Log.Print("执行无参数方法的事件通知耗时" + sw.ElapsedMilliseconds + "ms");
+            Log.Print("<color=#db4259>[JEvent] 注册前，执行无参数方法的事件（共0个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
+            sw.Reset();
 
-            JEvent.Unregister(typeof(EventClass));//取消一个类的监听
+            JEvent.defaultEvent.Register(typeof(EventClass));//注册方法1
+            JEvent.defaultEvent.Register(new EventClass2());//注册方法2
 
-            JEvent.Register(typeof(EventClass));//重新注册
+            //广播空参数方法
+            sw.Start();
+            JEvent.defaultEvent.Post();
+            sw.Stop();
+            Log.Print("<color=#db4259>[JEvent] 注册后，执行无参数方法的事件（demo里有4个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
+            sw.Reset();
+
+            Log.Print("<color=#db4259>[JEvent] 现在取消注册EventClass，任何里面的方法都无法被广播到，我们来试试</color>");
+            JEvent.defaultEvent.Unregister(typeof(EventClass));//取消一个类的监听
+
+            //广播空参数方法
+            sw.Start();
+            JEvent.defaultEvent.Post();
+            sw.Stop();
+            Log.Print("<color=#db4259>[JEvent] 取消注册EventClass后，执行无参数方法的事件（共0个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
+            sw.Reset();
+
+
+            Log.Print("<color=#db4259>[JEvent] EventClass里的方法没被触发，现在我们重新注册，然后Post</color>");
+            JEvent.defaultEvent.Register(typeof(EventClass));//重新注册
 
             //广播666，全部void xxx(int)的都会被广播到
-            JEvent.Post(666);
+            JEvent.defaultEvent.Post(666);
 
             //广播DataClass，全部void xxx(DataClass)的都会被广播到
-            JEvent.Post(new DataClass() { Money = 123456,name="JEnvent测试"});
+            JEvent.defaultEvent.Post(new DataClass() { Money = 123456,name="JEnvent测试"});
+        }
+
+        public override void Run()
+        {
+            //创建独立的JEvent
+            JEvent e = new JEvent();
+            //给独立的JEvent注册方法
+            e.Register(this.GetType());
+            //广播
+            e.Post();
+        }
+
+        [Subscriber]
+        private void TestMethod()
+        {
+            Log.Print("独立的JEvent的Test哦~");
         }
     }
 
