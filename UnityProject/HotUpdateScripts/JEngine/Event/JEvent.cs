@@ -44,7 +44,11 @@ namespace JEngine.Event
 
         public static bool ShowLog = false;
 
-        
+
+        /// <summary>
+        /// Default static JEvent
+        /// 默认静态JEvent
+        /// </summary>
         public static JEvent defaultEvent
         {
             get
@@ -58,6 +62,11 @@ namespace JEngine.Event
         }
         private static JEvent _instance = new JEvent();
 
+        /// <summary>
+        /// Post parameters to all subscibed methods
+        /// 将参数广播到全部监听方法
+        /// </summary>
+        /// <param name="parameters"></param>
         public void Post(params object[] parameters)
         {
             var ParamTypes = string.Join(",", parameters.ToList().Select(obj => obj.GetType()));
@@ -105,6 +114,11 @@ namespace JEngine.Event
             }
         }
 
+        /// <summary>
+        /// Unregister all subscribed methods in a type
+        /// 取消注册某类型中全部被监听方法
+        /// </summary>
+        /// <param name="type"></param>
         public void Unregister(Type type)
         {
             if (!_typeEvents.ContainsKey(type))
@@ -126,16 +140,31 @@ namespace JEngine.Event
             }
         }
 
+        /// <summary>
+        /// Unregister all subscribed methods in a type
+        /// 取消注册某类型中全部被监听方法
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="val"></param>
         public void Unregister<T>(T val)
         {
             Unregister(val.GetType());
         }
 
+        /// <summary>
+        /// Register all subscribed methods in a type
+        /// </summary>
+        /// <param name="type"></param>
         public void Register(Type type)
         {
             Register(type, Activator.CreateInstance(type));
         }
 
+        /// <summary>
+        /// Register all subscribed methods in a type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="val"></param>
         public void Register<T>(T val)
         {
             Register(val.GetType(), val);

@@ -974,7 +974,7 @@ namespace JEngine.Helper
             SetGOForInstantiate(instance, out ins, out returnScipt, out returnType);
             
             //处理clasBind
-            var cb = ins.GetComponent<ClassBind>();
+            var cb = ins.GetComponentInChildren<ClassBind>(true);
             if (cb != null)
             {
                 //执行绑定

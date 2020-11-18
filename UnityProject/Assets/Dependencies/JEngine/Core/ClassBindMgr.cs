@@ -43,6 +43,7 @@ namespace JEngine.Core
 
         private static ClassBindMgr _instance;
         private static List<Scene> _loadedScenes;
+        private static List<ClassBind> cbs;
 
         private void Awake()
         {
@@ -53,28 +54,23 @@ namespace JEngine.Core
             
             _loadedScenes = new List<Scene>(0);
             _loadedScenes.Add(SceneManager.GetActiveScene());
+            cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
                 _loadedScenes.Add(scene);
+                DoBind();
             };
             
             SceneManager.sceneUnloaded+=(scene) =>
             {
                 _loadedScenes.Remove(scene);
             };
-        }
-
-        private void Update()
-        {
             DoBind();
         }
-
         public static void DoBind()
         {
-            
-            var cbs = FindObjectsOfTypeAll<ClassBind>();
-            
+            cbs = FindObjectsOfTypeAll<ClassBind>();
             foreach (var cb in cbs)
             {
                 //先添加
@@ -120,24 +116,9 @@ namespace JEngine.Core
 
         public static List<T> FindObjectsOfTypeAll<T>()
         {
-            List<T> result = new List<T>(0);
-            for (int i = 0; i < _loadedScenes.Count; i++)
-            {
-                var gos = _loadedScenes[i].GetRootGameObjects();
-                for (int j = 0; j < gos.Length; j++)
-                {
-                    T[] val = gos[i].GetComponentsInChildren<T>(true);
-                    for (int k = 0; k < val.Length; k++)
-                    {
-                        result.Add(val[k]);
-                    }
-                }
-            }
-
-            return result;
-            // return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
-            //     .SelectMany(g => g.GetComponentsInChildren<T>(true))
-            //     .ToList();
+            return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
+                .SelectMany(g => g.GetComponentsInChildren<T>(true))
+                .ToList();
         }
     }
 }
