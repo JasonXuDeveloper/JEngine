@@ -450,8 +450,16 @@ namespace LitJson
                     if (item == null && reader.Token == JsonToken.ArrayEnd)
                         break;
                     var rt = elem_type is ILRuntime.Reflection.ILRuntimeWrapperType ? ((ILRuntime.Reflection.ILRuntimeWrapperType)elem_type).RealType : elem_type;
-                    item = rt.CheckCLRTypes(item);
-                    list.Add (item);
+                    if (elem_type is ILRuntime.Reflection.ILRuntimeType && ((ILRuntime.Reflection.ILRuntimeType)elem_type).ILType.IsEnum)
+                    {
+                        item = (int) item;
+                    }
+                    else
+                    {
+                        item = rt.CheckCLRTypes(item);            
+                    }
+                    list.Add (item);         
+                    
                 }
 
                 if (t_data.IsArray) {
@@ -499,24 +507,41 @@ namespace LitJson
                                 ReadValue (prop_data.Type, reader);
                         }
 
-                    } else {
-                        if (! t_data.IsDictionary) {
+                    }
+                    else
+                    {
+                        if (!t_data.IsDictionary)
+                        {
 
-                            if (! reader.SkipNonMembers) {
-                                throw new JsonException (String.Format (
-                                        "The type {0} doesn't have the " +
-                                        "property '{1}'",
-                                        inst_type, property));
-                            } else {
-                                ReadSkip (reader);
+                            if (!reader.SkipNonMembers)
+                            {
+                                throw new JsonException(String.Format(
+                                    "The type {0} doesn't have the " +
+                                    "property '{1}'",
+                                    inst_type, property));
+                            }
+                            else
+                            {
+                                ReadSkip(reader);
                                 continue;
                             }
                         }
 
-                        var rt = t_data.ElementType is ILRuntime.Reflection.ILRuntimeWrapperType ? ((ILRuntime.Reflection.ILRuntimeWrapperType)t_data.ElementType).RealType : t_data.ElementType;
-                        ((IDictionary) instance).Add (
-                            property, rt.CheckCLRTypes(ReadValue (
-                                t_data.ElementType, reader)));
+                        var dict = ((IDictionary) instance);
+                        var elem_type = t_data.ElementType;
+                        object item = ReadValue (elem_type, reader);
+                        var rt = t_data.ElementType is ILRuntime.Reflection.ILRuntimeWrapperType
+                            ? ((ILRuntime.Reflection.ILRuntimeWrapperType) t_data.ElementType).RealType
+                            : t_data.ElementType;
+                        if (elem_type is ILRuntime.Reflection.ILRuntimeType && ((ILRuntime.Reflection.ILRuntimeType)elem_type).ILType.IsEnum)
+                        {
+                            item = (int) item;
+                        }
+                        else
+                        {
+                            item = rt.CheckCLRTypes(item);  
+                        }
+                        dict.Add(property,item);           
                     }
 
                 }
