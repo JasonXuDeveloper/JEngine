@@ -43,6 +43,7 @@ namespace JEngine.Core
 
         private static ClassBindMgr _instance;
         private static List<Scene> _loadedScenes;
+        private static List<ClassBind> cbs;
 
         private void Awake()
         {
@@ -53,34 +54,23 @@ namespace JEngine.Core
             
             _loadedScenes = new List<Scene>(0);
             _loadedScenes.Add(SceneManager.GetActiveScene());
+            cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
                 _loadedScenes.Add(scene);
+                DoBind();
             };
             
             SceneManager.sceneUnloaded+=(scene) =>
             {
                 _loadedScenes.Remove(scene);
             };
-
-            StartCoroutine(CheckClassBind());
+            DoBind();
         }
-
-        IEnumerator CheckClassBind()
-        {
-            while (true)
-            {
-                DoBind();
-
-                yield return null;
-            }
-        }
-
         public static void DoBind()
         {
-            var cbs = FindObjectsOfTypeAll<ClassBind>();
-
+            cbs = FindObjectsOfTypeAll<ClassBind>();
             foreach (var cb in cbs)
             {
                 //先添加

@@ -13,23 +13,30 @@ namespace ILRuntime.Runtime.Generated
         /// </summary>
         public static void Initialize(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
+            System_Linq_Enumerable_Binding.Register(app);
+            System_String_Binding.Register(app);
+            JEngine_Core_Log_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_List_1_ILTypeInstance_Binding.Register(app);
+            System_Collections_Generic_List_1_ILTypeInstance_Binding.Register(app);
+            System_Collections_Generic_List_1_ILTypeInstance_Binding_Enumerator_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Type_List_1_ILTypeInstance_Binding.Register(app);
+            System_IDisposable_Binding.Register(app);
+            System_Type_Binding.Register(app);
+            System_Activator_Binding.Register(app);
+            System_Reflection_MemberInfo_Binding.Register(app);
+            System_Reflection_MethodBase_Binding.Register(app);
+            System_Object_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
-            JEngine_Core_Log_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_SByte_GameObject_Binding.Register(app);
             UnityEngine_Object_Binding.Register(app);
             UnityEngine_GameObject_Binding.Register(app);
             UnityEngine_Transform_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
-            System_Object_Binding.Register(app);
             UnityEngine_RectTransform_Binding.Register(app);
             UnityEngine_Vector2_Binding.Register(app);
             System_Collections_IEnumerator_Binding.Register(app);
-            System_IDisposable_Binding.Register(app);
-            System_Collections_Generic_List_1_ILTypeInstance_Binding.Register(app);
-            System_Type_Binding.Register(app);
             System_Convert_Binding.Register(app);
-            System_String_Binding.Register(app);
             System_Action_Binding.Register(app);
             System_Action_1_GameObject_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Dictionary_2_String_AssetRequest_Binding.Register(app);
@@ -47,7 +54,6 @@ namespace ILRuntime.Runtime.Generated
             System_Threading_Tasks_Task_Binding.Register(app);
             System_Runtime_CompilerServices_TaskAwaiter_Binding.Register(app);
             UnityEngine_Application_Binding.Register(app);
-            System_Collections_Generic_Dictionary_2_String_List_1_ILTypeInstance_Binding.Register(app);
             UnityEngine_UI_Image_Binding.Register(app);
             UnityEngine_UI_Text_Binding.Register(app);
             UnityEngine_UI_RawImage_Binding.Register(app);
@@ -88,11 +94,8 @@ namespace ILRuntime.Runtime.Generated
             System_Double_Binding.Register(app);
             System_Single_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
-            System_Activator_Binding.Register(app);
             JEngine_Core__ClassBind_Binding.Register(app);
-            System_Reflection_MemberInfo_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);
-            System_Linq_Enumerable_Binding.Register(app);
             System_Collections_Generic_List_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);
             System_Guid_Binding.Register(app);
@@ -127,6 +130,7 @@ namespace ILRuntime.Runtime.Generated
             JEngine_AntiCheat_JFloat_Binding.Register(app);
             JEngine_AntiCheat_JLong_Binding.Register(app);
             UnityEngine_Random_Binding.Register(app);
+            System_Threading_Thread_Binding.Register(app);
 
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
         }
