@@ -52,6 +52,8 @@ namespace JEngine.Editor
         private static DirectoryInfo library;
         private static DirectoryInfo di;
 
+        private const string updateTimeStr = "JEngine.Editor.Clean.UpdateTime";
+
         static void Update()
         {
             if (!isDone || EditorApplication.isPlaying)
@@ -63,26 +65,46 @@ namespace JEngine.Editor
             {
                 Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
             }
-            
-            var files = di.GetFiles();
-            if (files.Length > 1)
+
+            if (!File.Exists(DLLMgr.DllPath)) //没热更dll就返回
             {
-                if (files.Length == 2)
-                {
-                    return;
-                }
-                isDone = false;
+                return;
+            }
+
+            //有的话比较日期
+            DateTime lastModified = File.GetLastWriteTime(DLLMgr.DllPath);
+            string lastModifiedStr = lastModified.Ticks.ToString();
+            if (PlayerPrefs.GetString(updateTimeStr) != lastModifiedStr) //不一样再处理
+            {
+                var files = di.GetFiles();
+                var watch = new Stopwatch();
                 int counts = 0;
                 List<string> fileNames = Directory.GetFiles("Assets/",
                     "*.dll", SearchOption.AllDirectories).ToList();
-                fileNames = fileNames.FindAll((x) => !x.Contains("~"));
+                
+                DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+                watch = new Stopwatch();
+                DLLMgr.MakeBytes();
+                watch.Stop();
+                if (watch.ElapsedMilliseconds > 0)
+                {
+                    Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
+                }
 
-                var watch = new Stopwatch();
+                AssetDatabase.Refresh();
+                
+                PlayerPrefs.SetString(updateTimeStr, lastModifiedStr);
+                
+                isDone = false;
+                fileNames = fileNames.FindAll((x) => !x.Contains("~"));
+                
                 watch.Start();
                 foreach (var file in files)
                 {
                     var name = file.Name;
-                    if(!File.Exists(library.FullName + "/" + name) && !name.Contains("netstandard")  && !name.Contains("HotUpdateScripts") && !name.Contains("Unity") && !name.Contains("System") && ((name.Contains(".pdb") || name.Contains(".dll"))))
+                    if (!File.Exists(library.FullName + "/" + name) && !name.Contains("netstandard") &&
+                        !name.Contains("HotUpdateScripts") && !name.Contains("Unity") && !name.Contains("System") &&
+                        ((name.Contains(".pdb") || name.Contains(".dll"))))
                     {
                         if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
                         {
@@ -93,7 +115,7 @@ namespace JEngine.Editor
                                 $"to run without rebuild application\n" +
                                 $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
                         }
-                        else//存在就删了
+                        else //存在就删了
                         {
                             DLLMgr.Delete(file.FullName);
                             counts++;
@@ -108,24 +130,15 @@ namespace JEngine.Editor
                     {
                         if (!name.Contains("HotUpdateScripts"))
                         {
-                            Log.PrintError($"无法删除{file.FullName}，请手动删除");   
+                            Log.PrintError($"无法删除{file.FullName}，请手动删除");
                         }
                     }
                 }
+
                 watch.Stop();
                 if (counts > 0) //如果删除过东西，就代表DLL更新了，就需要生成文件
                 {
                     Log.Print("Cleaned: " + counts + " files in: " + watch.ElapsedMilliseconds + " ms.");
-                    DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-                    watch = new Stopwatch();
-                    DLLMgr.MakeBytes();
-                    watch.Stop();
-                    if (watch.ElapsedMilliseconds > 0)
-                    {
-                        Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
-                    }
-
-                    AssetDatabase.Refresh();
                 }
 
                 isDone = true;
@@ -142,8 +155,5 @@ namespace JEngine.Editor
                 isDone = true;
             }
         }
-
-
-
     }
 }
