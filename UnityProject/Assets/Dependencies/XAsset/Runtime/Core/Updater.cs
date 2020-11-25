@@ -470,6 +470,17 @@ namespace libx
 
             try
             {
+                var v1 = Versions.LoadVersion(_savePath + Versions.Filename);           //网络版本文件
+                var v2 = Versions.LoadVersion(_savePath + Versions.Filename + ".tmp");  //本地临时文件
+
+                if (v2 > v1)
+                {
+                    //如果本地版本高于网络版本，就别更新了
+                    OnComplete();
+                    yield break;
+                }
+
+                //网络版本高于或者等于本地版本，则检查更新
                 _versions = Versions.LoadVersions(_savePath + Versions.Filename, true);
                 if (_versions.Count > 0)
                 {
@@ -519,11 +530,16 @@ namespace libx
         {
             var v1 = Versions.LoadVersion(_savePath + Versions.Filename);
             var basePath = GetBasePath();
-            var request = UnityWebRequest.Get(Path.Combine(basePath , Versions.Filename));
+            var request = UnityWebRequest.Get(Path.Combine(basePath, Versions.Filename));
             var path = _savePath + Versions.Filename + ".tmp";
             request.downloadHandler = new DownloadHandlerFile(path);
             yield return request.SendWebRequest();
-            _step = string.IsNullOrEmpty(request.error) ? Step.Coping : Step.Versions;
+            var v2 = -1;
+            var hasFile = string.IsNullOrEmpty(request.error);
+            if (hasFile) { v2 = Versions.LoadVersion(path); }
+            var steamFileThenSave = v2 > v1;
+            if (steamFileThenSave) { Debug.LogWarning("本地流目录版本高于网络目录版本"); }
+            _step = hasFile && steamFileThenSave ? Step.Coping : Step.Versions;
             request.Dispose();
         }
 
