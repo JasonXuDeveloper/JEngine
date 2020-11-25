@@ -66,6 +66,11 @@
     <Compile Include="Examples\UI\View\JTestView.cs" />
     <Compile Include="Examples\UI\View\JBtnView.cs" />
     <Compile Include="JEngine\UI\UIRootView.cs" />
+    <Compile Include="Examples\Core\ConvertDemo.cs" />
+    <Compile Include="JEngine\Event\JEvent.cs" />
+    <Compile Include="JEngine\Event\EventEnum.cs" />
+    <Compile Include="Examples\Event\EventDemo.cs" />
+    <Compile Include="JEngine\Event\EventAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
@@ -133,6 +138,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Proto2cs\" />
+    <Folder Include="JEngine\Event\" />
+    <Folder Include="Examples\Event\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

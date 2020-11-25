@@ -46,7 +46,7 @@ namespace JEngine.Core
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
-        
+
         /// <summary>
         /// Set value
         /// </summary>
@@ -325,15 +325,16 @@ namespace JEngine.Core
             //是否激活
             if (_class.ActiveAfter)
             {
-                if (_class.BoundData == false && _class.RequireBindFields)
+                if (_class.BoundData == false && _class.RequireBindFields && _class.Fields.Count > 0)
                 {
-                    Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，无法自动激活，请手动！");
-                    return;
+                    Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
                 clrInstance.enabled = true;
                 clrInstance.Awake();
+                _class.Activated = true;
             }
+            Remove();
         }
 
         /// <summary>
@@ -381,7 +382,14 @@ namespace JEngine.Core
             clrInstance.enabled = false;
             clrInstance.ILInstance = instance;
             clrInstance.AppDomain = Init.appdomain;
-            instance.CLRInstance = clrInstance;
+            if (isMono)
+            {
+                instance.CLRInstance = clrInstance;
+            }
+            else
+            {
+                instance.CLRInstance = instance;
+            }
             
             //判断类型
             clrInstance.isMonoBehaviour = isMono;
@@ -392,6 +400,8 @@ namespace JEngine.Core
                 var go = t.GetField("_gameObject",BindingFlags.Public);
                 go.SetValue(clrInstance.ILInstance, this.gameObject);
             }
+
+            _class.Added = true;
                 
             //JBehaviour返回实例ID
             if (isJBehaviour)
@@ -516,6 +526,8 @@ namespace JEngine.Core
         public FieldList Fields;
 
         public bool BoundData { get; set; } = false;
+        public bool Added { get; set; } = false;
+        public bool Activated { get; set; } = false;
     }
 
     [System.Serializable]

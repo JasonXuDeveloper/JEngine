@@ -33,7 +33,7 @@ using UnityEngine.SceneManagement;
 
 namespace JEngine.Core
 {
-    public class ClassBindMgr:MonoBehaviour
+    public class ClassBindMgr : MonoBehaviour
     {
         public static void Instantiate()
         {
@@ -42,6 +42,8 @@ namespace JEngine.Core
         }
 
         private static ClassBindMgr _instance;
+        private static List<Scene> _loadedScenes;
+        private static List<ClassBind> cbs;
 
         private void Awake()
         {
@@ -49,58 +51,72 @@ namespace JEngine.Core
             {
                 Destroy(this);
             }
-            StartCoroutine(CheckClassBind());
-        }
+            
+            _loadedScenes = new List<Scene>(0);
+            _loadedScenes.Add(SceneManager.GetActiveScene());
+            cbs = new List<ClassBind>(0);
 
-        IEnumerator CheckClassBind()
+            SceneManager.sceneLoaded += (scene, mode) =>
+            {
+                _loadedScenes.Add(scene);
+                DoBind();
+            };
+            
+            SceneManager.sceneUnloaded+=(scene) =>
+            {
+                _loadedScenes.Remove(scene);
+            };
+            DoBind();
+        }
+        public static void DoBind()
         {
-            var cbs = FindObjectsOfTypeAll<ClassBind>();
+            cbs = FindObjectsOfTypeAll<ClassBind>();
             foreach (var cb in cbs)
             {
-                var done = true;
                 //先添加
                 foreach (_ClassBind _class in cb.ScriptsToBind)
                 {
-                    if (_class == null)
+                    if (_class == null || _class.Added)
                     {
-                        done = false;
                         continue;
                     }
-                    cb.AddClass(_class);
-                }
-                //再赋值
-                foreach (_ClassBind _class in cb.ScriptsToBind)
-                {
-                    if (_class == null)
-                    {
-                        done = false;
-                        continue;
-                    }
-                    cb.SetVal(_class);
-                }
-                //激活
-                foreach (_ClassBind _class in cb.ScriptsToBind)
-                {
-                    if (_class == null)
-                    {
-                        done = false;
-                        continue;
-                    }
-                    cb.Active(_class);
-                }
 
-                if (done)
-                {
-                    cb.Remove();
+                    cb.AddClass(_class);
                 }
             }
 
-            yield return null;
+            foreach (var cb in cbs)
+            {
+                //再赋值
+                foreach (_ClassBind _class in cb.ScriptsToBind)
+                {
+                    if (_class == null || _class.BoundData)
+                    {
+                        continue;
+                    }
+
+                    cb.SetVal(_class);
+                }
+            }
+
+            //激活
+            foreach (var cb in cbs)
+            {
+                foreach (_ClassBind _class in cb.ScriptsToBind)
+                {
+                    if (_class == null ||_class.Activated)
+                    {
+                        continue;
+                    }
+
+                    cb.Active(_class);
+                }
+            }
         }
 
         public static List<T> FindObjectsOfTypeAll<T>()
         {
-            return SceneManager.GetActiveScene().GetRootGameObjects()
+            return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
         }

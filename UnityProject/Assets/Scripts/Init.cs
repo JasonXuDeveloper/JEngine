@@ -30,7 +30,7 @@ public class Init : MonoBehaviour
         GameStats.Init();
         LoadHotFixAssembly();
     }
-    
+
     void LoadHotFixAssembly()
     {
         appdomain = new AppDomain();
@@ -97,10 +97,9 @@ public class Init : MonoBehaviour
         }
             
         InitILrt.InitializeILRuntime(appdomain);
-        OnHotFixLoaded();
     }
 
-    void OnHotFixLoaded()
+    public void OnHotFixLoaded()
     {
         appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
         HotFixLoadedHelper.Init();

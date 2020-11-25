@@ -32,9 +32,40 @@ using System.Collections;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using JEngine.UI;
 
 namespace JEngine.Core
 {
+    /// <summary>
+    /// Extension methods for JBehaviour
+    /// </summary>
+    public static class JBehaviourExtension
+    {
+        /// <summary>
+        /// Create a JBehaviour on a gameObject
+        /// 在游戏对象上创建JBehaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="gameObject"></param>
+        /// <param name="activeAfter"></param>
+        /// <returns></returns>
+        public static T CreateJBehaviour<T>(this GameObject gameObject, bool activeAfter = true) where T : JBehaviour
+        {
+            return JBehaviour.CreateOn<T>(gameObject, activeAfter);
+        }
+
+        /// <summary>
+        /// Create JUI on a gameObject
+        /// 在游戏对象上创建JUI
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <returns></returns>
+        public static JUI CreateJUI(this GameObject gameObject)
+        {
+            return JBehaviour.CreateOn<JUI>(gameObject, false);
+        }
+    }
+
     /// <summary>
     /// JEngine's Behaviour
     /// </summary>
@@ -49,6 +80,8 @@ namespace JEngine.Core
             //添加实例ID
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
+
+            LoopAwaitToken = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -124,6 +157,12 @@ namespace JEngine.Core
                         i--;
                     }
                 }
+            }
+
+            private void OnDestroy()
+            {
+                CheckJBehaviour();
+                JBehaviours = null;
             }
         }
 
@@ -377,8 +416,33 @@ namespace JEngine.Core
         /// Launch the lifecycle
         /// 开始生命周期
         /// </summary>
-        private protected void Launch()
+        private protected async void Launch()
         {
+            while (!LoopAwaitToken.IsCancellationRequested)
+            {
+                if (JBehaviours is null || _gameObject.activeSelf)
+                {
+                    break;
+                }
+
+                try
+                {
+                    await Task.Delay(10, LoopAwaitToken.Token);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is TaskCanceledException)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            if (JBehaviours is null || _gameObject is null)
+            {
+                return;
+            }
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
             try
@@ -401,7 +465,6 @@ namespace JEngine.Core
 
             sw.Stop();
             TotalTime += sw.ElapsedMilliseconds / 1000f;
-            LoopAwaitToken = new CancellationTokenSource();
             DoLoop();
         }
 
@@ -425,6 +488,7 @@ namespace JEngine.Core
                     await Task.Delay(25);
                     continue;
                 }
+
 
                 //调整参数
                 if (TimeScale < 0.001f)
@@ -496,11 +560,11 @@ namespace JEngine.Core
         private protected void Destroy()
         {
             _gameObject = null;
+            LoopAwaitToken = null;
             if (Application.isPlaying)
             {
                 End();
             }
-            GC.Collect();
         }
 
         /// <summary>

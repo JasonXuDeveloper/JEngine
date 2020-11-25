@@ -69,6 +69,17 @@ namespace JEngine.Core
             return this;
         }
 
+        public JAction DelayFrame(int frame)
+        {
+            if (frame > 0)
+            {
+                var duration = (int)(((float)frame / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f);
+                _delays.Add(_toDo.Count, duration);
+                _toDo.Add(null);
+            }
+            return this;
+        }
+
         public JAction Until(Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
             _waits.Add(_toDo.Count, condition);

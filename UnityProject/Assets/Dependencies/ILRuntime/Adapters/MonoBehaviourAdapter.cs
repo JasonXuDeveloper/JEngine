@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -51,11 +52,37 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         public AppDomain AppDomain { get { return appdomain; } set { appdomain = value; } }
 
+        public void Reset()
+        {
+            mAwakeMethodGot = false;
+            mStartMethodGot = false;
+            mUpdateMethodGot = false;
+            mFixedUpdateMethodGot = false;
+            mLateUpdateMethodGot = false;
+            mOnEnableMethodGot = false;
+            mOnDisableMethodGot = false;
+            mOnDisableMethodGot = false;
+            mOnTriggerEnterMethodGot = false;
+            mOnTriggerStayMethodGot = false;
+            mOnTriggerExitMethodGot = false;
+            mOnCollisionEnterMethodGot = false;
+            mOnCollisionStayMethodGot = false;
+            mOnCollisionExitMethodGot = false;
+            instance = null;
+            appdomain = null;
+            destoryed = false;
+            awaked = false;
+            isAwaking = false;
+        }
+
         object[] param0 = new object[0];
+        private bool destoryed = false;
         
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
-        public void Awake()
+        private bool awaked = false;
+        private bool isAwaking = false;
+        public async void Awake()
         {
             //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
             if (instance != null)
@@ -66,9 +93,17 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     mAwakeMethodGot = true;
                 }
 
-                if (mAwakeMethod != null)
+                if (mAwakeMethod != null && !isAwaking)
                 {
+                    isAwaking = true;
+                    while (!destoryed && !gameObject.activeInHierarchy)
+                    {
+                        await Task.Delay(20);
+                    }
+                    isAwaking = false;
                     appdomain.Invoke(mAwakeMethod, instance, param0);
+                    awaked = true;
+                    OnEnable();
                 }
             }
         }
@@ -160,7 +195,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     mOnEnableMethodGot = true;
                 }
 
-                if (mOnEnableMethod != null)
+                if (mOnEnableMethod != null && awaked)
                 {
                     appdomain.Invoke(mOnEnableMethod, instance, param0);
                 }
@@ -192,6 +227,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         bool mDestroyMethodGot;
         void OnDestroy()
         {
+            destoryed = true;
+            
             if (isJBehaviour || !isMonoBehaviour) return;
             
             if (!mDestroyMethodGot)

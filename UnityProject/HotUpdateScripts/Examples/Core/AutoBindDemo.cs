@@ -48,26 +48,28 @@ namespace JEngine.Examples
 
         [SerializeField] private bool BoolPropertyInstance;
 
+        AutoBindDemo2 a2 = null;
+
 
         public override void Init()
         {
             Log.Print("[Autobind] AutoBindDemo1::Inited");
             GameObjectField1.SetActive(!GameObjectField1.activeSelf);
+            Log.Print($"[Autobind] a2 is null? {a2 is null}");
         }
     }
 
     public class AutoBindDemo2 : MonoBehaviour
     {
-        public int PublicField2;
-
-        public string AttributeField2;
-
         public TextAsset txtFile;
+
+        AutoBindDemo1 a1 = null;
 
         public void Awake()
         {
-            Log.Print("[Autobind] AutoBindDemo2::Started");
+            Log.Print("[Autobind] AutoBindDemo2::Awake");
             Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
+            Log.Print($"[Autobind] a1 is null? {a1 is null}");
         }
     }
 }

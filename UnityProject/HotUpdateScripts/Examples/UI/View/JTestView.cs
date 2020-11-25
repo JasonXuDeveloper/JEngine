@@ -49,7 +49,7 @@ namespace JEngine.Examples
 
         private GameObject JBtnButton;
 
-        private JTestItem testItem;
+        //private JTestItem testItem;
 
         /// <summary>
         /// 注册函数，相当于Awake
