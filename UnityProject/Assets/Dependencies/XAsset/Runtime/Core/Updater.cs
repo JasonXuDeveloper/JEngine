@@ -643,8 +643,6 @@ namespace libx
                 scene.completed += (AssetRequest request) =>
                 {
                     FindObjectOfType<Init>().Load();
-                    ClassBindMgr.Instantiate();
-                    FindObjectOfType<Init>().OnHotFixLoaded();
                 };
                 while (!scene.isDone)
                 {
