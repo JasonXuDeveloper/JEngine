@@ -1,5 +1,5 @@
-//
-// MenuItems.cs
+﻿//
+// ChangeScene
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,24 +23,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-#if UNITY_EDITOR
+
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using JEngine.Core;
 using UnityEngine;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+
 namespace JEngine.Editor
 {
-    [System.Reflection.Obfuscation(Exclude = true)]
-    internal class MenuItems
+    internal class ChangeScene
     {
-        [UnityEditor.MenuItem("JEngine/Open Documents",priority = 1999)]
-        static void OpenWiki()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Change()
         {
-            Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine/wiki");
-        }
-        
-        [UnityEditor.MenuItem("JEngine/Open on Github",priority = 2000)]
-        static void OpenGithub()
-        {
-            Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine");
+            if (!JEngineSetting.JumpStartUp) return;
+            var scene = SceneManager.GetActiveScene();
+            if (scene.path != JEngineSetting.StartUpScenePath)
+            {
+                string name = JEngineSetting.StartUpScenePath
+                    .Substring(JEngineSetting.StartUpScenePath.LastIndexOf('/') + 1)
+                    .Replace(".unity", "");
+
+                SceneManager.LoadScene(name);
+            }
         }
     }
 }
-#endif
+

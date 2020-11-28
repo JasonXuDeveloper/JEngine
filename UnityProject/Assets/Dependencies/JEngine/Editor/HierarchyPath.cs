@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace  JEngine.Editor
 {
-    public class HierarchyPath : MonoBehaviour
+    internal class HierarchyPath : MonoBehaviour
     {
         private static readonly TextEditor CopyTool = new TextEditor();
 

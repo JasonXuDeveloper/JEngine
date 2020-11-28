@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using JEngine.Core;
+using JEngine.Editor;
 using UnityEditor;
 using UnityEditor.Build.Content;
 using UnityEngine;
@@ -36,7 +37,7 @@ namespace libx
 {
     public static class EditorRuntimeInitializeOnLoad
     {
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void OnInitialize()
         {
             Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
@@ -64,31 +65,28 @@ namespace libx
             List<EditorBuildSettingsScene> _scenes =new List<EditorBuildSettingsScene>(0);
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (scene.path.Contains("Init.unity") || assets.Contains(scene.path))
+                if (scene.path.Equals(JEngineSetting.StartUpScenePath) || assets.Contains(scene.path))
                 {
                     continue;
                 }
-
                 _scenes.Add(scene);
-                Log.Print(scene.path);
             }
 
-            EditorBuildSettingsScene[] scenes = new EditorBuildSettingsScene[assets.Count + _scenes.Count + 1];
+            List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(0);
             
-            scenes[0] = new EditorBuildSettingsScene("Assets/Init.unity", true);//添加启动场景
-            int _index = 1;
+            scenes.Add(new EditorBuildSettingsScene(JEngineSetting.StartUpScenePath, true));//添加启动场景
             for (var index = 0; index < _scenes.Count; index++)//添加其他场景（用户自己加的）
             {
-                scenes[index + 1] = new EditorBuildSettingsScene(_scenes[index].path, true);
-                _index++;
+                scenes.Add(new EditorBuildSettingsScene(_scenes[index].path, true));
             }
-            for (var index = _index; index < scenes.Length; index++)//添加热更场景（用于编译测试）
+            for (var index = 0; index < assets.Count; index++)//添加热更场景（用于编译测试）
             {
-                var asset = assets[index - _index]; 
-                scenes[index] = new EditorBuildSettingsScene(asset, true);
+                var asset = assets[index];
+                if (asset == JEngineSetting.StartUpScenePath) continue;
+                scenes.Add(new EditorBuildSettingsScene(asset, true));
             }
 
-            EditorBuildSettings.scenes = scenes;
+            EditorBuildSettings.scenes = scenes.ToArray();
         }
 
         [InitializeOnLoadMethod]

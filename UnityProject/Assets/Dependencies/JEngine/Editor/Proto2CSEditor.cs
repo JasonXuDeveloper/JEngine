@@ -37,7 +37,7 @@ using Application = UnityEngine.Application;
 
 namespace JEngine.Editor
 {
-	public class Proto2CSEditor : EditorWindow
+	internal class Proto2CSEditor : EditorWindow
 	{
 		private static Proto2CSEditor win;
 
@@ -55,14 +55,12 @@ namespace JEngine.Editor
 		[MenuItem("JEngine/Protobuf/Proto2CS/View Files")]
 		private static void ViewDataPath()
 		{
-			if (Directory.Exists(Application.dataPath + "/../HotUpdateScripts/Proto2cs"))
+			if (!Directory.Exists(Application.dataPath + "/../HotUpdateScripts/Proto2cs"))
 			{
-				EditorUtility.OpenWithDefaultApp(Application.dataPath + "/../HotUpdateScripts/Proto2cs");
+				Directory.CreateDirectory(Application.dataPath + "/../HotUpdateScripts/Proto2cs");
 			}
-			else
-			{
-				Log.PrintError("Unable to View Generated Files: Please Create folder HotUpdateScripts/Proto2cs");
-			}
+
+			EditorUtility.OpenWithDefaultApp(Application.dataPath + "/../HotUpdateScripts/Proto2cs");
 		}
 
 		protected string folder;

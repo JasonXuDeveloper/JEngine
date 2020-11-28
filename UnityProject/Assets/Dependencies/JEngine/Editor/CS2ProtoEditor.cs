@@ -42,7 +42,7 @@ using Application = UnityEngine.Application;
 
 namespace JEngine.Editor
 {
-	public class CS2ProtoEditor : EditorWindow
+	internal class CS2ProtoEditor : EditorWindow
 	{
 		private static CS2ProtoEditor win;
 
@@ -60,14 +60,12 @@ namespace JEngine.Editor
 		[MenuItem("JEngine/Protobuf/CS2Proto/View Files")]
 		private static void ViewDataPath()
 		{
-			if (Directory.Exists(OUTPUT_PATH))
+			if (!Directory.Exists(OUTPUT_PATH))
 			{
-				EditorUtility.OpenWithDefaultApp(OUTPUT_PATH);
+				Directory.CreateDirectory(OUTPUT_PATH);
 			}
-			else
-			{
-				Log.PrintError("Unable to View Generated Files: Please Create folder UnityProject/CS2Proto");
-			}
+			
+			EditorUtility.OpenWithDefaultApp(OUTPUT_PATH);
 		}
 		protected void OnGUI()
 		{
