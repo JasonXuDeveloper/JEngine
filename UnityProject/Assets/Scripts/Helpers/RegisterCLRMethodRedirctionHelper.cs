@@ -173,7 +173,6 @@ namespace JEngine.Helper
             var returnType = (instance as ILTypeInstance).Type;
             if (returnType.ReflectionType == typeof(MonoBehaviour))
             {
-                Debug.Log(1);
                 var pi = returnType.ReflectionType.GetProperty("gameObject");
                 return pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
             }
@@ -184,10 +183,10 @@ namespace JEngine.Helper
             }
             else
             {
-                foreach (var p in returnType.ReflectionType.GetProperties())
-                {
-                    Debug.Log(p.Name);
-                }
+                // foreach (var p in returnType.ReflectionType.GetProperties())
+                // {
+                //     Debug.Log(p.Name);
+                // }
                 return null;
             }
         }
@@ -853,8 +852,8 @@ namespace JEngine.Helper
             var clrInstances = res.GetComponents<MonoBehaviourAdapter.Adaptor>();//clone的
             var clrInstances4Ins = ins.GetComponents<MonoBehaviourAdapter.Adaptor>();//原来的
             
-            Debug.Log(res.name+":"+clrInstances.Length);
-            Debug.Log(ins.name+":"+clrInstances4Ins.Length);
+            // Debug.Log(res.name+":"+clrInstances.Length);
+            // Debug.Log(ins.name+":"+clrInstances4Ins.Length);
             
             for (int i = 0; i < clrInstances.Length; i++)
             {
@@ -956,7 +955,7 @@ namespace JEngine.Helper
             if (instance is int)//gameobject, transform, bool，ILRuntime把热更的bool变int传了，1是true，0是false
             {
                 instantiateInWorldSpace = instance.ToString() == "1";
-                Debug.Log(instantiateInWorldSpace);
+                // Debug.Log(instantiateInWorldSpace);
                 gotIWS = true;
                 //获取parent
                 var ptr2 = __esp - 2;  
@@ -1062,6 +1061,12 @@ namespace JEngine.Helper
                 }
                 var subGo = go[i].gameObject;
                 CleanGoForInstantiate(ref subGo,go2[i].gameObject,__domain);
+            }
+            
+            //处理好了后，如果还有classbind就是prefab，需要重新bind
+            if (res.GetComponentInChildren<ClassBind>(true))
+            {
+                ClassBindMgr.DoBind();
             }
                 
             if (returnScipt)
