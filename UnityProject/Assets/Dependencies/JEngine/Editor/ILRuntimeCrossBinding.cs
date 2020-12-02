@@ -34,7 +34,7 @@ using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
-    public class ILRuntimeCrossBindingAdapterGenerator : EditorWindow
+    internal class ILRuntimeCrossBindingAdapterGenerator : EditorWindow
     {
         private static ILRuntimeCrossBindingAdapterGenerator window;
         private const string OUTPUT_PATH = "Assets/Scripts/Adapters";
@@ -70,47 +70,42 @@ namespace JEngine.Editor
             
             //程序集
             GUILayout.Space(50);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            EditorGUILayout.LabelField("Assembly 类的程序集");
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            _assembly = EditorGUILayout.TextField("", _assembly);
-            GUILayout.Space(25);
-            GUILayout.EndHorizontal();
+            JEngineSetting.MakeHorizontal(25, () =>
+            {
+                EditorGUILayout.LabelField("Assembly 类的程序集");
+            });
+            JEngineSetting.MakeHorizontal(25, () =>
+            {
+                _assembly = EditorGUILayout.TextField("", _assembly);
+            });
 
             //类名
             GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            _class = EditorGUILayout.TextField("Class name 类名", _class);
-            GUILayout.Space(25);
-            GUILayout.EndHorizontal();
+            JEngineSetting.MakeHorizontal(25, () =>
+            {
+                _class = EditorGUILayout.TextField("Class name 类名", _class);
+            });
 
             //命名空间
             GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            _namespace = EditorGUILayout.TextField("", _namespace);
-            GUILayout.Space(25);
-            GUILayout.EndHorizontal();
+            JEngineSetting.MakeHorizontal(25, () =>
+            {
+                EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
+            });
+            JEngineSetting.MakeHorizontal(25, () =>
+            {
+                _namespace = EditorGUILayout.TextField("", _namespace);
+            });
 
             //生成
             GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(25);
-            if (GUILayout.Button("Generate 生成"))
+            JEngineSetting.MakeHorizontal(25, () =>
             {
-                GenAdapter();
-            }
-
-            GUILayout.Space(25);
-            GUILayout.EndHorizontal();
+                if (GUILayout.Button("Generate 生成"))
+                {
+                    GenAdapter();
+                }
+            });
         }
 
         private void GenAdapter()

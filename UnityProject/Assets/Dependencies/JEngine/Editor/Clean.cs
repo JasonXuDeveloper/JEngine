@@ -37,7 +37,7 @@ using Debug = UnityEngine.Debug;
 namespace JEngine.Editor
 {
     [InitializeOnLoad]
-    class Clean
+    internal class Clean
     {
         static Clean()
         {
@@ -51,8 +51,6 @@ namespace JEngine.Editor
 
         private static DirectoryInfo library;
         private static DirectoryInfo di;
-
-        private const string updateTimeStr = "JEngine.Editor.Clean.UpdateTime";
 
         static void Update()
         {
@@ -73,8 +71,8 @@ namespace JEngine.Editor
 
             //有的话比较日期
             DateTime lastModified = File.GetLastWriteTime(DLLMgr.DllPath);
-            string lastModifiedStr = lastModified.Ticks.ToString();
-            if (PlayerPrefs.GetString(updateTimeStr) != lastModifiedStr) //不一样再处理
+            string lastModifiedStr = lastModified.ToString(JEngineSetting.GetString(JEngineSetting.DATE_FORMAT));
+            if (JEngineSetting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
             {
                 var files = di.GetFiles();
                 var watch = new Stopwatch();
@@ -92,9 +90,9 @@ namespace JEngine.Editor
                 }
 
                 AssetDatabase.Refresh();
-                
-                PlayerPrefs.SetString(updateTimeStr, lastModifiedStr);
-                
+
+                JEngineSetting.LastDLLCleanUpTime = lastModifiedStr;
+
                 isDone = false;
                 fileNames = fileNames.FindAll((x) => !x.Contains("~"));
                 

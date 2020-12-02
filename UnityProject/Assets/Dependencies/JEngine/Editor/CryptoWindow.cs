@@ -30,7 +30,7 @@ using UnityEngine;
 
 namespace JEngine.Editor
 {
-    public class CryptoWindow : EditorWindow
+    internal class CryptoWindow : EditorWindow
     {
         private static CryptoWindow window;
         public static void ShowWindow()
