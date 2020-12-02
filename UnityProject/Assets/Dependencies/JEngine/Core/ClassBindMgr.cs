@@ -68,9 +68,9 @@ namespace JEngine.Core
             };
             DoBind();
         }
-        public static void DoBind()
+
+        public static void DoBind(List<ClassBind> cbs)
         {
-            cbs = FindObjectsOfTypeAll<ClassBind>();
             foreach (var cb in cbs)
             {
                 //先添加
@@ -112,6 +112,11 @@ namespace JEngine.Core
                     cb.Active(_class);
                 }
             }
+        }
+        public static void DoBind()
+        {
+            cbs = FindObjectsOfTypeAll<ClassBind>();
+            DoBind(cbs);
         }
 
         public static List<T> FindObjectsOfTypeAll<T>()

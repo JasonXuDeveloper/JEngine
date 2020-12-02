@@ -24,8 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
+using System.IO;
+using libx;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEditor.IMGUI.Controls;
+using UnityEngine.Analytics;
 using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
@@ -47,9 +53,15 @@ namespace JEngine.Editor
         public const int ERROR_RESCUE_TOOLS_INFO = 9;
         public const int INVALID_SCENE_OBJECT = 10;
         public const int PANEL_INFO = 11;
+        public const int SCENES_TITLE = 12;
+        public const int LOAD_SCENE_BTN = 13;
+        public const int LOAD_SCENE_ADDITIVE_BTN = 14;
+        public const int UNLOAD_SCENE_BTN = 15;
+        public const int SCENE_FILTER = 16;
         #endregion
         
         public static Color RED_COLOR = new Color32(245, 80, 98, 255);
+        public static Color CYAN_COLOR = new Color32(144, 245, 229, 255);
 
 
         private static string[][] Titles =
@@ -71,7 +83,12 @@ namespace JEngine.Editor
                 "Warning: Unity might not be responding while rescuing, just be patient"
             }, //修复Bug工具的提示
             new[] {"选择的资源不是场景资源", "Invalid resource type, please choose scene resource"},
-            new[] {"面板上的设置仅对编辑器有效", "All settings in the panel only work on editor"},//面板提示
+            new[] {"面板上的大部分设置是针对于Unity编辑器的，对打包后的客户端无效", "Most features in the setting panel is editor only, does not effect the built application"},//面板提示
+            new[] {"热更场景快捷操作", "Hot Update Scenes Shortcuts"},
+            new[] {"打开", "Open"},
+            new[] {"加载", "Load"},
+            new[] {"卸载", "Unload"},
+            new[] {"筛选场景", "Scene Filter"},
         };
 
         /// <summary>
@@ -106,12 +123,42 @@ namespace JEngine.Editor
             set => PlayerPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
         }
 
-        [MenuItem("JEngine/Setting",priority = 1998)]
+        /// <summary>
+        /// 是否展示热更场景
+        /// </summary>
+        private bool ShowScenes = true;
+        
+        /// <summary>
+        /// 筛选场景搜索框
+        /// </summary>
+        [SerializeField]
+        private AutocompleteSearchField sceneSearchField;
+
+        /// <summary>
+        /// 筛选场景字符串
+        /// </summary>
+        private string sceneSearchPattern = "";
+
+
+        [MenuItem("JEngine/Setting #&J",priority = 1998)]
         private static void ShowWindow()
         {
             var window = GetWindow<JEngineSetting>(GetString(JENGINE_SETTING));
             window.minSize = new Vector2(300, 500);
             window.Show();
+        }
+
+        private void OnEnable()
+        {
+	        if (sceneSearchField == null) sceneSearchField = new AutocompleteSearchField();
+	        sceneSearchField.onInputChanged = (s) =>
+	        {
+		        sceneSearchPattern = s;
+	        };
+	        sceneSearchField.onConfirm = (s) =>
+	        {
+		        sceneSearchPattern = s;
+	        };
         }
 
         private int GetSpace(float percentage)
@@ -176,6 +223,92 @@ namespace JEngine.Editor
                 EditorGUILayout.TextField(LastDLLCleanUpTime, textStyle);
                 GUI.enabled = true;
             });
+            
+            //直接进热更场景
+            GUILayout.Space(30);
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+                textStyle = new GUIStyle();
+                textStyle.fontSize = 16;
+                textStyle.normal.textColor = CYAN_COLOR;
+                textStyle.alignment = TextAnchor.MiddleCenter;
+                GUILayout.Label(GetString(SCENES_TITLE), textStyle);
+            });
+            GUILayout.Space(10);
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+                MakeFoldOut(ref ShowScenes, "热更场景列表", () => { });
+            });
+            //如果场景
+            if (ShowScenes)
+            {
+                //筛选框
+                sceneSearchField.OnGUI(GetSpace(0.1f));
+                
+                //获取热更场景
+                Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
+                Assets.loadDelegate = AssetDatabase.LoadAssetAtPath; 
+
+                var assets = new List<string>();
+                var rules = BuildScript.GetBuildRules();
+                foreach (var asset in rules.scenesInBuild)
+                {
+                    var path = AssetDatabase.GetAssetPath(asset);
+                    if (string.IsNullOrEmpty(path))
+                    {
+                        continue;
+                    }
+                    assets.Add(path); 
+                } 
+                foreach (var rule in rules.rules)
+                {
+                    if (rule.searchPattern.Contains("*.unity"))
+                    {
+                        assets.AddRange(rule.GetAssets());
+                    }
+                }
+
+                foreach (var asset in assets)
+                {
+                    MakeHorizontal(GetSpace(0.1f), () =>
+                    {
+                        GUI.enabled = false;
+                        Object sceneObj = AssetDatabase.LoadAssetAtPath<Object>(asset);
+                        
+                        //筛选
+                        if (!sceneObj.name.StartsWith(sceneSearchPattern))
+                        {
+	                        GUI.enabled = true;
+	                        return;
+                        }
+                        
+                        EditorGUILayout.ObjectField(sceneObj,
+                            typeof(Object), false);
+                        GUI.enabled = true;
+
+                        GUILayout.Space(15);
+                        
+                        if (GUILayout.Button(GetString(LOAD_SCENE_BTN)))
+                        {
+                            EditorSceneManager.OpenScene(asset);
+                        }
+                        
+                        GUILayout.Space(5);
+                        
+                        if (GUILayout.Button(GetString(LOAD_SCENE_ADDITIVE_BTN)))
+                        {
+                            EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
+                        }
+                        
+                        GUILayout.Space(5);
+                        
+                        if (GUILayout.Button(GetString(UNLOAD_SCENE_BTN)))
+                        {
+                            EditorSceneManager.CloseScene(EditorSceneManager.GetSceneByPath(asset), true);
+                        }
+                    });
+                }
+            }
 
             //bug修复
             GUILayout.Space(30);
@@ -187,6 +320,7 @@ namespace JEngine.Editor
                 textStyle.alignment = TextAnchor.MiddleCenter;
                 GUILayout.Label(GetString(ERROR_RESCUE_TOOLS), textStyle);
             });
+            GUILayout.Space(10);
             MakeHorizontal(GetSpace(0.1f), () =>
             {
                 EditorGUILayout.HelpBox(GetString(ERROR_RESCUE_TOOLS_INFO),MessageType.Warning);
@@ -205,6 +339,16 @@ namespace JEngine.Editor
             });
         }
 
+
+        public static void MakeFoldOut(ref bool fold,string name, Action act)
+        {
+            fold = EditorGUILayout.Foldout(fold, name);
+            if(fold)
+            {
+                act();
+            }
+        }
+        
         public static void MakeHorizontal(int space,Action act)
         {
             GUILayout.BeginHorizontal();
@@ -225,4 +369,245 @@ namespace JEngine.Editor
         中文 = 0,
         English = 1
     }
+    
+    [Serializable]
+	public class AutocompleteSearchField
+	{
+		static class Styles
+		{
+			public const float resultHeight = 20f;
+			public const float resultsBorderWidth = 2f;
+			public const float resultsMargin = 15f;
+			public const float resultsLabelOffset = 2f;
+
+			public static readonly GUIStyle entryEven;
+			public static readonly GUIStyle entryOdd;
+			public static readonly GUIStyle labelStyle;
+			public static readonly GUIStyle resultsBorderStyle;
+
+			static Styles()
+			{
+				entryOdd = new GUIStyle("CN EntryBackOdd");
+				entryEven = new GUIStyle("CN EntryBackEven");
+				resultsBorderStyle = new GUIStyle("hostview");
+
+				labelStyle = new GUIStyle(EditorStyles.label)
+				{
+					alignment = TextAnchor.MiddleLeft,
+					richText = true
+				};
+			}
+		}
+
+		public Action<string> onInputChanged;
+		public Action<string> onConfirm;
+		public string searchString;
+		public int maxResults = 15;
+
+		[SerializeField]
+		List<string> results = new List<string>();
+
+		[SerializeField]
+		int selectedIndex = -1;
+
+		SearchField searchField;
+
+		Vector2 previousMousePosition;
+		bool selectedIndexByMouse;
+
+		bool showResults;
+
+		public void AddResult(string result)
+		{
+			if(!results.Contains(result))
+				results.Add(result);
+		}
+
+		public void ClearResults()
+		{
+			results.Clear();
+		}
+
+		public void OnToolbarGUI(float space =0)
+		{
+			Draw(asToolbar:true,space);
+		}
+
+		public void OnGUI(float space = 0)
+		{
+			Draw(asToolbar:false,space);
+		}
+
+		void Draw(bool asToolbar,float space)
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(space);
+			var rect = GUILayoutUtility.GetRect(1, 1, 18, 18);
+			DoSearchField(rect, asToolbar);
+			GUILayout.Space(space);
+			GUILayout.EndHorizontal();
+			rect.y += 18;
+			DoResults(rect);
+		}
+
+		void DoSearchField(Rect rect, bool asToolbar)
+		{
+			if(searchField == null)
+			{
+				searchField = new SearchField();
+				searchField.downOrUpArrowKeyPressed += OnDownOrUpArrowKeyPressed;
+			}
+
+			if (searchString != "")
+			{
+				var result = asToolbar
+					? searchField.OnToolbarGUI(rect, searchString)
+					: searchField.OnGUI(rect, searchString);
+				
+				if (result != searchString && onInputChanged != null)
+				{
+					onInputChanged(result);
+					selectedIndex = -1;
+					showResults = true;
+				}
+			
+				searchString = result;
+			}
+			else
+			{
+				var s = asToolbar
+					? searchField.OnToolbarGUI(rect, JEngineSetting.GetString(JEngineSetting.SCENE_FILTER))
+					: searchField.OnGUI(rect, JEngineSetting.GetString(JEngineSetting.SCENE_FILTER));
+				searchString = "";
+			}
+			
+
+			if(HasSearchbarFocused())
+			{
+				RepaintFocusedWindow();
+			}
+		}
+
+		void OnDownOrUpArrowKeyPressed()
+		{
+			var current = Event.current;
+
+			if (current.keyCode == KeyCode.UpArrow)
+			{
+				current.Use();
+				selectedIndex--;
+				selectedIndexByMouse = false;
+			}
+			else
+			{
+				current.Use();
+				selectedIndex++;
+				selectedIndexByMouse = false;
+			}
+
+			if (selectedIndex >= results.Count) selectedIndex = results.Count - 1;
+			else if (selectedIndex < 0) selectedIndex = -1;
+		}
+
+		void DoResults(Rect rect)
+		{
+			if(results.Count <= 0 || !showResults) return;
+
+			var current = Event.current;
+			rect.height = Styles.resultHeight * Mathf.Min(maxResults, results.Count);
+			rect.x = Styles.resultsMargin;
+			rect.width -= Styles.resultsMargin * 2;
+
+			var elementRect = rect;
+
+			rect.height += Styles.resultsBorderWidth;
+			GUI.Label(rect, "", Styles.resultsBorderStyle);
+
+			var mouseIsInResultsRect = rect.Contains(current.mousePosition);
+
+			if(mouseIsInResultsRect)
+			{
+				RepaintFocusedWindow();
+			}
+
+			var movedMouseInRect = previousMousePosition != current.mousePosition;
+
+			elementRect.x += Styles.resultsBorderWidth;
+			elementRect.width -= Styles.resultsBorderWidth * 2;
+			elementRect.height = Styles.resultHeight;
+
+			var didJustSelectIndex = false;
+
+			for (var i = 0; i < results.Count && i < maxResults; i++)
+			{
+				if(current.type == EventType.Repaint)
+				{
+					var style = i % 2 == 0 ? Styles.entryOdd : Styles.entryEven;
+
+					style.Draw(elementRect, false, false, i == selectedIndex, false);
+
+					var labelRect = elementRect;
+					labelRect.x += Styles.resultsLabelOffset;
+					GUI.Label(labelRect, results[i], Styles.labelStyle);
+				}
+				if(elementRect.Contains(current.mousePosition))
+				{
+					if(movedMouseInRect)
+					{
+						selectedIndex = i;
+						selectedIndexByMouse = true;
+						didJustSelectIndex = true;
+					}
+					if(current.type == EventType.MouseDown)
+					{
+						OnConfirm(results[i]);
+					}
+				}
+				elementRect.y += Styles.resultHeight;
+			}
+
+			if(current.type == EventType.Repaint && !didJustSelectIndex && !mouseIsInResultsRect && selectedIndexByMouse)
+			{
+				selectedIndex = -1;
+			}
+
+			if((GUIUtility.hotControl != searchField.searchFieldControlID && GUIUtility.hotControl > 0)
+				|| (current.rawType == EventType.MouseDown && !mouseIsInResultsRect))
+			{
+				showResults = false;
+			}
+
+			if(current.type == EventType.KeyUp && current.keyCode == KeyCode.Return && selectedIndex >= 0)
+			{
+				OnConfirm(results[selectedIndex]);
+			}
+
+			if(current.type == EventType.Repaint)
+			{
+				previousMousePosition = current.mousePosition;
+			}
+		}
+
+		void OnConfirm(string result)
+		{
+			searchString = result;
+			if(onConfirm != null) onConfirm(result);
+			if(onInputChanged != null) onInputChanged(result);
+			RepaintFocusedWindow();
+			GUIUtility.keyboardControl = 0; // To avoid Unity sometimes not updating the search field text
+		}
+
+		bool HasSearchbarFocused()
+		{
+			return GUIUtility.keyboardControl == searchField.searchFieldControlID;
+		}
+
+		static void RepaintFocusedWindow()
+		{
+			if(EditorWindow.focusedWindow != null)
+			{
+				EditorWindow.focusedWindow.Repaint();
+			}
+		}
+	}
 }
