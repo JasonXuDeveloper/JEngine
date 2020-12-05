@@ -43,14 +43,14 @@ namespace JEngine.Examples
 
             /*在这里给个具体思路
             * 例如目前封装的socket io的消息模型
-            * socketio采用的是json封装，包含了event name，event type 和 event data
+            * socketio采用的是json封装，包含了event name，event type 和 event data（这个在socket io 的packer里）
             * event name 顾名思义是事件名称
             * event type 这个可以忽略，就是事件类型，普遍是message
             * event data 是数据的json格式
             * 会返回一个JSONObject，然后可以根据这个JSONObject做你的逻辑
             * 
             * 所以这里的思路是你也封装一个这样的模型，然后写个字典来存事件
-            * 以socket io 为例，先解析e.Data，得到event name
+            * 以socket io 为例，先解析e.Data，得到字符串：event name，JSONObject：event data
             * 然后直接在Dictionary<string,Action<JSONObject>>的字典里，获取event name这个值
             * 如果存在，Invoke(data)，通过数据去Invoke回调
             * 然后没然后了，别在群里问JWebSocket非socket io 服务器怎么事件派发无效了，
@@ -58,6 +58,10 @@ namespace JEngine.Examples
             * JEngine告诉你该怎么搞，工具给你写完，后面的就要靠你自己了！
             * 
             * 所以这里建议没接触过后端的，用nodeJS服务器，用里面的socketIO，当时我从没接触过后端到能撸双端游戏，这个东西功不可没
+            * 
+            * 如果一定要写的，可以研究下JEvent，专门搞一个类处理事件，
+            * 里面的方法全写为void xxx(string event, JSONObject data)，然后类打上[Subscriber]标签
+            * 然后写个JEvent来注册，在这里获取到event name 和event data 后直接JEvent.Post就能派发了，简单的很~
             */
         }
 
