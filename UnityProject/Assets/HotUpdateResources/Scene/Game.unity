@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScriptsToBind:
-  - Namespace: JEngine.Examples.Event
+  - Namespace: JEngine.Examples
     Class: EventDemo
     ActiveAfter: 1
     RequireBindFields: 0

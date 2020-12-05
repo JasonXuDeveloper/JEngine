@@ -69,6 +69,10 @@
      <Compile Include="Assets\Dependencies\WebsocketSharp\HandshakeBase.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\HandshakeRequest.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\HandshakeResponse.cs" />
+     <Compile Include="Assets\Dependencies\WebsocketSharp\JSONObject\Editor\JSONChecker.cs" />
+     <Compile Include="Assets\Dependencies\WebsocketSharp\JSONObject\JSONObject.cs" />
+     <Compile Include="Assets\Dependencies\WebsocketSharp\JSONObject\JSONTemplates.cs" />
+     <Compile Include="Assets\Dependencies\WebsocketSharp\JSONObject\VectorTemplates.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\LogData.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\LogLevel.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\Logger.cs" />
@@ -124,6 +128,7 @@
      <Compile Include="Assets\Dependencies\WebsocketSharp\WebSocketFrame.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\WebSocketState.cs" />
      <Compile Include="Assets\Dependencies\WebsocketSharp\WebSocketStream.cs" />
+     <None Include="Assets\Dependencies\WebsocketSharp\JSONObject\readme.txt" />
      <None Include="Assets\Dependencies\WebsocketSharp\WebSocketSharp.asmdef" />
  <Reference Include="UnityEditor.UI">
  <HintPath>/Users/jason/Documents/GitHub/JEngine/UnityProject/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
