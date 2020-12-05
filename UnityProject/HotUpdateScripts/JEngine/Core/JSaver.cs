@@ -24,12 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace JEngine.Core
 {
     public class JSaver
     {
+        private const string JSaverKeys = "JEngine.Core.JSaver.Keys";
+
+        private static void AddJSaverKeys(string key)
+        {
+            var s = PlayerPrefs.GetString(JSaverKeys, key);
+            if (!s.Split(',').ToList().Contains(key))
+            {
+                StringBuilder sb = new StringBuilder(s);
+                sb.Append($",{key}");
+                s = sb.ToString();
+            }
+            PlayerPrefs.SetString(JSaverKeys, s);
+        }
+
         /// <summary>
         /// Save a data to local storage as string
         /// </summary>
@@ -51,7 +67,9 @@ namespace JEngine.Core
             }
             string strData = val.ToString();
             var result = CryptoHelper.EncryptStr(strData, encryptKey);
+
             PlayerPrefs.SetString(dataName, result);
+            AddJSaverKeys(dataName);
             return result;
         }
 
@@ -79,6 +97,7 @@ namespace JEngine.Core
                 byte[] byteData = StringifyHelper.ProtoSerialize(val);
                 var result = CryptoHelper.AesEncrypt(byteData, encryptKey);
                 PlayerPrefs.SetString(dataName, Convert.ToBase64String(result));
+                AddJSaverKeys(dataName);
                 return result;
             }
             catch (Exception ex)
@@ -112,6 +131,7 @@ namespace JEngine.Core
                 string strData = StringifyHelper.JSONSerliaze(val);
                 var result = CryptoHelper.EncryptStr(strData, encryptKey);
                 PlayerPrefs.SetString(dataName, result);
+                AddJSaverKeys(dataName);
                 return result;
             }
             catch (Exception ex)
@@ -336,7 +356,15 @@ namespace JEngine.Core
         /// </summary>
         public static void DeleteAll()
         {
-            PlayerPrefs.DeleteAll();
+            var s = PlayerPrefs.GetString(JSaverKeys);
+            if (!String.IsNullOrEmpty(s))
+            {
+                var keys = s.Split(',');
+                foreach(var key in keys)
+                {
+                    PlayerPrefs.DeleteKey(key);
+                }
+            }
         }
     }
 }

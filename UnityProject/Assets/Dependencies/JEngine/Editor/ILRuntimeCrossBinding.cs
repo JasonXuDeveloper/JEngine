@@ -114,18 +114,25 @@ namespace JEngine.Editor
             Type t = Type.GetType(_class);
             if (t == null)
             {
-                t = Assembly
-                    .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
-                              $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);   
-                
-                if (t == null)
+                if (File.Exists(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                                $"/Library/ScriptAssemblies/{_assembly}.dll"))
                 {
-                
-                
                     t = Assembly
                         .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
-                                  $"/HotUpdateScripts/Dlls/{_assembly}.dll").GetType(_class);   
-                }
+                                  $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
+                    
+                    if (t == null)
+                    {
+
+                        if (File.Exists(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                                        $"/HotUpdateScripts/Dlls/{_assembly}.dll"))
+                        {
+                            t = Assembly
+                                .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
+                                          $"/HotUpdateScripts/Dlls/{_assembly}.dll").GetType(_class);
+                        }   
+                    }
+                }  
             }
 
             //判断空

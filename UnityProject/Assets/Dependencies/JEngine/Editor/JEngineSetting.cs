@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using JEngine.Core;
 using libx;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -58,10 +59,14 @@ namespace JEngine.Editor
         public const int LOAD_SCENE_ADDITIVE_BTN = 14;
         public const int UNLOAD_SCENE_BTN = 15;
         public const int SCENE_FILTER = 16;
+        public const int CLASSBIND_TOOLS = 17;
+        public const int CLASSBIND_AUTO_GET_FIELS= 18;
+        public const int CLASSBIND_AUTO_SET_TYPES = 19;
         #endregion
         
         public static Color RED_COLOR = new Color32(245, 80, 98, 255);
         public static Color CYAN_COLOR = new Color32(144, 245, 229, 255);
+        public static Color GREEN_COLOR = new Color32(98, 245, 131, 255);
 
 
         private static string[][] Titles =
@@ -74,7 +79,7 @@ namespace JEngine.Editor
             new[] {"运行后跳转启动场景", "Jump to start up scene when launch"},
             new[] {"修复Dependencies目录下\nType or namespace name\nof ILRuntime等Not found错误", "Fix under Dependencies directory,\nType or namespace name of ILRuntime, etc,\nNot found error"},
             new[] {"修复", "Fix"},
-            new[] {"错误修复工具", "Error rescue tools"}, //修复Bug工具的标题
+            new[] {"错误修复工具", "Error Rescue Tools"}, //修复Bug工具的标题
             new[]
             {
                 "一键修复可能会出现的特定错误\n" +
@@ -89,12 +94,19 @@ namespace JEngine.Editor
             new[] {"加载", "Load"},
             new[] {"卸载", "Unload"},
             new[] {"筛选场景", "Scene Filter"},
+            new[] {"ClassBind助手", "ClassBind Tools"},
+            new[] {"自动获取全部field", "Auto get fields for all"},
+            new[] {"自动处理全部fieldType", "Auto get fieldTypes for all"},
         };
 
         /// <summary>
         /// 语言
         /// </summary>
-        public static JEngineLanguage Language = JEngineLanguage.中文;
+        public static JEngineLanguage Language
+        {
+	        get => (JEngineLanguage)(int.Parse(PlayerPrefs.GetString($"{prefix}.PanelLanguage", "0")));
+	        set => PlayerPrefs.SetString($"{prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
+        }
 
         /// <summary>
         /// 跳转场景路径
@@ -139,6 +151,7 @@ namespace JEngine.Editor
         /// </summary>
         private string sceneSearchPattern = "";
 
+        private Vector2 scrollPos;
 
         [MenuItem("JEngine/Setting #&J",priority = 1998)]
         private static void ShowWindow()
@@ -159,6 +172,7 @@ namespace JEngine.Editor
 	        {
 		        sceneSearchPattern = s;
 	        };
+	        scrollPos = new Vector2(position.width, position.height);
         }
 
         private int GetSpace(float percentage)
@@ -169,6 +183,10 @@ namespace JEngine.Editor
 
         private void OnGUI()
         {
+	        //只滚动y轴
+	        var _scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+	        scrollPos = new Vector2(scrollPos.x, _scrollPos.y);
+	        
             //绘制标题
             GUILayout.Space(10);
             GUIStyle textStyle = new GUIStyle();
@@ -309,6 +327,39 @@ namespace JEngine.Editor
                     });
                 }
             }
+            
+            //Classbind工具
+            GUILayout.Space(30);
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            textStyle = new GUIStyle();
+	            textStyle.fontSize = 16;
+	            textStyle.normal.textColor = GREEN_COLOR;
+	            textStyle.alignment = TextAnchor.MiddleCenter;
+	            GUILayout.Label(GetString(CLASSBIND_TOOLS), textStyle);
+            });
+            GUILayout.Space(10);
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            if (GUILayout.Button(GetString(CLASSBIND_AUTO_GET_FIELS)))
+	            {
+		            foreach (var cb in FindObjectsOfType<ClassBind>())
+		            {
+			            ClassBindEditor.DoConvert(cb);
+		            }
+	            }
+            });
+            
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            if (GUILayout.Button(GetString(CLASSBIND_AUTO_SET_TYPES)))
+	            {
+		            foreach (var cb in FindObjectsOfType<ClassBind>())
+		            {
+			            ClassBindEditor.DoFieldType(cb);
+		            }
+	            }
+            });
 
             //bug修复
             GUILayout.Space(30);
@@ -337,6 +388,15 @@ namespace JEngine.Editor
                     UnityEditor.PlayerSettings.allowUnsafeCode = true;
                 }
             });
+
+            try
+            {
+	            EditorGUILayout.EndScrollView();
+            }
+            catch
+            {
+	            // ignored
+            }
         }
 
 

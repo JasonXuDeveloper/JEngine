@@ -71,6 +71,8 @@
     <Compile Include="JEngine\Event\EventEnum.cs" />
     <Compile Include="Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Event\EventAttributes.cs" />
+    <Compile Include="JEngine\Core\JExtensions.cs" />
+    <Compile Include="JEngine\Net\DataType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
@@ -135,11 +137,15 @@
     <Reference Include="Malee.ReorderableList">
       <HintPath>..\Library\ScriptAssemblies\Malee.ReorderableList.dll</HintPath>
     </Reference>
+    <Reference Include="WebSocketSharp">
+      <HintPath>..\Library\ScriptAssemblies\WebSocketSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Proto2cs\" />
     <Folder Include="JEngine\Event\" />
     <Folder Include="Examples\Event\" />
+    <Folder Include="JEngine\Net\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

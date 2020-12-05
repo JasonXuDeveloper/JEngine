@@ -70,51 +70,65 @@ namespace JEngine.Core
 
                     try
                     {
-                        if (field.fieldType == _ClassField.FieldType.Short)
+                        if (field.fieldType == _ClassField.FieldType.Number)
                         {
-                            obj = int.Parse(field.value);
-                            _class.BoundData = true;
+                            var fieldType = t.GetField(field.fieldName,
+                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                BindingFlags.Static).FieldType;
+                            if (fieldType == null)
+                            {
+                                fieldType = t.GetProperty(field.fieldName,
+                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                                    BindingFlags.Static).PropertyType;
+                            }
+
+                            if (fieldType == typeof(short))
+                            {
+                                obj = int.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(ushort))
+                            {
+                                obj = ushort.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(int))
+                            {
+                                obj = short.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(uint))
+                            {
+                                obj = uint.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(long))
+                            {
+                                obj = long.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(ulong))
+                            {
+                                obj = ulong.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(float))
+                            {
+                                obj = float.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(decimal))
+                            {
+                                obj = decimal.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType == typeof(double))
+                            {
+                                obj = Double.Parse(field.value);
+                                _class.BoundData = true;
+                            }
                         }
-                        else if (field.fieldType == _ClassField.FieldType.UShort)
-                        {
-                            obj = ushort.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.Int)
-                        {
-                            obj = short.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.UInt)
-                        {
-                            obj = uint.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.Long)
-                        {
-                            obj = long.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.ULong)
-                        {
-                            obj = ulong.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.Float)
-                        {
-                            obj = float.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.Decimal)
-                        {
-                            obj = decimal.Parse(field.value);
-                            _class.BoundData = true;
-                        }
-                        else if (field.fieldType == _ClassField.FieldType.Double)
-                        {
-                            obj = Double.Parse(field.value);
-                            _class.BoundData = true;
-                        }
+
                         else if (field.fieldType == _ClassField.FieldType.String)
                         {
                             obj = field.value;
@@ -126,6 +140,7 @@ namespace JEngine.Core
                             obj = field.value == "true";
                             _class.BoundData = true;
                         }
+
                         if (field.fieldType == _ClassField.FieldType.GameObject)
                         {
                             GameObject go = field.gameObject;
@@ -257,7 +272,8 @@ namespace JEngine.Core
                                 }
                                 else
                                 {
-                                    Log.PrintError($"自动绑定{this.name}出错：{classType}.{field.fieldName}赋值出错：{field.fieldName}不存在");
+                                    Log.PrintError(
+                                        $"自动绑定{this.name}出错：{classType}.{field.fieldName}赋值出错：{field.fieldName}不存在");
                                 }
                             }
                         }
@@ -303,7 +319,7 @@ namespace JEngine.Core
                             }
                             else
                             {
-                                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在{field.fieldName}，已跳过");   
+                                Log.PrintError($"自动绑定{this.name}出错：{classType}不存在{field.fieldName}，已跳过");
                             }
                         }
                     }
@@ -442,6 +458,24 @@ namespace JEngine.Core
             return null;
         }
 
+        public static object GetHotComponent(GameObject gameObject,string typeName)
+        {
+            var clrInstances = gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>();
+            return clrInstances.ToList()
+                .FindAll(a =>
+                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .Select(a => a.ILInstance).ToArray();
+        }
+        
+        public static object GetHotComponentInChildren(GameObject gameObject,string typeName)
+        {
+            var clrInstances = gameObject.GetComponentsInChildren<MonoBehaviourAdapter.Adaptor>();
+            return clrInstances.ToList()
+                .FindAll(a =>
+                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .Select(a => a.ILInstance).ToArray();
+        }
+        
 #if UNITY_EDITOR
         [ContextMenu("Convert Path to GameObject")]
         private void Convert()
@@ -535,15 +569,7 @@ namespace JEngine.Core
     {
         public enum FieldType
         {
-            Short,
-            UShort,
-            Int,
-            UInt,
-            Long,
-            ULong,
-            Float,
-            Decimal,
-            Double,
+            Number,
             String,
             Bool,
             GameObject,
