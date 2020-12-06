@@ -13,6 +13,16 @@ namespace ILRuntime.Runtime.Generated
         /// </summary>
         public static void Initialize(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
+            JEngine_Net_SocketIOComponent_Binding.Register(app);
+            JEngine_Net_JSocketConfig_Binding.Register(app);
+            WebSocketSharp_WebSocket_Binding.Register(app);
+            System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_Boolean_Binding.Register(app);
+            UnityEngine_Object_Binding.Register(app);
+            UnityEngine_GameObject_Binding.Register(app);
+            System_Action_1_SocketIOEvent_Binding.Register(app);
+            System_Action_Binding.Register(app);
+            System_Threading_Tasks_Task_1_Boolean_Binding.Register(app);
+            System_Runtime_CompilerServices_TaskAwaiter_1_Boolean_Binding.Register(app);
             System_Linq_Enumerable_Binding.Register(app);
             System_String_Binding.Register(app);
             JEngine_Core_Log_Binding.Register(app);
@@ -29,15 +39,12 @@ namespace ILRuntime.Runtime.Generated
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_SByte_GameObject_Binding.Register(app);
-            UnityEngine_Object_Binding.Register(app);
-            UnityEngine_GameObject_Binding.Register(app);
             UnityEngine_Transform_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
             UnityEngine_RectTransform_Binding.Register(app);
             UnityEngine_Vector2_Binding.Register(app);
             System_Collections_IEnumerator_Binding.Register(app);
             System_Convert_Binding.Register(app);
-            System_Action_Binding.Register(app);
             System_Action_1_GameObject_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Dictionary_2_String_AssetRequest_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_AssetRequest_Binding.Register(app);
@@ -83,10 +90,12 @@ namespace ILRuntime.Runtime.Generated
             JEngine_UI_LoopListView_Binding.Register(app);
             System_Collections_Generic_List_1_Type_Binding.Register(app);
             ProtoBuf_PType_Binding.Register(app);
+            UnityEngine_PlayerPrefs_Binding.Register(app);
+            System_Char_Binding.Register(app);
+            System_Text_StringBuilder_Binding.Register(app);
             Init_Binding.Register(app);
             System_Exception_Binding.Register(app);
             JEngine_Core_CryptoHelper_Binding.Register(app);
-            UnityEngine_PlayerPrefs_Binding.Register(app);
             System_Int32_Binding.Register(app);
             System_Int16_Binding.Register(app);
             System_Int64_Binding.Register(app);
@@ -120,7 +129,6 @@ namespace ILRuntime.Runtime.Generated
             ProtoBuf_Serializer_Binding.Register(app);
             LitJson_JsonMapper_Binding.Register(app);
             libx_Reference_Binding.Register(app);
-            System_Text_StringBuilder_Binding.Register(app);
             System_Action_2_Boolean_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             UnityEngine_UI_InputField_Binding.Register(app);
             UnityEngine_Events_UnityEvent_1_String_Binding.Register(app);
@@ -131,6 +139,9 @@ namespace ILRuntime.Runtime.Generated
             JEngine_AntiCheat_JLong_Binding.Register(app);
             UnityEngine_Random_Binding.Register(app);
             System_Threading_Thread_Binding.Register(app);
+            WebSocketSharp_MessageEventArgs_Binding.Register(app);
+            JEngine_Net_SocketIOEvent_Binding.Register(app);
+            JSONObject_Binding.Register(app);
 
             ILRuntime.CLR.TypeSystem.CLRType __clrType = null;
         }
