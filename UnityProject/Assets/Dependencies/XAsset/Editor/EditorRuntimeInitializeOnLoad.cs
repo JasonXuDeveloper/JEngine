@@ -38,7 +38,7 @@ namespace libx
     public static class EditorRuntimeInitializeOnLoad
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void OnInitialize()
+        public static void OnInitialize()
         {
             Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
             Assets.loadDelegate = AssetDatabase.LoadAssetAtPath; 

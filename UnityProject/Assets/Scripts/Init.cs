@@ -21,8 +21,10 @@ public class Init : MonoBehaviour
     [SerializeField] public string Key;
     [SerializeField] public bool UsePdb = false;
     
-    MemoryStream fs;
-    MemoryStream pdb;
+    private MemoryStream fs;
+    private MemoryStream pdb;
+    
+    private object[] param0 = new object[0];
 
     public void Load()
     {
@@ -101,7 +103,7 @@ public class Init : MonoBehaviour
 
     public void OnHotFixLoaded()
     {
-        appdomain.Invoke("HotUpdateScripts.Program", "RunGame", null, null);
+        appdomain.Invoke("HotUpdateScripts.Program", "RunGame", param0, param0);
         HotFixLoadedHelper.Init();
     }
 }

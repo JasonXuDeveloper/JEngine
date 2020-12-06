@@ -1,12 +1,19 @@
-# JENGINE
+# JENGINE v0.6.0
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
-该分支是```最新版本```系列分支，更新很频繁！
+```mater```分支为开发者认为的可以正常使用，不会有太大问题的最新版本；
 
-稳定版本请使用```0.5.x```分支！
+稳定版本请使用```0.5.x```分支；
 
-欢迎大家fork后在```development```分支进行开发，欢迎PR和Issue！
+```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
+
+
+
+> 作者将于2020年12月11日，北京时间晚上9点进行JEngine0.6直播讲解，将讲解底层机制、与0.5版本的差距、功能使用等，敬请期待！
+> v0.6系列文档将在直播后开发！
+
+
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
@@ -62,79 +69,74 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
     - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
     - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
-
   - **[Action队列解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
 
     - **更少的代码，实现更多功能，效率大幅度提高**！
     - 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
     - **主线程运行代码**
-
-  - **[UI生命周期解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
-    - **轻松**管理**UI周期**，**链式编程**让代码**更美观**
+  - **[UI解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
+    - **UI框架**，单例模式更好管理界面
+    - **组件自动获取**，继承面板基类后**通过name获取UI组件**
+- **UI周期**，轻松管理**生命周期**，**链式编程**让代码**更美观**
     - UI**定期循环**更新，可以选择**毫秒更新或帧更新**，可以指定更新**频率**
-
-    - UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
-
+- UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
   - **[基类解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
     - **轻松管理**生命周期
     - 可以**帧循环**，或者**毫秒循环**
     - **不依赖MonoBehaviour**
     - **简单好用**
-
   - **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
     - 支持**同步/异步加载**资源
     - **泛型**方法，轻松使用
     - **异步加载**热更**场景**
-    
 - **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
   - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
   - 可对**该脚本public/private/static数值进行赋值**
   - **特殊类型支持拖拽赋值**
-  - **不需要是Mono类**
-
+  - **不需要是Mono类**，非MonoBehaviour派生类也可正常绑定至GameObject进行赋值，并且可以正常获取
 - **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
-
-  - 字符串存本地
+- 字符串存本地
   - **JSON**存本地
   - **Protobuf**二进制存本地
   - **自带加密**
-
 - **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
 
   - **CSV配表**
   - 轻松**转换语种**
   - 可通过静态方法**获取key对应的字符串**
   - 可让Text**自动根据语言切换文字**
-
 - **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
 
   - 支持**90%数值类型**
   - **偏移值**加密
   - **转JSON和Protobuf**于**普通数据结构一样**
   - 可以**捕获内存作弊**
-
+- **事件派发**解决方案
+  - **不同于其他**事件派发解决**方案**，**不需要注册方法名**，只需要注册类
+  - 给**类打标签**自动**注册类里全部方法**
+  - **可**选**主线程或子线程**派发
+- **网络层**解决方案
+  - 目前支持**Websocket**
+  - 有一套**SocketIO**的消息模型，开箱即用
+  - 支持同步、异步并行、纯异步发送消息
 - **对象池**解决方案
-
-  - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
+- 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
   - **无需重复**创建新对象！
   - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
-  
 - **加密解密**解决方案
 
   - **AES**加密
   - 支持**字符串**
   - 支持**二进制**
-
 - **序列化**解决方案
 
   - 转**String**
   - 转**JSON**
   - 转**Protobuf-net**二进制
-
 - 面板类
   - **ILRuntime适配器自动生成**
   - **Protobfuf文件与CS类互转**
-
+- **JEngine面板**
   - 还有更多功能，尽情自行探索！
 
 
@@ -151,21 +153,64 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## v0.5.8 最新功能
+## v0.6.0 最新功能
 
-- **Bug修复** 当复制streaming asset时安卓可能会出现错误
+- **UI框架**
 
-- **C# type 转 Proto 文件** 转换器
+- **优化** JSaver
 
-- **重新排序** 菜单栏
+- **JAction**支持 ```DelayFrames```，即等待帧数
 
-- **优化** 自动绑定
+- **修复一大堆Bug**
 
-- **更高级的** JBehaviour编辑器
+- **JSON检查工具**
 
-- **JBehaviour** 支持通过 ```new()```创建对象
+- **JEvent**，类似于谷歌在Java的核心库之一，eventbus
 
-- **BindableProperty** 支持绑定多个事件（被多个值绑定）
+  - **监听整个类里全部方法**
+  - **监听单个方法**
+  - **广播数据**至**全部监听事件**
+  - 可以在 **主线程或子线程**运行
+
+- **优化** 自动绑定，更加强大
+
+  - 仅在特定的时候进行绑定，**对性能进行提升**
+  - 自动绑定由**ClassBindMgr**控制，**绑定步骤进行分离，对赋值更友好**
+  - 支持**自动获取热更类全部字段和属性**
+  - 支持**自动获取每个Filed的正确fieldType**
+
+- **JExtensions** 
+
+  - **支持从GameObject获取由ClassBind挂载的非MonoBehaviour派生类**
+  - **添加JBehaviour**到GameObject
+  - **添加JUI** 带GameObject
+  - **获取JBehaviour** 从GameObject
+  - **获取JUI** 从GameObject
+
+- **JWebSocket**
+
+  - **连接** 到websocket服务器
+  - **发送** 消息到websocket服务器
+  - **监听** 来自websocket服务器的消息
+  - **子线程发送监听**
+
+- **JEngine设置面板**
+
+  - **支持编辑器启动游戏后自动跳转Init场景**
+  - **热更场景快捷操作**
+  - **自动绑定工具**
+  - **错误修复工具**
+
+- **更多CLR重定向方法**
+
+  - 支持**MonoBehaviour.SendMessage** 广播到热更类
+  - 支持**MonoBehaviour.Instantiate**来生成带热更类的GameObject和复制热更对象
+
+- **JBehaviour优化**
+
+  - **区别编辑器与真机**，真机性能更好
+  - 支持 **Deltatime, loop counts**, 等
+  - **更强大的编辑器界面**
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -178,7 +223,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 - ~~对象池~~
 - ~~内存加密类~~
 - ~~JPrefab，一个更容易管理热更预制体的解决方案~~
-- Socket
+- ~~Socket~~
 - JUI延伸API
 - UI特效
 - 优化算法、代码（一直在优化）

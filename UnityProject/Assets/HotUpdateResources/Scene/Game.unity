@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 40430357}
   - component: {fileID: 40430356}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: EventDemo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScriptsToBind:
-  - Namespace: JEngine.Examples.Event
+  - Namespace: JEngine.Examples
     Class: EventDemo
     ActiveAfter: 1
     RequireBindFields: 0
@@ -1260,7 +1260,7 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 11
+      - fieldType: 3
         fieldName: btn_JumpTo
         value: 
         gameObject: {fileID: 149318397}
@@ -3668,23 +3668,23 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 11
+      - fieldType: 3
         fieldName: Panel
         value: 
         gameObject: {fileID: 1888449830}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: FrequencyNumber
         value: 
         gameObject: {fileID: 657951610}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: OnFrameMode
         value: 
         gameObject: {fileID: 702076073}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: DemoText
         value: 
         gameObject: {fileID: 525840221}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: DescText
         value: 
         gameObject: {fileID: 1374282002}
@@ -4205,19 +4205,19 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 12
+      - fieldType: 4
         fieldName: Value
         value: 
         gameObject: {fileID: 1001989977}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: SaveAsStrBtn
         value: 
         gameObject: {fileID: 142841963}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: SaveAsJSONBtn
         value: 
         gameObject: {fileID: 1170275261}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: SaveAsProtobufBtn
         value: 
         gameObject: {fileID: 1289204602}
@@ -4228,7 +4228,7 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 10
+      - fieldType: 2
         fieldName: gm
         value: true
         gameObject: {fileID: 0}
@@ -4651,27 +4651,27 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 10
+      - fieldType: 2
         fieldName: BoolProperty
         value: true
         gameObject: {fileID: 0}
-      - fieldType: 2
+      - fieldType: 0
         fieldName: IntField1
         value: 100
         gameObject: {fileID: 0}
-      - fieldType: 9
+      - fieldType: 1
         fieldName: StringField1
         value: this is a string
         gameObject: {fileID: 0}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: EventSystemField1
         value: EventSystem
         gameObject: {fileID: 1732224119}
-      - fieldType: 11
+      - fieldType: 3
         fieldName: GameObjectField1
         value: 
         gameObject: {fileID: 1925922024}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: a2
         value: 
         gameObject: {fileID: 1925922024}
@@ -4682,11 +4682,11 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 13
+      - fieldType: 5
         fieldName: txtFile
         value: Controller.txt
         gameObject: {fileID: 0}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: a1
         value: 
         gameObject: {fileID: 1925922024}
@@ -5266,11 +5266,11 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 12
+      - fieldType: 4
         fieldName: JUIVal
         value: 
         gameObject: {fileID: 129498209}
-      - fieldType: 12
+      - fieldType: 4
         fieldName: NormalVal
         value: 
         gameObject: {fileID: 1022627434}
@@ -5281,7 +5281,7 @@ MonoBehaviour:
     UseConstructor: 1
     Fields:
       array:
-      - fieldType: 11
+      - fieldType: 3
         fieldName: Panel
         value: 
         gameObject: {fileID: 1096967048}

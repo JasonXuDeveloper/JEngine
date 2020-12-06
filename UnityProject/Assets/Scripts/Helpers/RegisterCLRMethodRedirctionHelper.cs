@@ -1066,7 +1066,7 @@ namespace JEngine.Helper
             //处理好了后，如果还有classbind就是prefab，需要重新bind
             if (res.GetComponentInChildren<ClassBind>(true))
             {
-                ClassBindMgr.DoBind();
+                ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
             }
                 
             if (returnScipt)

@@ -23,6 +23,20 @@ namespace JEngine.Helper
 
         public void Register(AppDomain appdomain)
         {
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.ParameterizedThreadStart>((act) =>
+            {
+                return new System.Threading.ParameterizedThreadStart((obj) =>
+                {
+                    ((Action<System.Object>)act)(obj);
+                });
+            });
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.EventHandler<WebSocketSharp.MessageEventArgs>>((act) =>
+            {
+                return new System.EventHandler<WebSocketSharp.MessageEventArgs>((sender, e) =>
+                {
+                    ((Action<System.Object, WebSocketSharp.MessageEventArgs>)act)(sender, e);
+                });
+            });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityEngine.Events.UnityAction<System.String>>((act) =>
             {
                 return new UnityEngine.Events.UnityAction<System.String>((arg0) =>

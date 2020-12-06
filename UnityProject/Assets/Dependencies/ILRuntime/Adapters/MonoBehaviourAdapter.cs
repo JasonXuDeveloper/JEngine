@@ -96,9 +96,14 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 if (mAwakeMethod != null && !isAwaking)
                 {
                     isAwaking = true;
-                    while (!destoryed && !gameObject.activeInHierarchy)
+                    while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
                     {
                         await Task.Delay(20);
+                    }
+
+                    if (destoryed || !Application.isPlaying)
+                    {
+                        return;
                     }
                     isAwaking = false;
                     appdomain.Invoke(mAwakeMethod, instance, param0);

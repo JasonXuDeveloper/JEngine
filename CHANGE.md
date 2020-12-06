@@ -1,5 +1,50 @@
 ## All Versions
 
+### v0.6.0 (December 6 2020)
+
+- **UI Framework**
+- **Enhance** JSaver
+- **JAction** supports ```DelayFrames```
+- **Fixed a heaps of bugs**
+- **JSON Checker Tool**
+- **JEvent**, which is similar to Google core libraries for Java, eventbus
+  - **Subscribe Class**
+  - **Subscribe Method**
+  - **Post** data **to all subscribed events**
+  - Can be running on **Main Thread or sub Thread**
+- **Enhance** ClassBind, much more powerful
+  - Auto Bind when needed, **better performence**
+  - Controls by **ClassBindMgr**, **more advanced while setting fields**
+  - Support **Automatically get all field**s from a Hot Update Class
+  - Support **Automattically find the FieldType** for a field
+- **JExtensions** 
+  - **Allows get hot update class** from GameObject **via Classbind**
+  - **Add JBehaviour** to GameObject
+  - **Add JUI** to GameObject
+  - **Get JBehaviour** from GameObject
+  - **Get JUI** from GameObject
+- **JWebSocket**
+  - **Connect** to websocket servers
+  - **Send** message to websocket servers
+  - **Listen** message from websocket servers
+  - **Listen and Send in Sub Thread**
+- **JEngine Setting Panel**
+  - **Automatically jump to Init scene first while running**
+  - **Hot Update Scenes Shortcuts**
+  - **ClassBind Tools**
+  - **Error Rescue Tools**
+- **More CLR Redirection Methods**
+  - Support **MonoBehaviour.SendMessage** from Hot Update Class
+  - Support **MonoBehaviour.Instantiate** GameObject with Hot Update Classes & Single Hot Update Class
+- **JBehaviour enhance**
+  - **Perform better after built** than in Editor
+  - Support **Deltatime, loop counts**, etc.
+  - **Powerful Inspector**
+
+
+
+
+
 ### v0.5.8 (October 29 2020)
 
 - **Bug fix** when copying streaming asset

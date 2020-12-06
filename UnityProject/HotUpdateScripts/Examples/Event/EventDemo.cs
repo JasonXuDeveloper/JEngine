@@ -28,7 +28,7 @@ using JEngine.Core;
 using JEngine.Event;
 using System.Diagnostics;
 
-namespace JEngine.Examples.Event
+namespace JEngine.Examples
 {
     public class EventDemo : JBehaviour
     {
