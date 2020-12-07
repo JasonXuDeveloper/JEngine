@@ -54,7 +54,7 @@ namespace JEngine.Examples
         public override void Init()
         {
             Log.Print("[Autobind] AutoBindDemo1::Inited");
-            GameObjectField1.SetActive(!GameObjectField1.activeSelf);
+            //GameObjectField1.SetActive(!GameObjectField1.activeSelf);
             Log.Print($"[Autobind] a2 is null? {a2 is null}");
         }
     }
@@ -65,11 +65,14 @@ namespace JEngine.Examples
 
         AutoBindDemo1 a1 = null;
 
+        public float floatField;
+
         public void Awake()
         {
             Log.Print("[Autobind] AutoBindDemo2::Awake");
             Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
             Log.Print($"[Autobind] a1 is null? {a1 is null}");
+            Log.Print($"[Autobind] floatField: {floatField}");
         }
     }
 }
