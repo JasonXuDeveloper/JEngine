@@ -128,6 +128,7 @@ public class MonoBehaviourAdapterEditor : Editor
                 object obj = instance[i.Value];
                 if (cType.IsPrimitive) //如果是基础类型
                 {
+                    GUI.enabled = true;
                     try
                     {
                         if (cType == typeof(float))

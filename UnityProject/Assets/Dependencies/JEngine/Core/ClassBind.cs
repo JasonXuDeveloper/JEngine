@@ -67,7 +67,7 @@ namespace JEngine.Core
                 foreach (_ClassField field in fields)
                 {
                     object obj = new object();
-
+                    
                     try
                     {
                         if (field.fieldType == _ClassField.FieldType.Number)
@@ -81,48 +81,58 @@ namespace JEngine.Core
                                     BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                                     BindingFlags.Static).PropertyType;
                             }
-
-                            if (fieldType == typeof(short))
+                            
+                            if (fieldType.FullName == typeof(SByte).FullName)
                             {
-                                obj = int.Parse(field.value);
+                                obj = SByte.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(ushort))
+                            else if (fieldType.FullName == typeof(Byte).FullName)
                             {
-                                obj = ushort.Parse(field.value);
+                                obj = Byte.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(int))
+                            else if (fieldType.FullName == typeof(Int16).FullName)
                             {
-                                obj = short.Parse(field.value);
+                                obj = Int16.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(uint))
+                            else if (fieldType.FullName == typeof(UInt16).FullName)
                             {
-                                obj = uint.Parse(field.value);
+                                obj = UInt16.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(long))
+                            else if (fieldType.FullName == typeof(Int32).FullName)
                             {
-                                obj = long.Parse(field.value);
+                                obj = Int32.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(ulong))
+                            else if (fieldType.FullName == typeof(UInt32).FullName)
                             {
-                                obj = ulong.Parse(field.value);
+                                obj = UInt32.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(float))
+                            else if (fieldType.FullName == typeof(Int64).FullName)
                             {
-                                obj = float.Parse(field.value);
+                                obj = Int64.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(decimal))
+                            else if (fieldType.FullName == typeof(UInt64).FullName)
                             {
-                                obj = decimal.Parse(field.value);
+                                obj = UInt64.Parse(field.value);
                                 _class.BoundData = true;
                             }
-                            else if (fieldType == typeof(double))
+                            else if (fieldType.FullName == typeof(Single).FullName)
+                            {
+                                obj = Single.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType.FullName == typeof(Decimal).FullName)
+                            {
+                                obj = Decimal.Parse(field.value);
+                                _class.BoundData = true;
+                            }
+                            else if (fieldType.FullName == typeof(Double).FullName)
                             {
                                 obj = Double.Parse(field.value);
                                 _class.BoundData = true;

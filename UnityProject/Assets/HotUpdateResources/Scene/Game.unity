@@ -4677,7 +4677,7 @@ MonoBehaviour:
         gameObject: {fileID: 1925922024}
   - Namespace: JEngine.Examples
     Class: AutoBindDemo2
-    ActiveAfter: 0
+    ActiveAfter: 1
     RequireBindFields: 1
     UseConstructor: 1
     Fields:
@@ -4685,6 +4685,10 @@ MonoBehaviour:
       - fieldType: 5
         fieldName: txtFile
         value: Controller.txt
+        gameObject: {fileID: 0}
+      - fieldType: 0
+        fieldName: floatField
+        value: 10
         gameObject: {fileID: 0}
       - fieldType: 4
         fieldName: a1
