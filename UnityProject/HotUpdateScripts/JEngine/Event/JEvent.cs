@@ -93,7 +93,8 @@ namespace JEngine.Event
                     {
                         try
                         {
-                            td.Invoke(parameters);
+                            //丢主线程去分配Invoke，不然无法执行
+                            Loom.QueueOnMainThread(obj => td.Invoke(parameters), null);
                             //这边不log的时候，空标签会报错，于是我选择了log
                             Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'的方法，目前进度" +
                                     $"{index - 1}/{todo.Count - 1}</color>");
