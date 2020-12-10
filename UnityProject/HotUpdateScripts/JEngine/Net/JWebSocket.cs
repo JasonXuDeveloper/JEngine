@@ -224,7 +224,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，并发送个字符串（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// /// <param name="str">字符串 string</param>
@@ -236,7 +236,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，并发送个字符串（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// /// <param name="str">字符串 string</param>
@@ -259,7 +259,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，并发送个JSON数据（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// <param name="data">json数据 json data</param>
@@ -271,7 +271,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，并发送个JSON数据（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// <param name="data">json数据 json data</param>
@@ -296,7 +296,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，发送JSON数据且包含回调（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// <param name="data">json数据 json data</param>
@@ -309,7 +309,7 @@ namespace JEngine.Net
 
         /// <summary>
         /// Call event on server (only for socket-io servers, eg. nodeJS servers that uses socket-io)
-        /// 调用服务端事件（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
+        /// 调用服务端事件，发送JSON数据且包含回调（只有使用socket-io搭建的服务器才能使用该接口，比如nodeJS使用socket-io的服务器）
         /// </summary>
         /// <param name="ev">事件名字 event name</param>
         /// <param name="data">json数据 json data</param>
