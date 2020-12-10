@@ -81,7 +81,7 @@ namespace JEngine.Examples
             //带配置连接，需要配置一个接收服务器消息的方法
             //JSocketConfig config = JSocketConfig.Default();
             //config.debug = true;
-            //JSocket socket = new JSocket($"ws://{ip}:{port}/demo",false, config, OnMessageFromNormalServer);
+            //JSocket socket = new JSocket($"ws://{ip}:{port}/demo", config, OnMessageFromNormalServer);
 
             socket.OnConnect((e) =>
             {
@@ -153,7 +153,7 @@ namespace JEngine.Examples
             //带配置连接
             //JSocketConfig config = JSocketConfig.Default();
             //config.debug = true;
-            //JSocket socket = new JSocket($"ws://{ip}:{port}/socket.io/?EIO=3&transport=websocket", true, config);
+            //JSocket socket = new JSocket($"ws://{ip}:{port}/socket.io/?EIO=3&transport=websocket", config);
 
             socket.OnConnect(async (e) =>
             {
