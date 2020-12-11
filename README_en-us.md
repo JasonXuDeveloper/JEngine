@@ -18,17 +18,17 @@ This is branch is ```v0.5``` series branch, which is a Long term support (**LTS*
 
   ## About JEngine (Chinese)
 
-| Theme                                                 | Location                                                     |
-| ----------------------------------------------------- | ------------------------------------------------------------ |
-| 教学视频：介绍+使用+更新+入门                         | [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)     |
-| 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案 | [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)     |
-| 教学视频：核心功能（中）JAction队列解决方案全系列     | [点击跳转](https://www.bilibili.com/video/BV1Pt4y1q7X2/)     |
-| 教学视频：核心功能（下）数据持久化+对象池+助手类+面板 | [点击跳转](https://www.bilibili.com/video/BV12Z4y1N7eG/)     |
-| 框架文档                                              | [Wiki文档](https://github.com/JasonXuDeveloper/JEngine/wiki) |
-| 知乎文章                                              | [点击跳转](https://zhuanlan.zhihu.com/p/218105381)           |
-| 项目地址                                              | [GitHub地址](https://github.com/JasonXuDeveloper/JEngine)    |
-| 国内镜像                                              | [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)      |
-| QQ群聊                                                | [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)           |
+| Theme                                                 | Location                                                  |
+| ----------------------------------------------------- | --------------------------------------------------------- |
+| 教学视频：介绍+使用+更新+入门                         | [点击跳转](https://www.bilibili.com/video/BV14Z4y1N79J/)  |
+| 教学视频：核心功能（上）自动绑定+基类+UI+资源解决方案 | [点击跳转](https://www.bilibili.com/video/BV1v54y1y7x7/)  |
+| 教学视频：核心功能（中）JAction队列解决方案全系列     | [点击跳转](https://www.bilibili.com/video/BV1Pt4y1q7X2/)  |
+| 教学视频：核心功能（下）数据持久化+对象池+助手类+面板 | [点击跳转](https://www.bilibili.com/video/BV12Z4y1N7eG/)  |
+| 框架文档                                              | [点击跳转](https://xgamedev.net)                          |
+| 知乎文章                                              | [点击跳转](https://zhuanlan.zhihu.com/p/218105381)        |
+| 项目地址                                              | [GitHub地址](https://github.com/JasonXuDeveloper/JEngine) |
+| 国内镜像                                              | [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)   |
+| QQ群聊                                                | [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)        |
 
   ## JEngine Practice
 
@@ -199,34 +199,8 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 
 ![flowchart](https://s1.ax1x.com/2020/07/14/Uthp6A.png)
 
-
-
-## Development Environment
-
-- Debuging Unity Engine Version: 2019.3.13f1 (Please use at least this version)
-
-- U3D .net Environment: .net 4.x
-
-- Hot Update Solution .net Environment: .net 4.x
-
-- Operating System: MacOS 10.15.5
-
-  > Definityly supports windows
-
-
-
 ## Recommend Repositories
 
 - [XAsset](https://github.com/xasset/xasset) - A more streamlined, efficient and secure Unity Resource Management Solution for you.
 - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
 - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
-
-
-## Sincerely Appreciated
-
-- Ekson (Sponsorship)
-- 程序-华仔 (Sponsorship)
-- 默默的奶爸 (Sponsorship + Promote)
-- 马三 (Sponsorship)
-- 清行（Documents）
-- 阿飞  (Sponsorship)
