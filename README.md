@@ -183,7 +183,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   - **支持从GameObject获取由ClassBind挂载的非MonoBehaviour派生类**
   - **添加JBehaviour**到GameObject
-  - **添加JUI** 带GameObject
+  - **添加JUI** 到GameObject
   - **获取JBehaviour** 从GameObject
   - **获取JUI** 从GameObject
 
