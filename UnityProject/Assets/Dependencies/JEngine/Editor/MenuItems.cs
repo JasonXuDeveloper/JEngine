@@ -33,7 +33,7 @@ namespace JEngine.Editor
         [UnityEditor.MenuItem("JEngine/Open Documents",priority = 1999)]
         static void OpenWiki()
         {
-            Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine/wiki");
+            Application.OpenURL("https://xgamedev.uoyou.com");
         }
         
         [UnityEditor.MenuItem("JEngine/Open on Github",priority = 2000)]
