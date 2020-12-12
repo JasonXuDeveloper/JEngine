@@ -31,13 +31,13 @@ namespace JEngine.Editor
     internal class MenuItems
     {
         [UnityEditor.MenuItem("JEngine/Open Documents",priority = 1999)]
-        static void OpenWiki()
+        public static void OpenDocument()
         {
-            Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine/wiki");
+            Application.OpenURL("https://xgamedev.uoyou.com");
         }
         
         [UnityEditor.MenuItem("JEngine/Open on Github",priority = 2000)]
-        static void OpenGithub()
+        public static void OpenGithub()
         {
             Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine");
         }

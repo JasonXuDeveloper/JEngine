@@ -46,6 +46,7 @@ namespace JEngine.Core
         private Action _onCancel = new Action(() => { });
 
         private Dictionary<int, float> _delays = new Dictionary<int, float>();
+        private Dictionary<int, int> _delayFrames = new Dictionary<int, int>();
 
         private Dictionary<int, Func<bool>> _waits = new Dictionary<int, Func<bool>>();
         private Dictionary<int, float> _frequency = new Dictionary<int, float>();
@@ -73,8 +74,7 @@ namespace JEngine.Core
         {
             if (frame > 0)
             {
-                var duration = (int)(((float)frame / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f);
-                _delays.Add(_toDo.Count, duration);
+                _delayFrames.Add(_toDo.Count, frame);
                 _toDo.Add(null);
             }
             return this;
@@ -236,6 +236,17 @@ namespace JEngine.Core
                     await Task.Delay((int)(_delays[index] * 1000));
                     continue;
                 }
+
+                //DelayFrames
+                if (_delayFrames.ContainsKey(index))
+                {
+                    //计算1帧时间(ms)
+                    var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate);
+                    var duration = durationPerFrame * _delayFrames[index];
+                    await Task.Delay(duration);
+                    continue;
+                }
+
 
                 //Wait Until
                 if (_waits.ContainsKey(index))
