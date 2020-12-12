@@ -42,7 +42,7 @@ using UnityEditor.SceneManagement;
 
 namespace JEngine.Core
 {
-    [HelpURL("https://github.com/JasonXuDeveloper/JEngine/wiki/%e4%bb%a3%e7%a0%81%e7%bb%91%e5%ae%9a")]
+    [HelpURL("https://xgamedev.uoyou.com/classbind-v0-6.html")]
     public class ClassBind : MonoBehaviour
     {
         public _ClassBind[] ScriptsToBind = new _ClassBind[1];
@@ -564,8 +564,6 @@ namespace JEngine.Core
         [Tooltip("是否使用构造函数")]
         public bool UseConstructor = true;
 
-        [Tooltip("如果是GameObject，请填写完整路径，如果没有父物体，请务必为Active，如果有父物体，请确保父物体是Active;\r\n" +
-                 "如果是Unity脚本，请填写该脚本所属的GameObject完整路径，参考GameObject写法")]
         [Reorderable(elementNameProperty = "fieldName")]
         public FieldList Fields;
 
