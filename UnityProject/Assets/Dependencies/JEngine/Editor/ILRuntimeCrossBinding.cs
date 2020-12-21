@@ -233,7 +233,7 @@ namespace JEngine.Editor
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
             sb.Append(
-@"//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以JEngine很人性化哦~
+@"//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以你还有什么理由不使用JEngine~
 #if UNITY_EDITOR
 using System;
 using System.ComponentModel;
@@ -259,7 +259,7 @@ public class ");
             {
                 if (line.Contains("MonoBehaviourAdapter.Adaptor clr = target as MonoBehaviourAdapter.Adaptor;"))
                 {
-                    sb.AppendLine($"    {nameSpace}.{clsName}Adapter.Adapter clr = target as {nameSpace}.{clsName}Adapter.Adapter;");
+                    sb.AppendLine($"        {nameSpace}.{clsName}Adapter.Adapter clr = target as {nameSpace}.{clsName}Adapter.Adapter;");
                     continue;
                 }
                 sb.AppendLine(line);

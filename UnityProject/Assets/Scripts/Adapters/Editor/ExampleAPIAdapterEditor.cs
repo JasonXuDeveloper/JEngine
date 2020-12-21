@@ -1,4 +1,4 @@
-//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以JEngine很人性化哦~
+//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以你还有什么理由不使用JEngine~
 #if UNITY_EDITOR
 using System;
 using System.ComponentModel;
@@ -56,7 +56,7 @@ public class ExampleAPIAdapterEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-    ProjectAdapter.ExampleAPIAdapter.Adapter clr = target as ProjectAdapter.ExampleAPIAdapter.Adapter;
+        ProjectAdapter.ExampleAPIAdapter.Adapter clr = target as ProjectAdapter.ExampleAPIAdapter.Adapter;
         var instance = clr.ILInstance;
         if (instance != null)
         {

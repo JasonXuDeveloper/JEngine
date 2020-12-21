@@ -117,7 +117,8 @@ using ILRuntime.Runtime.Intepreter;
                 }
             }
             
-            sb.Append(@"            public override string ToString()
+            sb.Append(@"
+            public override string ToString()
             {
                 IMethod m = appdomain.ObjectType.GetMethod(");
             sb.AppendLine("\"ToString\", 0);");
