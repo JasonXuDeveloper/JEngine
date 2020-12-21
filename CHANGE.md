@@ -11,7 +11,7 @@
 - Better **Logs**
 - JBehaviour & JEvent & etc **supports stacktrace on specefic line**
 - UIUtility with a cache dictionary to **load UI components faster**
-- Support all MonoBehaviour events** from now on
+- Support **all MonoBehaviour events** from now on
 - Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
 - ClassBind supports binding **different adapters**
 - Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour

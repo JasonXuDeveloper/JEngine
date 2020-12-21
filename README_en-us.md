@@ -1,4 +1,4 @@
-# JENGINE v0.6.0
+# JENGINE v0.6.1 p1
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -136,46 +136,20 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 
 
 
-## v0.6.0 Latest Features
+## v0.6.1 p1 Latest Features
 
-- **UI Framework**
-- **Enhance** JSaver
-- **JAction** supports ```DelayFrames```
-- **Fixed a heaps of bugs**
-- **JSON Checker Tool**
-- **JEvent**, which is similar to Google core libraries for Java, eventbus
-  - **Subscribe Class**
-  - **Subscribe Method**
-  - **Post** data **to all subscribed events**
-  - Can be running on **Main Thread or sub Thread**
-- **Enhance** ClassBind, much more powerful
-  - Auto Bind when needed, **better performence**
-  - Controls by **ClassBindMgr**, **more advanced while setting fields**
-  - Support **Automatically get all field**s from a Hot Update Class
-  - Support **Automattically find the FieldType** for a field
-- **JExtensions** 
-  - **Allows get hot update class** from GameObject **via Classbind**
-  - **Add JBehaviour** to GameObject
-  - **Add JUI** to GameObject
-  - **Get JBehaviour** from GameObject
-  - **Get JUI** from GameObject
-- **JWebSocket**
-  - **Connect** to websocket servers
-  - **Send** message to websocket servers
-  - **Listen** message from websocket servers
-  - **Listen and Send in Sub Thread**
-- **JEngine Setting Panel**
-  - **Automatically jump to Init scene first while running**
-  - **Hot Update Scenes Shortcuts**
-  - **ClassBind Tools**
-  - **Error Rescue Tools**
-- **More CLR Redirection Methods**
-  - Support **MonoBehaviour.SendMessage** from Hot Update Class
-  - Support **MonoBehaviour.Instantiate** GameObject with Hot Update Classes & Single Hot Update Class
-- **JBehaviour enhance**
-  - **Perform better after built** than in Editor
-  - Support **Deltatime, loop counts**, etc.
-  - **Powerful Inspector**
+- ILRuntime update to **v1.6.6**
+- ILRuntime **Adapter Generator Enhance**
+- ILRuntime **Automatically Register Adapters**
+- More JEngine **Demos**
+- Better **Logs**
+- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
+- UIUtility with a cache dictionary to **load UI components faster**
+- Support **all MonoBehaviour events** from now on
+- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
+- ClassBind supports binding **different adapters**
+- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
+- Generate **Editor** for Adapters
 
 [Click here to see all version updates](CHANGE.md)
 

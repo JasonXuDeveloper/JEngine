@@ -1,4 +1,4 @@
-# JENGINE v0.6.0
+# JENGINE v0.6.1 p1
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -153,64 +153,31 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## v0.6.0 最新功能
+## v0.6.1 p1 最新功能
 
-- **UI框架**
+- ILRuntime update to **v1.6.6**
 
-- **优化** JSaver
+- ILRuntime **Adapter Generator Enhance**
 
-- **JAction**支持 ```DelayFrames```，即等待帧数
+- ILRuntime **Automatically Register Adapters**
 
-- **修复一大堆Bug**
+- More JEngine **Demos**
 
-- **JSON检查工具**
+- Better **Logs**
 
-- **JEvent**，类似于谷歌在Java的核心库之一，eventbus
+- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
 
-  - **监听整个类里全部方法**
-  - **监听单个方法**
-  - **广播数据**至**全部监听事件**
-  - 可以在 **主线程或子线程**运行
+- UIUtility with a cache dictionary to **load UI components faster**
 
-- **优化** 自动绑定，更加强大
+- Support **all MonoBehaviour events** from now on
 
-  - 仅在特定的时候进行绑定，**对性能进行提升**
-  - 自动绑定由**ClassBindMgr**控制，**绑定步骤进行分离，对赋值更友好**
-  - 支持**自动获取热更类全部字段和属性**
-  - 支持**自动获取每个Filed的正确fieldType**
+- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
 
-- **JExtensions** 
+- ClassBind supports binding **different adapters**
 
-  - **支持从GameObject获取由ClassBind挂载的非MonoBehaviour派生类**
-  - **添加JBehaviour**到GameObject
-  - **添加JUI** 到GameObject
-  - **获取JBehaviour** 从GameObject
-  - **获取JUI** 从GameObject
+- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
 
-- **JWebSocket**
-
-  - **连接** 到websocket服务器
-  - **发送** 消息到websocket服务器
-  - **监听** 来自websocket服务器的消息
-  - **子线程发送监听**
-
-- **JEngine设置面板**
-
-  - **支持编辑器启动游戏后自动跳转Init场景**
-  - **热更场景快捷操作**
-  - **自动绑定工具**
-  - **错误修复工具**
-
-- **更多CLR重定向方法**
-
-  - 支持**MonoBehaviour.SendMessage** 广播到热更类
-  - 支持**MonoBehaviour.Instantiate**来生成带热更类的GameObject和复制热更对象
-
-- **JBehaviour优化**
-
-  - **区别编辑器与真机**，真机性能更好
-  - 支持 **Deltatime, loop counts**, 等
-  - **更强大的编辑器界面**
+- Generate **Editor** for Adapters
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
