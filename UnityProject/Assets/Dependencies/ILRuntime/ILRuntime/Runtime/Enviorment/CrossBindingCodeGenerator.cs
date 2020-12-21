@@ -1,15 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ILRuntime.CLR.Method;
-using ILRuntime.CLR.TypeSystem;
-using ILRuntime.Runtime.Intepreter;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading;
-using UnityEditor.Profiling;
 using UnityEngine;
 
 namespace ILRuntime.Runtime.Enviorment
