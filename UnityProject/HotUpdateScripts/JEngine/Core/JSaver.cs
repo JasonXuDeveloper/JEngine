@@ -62,7 +62,7 @@ namespace JEngine.Core
             if (encryptKey.Length != 16)
             {
                 var ex = new Exception("encryptKey needs to be 16 characters!");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             string strData = val.ToString();
@@ -89,7 +89,7 @@ namespace JEngine.Core
             if (encryptKey.Length != 16)
             {
                 var ex = new Exception("encryptKey needs to be 16 characters!");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             try
@@ -102,7 +102,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -123,7 +123,7 @@ namespace JEngine.Core
             if (encryptKey.Length != 16)
             {
                 var ex = new Exception("encryptKey needs to be 16 characters!");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             try
@@ -136,7 +136,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -153,7 +153,7 @@ namespace JEngine.Core
             {
                 var ex = new Exception($"<{dataName}> does not exist\n" +
                     $"<{dataName}>不存在");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             if(String.IsNullOrEmpty(encryptKey))
@@ -164,7 +164,7 @@ namespace JEngine.Core
             {
                 var ex = new Exception("encryptKey needs to be 16 characters!\n" +
                     "秘钥长度不对");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             var result = PlayerPrefs.GetString(dataName);
@@ -271,7 +271,7 @@ namespace JEngine.Core
             {
                 var ex = new Exception($"<{dataName}> does not exist\n" +
                     $"<{dataName}>不存在");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             if (String.IsNullOrEmpty(encryptKey))
@@ -290,7 +290,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }
         }
@@ -308,7 +308,7 @@ namespace JEngine.Core
             {
                 var ex = new Exception($"<{dataName}> does not exist\n" +
                     $"<{dataName}>不存在");
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
             if (String.IsNullOrEmpty(encryptKey))
@@ -327,7 +327,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
-                Log.PrintError(ex);
+                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }
         }

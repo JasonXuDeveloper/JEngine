@@ -25,9 +25,9 @@
 // THE SOFTWARE.
 using JEngine.Core;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -91,10 +91,22 @@ namespace JEngine.UI.UIKit
         #endregion
 
         #region 获取控件
+
+        private static Dictionary<RectTransform, Dictionary<string, Component>> Trans
+            = new Dictionary<RectTransform, Dictionary<string, Component>>(0);
+
         public static T GetComponent<T>(RectTransform trans, string name) where T : Component
         {
             if (trans == null)
                 return null;
+
+            if (Trans.ContainsKey(trans))
+            {
+                if (Trans.Values.SelectMany(v => v.Keys).Contains(name))
+                {
+                    return (T)Trans[trans][name];
+                }
+            }
 
             RectTransform findTrans = Control(name, trans);
 
@@ -103,7 +115,13 @@ namespace JEngine.UI.UIKit
                 return null;
             }
 
-            return findTrans.GetComponent<T>();
+            Trans.Add(trans,
+                new Dictionary<string, Component>()
+                {
+                    { name,findTrans.GetComponent<T>() }
+                });
+
+            return (T)Trans[trans][name];
         }
 
         public static RectTransform Control(string name, RectTransform gameObj)

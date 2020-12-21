@@ -63,7 +63,7 @@ namespace JEngine.Examples
         /*
         * Fields to bind
         */
-        internal BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
+        public BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
 
 
         public void Awake()

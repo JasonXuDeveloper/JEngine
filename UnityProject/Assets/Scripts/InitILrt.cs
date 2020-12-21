@@ -40,7 +40,6 @@ public static class InitILrt
         
         //CLR绑定
         CLRBindings.Initialize(appdomain);
-
         Init.Inited = true;
     }
 

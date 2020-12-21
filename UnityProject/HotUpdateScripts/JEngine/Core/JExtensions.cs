@@ -46,7 +46,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponent(gameObject, typeof(T).FullName);
+                object result = ClassBindMgr.GetHotComponent(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -74,7 +74,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponent(gameObject, typeof(T).FullName);
+                object result = ClassBindMgr.GetHotComponent(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -102,7 +102,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object result = ClassBindMgr.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -130,7 +130,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object result = ClassBindMgr.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;

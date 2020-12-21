@@ -31,9 +31,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ProjectAdapter;
 using UnityEngine;
+using UnityEngine.Analytics;
 using Component = UnityEngine.Component;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -56,7 +58,8 @@ namespace JEngine.Core
             string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
             IType type = Init.appdomain.LoadedTypes[classType];
             Type t = type.ReflectionType;//获取实际属性
-            var clrInstance = this.gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
+            //这里获取适配器类型接口，不直接获取Mono适配器了，因为不同的类型适配器不一样
+            var clrInstance = this.gameObject.GetComponents<CrossBindingAdaptorType>()
                 .Last(clr => clr.ILInstance.Type == type as ILType);
             //绑定数据
             if (_class.RequireBindFields)
@@ -226,7 +229,7 @@ namespace JEngine.Core
                                 string tName = tp.FieldType.Name;
                                 if (tp.FieldType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
                                 {
-                                    var components = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                                    var components = go.GetComponents<CrossBindingAdaptorType>();
                                     foreach (var c in components)
                                     {
                                         if (c.ILInstance.Type.Name == tName)
@@ -258,7 +261,7 @@ namespace JEngine.Core
                                     string tName = pi.PropertyType.Name;
                                     if (pi.PropertyType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
                                     {
-                                        var components = go.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                                        var components = go.GetComponents<CrossBindingAdaptorType>();
                                         foreach (var c in components)
                                         {
                                             if (c.ILInstance.Type.Name == tName)
@@ -345,8 +348,9 @@ namespace JEngine.Core
         {
             string classType = $"{_class.Namespace + (_class.Namespace == "" ? "" : ".")}{_class.Class}";
             IType type = Init.appdomain.LoadedTypes[classType];
-            Type t = type.ReflectionType;//获取实际属性
-            var clrInstance = this.gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
+            Type t = type.ReflectionType; //获取实际属性
+            //这边获取clrInstance的基类，这样可以获取不同适配器
+            var clrInstance = this.gameObject.GetComponents<CrossBindingAdaptorType>()
                 .Last(clr => clr.ILInstance.Type == type as ILType);
             //是否激活
             if (_class.ActiveAfter)
@@ -356,10 +360,42 @@ namespace JEngine.Core
                     Log.PrintError($"自动绑定{this.name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
-                clrInstance.enabled = true;
-                clrInstance.Awake();
+                //Mono类型能设置enabled
+                if (clrInstance.GetType().IsSubclassOf(typeof(MonoBehaviour)))
+                {
+                    ((MonoBehaviour) clrInstance).enabled = true;
+                }
+                
+                //不管是啥类型，直接invoke这个awake方法
+                var awakeMethod = clrInstance.GetType().GetMethod("Awake",
+                    BindingFlags.Default | BindingFlags.Public
+                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                         BindingFlags.NonPublic | BindingFlags.Static);
+                if (awakeMethod == null)
+                {
+                    awakeMethod = t.GetMethod("Awake",
+                        BindingFlags.Default | BindingFlags.Public
+                                             | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                             BindingFlags.NonPublic | BindingFlags.Static);
+                }
+                else
+                {
+                    awakeMethod.Invoke(clrInstance, null);
+                    _class.Activated = true;
+                }
+
+                if (awakeMethod == null)
+                {
+                    Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                }
+                else if (!_class.Activated)
+                {
+                    awakeMethod.Invoke(t, null);
+                }
+
                 _class.Activated = true;
             }
+
             Remove();
         }
 
@@ -386,60 +422,95 @@ namespace JEngine.Core
                 Log.PrintError($"自动绑定{this.name}出错：{classType}不存在，已跳过");
                 return null;
             }
+
             IType type = Init.appdomain.LoadedTypes[classType];
-            Type t = type.ReflectionType;//获取实际属性
-            var instance = _class.UseConstructor
-                ? Init.appdomain.Instantiate(classType)
-                : new ILTypeInstance(type as ILType, false);
-            
+            Type t = type.ReflectionType; //获取实际属性
+
             //JBehaviour需自动赋值一个值
             var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             bool isJBehaviour = t.IsSubclassOf(JBehaviourType.ReflectionType);
             bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
 
+            bool needAdapter = t.BaseType != null &&
+                               t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
+
+            var instance = _class.UseConstructor
+                ? Init.appdomain.Instantiate(classType)
+                : new ILTypeInstance(type as ILType, !isMono);
+            instance.CLRInstance = instance;
 
             if (_class.UseConstructor && isMono)
             {
                 JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
 
             }
-                
-            var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
-            clrInstance.enabled = false;
-            clrInstance.ILInstance = instance;
-            clrInstance.AppDomain = Init.appdomain;
-            if (isMono)
+
+            //这里是classbind的灵魂，我都佩服我自己这么写，所以别乱改这块
+            //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
+            //总之JEngine牛逼
+            //是继承Mono封装的基类，用自动生成的
+            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName)
             {
+                Type adapterType = Type.GetType(t.BaseType?.FullName);
+                if (adapterType == null)
+                {
+                    Log.PrintError($"{t.FullName}, need to generate adapter");
+                    return null;
+                }
+
+                //直接反射赋值一波了
+                var clrInstance = gameObject.AddComponent(adapterType);
+                var enabled = t.GetProperty("enabled",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                var ILInstance = t.GetField("instance",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                var AppDomain = t.GetField("appdomain",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                enabled.SetValue(clrInstance, false);
+                ILInstance.SetValue(clrInstance, instance);
+                AppDomain.SetValue(clrInstance, Init.appdomain);
                 instance.CLRInstance = clrInstance;
             }
+            //直接继承Mono的，非继承mono的，或不需要继承的，用这个
             else
             {
-                instance.CLRInstance = instance;
-            }
-            
-            //判断类型
-            clrInstance.isMonoBehaviour = isMono;
-            
-            if (isJBehaviour)
-            {
-                clrInstance.isJBehaviour = true;
-                var go = t.GetField("_gameObject",BindingFlags.Public);
-                go.SetValue(clrInstance.ILInstance, this.gameObject);
+                //挂个适配器到编辑器（直接继承mono，非继承mono，无需继承，都可以用这个）
+                var clrInstance = this.gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+                clrInstance.enabled = false;
+                clrInstance.ILInstance = instance;
+                clrInstance.AppDomain = Init.appdomain;
+
+                //是MonoBehaviour继承，需要指定CLRInstance
+                if (isMono && needAdapter)
+                {
+                    instance.CLRInstance = clrInstance;
+                }
+
+                //判断类型
+                clrInstance.isMonoBehaviour = isMono;
+                
+                _class.Added = true;
+
+                //JBehaviour额外处理
+                if (isJBehaviour)
+                {
+                    clrInstance.isJBehaviour = true;
+                    var go = t.GetField("_gameObject", BindingFlags.Public);
+                    go.SetValue(clrInstance.ILInstance, this.gameObject);
+                }
+
+                //JBehaviour返回实例ID
+                if (isJBehaviour)
+                {
+                    var f = t.GetField("_instanceID", BindingFlags.NonPublic);
+                    var id = f.GetValue(clrInstance.ILInstance).ToString();
+                    return id;
+                }
             }
 
-            _class.Added = true;
-                
-            //JBehaviour返回实例ID
-            if (isJBehaviour)
-            {
-                var f = t.GetField("_instanceID", BindingFlags.NonPublic);
-                var id = f.GetValue(clrInstance.ILInstance).ToString();
-                return id;
-            }
-                
             return null;
         }
-        
+
 
         private GameObject FindSubGameObject(_ClassField field)
         {
@@ -468,23 +539,6 @@ namespace JEngine.Core
             return null;
         }
 
-        public static object GetHotComponent(GameObject gameObject,string typeName)
-        {
-            var clrInstances = gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>();
-            return clrInstances.ToList()
-                .FindAll(a =>
-                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
-                .Select(a => a.ILInstance).ToArray();
-        }
-        
-        public static object GetHotComponentInChildren(GameObject gameObject,string typeName)
-        {
-            var clrInstances = gameObject.GetComponentsInChildren<MonoBehaviourAdapter.Adaptor>();
-            return clrInstances.ToList()
-                .FindAll(a =>
-                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
-                .Select(a => a.ILInstance).ToArray();
-        }
         
 #if UNITY_EDITOR
         [ContextMenu("Convert Path to GameObject")]

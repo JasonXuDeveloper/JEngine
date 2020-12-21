@@ -91,18 +91,14 @@ namespace JEngine.Event
                     index++;
                     if (!_unsubscribed.Values.SelectMany(s => s.ToArray()).ToList().Contains(td))
                     {
-                        try
-                        {
                             //丢主线程去分配Invoke，不然无法执行
-                            Loom.QueueOnMainThread(obj => td.Invoke(parameters), null);
+                            Loom.QueueOnMainThread(obj =>
+                            {
+                                    td.Invoke(parameters);
+                            }, null);
                             //这边不log的时候，空标签会报错，于是我选择了log
                             Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{string.Join(",", parameters.Select(p => p.GetType()))}'的方法，目前进度" +
                                     $"{index - 1}/{todo.Count - 1}</color>");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.PrintError(ex);
-                        }
                     }
                     else
                     {
@@ -242,11 +238,19 @@ namespace JEngine.Event
 
                 Events methodEvent = new Events(async (parameters) =>
                 {
-                    using JAction j = new JAction();
-                    await j
-                    .Do(() => method.Invoke(val, parameters))
+                    await new JAction()
+                    .Do(() =>
+                    {
+                        try
+                        {
+                            method.Invoke(val, parameters);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.PrintError($"[JEvent] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
+                        }
+                    })
                     .ExecuteAsync(RunInMain);
-
                 });
 
                 //加入

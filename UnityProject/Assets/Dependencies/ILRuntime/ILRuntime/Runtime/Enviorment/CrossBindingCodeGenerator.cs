@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading;
+using UnityEditor.Profiling;
+using UnityEngine;
 
 namespace ILRuntime.Runtime.Enviorment
 {
@@ -21,16 +25,21 @@ namespace ILRuntime.Runtime.Enviorment
             public string Modifier;
             public string OverrideString;
         }
+
         public static string GenerateCrossBindingAdapterCode(Type baseType, string nameSpace)
         {
             StringBuilder sb = new StringBuilder();
-            MethodInfo[] methods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            List<MethodInfo> methods = baseType
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).ToList();
             List<MethodInfo> virtMethods = new List<MethodInfo>();
             foreach (var i in methods)
             {
                 if (i.IsVirtual || i.IsAbstract || baseType.IsInterface)
                     virtMethods.Add(i);
             }
+
+            bool isMono = baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
+
             string clsName, realClsName;
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
@@ -38,8 +47,14 @@ namespace ILRuntime.Runtime.Enviorment
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-
-namespace ");
+");
+            if (isMono)
+            {
+                sb.AppendLine("using UnityEngine;");
+                sb.AppendLine("using System.Threading.Tasks;");
+                sb.AppendLine("");
+            }
+            sb.Append(@"namespace ");
             sb.AppendLine(nameSpace);
             sb.Append(@"{   
     public class ");
@@ -91,9 +106,21 @@ namespace ");
             public ILTypeInstance ILInstance { get { return instance; } }
 ");
             GenerateCrossBindingMethodBody(sb, virtMethods);
+            
+            //mono脚本
+            if (isMono)
+            {
+                var lines = File.ReadAllLines("Assets/Dependencies/JEngine/Templates/MonoAdapter.txt");
+                foreach (var line in lines)
+                {
+                    sb.AppendLine(line);
+                }
+            }
+            
             sb.Append(@"            public override string ToString()
             {
-                IMethod m = appdomain.ObjectType.GetMethod("); sb.AppendLine("\"ToString\", 0);");
+                IMethod m = appdomain.ObjectType.GetMethod(");
+            sb.AppendLine("\"ToString\", 0);");
             sb.AppendLine(@"                m = instance.Type.GetVirtualMethod(m);
                 if (m == null || m is ILMethod)
                 {
@@ -132,6 +159,7 @@ namespace ");
                         pInfo.Name = pName;
                         pendingProperties[pName] = pInfo;
                     }
+
                     if (pInfo.ReturnType == null)
                     {
                         if (isGetter)
@@ -144,6 +172,7 @@ namespace ");
                         }
                     }
                 }
+
                 var param = i.GetParameters();
                 string modifier = i.IsFamily ? "protected" : "public";
                 string overrideStr = i.DeclaringType.IsInterface ? "" : "override ";
@@ -157,6 +186,7 @@ namespace ");
                 }
                 else
                     realClsName = "void";
+
                 if (!isProperty)
                 {
                     sb.Append(string.Format("            {0} {3}{1} {2}(", modifier, realClsName, i.Name, overrideStr));
@@ -169,9 +199,11 @@ namespace ");
                     pInfo.Modifier = modifier;
                     pInfo.OverrideString = overrideStr;
                 }
+
                 if (!i.IsAbstract)
                 {
-                    sb.AppendLine(string.Format("                if (m{0}_{1}.CheckShouldInvokeBase(this.instance))", i.Name, index));
+                    sb.AppendLine(string.Format("                if (m{0}_{1}.CheckShouldInvokeBase(this.instance))",
+                        i.Name, index));
                     if (isProperty)
                     {
                         if (isGetter)
@@ -184,14 +216,19 @@ namespace ");
                         }
                     }
                     else
-                        sb.AppendLine(string.Format("                    {2}base.{0}({1});", i.Name, GetParameterName(param, true), returnString));
+                        sb.AppendLine(string.Format("                    {2}base.{0}({1});", i.Name,
+                            GetParameterName(param, true), returnString));
+
                     sb.AppendLine("                else");
-                    sb.AppendLine(string.Format("                    {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index, GetParameterName(param, false), returnString));
+                    sb.AppendLine(string.Format("                    {3}m{0}_{1}.Invoke(this.instance{2});", i.Name,
+                        index, GetParameterName(param, false), returnString));
                 }
                 else
                 {
-                    sb.AppendLine(string.Format("                {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index, GetParameterName(param, false), returnString));
+                    sb.AppendLine(string.Format("                {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index,
+                        GetParameterName(param, false), returnString));
                 }
+
                 if (isProperty)
                 {
                     if (isGetter)
@@ -202,6 +239,7 @@ namespace ");
                     {
                         pInfo.SettingBody = sb.ToString();
                     }
+
                     sb = oriBuilder;
                 }
                 else
@@ -209,6 +247,7 @@ namespace ");
                     sb.AppendLine("            }");
                     sb.AppendLine();
                 }
+
                 index++;
             }
 
@@ -218,7 +257,8 @@ namespace ");
                 string clsName, realClsName;
                 bool isByRef;
                 pInfo.ReturnType.GetClassName(out clsName, out realClsName, out isByRef, true);
-                sb.AppendLine(string.Format("            {0} {3}{1} {2}", pInfo.Modifier, realClsName, pInfo.Name, pInfo.OverrideString));
+                sb.AppendLine(string.Format("            {0} {3}{1} {2}", pInfo.Modifier, realClsName, pInfo.Name,
+                    pInfo.OverrideString));
                 sb.AppendLine("            {");
                 if (!string.IsNullOrEmpty(pInfo.GetterBody))
                 {
@@ -228,6 +268,7 @@ namespace ");
                     sb.AppendLine("            }");
 
                 }
+
                 if (!string.IsNullOrEmpty(pInfo.SettingBody))
                 {
                     sb.AppendLine("            set");
@@ -236,6 +277,7 @@ namespace ");
                     sb.AppendLine("            }");
 
                 }
+
                 sb.AppendLine("            }");
                 sb.AppendLine();
             }
@@ -252,22 +294,30 @@ namespace ");
                 if (NeedGenerateCrossBindingMethodClass(param))
                 {
                     GenerateCrossBindingMethodClass(sb, i.Name, index, param, i.ReturnType);
-                    sb.AppendLine(string.Format("        static {0}_{1}Info m{0}_{1} = new {0}_{1}Info();", i.Name, index));
+                    sb.AppendLine(string.Format("        static {0}_{1}Info m{0}_{1} = new {0}_{1}Info();", i.Name,
+                        index));
                 }
                 else
                 {
                     if (i.ReturnType != typeof(void))
                     {
-                        sb.AppendLine(string.Format("        static CrossBindingFunctionInfo<{0}> m{1}_{2} = new CrossBindingFunctionInfo<{0}>(\"{1}\");", GetParametersString(param, i.ReturnType), i.Name, index));
+                        sb.AppendLine(string.Format(
+                            "        static CrossBindingFunctionInfo<{0}> m{1}_{2} = new CrossBindingFunctionInfo<{0}>(\"{1}\");",
+                            GetParametersString(param, i.ReturnType), i.Name, index));
                     }
                     else
                     {
                         if (param.Length > 0)
-                            sb.AppendLine(string.Format("        static CrossBindingMethodInfo<{0}> m{1}_{2} = new CrossBindingMethodInfo<{0}>(\"{1}\");", GetParametersString(param, i.ReturnType), i.Name, index));
+                            sb.AppendLine(string.Format(
+                                "        static CrossBindingMethodInfo<{0}> m{1}_{2} = new CrossBindingMethodInfo<{0}>(\"{1}\");",
+                                GetParametersString(param, i.ReturnType), i.Name, index));
                         else
-                            sb.AppendLine(string.Format("        static CrossBindingMethodInfo m{0}_{1} = new CrossBindingMethodInfo(\"{0}\");", i.Name, index));
+                            sb.AppendLine(string.Format(
+                                "        static CrossBindingMethodInfo m{0}_{1} = new CrossBindingMethodInfo(\"{0}\");",
+                                i.Name, index));
                     }
                 }
+
                 index++;
             }
         }
@@ -276,10 +326,12 @@ namespace ");
         {
             if (info.Name == "ToString" || info.Name == "GetHashCode" || info.Name == "Finalize")
                 return info.GetParameters().Length == 0;
-            if (info.Name == "Equals" && info.GetParameters().Length == 1 && info.GetParameters()[0].ParameterType == typeof(object))
+            if (info.Name == "Equals" && info.GetParameters().Length == 1 &&
+                info.GetParameters()[0].ParameterType == typeof(object))
                 return true;
             return false;
         }
+
         static string GetParametersString(ParameterInfo[] param, Type returnType)
         {
             StringBuilder sb = new StringBuilder();
@@ -295,6 +347,7 @@ namespace ");
                 i.ParameterType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
+
             if (returnType != typeof(void))
             {
                 if (!first)
@@ -304,6 +357,7 @@ namespace ");
                 returnType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
+
             return sb.ToString();
         }
 
@@ -326,6 +380,7 @@ namespace ");
                 if (isByRef)
                     sb.Append(".MakeByRefType()");
             }
+
             if (returnType != typeof(void))
             {
                 if (!first)
@@ -335,6 +390,7 @@ namespace ");
                 returnType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
+
             return sb.ToString();
         }
 
@@ -347,6 +403,7 @@ namespace ");
                 if (i.IsOut || i.ParameterType.IsByRef)
                     return true;
             }
+
             return false;
         }
 
@@ -366,6 +423,7 @@ namespace ");
                     sb.Append("ref ");
                 sb.Append(p.Name);
             }
+
             return sb.ToString();
         }
 
@@ -391,7 +449,8 @@ namespace ");
             }
         }
 
-        static void GenerateCrossBindingMethodClass(StringBuilder sb, string funcName, int index, ParameterInfo[] param, Type returnType)
+        static void GenerateCrossBindingMethodClass(StringBuilder sb, string funcName, int index, ParameterInfo[] param,
+            Type returnType)
         {
             sb.AppendLine(string.Format("        class {0}_{1}Info : CrossBindingMethodInfo", funcName, index));
             sb.Append(@"        {
@@ -419,6 +478,7 @@ namespace ");
             {
                 sb.AppendFormat("typeof({0})", realClsName);
             }
+
             sb.AppendLine(@"; } }
 
             protected override Type[] Parameters { get { return pTypes; } }");
@@ -447,6 +507,7 @@ namespace ");
                     refIndex[p] = idx++;
                 }
             }
+
             sb.AppendLine("                            ctx.PushObject(instance);");
             foreach (var p in param)
             {
@@ -459,6 +520,7 @@ namespace ");
                     sb.AppendLine(GetPushString(p.ParameterType, p.Name));
                 }
             }
+
             sb.AppendLine("                            ctx.Invoke();");
             if (hasReturn)
                 sb.AppendLine(GetReadString(returnType, rtRealName, "", "__res"));
@@ -471,6 +533,7 @@ namespace ");
                     sb.AppendLine(GetReadString(p.ParameterType, realClsName, refIndex[p].ToString(), p.Name));
                 }
             }
+
             sb.AppendLine("                        }");
             sb.AppendLine(@"                    }
                     finally
@@ -491,6 +554,7 @@ namespace ");
             }
         }");
         }
+
         static string GetPushString(Type type, string argName)
         {
             if (type.IsPrimitive)
@@ -566,7 +630,8 @@ namespace ");
                 }
                 else if (type == typeof(short))
                 {
-                    return string.Format("                            {1} = (short)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (short)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(bool))
                 {
@@ -574,7 +639,8 @@ namespace ");
                 }
                 else if (type == typeof(ushort))
                 {
-                    return string.Format("                            {1} = (ushort)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (ushort)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(float))
                 {
@@ -586,30 +652,36 @@ namespace ");
                 }
                 else if (type == typeof(byte))
                 {
-                    return string.Format("                            {1} = (byte)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (byte)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(sbyte))
                 {
-                    return string.Format("                            {1} = (sbyte)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (sbyte)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(uint))
                 {
-                    return string.Format("                            {1} = (uint)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (uint)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(char))
                 {
-                    return string.Format("                            {1} = (char)ctx.ReadInteger({0});", argName, valName);
+                    return string.Format("                            {1} = (char)ctx.ReadInteger({0});", argName,
+                        valName);
                 }
                 else if (type == typeof(ulong))
                 {
-                    return string.Format("                            {1} = (ulong)ctx.ReadLong({0});", argName, valName);
+                    return string.Format("                            {1} = (ulong)ctx.ReadLong({0});", argName,
+                        valName);
                 }
                 else
                     throw new NotImplementedException();
             }
             else
             {
-                return string.Format("                            {2} = ctx.ReadObject<{1}>({0});", argName, realClsName, valName);
+                return string.Format("                            {2} = ctx.ReadObject<{1}>({0});", argName,
+                    realClsName, valName);
             }
         }
     }

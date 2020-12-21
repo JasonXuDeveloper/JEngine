@@ -28,6 +28,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -124,6 +127,24 @@ namespace JEngine.Core
             return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
+        }
+        
+        public static object GetHotComponent(GameObject gameObject,string typeName)
+        {
+            var clrInstances = gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>();
+            return clrInstances.ToList()
+                .FindAll(a =>
+                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .Select(a => a.ILInstance).ToArray();
+        }
+        
+        public static object GetHotComponentInChildren(GameObject gameObject,string typeName)
+        {
+            var clrInstances = gameObject.GetComponentsInChildren<MonoBehaviourAdapter.Adaptor>();
+            return clrInstances.ToList()
+                .FindAll(a =>
+                    !a.isMonoBehaviour && a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .Select(a => a.ILInstance).ToArray();
         }
     }
 }

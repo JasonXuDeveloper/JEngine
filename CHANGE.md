@@ -1,5 +1,26 @@
 ## All Versions
 
+
+
+### v0.6.1
+
+- ILRuntime update to **v1.6.6**
+- ILRuntime **Adapter Generator Enhance**
+- ILRuntime **Automatically Register Adapters**
+- More JEngine **Demos**
+- Better **Logs**
+- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
+- UIUtility with a cache dictionary to **load UI components faster**
+- Support all MonoBehaviour events** from now on
+- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
+- ClassBind supports binding **different adapters**
+- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
+- Generate **Editor** for Adapters
+
+
+
+
+
 ### v0.6.0 (December 6 2020)
 
 - **UI Framework**

@@ -43,14 +43,16 @@ namespace JEngine.Core
         {
             try
             {
-                ProtoTypeRegister.Register<T>();
-                var stream = new System.IO.MemoryStream();
-                ProtoBuf.Serializer.Serialize(stream, obj);
-                return stream.ToArray();
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    ProtoTypeRegister.Register<T>();
+                    ProtoBuf.Serializer.Serialize(stream, obj);
+                    return stream.ToArray();
+                }
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -70,9 +72,9 @@ namespace JEngine.Core
                 var res = Assets.LoadAsset(path, typeof(TextAsset));
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(res.bytes)) as T;
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -91,9 +93,9 @@ namespace JEngine.Core
                 ProtoTypeRegister.Register<T>();
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(msg)) as T;
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -114,9 +116,9 @@ namespace JEngine.Core
                 var json = JsonMapper.ToJson(value);
                 return json;
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
         }
@@ -134,9 +136,9 @@ namespace JEngine.Core
                 var jsonObj = JsonMapper.ToObject<T>(value);
                 return jsonObj;
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }
         }
@@ -164,9 +166,9 @@ namespace JEngine.Core
                 res.Release();
                 return jsonObj;
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
-                Log.PrintError(e);
+                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }
         }

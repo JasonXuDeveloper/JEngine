@@ -59,6 +59,7 @@ namespace JEngine.Examples
              */
             JUITimes = 0;
             NormalTimes = 0;
+            DataModifyExample.data = new DataClass();
 
             //使用JUI绑定数据，已达到更新的目的 | JUI to bind data
             JUI jui = JUI.CreateOn(JUIVal.gameObject);//添加脚本 | Add JUI
@@ -97,11 +98,8 @@ namespace JEngine.Examples
         public static GameObject Panel;
 
 
-        public override void Run()
+        public override void Init()
         {
-            //Init data
-            data = new DataClass();
-
             this.FrameMode = false;
             this.Frequency = 1000;//Loop in 1000ms ==> 1s
         }

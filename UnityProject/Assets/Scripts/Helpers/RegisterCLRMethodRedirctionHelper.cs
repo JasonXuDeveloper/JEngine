@@ -6,6 +6,7 @@ using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Runtime;
+using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
@@ -1102,7 +1103,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp);
-            Core.Log.PrintError(message + "\n" + stacktrace);
+            Core.Log.PrintError(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
 
@@ -1127,7 +1128,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp);
-            Core.Log.PrintWarning(message + "\n" + stacktrace);
+            Core.Log.PrintWarning(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
 
@@ -1152,7 +1153,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp);
-            Core.Log.Print(message + "\n" + stacktrace);
+            Core.Log.Print(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
         
@@ -1177,7 +1178,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp); 
-            Debug.LogError(message + "\n" + stacktrace);
+            Debug.LogError(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
         
@@ -1202,7 +1203,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp);
-            Debug.LogWarning(message + "\n" + stacktrace);
+            Debug.LogWarning(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
 
@@ -1227,7 +1228,7 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             var stacktrace = __domain.DebugService.GetStackTrace(__intp); 
-            Debug.Log(message + "\n" + stacktrace);
+            Debug.Log(message + "\n\n==========ILRuntime StackTrace==========\n" + stacktrace);
             return __ret;
         }
 
@@ -1271,17 +1272,73 @@ namespace JEngine.Helper
                     ILTypeInstance ilInstance = Init.appdomain.Instantiate(type.ReflectionType.FullName);
                     JEngine.Core.Log.PrintWarning($"{type.ReflectionType.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
                     
-                    //接下来创建Adapter实例
-                    var clrInstance = instance.AddComponent<MonoBehaviourAdapter.Adaptor>();
-                    //unity创建的实例并没有热更DLL里面的实例，所以需要手动赋值
-                    clrInstance.ILInstance = ilInstance;
-                    clrInstance.AppDomain = __domain;
-                    //这个实例默认创建的CLRInstance不是通过AddComponent出来的有效实例，所以得手动替换
-                    ilInstance.CLRInstance = clrInstance;
+                    IType _type = Init.appdomain.LoadedTypes[type.ReflectionType.FullName];
+                    Type t = _type.ReflectionType; //获取实际属性
+                    bool isMonoAdapter = t.BaseType?.FullName == typeof(MonoBehaviourAdapter.Adaptor).FullName;
 
-                    res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                    if (!isMonoAdapter)
+                    {
+                        Type adapterType = Type.GetType(t.BaseType?.FullName);
+                        if (adapterType == null)
+                        {
+                            JEngine.Core.Log.PrintError($"{t.FullName}, need to generate adapter");
+                            return null;
+                        }
 
-                    clrInstance.Awake(); //因为Unity调用这个方法时还没准备好所以这里补调一次
+                        //直接反射赋值一波了
+                        var clrInstance = instance.AddComponent(adapterType);
+                        var ILInstance = t.GetField("instance",
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                        var AppDomain = t.GetField("appdomain",
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                        ILInstance.SetValue(clrInstance, ilInstance);
+                        AppDomain.SetValue(clrInstance, Init.appdomain);
+                        ilInstance.CLRInstance = clrInstance;
+
+                        bool activated = false;
+                        //不管是啥类型，直接invoke这个awake方法
+                        var awakeMethod = clrInstance.GetType().GetMethod("Awake",
+                            BindingFlags.Default | BindingFlags.Public
+                                                 | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                                 BindingFlags.NonPublic | BindingFlags.Static);
+                        if (awakeMethod == null)
+                        {
+                            awakeMethod = t.GetMethod("Awake",
+                                BindingFlags.Default | BindingFlags.Public
+                                                     | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                                     BindingFlags.NonPublic | BindingFlags.Static);
+                        }
+                        else
+                        {
+                            awakeMethod.Invoke(clrInstance, null);
+                            activated = true;
+                        }
+
+                        if (awakeMethod == null)
+                        {
+                            JEngine.Core.Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                        }
+                        else if (!activated)
+                        {
+                            awakeMethod.Invoke(t, null);
+                        }
+
+                        res = ILInstance;
+                    }
+                    else
+                    {
+                        //接下来创建Adapter实例
+                        var clrInstance = instance.AddComponent<MonoBehaviourAdapter.Adaptor>();
+                        //unity创建的实例并没有热更DLL里面的实例，所以需要手动赋值
+                        clrInstance.ILInstance = ilInstance;
+                        clrInstance.AppDomain = __domain;
+                        //这个实例默认创建的CLRInstance不是通过AddComponent出来的有效实例，所以得手动替换
+                        ilInstance.CLRInstance = clrInstance;
+
+                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+
+                        clrInstance.Awake(); //因为Unity调用这个方法时还没准备好所以这里补调一次
+                    }
                 }
 
                 return ILIntepreter.PushObject(ptr, __mStack, res);
@@ -1349,13 +1406,13 @@ namespace JEngine.Helper
                 else
                 {
                     //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
-                    var clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                    var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
                     for (int i = 0; i < clrInstances.Length; i++)
                     {
                         var clrInstance = clrInstances[i];
                         if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
                         {
-                            if (clrInstance.ILInstance.Type == type)
+                            if (clrInstance.ILInstance.Type == type || clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
                             {
                                 res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
                                 break;
@@ -1372,7 +1429,7 @@ namespace JEngine.Helper
                             ClassBindMgr.DoBind();
                             
                             //再次循环
-                            clrInstances = instance.GetComponents<MonoBehaviourAdapter.Adaptor>();
+                            clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
                             for (int i = 0; i < clrInstances.Length; i++)
                             {
                                 var clrInstance = clrInstances[i];
