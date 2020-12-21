@@ -44,14 +44,20 @@ namespace JEngine.Examples
         public static string JBtnViewPath = "uiview_btnview";
         #endregion
 
+        private static bool Inited = false;
+
         public override void Init()
         {
             UIUtility.BindClickEvent(btn_JumpTo, OnJumpToDemo);
 
-            //UIMgr注册界面（需要的）
-            UIMgr.Instance.Register(
-                (JTestViewPath, JTestView.Instance),
-                (JBtnViewPath, JBtnView.Instance));
+            if (!Inited)
+            {
+                //UIMgr注册界面（需要的）
+                UIMgr.Instance.Register(
+                    (JTestViewPath, JTestView.Instance),
+                    (JBtnViewPath, JBtnView.Instance));
+                Inited = true;
+            }
         }        
 
         private void OnJumpToDemo(GameObject go, PointerEventData eventData)

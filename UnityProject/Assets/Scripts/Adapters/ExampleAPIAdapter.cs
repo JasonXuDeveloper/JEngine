@@ -84,9 +84,17 @@ namespace ProjectAdapter
                     if (mAwakeMethod != null && !isAwaking)
                     {
                         isAwaking = true;
-                        while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
+                        //没激活就别awake
+                        try
                         {
-                            await Task.Delay(20);
+                            while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
+                            {
+                                await Task.Delay(20);
+                            }
+                        }
+                        catch (MissingReferenceException e)//如果gameObject被删了，就会触发这个，这个时候就直接return了
+                        {
+                            return;
                         }
             
                         if (destoryed || !Application.isPlaying)
@@ -1208,7 +1216,7 @@ namespace ProjectAdapter
             }
             
             #endregion
-            
+
             public override string ToString()
             {
                 IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);
