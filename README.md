@@ -159,7 +159,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 - ILRuntime **跨域适配器自动生成优化**
 - ILRuntime **自动注册适配器**
 - 更多 JEngine **Demos**
-- 更简介的 **Logs**
+- 更简洁的 **Logs**
 - JBehaviour & JEvent 等 **支持定位报错到准确行数**
 - UIUtility 新增缓存字典使 **加载UI组件更快**
 - 支持 **全部MonoBehaviour事件** 
