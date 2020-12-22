@@ -71,8 +71,8 @@ namespace JEngine.Editor
 
             //有的话比较日期
             DateTime lastModified = File.GetLastWriteTime(DLLMgr.DllPath);
-            string lastModifiedStr = lastModified.ToString(JEngineSetting.GetString(JEngineSetting.DATE_FORMAT));
-            if (JEngineSetting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
+            string lastModifiedStr = lastModified.ToString(Setting.GetString(Setting.DATE_FORMAT));
+            if (Setting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
             {
                 var files = di.GetFiles();
                 var watch = new Stopwatch();
@@ -91,7 +91,7 @@ namespace JEngine.Editor
 
                 AssetDatabase.Refresh();
 
-                JEngineSetting.LastDLLCleanUpTime = lastModifiedStr;
+                Setting.LastDLLCleanUpTime = lastModifiedStr;
 
                 isDone = false;
                 fileNames = fileNames.FindAll((x) => !x.Contains("~"));

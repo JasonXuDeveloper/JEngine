@@ -40,12 +40,12 @@ namespace JEngine.Editor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Change()
         {
-            if (!JEngineSetting.JumpStartUp) return;
+            if (!Setting.JumpStartUp) return;
             var scene = SceneManager.GetActiveScene();
-            if (scene.path != JEngineSetting.StartUpScenePath)
+            if (scene.path != Setting.StartUpScenePath)
             {
-                string name = JEngineSetting.StartUpScenePath
-                    .Substring(JEngineSetting.StartUpScenePath.LastIndexOf('/') + 1)
+                string name = Setting.StartUpScenePath
+                    .Substring(Setting.StartUpScenePath.LastIndexOf('/') + 1)
                     .Replace(".unity", "");
 
                 SceneManager.LoadScene(name);

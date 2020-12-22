@@ -16,6 +16,9 @@
 - ClassBind supports binding **different adapters**
 - Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
 - Generate **Editor** for Adapters
+- Support  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** in hot update scripts
+- JEvent support **Subscribe methods from base class**
+- **Bug fix** on saving data on prefabs
 
 
 

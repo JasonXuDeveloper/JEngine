@@ -75,22 +75,22 @@ namespace JEngine.Editor
 
             //程序集
             GUILayout.Space(50);
-            JEngineSetting.MakeHorizontal(25, () => { EditorGUILayout.LabelField("Assembly 类的程序集"); });
-            JEngineSetting.MakeHorizontal(25, () => { _assembly = EditorGUILayout.TextField("", _assembly); });
+            Setting.MakeHorizontal(25, () => { EditorGUILayout.LabelField("Assembly 类的程序集"); });
+            Setting.MakeHorizontal(25, () => { _assembly = EditorGUILayout.TextField("", _assembly); });
 
             //类名
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25, () => { _class = EditorGUILayout.TextField("Class name 类名", _class); });
+            Setting.MakeHorizontal(25, () => { _class = EditorGUILayout.TextField("Class name 类名", _class); });
 
             //命名空间
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25,
+            Setting.MakeHorizontal(25,
                 () => { EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间"); });
-            JEngineSetting.MakeHorizontal(25, () => { _namespace = EditorGUILayout.TextField("", _namespace); });
+            Setting.MakeHorizontal(25, () => { _namespace = EditorGUILayout.TextField("", _namespace); });
 
             //生成
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25, () =>
+            Setting.MakeHorizontal(25, () =>
             {
                 if (GUILayout.Button("Generate 生成"))
                 {
@@ -233,17 +233,21 @@ namespace JEngine.Editor
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
             sb.Append(
-@"//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以你还有什么理由不使用JEngine~
+@"/*
+ * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
+ */
 #if UNITY_EDITOR
 using System;
-using System.ComponentModel;
+using LitJson;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using JEngine.Core;
 using System.Reflection;
 using System.Threading.Tasks;
-using JEngine.Core;
-using LitJson;
-using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEngine;
+using ILRuntime.Runtime.Enviorment;
+using Tools = JEngine.Core.Tools;
 
 
 [CustomEditor(typeof(");

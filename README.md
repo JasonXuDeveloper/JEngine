@@ -1,4 +1,4 @@
-# JENGINE v0.6.1 p1
+# JENGINE v0.6.1 beta2
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -153,35 +153,27 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## v0.6.1 p1 最新功能
+## v0.6.1 beta2 最新功能
 
-- ILRuntime update to **v1.6.6**
+- ILRuntime升级到 **v1.6.6**
+- ILRuntime **跨域适配器自动生成优化**
+- ILRuntime **自动注册适配器**
+- 更多 JEngine **Demos**
+- 更简介的 **Logs**
+- JBehaviour & JEvent 等 **支持定位报错到准确行数**
+- UIUtility 新增缓存字典使 **加载UI组件更快**
+- 支持 **全部MonoBehaviour事件** 
+- 继承MonoBehaviour的基类自动生成 **带有MonoBehaviour周期事件注册的适配器**
+- ClassBind支持根据情况智能挂载 **不同的适配器**
+- 支持 **Add & Get Component** 更多 **基类继承MonoBehaviour**的类型
+- 针对MonoBehaviour派生类的**适配器自动生成编辑器脚本**
+- 支持  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** 在热更里使用
+- JEvent 支持 **监听基类方法**
+- **Bug 修复** 关于保存预制体的修改
 
-- ILRuntime **Adapter Generator Enhance**
+[点击此处查看历史版本功能（英文）](CHANGE.md)
 
-- ILRuntime **Automatically Register Adapters**
 
-- More JEngine **Demos**
-
-- Better **Logs**
-
-- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
-
-- UIUtility with a cache dictionary to **load UI components faster**
-
-- Support **all MonoBehaviour events** from now on
-
-- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
-
-- ClassBind supports binding **different adapters**
-
-- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
-
-- Generate **Editor** for Adapters
-
-  [点击此处查看历史版本功能（英文）](CHANGE.md)
-
-  
 
 ## 即将推出
 

@@ -24,7 +24,7 @@ namespace JEngine.Helper
         
         public void Register(AppDomain appdomain)
         {
-            //自动注册一波，无需在手动添加了
+            //自动注册一波，无需再手动添加了
             Assembly assembly = typeof(Init).Assembly;
             foreach (Type type in assembly.GetTypes().ToList().FindAll(t=>t.IsSubclassOf(typeof(CrossBindingAdaptor))))
             {

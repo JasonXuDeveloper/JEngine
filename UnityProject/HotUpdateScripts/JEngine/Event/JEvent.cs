@@ -186,82 +186,119 @@ namespace JEngine.Event
                 return;
             }
 
-            _typeEvents.Add(type, new List<Events>(0));
+            if (!_typeEvents.TryGetValue(type, out var v))
+            {
+                _typeEvents.Add(type, new List<Events>(0));
+            }
 
             //先看看是不是整个类监听
             var typeAttr = type.GetCustomAttributes(typeof(SubscriberAttribute), false);
             bool AllMethods = typeAttr != null && typeAttr.Length > 0;
-            var methods = type.GetMethods();
-            
+            var methods = type.GetMethods(
+                BindingFlags.Default | BindingFlags.Instance | BindingFlags.Static |
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+
+            //把基类也给一起注册
+            var t = type.BaseType;
+            if (t != null)
+            {
+                t = type.BaseType;
+                if (!_typeEvents.TryGetValue(t, out v))
+                {
+                    _typeEvents.Add(t, new List<Events>(0));
+                }
+                var _typeAttr = t.GetCustomAttributes(typeof(SubscriberAttribute), false);
+                bool _AllMethods = _typeAttr != null && _typeAttr.Length > 0;
+                var _methods = t.GetMethods(
+                BindingFlags.Default | BindingFlags.Instance | BindingFlags.Static |
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+
+                foreach (var method in _methods)
+                {
+                    _Register(method, _AllMethods, _typeAttr, val, t);
+                }
+            }
+
+            //注册他自己这个类
             foreach (var method in methods)
             {
-                //是不是方法有监听
-                var methodAttr = method.GetCustomAttributes(typeof(SubscriberAttribute), false);
-                var HasAttr = methodAttr != null && methodAttr.Length > 0;
+                _Register(method, AllMethods, typeAttr, val, type);
+            }
 
-                //没的话继续
-                if (!AllMethods && !HasAttr)//不是整个类监听，且该方法没监听，跳过
-                {
-                    continue;
-                }
+            
+        }
 
-                //运行线程
-                bool RunInMain = false;
-                if (AllMethods)
-                {
-                    RunInMain = ((SubscriberAttribute)typeAttr[0]).ThreadMode == ThreadMode.Main;
-                }
-                else
-                {
-                    RunInMain = ((SubscriberAttribute)methodAttr[0]).ThreadMode == ThreadMode.Main;
-                }
+        void _Register<T>(MethodInfo method, bool AllMethods,object[] typeAttr,T val,Type type)
+        {
+            //是不是方法有监听
+            var methodAttr = method.GetCustomAttributes(typeof(SubscriberAttribute), false);
+            var HasAttr = methodAttr != null && methodAttr.Length > 0;
 
-                //参数组合为字符串
-                var _params = method.GetParameters().Select(pi => pi.ParameterType);
-                string prStr = string.Join(",", _params);
+            //没的话继续
+            if (!AllMethods && !HasAttr)//不是整个类监听，且该方法没监听，跳过
+            {
+                return;
+            }
 
-                List<Events> _event = new List<Events>(0);
-                //根据参数区分事件
-                if (!_subscribeMethods.TryGetValue(prStr, out _event))
-                {
-                    _event = new List<Events>(0);
-                    //创建
-                    _event.Add(new Events((parameters) =>
-                     {
-                         if (ShowLog)
-                         {
-                             Log.Print($"[JEvent] <color=#ffa673>使用'{string.Join(",", parameters.Select(p => p.GetType()))}'参数的方法被调用了</color>");
-                         }
-                     }));
-                    _subscribeMethods.Add(prStr, _event);
-                }
+            //运行线程
+            bool RunInMain = false;
+            if (AllMethods)
+            {
+                RunInMain = ((SubscriberAttribute)typeAttr[0]).ThreadMode == ThreadMode.Main;
+            }
+            else
+            {
+                RunInMain = ((SubscriberAttribute)methodAttr[0]).ThreadMode == ThreadMode.Main;
+            }
 
-                Events methodEvent = new Events(async (parameters) =>
+            //参数组合为字符串
+            var _params = method.GetParameters().Select(pi => pi.ParameterType);
+            string prStr = string.Join(",", _params);
+
+            List<Events> _event = new List<Events>(0);
+            //根据参数区分事件
+            if (!_subscribeMethods.TryGetValue(prStr, out _event))
+            {
+                _event = new List<Events>(0);
+                //创建
+                _event.Add(new Events((parameters) =>
                 {
-                    await new JAction()
-                    .Do(() =>
+                    if (ShowLog)
                     {
-                        try
-                        {
-                            method.Invoke(val, parameters);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.PrintError($"[JEvent] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                        }
-                    })
-                    .ExecuteAsync(RunInMain);
-                });
+                        Log.Print($"[JEvent] <color=#ffa673>使用'{string.Join(",", parameters.Select(p => p.GetType()))}'参数的方法被调用了</color>");
+                    }
+                }));
+                _subscribeMethods.Add(prStr, _event);
+            }
 
-                //加入
-                _event.Add(methodEvent);
-                _typeEvents[type].Add(methodEvent);
-                _subscribeMethods[prStr] = _event;
-
-                if (ShowLog)
+            Events methodEvent = new Events(async (parameters) =>
+            {
+                await new JAction()
+                .Do(() =>
                 {
-                    Log.Print($"[JEvent] <color=#ffa673>{type.Name}.{method.Name}已被加入到'{prStr}'JEvent中</color>");
-                }
+                    try
+                    {
+                        method.Invoke(val, parameters);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.PrintError($"[JEvent] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
+                    }
+                })
+                .ExecuteAsync(RunInMain);
+            });
+
+            //加入
+            if (!_event.Contains(methodEvent))
+            {
+                _event.Add(methodEvent);
+            }
+            _typeEvents[type].Add(methodEvent);
+            _subscribeMethods[prStr] = _event;
+
+            if (ShowLog)
+            {
+                Log.Print($"[JEvent] <color=#ffa673>{type.Name}.{method.Name}已被加入到'{prStr}'JEvent中</color>");
             }
         }
     }

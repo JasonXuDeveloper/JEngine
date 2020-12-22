@@ -1,58 +1,67 @@
-//该功能由JEngine作者掉尽头发而得，自动生成跨域适配器的编辑器，所以你还有什么理由不使用JEngine~
+
+/*
+ * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
+ */
 #if UNITY_EDITOR
 using System;
-using System.ComponentModel;
+using LitJson;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using JEngine.Core;
 using System.Reflection;
 using System.Threading.Tasks;
-using JEngine.Core;
-using LitJson;
-using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEngine;
+using ILRuntime.Runtime.Enviorment;
+using Tools = JEngine.Core.Tools;
 
 
 [CustomEditor(typeof(ExampleAPI), true)]
 public class ExampleAPIAdapterEditor : Editor
 {
     private bool displaying;
-        
+
     private AnimBool[] fadeGroup = new AnimBool[2];
+
     private async void OnEnable()
     {
-        for(int i=0;i<fadeGroup.Length;i++)
+        for (int i = 0; i < fadeGroup.Length; i++)
         {
             fadeGroup[i] = new AnimBool(false);
             this.fadeGroup[i].valueChanged.AddListener(this.Repaint);
         }
-        
+
         displaying = true;
-        
+
         while (true && Application.isEditor && Application.isPlaying && displaying)
         {
             try
             {
                 this.Repaint();
             }
-            catch{}
+            catch
+            {
+            }
+
             await Task.Delay(500);
         }
     }
-    
+
     private void OnDestroy()
     {
         displaying = false;
     }
-    
+
     private void OnDisable()
     {
         // 移除动画监听
-        for(int i=0;i<fadeGroup.Length;i++)
+        for (int i = 0; i < fadeGroup.Length; i++)
         {
             this.fadeGroup[i].valueChanged.RemoveListener(this.Repaint);
         }
-    
+
     }
-    
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
@@ -61,7 +70,7 @@ public class ExampleAPIAdapterEditor : Editor
         if (instance != null)
         {
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
-            
+
             int index = 0;
             foreach (var i in instance.Type.FieldMapping)
             {
@@ -69,7 +78,7 @@ public class ExampleAPIAdapterEditor : Editor
                 var name = i.Key;
                 var type = instance.Type.FieldTypes[index];
                 index++;
-    
+
                 var cType = type.TypeForCLR;
                 object obj = instance[i.Value];
                 if (cType.IsPrimitive) //如果是基础类型
@@ -100,7 +109,8 @@ public class ExampleAPIAdapterEditor : Editor
                             {
                                 value = instance[i.Value].ToString() == "1";
                             }
-                            instance[i.Value] = EditorGUILayout.Toggle(name, value );
+
+                            instance[i.Value] = EditorGUILayout.Toggle(name, value);
                         }
                         else
                         {
@@ -126,7 +136,7 @@ public class ExampleAPIAdapterEditor : Editor
                             instance[i.Value] = EditorGUILayout.TextField(name, "");
                         }
                     }
-                    else if (cType == typeof(JsonData))//可以折叠显示Json数据
+                    else if (cType == typeof(JsonData)) //可以折叠显示Json数据
                     {
                         if (instance[i.Value] != null)
                         {
@@ -137,6 +147,7 @@ public class ExampleAPIAdapterEditor : Editor
                                     ((JsonData) instance[i.Value]).ToString()
                                 );
                             }
+
                             EditorGUILayout.EndFadeGroup();
                             EditorGUILayout.Space();
                         }
@@ -147,31 +158,31 @@ public class ExampleAPIAdapterEditor : Editor
                     }
                     else if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
                     {
-                        if (obj == null && cType == typeof(MonoBehaviourAdapter.Adaptor))
+                        if (obj == null && cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
                             EditorGUILayout.LabelField(name, "未赋值的热更类");
                             break;
                         }
-    
-                        if (cType == typeof(MonoBehaviourAdapter.Adaptor))
+
+                        if (cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
                             try
                             {
-                                var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                var clrInstance = (MonoBehaviour) Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>()
                                     .Find(adaptor =>
                                         adaptor.ILInstance == instance[i.Value]);
                                 GUI.enabled = true;
-                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
+                                EditorGUILayout.ObjectField(name, clrInstance, cType, true);
                                 GUI.enabled = false;
                             }
                             catch
                             {
                                 EditorGUILayout.LabelField(name, "未赋值的热更类");
                             }
-                            
+
                             break;
                         }
-                        
+
                         //处理Unity类型
                         var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
                         instance[i.Value] = res;
@@ -181,19 +192,21 @@ public class ExampleAPIAdapterEditor : Editor
                     {
                         PropertyInfo fi = type.ReflectionType.GetProperty("Value");
                         object val = fi.GetValue(obj);
-    
+
                         string genericTypeStr = type.ReflectionType.ToString().Split('`')[1].Replace("1<", "")
                             .Replace(">", "");
                         Type genericType = Type.GetType(genericTypeStr);
-                        if (genericType == null  || (!genericType.IsPrimitive && genericType != typeof(string)))//不是基础类型或字符串
+                        if (genericType == null ||
+                            (!genericType.IsPrimitive && genericType != typeof(string))) //不是基础类型或字符串
                         {
-                            EditorGUILayout.LabelField(name, val.ToString());//只显示字符串
+                            EditorGUILayout.LabelField(name, val.ToString()); //只显示字符串
                         }
                         else
                         {
                             //可更改
-                            var data = ConvertSimpleType(EditorGUILayout.TextField(name, val.ToString()), genericType);
-                            if (data != null)//尝试更改
+                            var data = Tools.ConvertSimpleType(EditorGUILayout.TextField(name, val.ToString()),
+                                genericType);
+                            if (data != null) //尝试更改
                             {
                                 fi.SetValue(obj, data);
                             }
@@ -204,18 +217,34 @@ public class ExampleAPIAdapterEditor : Editor
                         //其他类型现在没法处理
                         if (obj != null)
                         {
-                            var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
-                                .Find(adaptor =>
-                                    adaptor.ILInstance.Equals(instance[i.Value]));
-                            if (clrInstance != null)
+                            if (cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType))) //需要跨域继承的普遍都有适配器
                             {
-                                GUI.enabled = true;
-                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
-                                GUI.enabled = false;
+                                var clrInstance = (MonoBehaviour) Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>()
+                                    .Find(adaptor =>
+                                        adaptor.ILInstance.Equals(instance[i.Value]));
+                                if (clrInstance != null)
+                                {
+                                    GUI.enabled = true;
+                                    EditorGUILayout.ObjectField(name, clrInstance.gameObject, typeof(GameObject), true);
+                                    GUI.enabled = false;
+                                }
                             }
-                            else
+                            else //不需要跨域继承的，也有可能以ClassBind挂载
                             {
-                                EditorGUILayout.LabelField(name, obj.ToString());
+                                var clrInstance = Tools.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                    .Find(adaptor =>
+                                        adaptor.ILInstance.Equals(instance[i.Value]));
+                                if (clrInstance != null)
+                                {
+                                    GUI.enabled = true;
+                                    EditorGUILayout.ObjectField(name, clrInstance, typeof(MonoBehaviourAdapter.Adaptor),
+                                        true);
+                                    GUI.enabled = false;
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField(name, obj.ToString());
+                                }
                             }
                         }
                         else
@@ -224,46 +253,10 @@ public class ExampleAPIAdapterEditor : Editor
                 }
             }
         }
-    
+
         // 应用属性修改
         this.serializedObject.ApplyModifiedProperties();
     }
-    
-    
-    
-    private object ConvertSimpleType(object value, Type destinationType) 
-    { 
-        object returnValue; 
-        if ((value == null) || destinationType.IsInstanceOfType(value)) 
-        { 
-            return value; 
-        } 
-        string str = value as string; 
-        if ((str != null) && (str.Length == 0)) 
-        { 
-            return destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-        } 
-        TypeConverter converter = TypeDescriptor.GetConverter(destinationType); 
-        bool flag = converter.CanConvertFrom(value.GetType()); 
-        if (!flag) 
-        { 
-            converter = TypeDescriptor.GetConverter(value.GetType()); 
-        } 
-        if (!flag && !converter.CanConvertTo(destinationType)) 
-        { 
-            Log.PrintError("无法转换成类型：'" + value.ToString() + "' ==> " + destinationType); 
-        } 
-        try 
-        { 
-            returnValue = flag ? converter.ConvertFrom(null, null, value) : converter.ConvertTo(null, null, value, destinationType); 
-        } 
-        catch (Exception e)
-        {
-            Log.PrintError("类型转换出错：'" + value.ToString() + "' ==> " + destinationType + "\n" + e.Message);
-            returnValue = destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-        } 
-        return returnValue; 
-    } 
 
 }
 #endif

@@ -59,10 +59,11 @@ namespace ProjectAdapter
 
             #region Generate For Mono Events from template
             /*
-            * 这里开始都是JEngine提供的模板自动生成的
-            * 这么多框架，只有JEngine如此贴心，为你想到了一切可能
-            * 甚至于这种恶心人的跨域继承模板，都给你写了，你还有什么理由不去用JEngine？
-            */
+             * JEngine作者匠心打造的适配mono方法模板
+             * 这里开始都是JEngine提供的模板自动生成的，注册了全部Mono的Event Methods，共几十个
+             * 这么多框架，只有JEngine如此贴心，为你想到了一切可能
+             * 你还有什么理由不去用JEngine？
+             */
             object[] param0 = new object[0];
             private bool destoryed = false;
             

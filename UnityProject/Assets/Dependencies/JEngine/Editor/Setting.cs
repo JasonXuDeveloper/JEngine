@@ -37,7 +37,7 @@ using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
 {
-    internal class JEngineSetting : EditorWindow
+    internal class Setting : EditorWindow
     {
         private const string prefix = "JEngine.Editor.Setting";
 
@@ -156,7 +156,7 @@ namespace JEngine.Editor
         [MenuItem("JEngine/Setting #&J",priority = 1998)]
         private static void ShowWindow()
         {
-            var window = GetWindow<JEngineSetting>(GetString(JENGINE_SETTING));
+            var window = GetWindow<Setting>(GetString(JENGINE_SETTING));
             window.minSize = new Vector2(300, 500);
             window.Show();
         }
@@ -536,8 +536,8 @@ namespace JEngine.Editor
 			else
 			{
 				var s = asToolbar
-					? searchField.OnToolbarGUI(rect, JEngineSetting.GetString(JEngineSetting.SCENE_FILTER))
-					: searchField.OnGUI(rect, JEngineSetting.GetString(JEngineSetting.SCENE_FILTER));
+					? searchField.OnToolbarGUI(rect, Setting.GetString(Setting.SCENE_FILTER))
+					: searchField.OnGUI(rect, Setting.GetString(Setting.SCENE_FILTER));
 				searchString = "";
 			}
 			
