@@ -60,14 +60,14 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
   ## JEngine能够做些什么？
 
   - **[热更新解决方案 ](https://xgamedev.uoyou.com/startup.html)**
-- **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
+    - **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
     - **C#代码热更**基于[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
     - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
     - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
     - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
     
   - **[Action队列解决方案](https://xgamedev.uoyou.com/jaction.html)**
-- **更少的代码，实现更多功能，效率大幅度提高**！
+    - **更少的代码，实现更多功能，效率大幅度提高**！
     - 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
     - **主线程运行代码**
     
@@ -88,51 +88,51 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
     - **泛型**方法，轻松使用
     - **异步加载**热更**场景**
     
-- **[自动绑定热更脚本到GameObject](https://xgamedev.uoyou.com/classbind.html)**
-  - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
-  - 可对**该脚本public/private/static数值进行赋值**
-  - **特殊类型支持拖拽赋值**
-  - **不需要是Mono类**
+  - **[自动绑定热更脚本到GameObject](https://xgamedev.uoyou.com/classbind.html)**
+    - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
+    - 可对**该脚本public/private/static数值进行赋值**
+    - **特殊类型支持拖拽赋值**
+    - **不需要是Mono类**
 
-- **[数据持久化解决方案](https://xgamedev.uoyou.com/jsaver.html)**
-- 字符串存本地
-  - **JSON**存本地
-  - **Protobuf**二进制存本地
-  - **自带加密**
-  
-- **[多语言解决方案](https://xgamedev.uoyou.com/localization.html)**
-- **CSV配表**
-  - 轻松**转换语种**
-  - 可通过静态方法**获取key对应的字符串**
-  - 可让Text**自动根据语言切换文字**
-  
-- **[内存加密解决方案](https://xgamedev.uoyou.com/crypto-struct.html)**
-- 支持**90%数值类型**
-  - **偏移值**加密
-  - **转JSON和Protobuf**于**普通数据结构一样**
-  - 可以**捕获内存作弊**
-  
-- **对象池**解决方案
+  - **[数据持久化解决方案](https://xgamedev.uoyou.com/jsaver.html)**
+  - 字符串存本地
+    - **JSON**存本地
+    - **Protobuf**二进制存本地
+    - **自带加密**
 
-  - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
-  - **无需重复**创建新对象！
-  - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
-  
-- **加密解密**解决方案
+  - **[多语言解决方案](https://xgamedev.uoyou.com/localization.html)**
+  - **CSV配表**
+    - 轻松**转换语种**
+    - 可通过静态方法**获取key对应的字符串**
+    - 可让Text**自动根据语言切换文字**
 
-  - **AES**加密
-  - 支持**字符串**
-  - 支持**二进制**
+  - **[内存加密解决方案](https://xgamedev.uoyou.com/crypto-struct.html)**
+  - 支持**90%数值类型**
+    - **偏移值**加密
+    - **转JSON和Protobuf**于**普通数据结构一样**
+    - 可以**捕获内存作弊**
 
-- **序列化**解决方案
+  - **对象池**解决方案
 
-  - 转**String**
-  - 转**JSON**
-  - 转**Protobuf-net**二进制
+    - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
+    - **无需重复**创建新对象！
+    - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
 
-- 面板类
-  - **ILRuntime适配器自动生成**
-  - **Protobfuf文件与CS类互转**
+  - **加密解密**解决方案
+
+    - **AES**加密
+    - 支持**字符串**
+    - 支持**二进制**
+
+  - **序列化**解决方案
+
+    - 转**String**
+    - 转**JSON**
+    - 转**Protobuf-net**二进制
+
+  - 面板类
+    - **ILRuntime适配器自动生成**
+    - **Protobfuf文件与CS类互转**
 
   - 还有更多功能，尽情自行探索！
 
