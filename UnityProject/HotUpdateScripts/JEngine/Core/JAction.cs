@@ -292,13 +292,30 @@ namespace JEngine.Core
                         {
                             Loom.QueueOnMainThread(p =>
                             {
-                                _toDo[index]();
+                                try
+                                {
+                                    _toDo[index]();
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                                }
                             }, null);
                         }, _cancellationTokenSource.Token);
                     }
                     else
                     {
-                        await Task.Run(_toDo[index], _cancellationTokenSource.Token);
+                        await Task.Run(() =>
+                        {
+                            try
+                            {
+                                _toDo[index]();
+                            }
+                            catch (Exception e)
+                            {
+                                Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                            }
+                        }, _cancellationTokenSource.Token);
                     }
                 }
             }

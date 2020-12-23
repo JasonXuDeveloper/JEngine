@@ -54,54 +54,54 @@ This is branch is ```v0.5``` series branch, which is a Long term support (**LTS*
 
 ## What can JEngine do?
 
-  - **[Hot Update Solution ](https://github.com/JasonXuDeveloper/JEngine/wiki/开始使用)**
+  - **[Hot Update Solution ](https://xgamedev.uoyou.com/startup.html)**
     - **Resource update** based on [**XAsset**](https://github.com/xasset/xasset), which JEngine's author is a contributor of this repo
     - **C# code update** based on [**ILRuntime**](https://github.com/Ourpalm/ILRuntime),  which JEngine's author is a contributor of this repo's Unity Demo
     - **Hot update code encryption**, Hot update **DLL** will be encrypted wiithin **AES-128-ECB** toAssetbundle, and will be decrypted while loading the game
     - **Resource encryption**, XAsset contains the feature of VFS, which can make some sort of encyption on resource, which AssetStudio is not able to hack resource
     - **Auto Class Bind**, scripts from hot update project is able to bind onto a gameObject/prefab, and can set values
 
-  - **[Action Sequence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
+  - **[Action Sequence Solution](https://xgamedev.uoyou.com/jaction.html)**
     - **Less code, more powerful**
     - Codes are able to **runs, delay, wait, loop in counts, loop in conditions, run async/non-blocking**
     - **Can run in main thread**
 
-  - **[UI Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
+  - **[UI Solution](https://xgamedev.uoyou.com/jui.html)**
     - **Easy to manage** life cycle of an UI, **support chaining-style** which makes codes **prettier**
     - Supports **Loop in frequency**, can choose **Loop in frames or milliseconds**
 
     - UI is **bindable to data**, when **data updates**, will **call the bound method of an UI**
 
-  - **[Base Class Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
+  - **[Base Class Solution](https://xgamedev.uoyou.com/jbehaviour.html)**
     - **Easy to manage** lifecycle
     - Can **Loop in frame**, or **Loop in milliseconds**
     - **Does not need MonoBehaviour**
     - **Easy to use**
 
-  - **[Resource solution based on XAsset](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
+  - **[Resource solution based on XAsset](https://xgamedev.uoyou.com/jresource.html)** 
     - Support **Load resource sync/async**
     - **Generic method**, easy to get different format of resources
     - **Load scene async**
 
-- **[Auto Class Bind](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
+- **[Auto Class Bind](https://xgamedev.uoyou.com/classbind.html)**
   - Write namespance, and class name, than it will **auto add hot update component** to a **gameObject/prefab**
   - Can set value **on public/private/static fields and properties**
   - **Support drag & drop on specific types**
   - **Does not require class to inherit MonoBehaviour**
 
-- **[Data Persistence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
+- **[Data Persistence Solution](https://xgamedev.uoyou.com/jsaver.html)**
   - Save string to local
   - Save **JSON**
   - Save **Protobuf**
   - **Auto encrypt**
 
-- **[Localization](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+- **[Localization](https://xgamedev.uoyou.com/localization.html)**
   - **CSV document to visualize and set up the words**
   - Easy to **switch language**
   - Can **get strings for differen keys in specific language**
   - **Text** can **bind to specific key**
 
-- **[Anti-Memory Cheat solution](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
+- **[Anti-Memory Cheat solution](https://xgamedev.uoyou.com/crypto-struct.html)**
   - Support **90% of data stucts**
   - **Offset** encryption
   - **Same size** while serialize to **JSON & Protobuf**
@@ -169,32 +169,8 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 
 
 
-## Development Environment
-
-- Debuging Unity Engine Version: 2019.3.13f1 (Please use at least this version)
-
-- U3D .net Environment: .net 4.x
-
-- Hot Update Solution .net Environment: .net 4.x
-
-- Operating System: MacOS 10.15.5
-
-  > Definityly supports windows
-
-
-
 ## Recommend Repositories
 
 - [XAsset](https://github.com/xasset/xasset) - A more streamlined, efficient and secure Unity Resource Management Solution for you.
 - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
 - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
-
-
-## Sincerely Appreciated
-
-- Ekson (Sponsorship)
-- 程序-华仔 (Sponsorship)
-- 默默的奶爸 (Sponsorship + Promote)
-- 马三 (Sponsorship)
-- 清行（Documents）
-- 阿飞  (Sponsorship)
