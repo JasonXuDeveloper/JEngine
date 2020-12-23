@@ -1972,13 +1972,13 @@ namespace JEngine.Helper
                     Type t = type.ReflectionType; //获取实际属性
                     bool isMonoAdapter = t.BaseType?.FullName == typeof(MonoBehaviourAdapter.Adaptor).FullName;
 
-                    if (!isMonoAdapter)
+                    if (!isMonoAdapter && !Init.appdomain.LoadedTypes.ContainsKey(t.BaseType.FullName))
                     {
                         Type adapterType = Type.GetType(t.BaseType?.FullName);
                         if (adapterType == null)
                         {
                             JEngine.Core.Log.PrintError($"{t.FullName}, need to generate adapter");
-                            return null;
+                            return ILIntepreter.PushObject(ptr, __mStack, null);
                         }
 
                         //直接反射赋值一波了

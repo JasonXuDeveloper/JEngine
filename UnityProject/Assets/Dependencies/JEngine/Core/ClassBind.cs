@@ -449,7 +449,7 @@ namespace JEngine.Core
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
             //总之JEngine牛逼
             //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName)
+            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName && !Init.appdomain.LoadedTypes.ContainsKey(t.BaseType.FullName))
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName);
                 if (adapterType == null)
