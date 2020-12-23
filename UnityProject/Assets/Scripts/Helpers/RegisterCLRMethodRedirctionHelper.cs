@@ -54,6 +54,13 @@ namespace JEngine.Helper
             var getComponentMethod2 = componentType.GetMethods().ToList()
                 .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod2, GetComponent);
+            
+            //get还能是字符串。
+            args = new Type[]{typeof(System.String)};
+            var getComponentMethod3 = gameObjectType.GetMethod("GetComponent", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(getComponentMethod3, GetComponent_1);
+            var getComponentMethod4 = componentType.GetMethod("GetComponent", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(getComponentMethod4, GetComponent_1);
 
             //注册send message
             args = new Type[] {typeof(System.String)};
@@ -2031,6 +2038,57 @@ namespace JEngine.Helper
             }
 
             return __esp;
+        }
+        
+        
+        /// <summary>
+        /// Get的字符串参数重定向
+        /// </summary>
+        /// <param name="__intp"></param>
+        /// <param name="__esp"></param>
+        /// <param name="__mStack"></param>
+        /// <param name="__method"></param>
+        /// <param name="isNewObj"></param>
+        /// <returns></returns>
+        private static unsafe StackObject* GetComponent_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @type = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            object result_of_this_method = instance_of_this_method.GetComponent(@type);//先从本地匹配
+            
+            if (result_of_this_method == null)//本地没再从热更匹配
+            {
+                var typeName = __domain.LoadedTypes.Keys.ToList().Find(k => k.EndsWith(type));
+                if (typeName != null)//如果有这个热更类型
+                {
+                    //适配器全查找出来，匹配ILTypeInstance的真实类型的FullName
+                    var clrInstances = instance_of_this_method.GetComponents<CrossBindingAdaptorType>();
+                    for (int i = 0; i < clrInstances.Length; i++)
+                    {
+                        var clrInstance = clrInstances[i];
+                        if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                        {
+                            if (clrInstance.ILInstance.Type.ReflectionType.FullName == typeName)
+                            {
+                                result_of_this_method = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         /// <summary>
