@@ -9,6 +9,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 0.5.x有以下限制：
 
 - 如果```Instantiate```，```SendMessage```，```Invoke```等方法出现错误，是CLR重定向没有实现，需要学习ILRuntime去自己实现，也可以更新最新分支（0.6.x就已经实现了）
+- ```GetComponent```不能用基类去Get（0.6.x已经实现）
 - 众所周知，ILRuntime跨域继承需要适配器，该分支提供了MonoBehaviour适配器，但如果本地有基类A，继承了MonoBehaviour，然后再被跨域继承，无法正确的Add和Get，会出错（0.6.x也已解决），但如果热更工程只继承Mono和非Mono派生类的基类，没有影响
 - 还是比较推荐使用0.6.x，更强大
 
@@ -59,7 +60,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## JEngine能够做些什么？
 
-  - **[热更新解决方案 ](https://xgamedev.uoyou.com/startup.html)**
+  - **[热更新解决方案](https://xgamedev.uoyou.com/startup.html)**
     - **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
     - **C#代码热更**基于[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
     - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
