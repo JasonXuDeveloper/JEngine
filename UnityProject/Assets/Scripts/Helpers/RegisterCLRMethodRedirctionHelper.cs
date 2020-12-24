@@ -643,11 +643,9 @@ namespace JEngine.Helper
         /// <param name="methodName"></param>
         /// <param name="value"></param>
         /// <param name="option"></param>
-        private static bool DoSendMessageOnHotCode(GameObject go, string methodName, object value = null,
+        private static void DoSendMessageOnHotCode(GameObject go, string methodName, object value = null,
             SendMessageOptions option = SendMessageOptions.RequireReceiver)
         {
-            bool found = false;
-
             var clrInstances = go.GetComponents<CrossBindingAdaptorType>();
             for (int i = 0; i < clrInstances.Length; i++)
             {
@@ -661,7 +659,6 @@ namespace JEngine.Helper
                         if (m != null)
                         {
                             Init.appdomain.Invoke(m, clrInstance.ILInstance, null);
-                            found = true;
                         }
                     }
                     else
@@ -670,13 +667,10 @@ namespace JEngine.Helper
                         if (m != null)
                         {
                             Init.appdomain.Invoke(m, clrInstance.ILInstance, value);
-                            found = true;
                         }
                     }
                 }
             }
-
-            return found;
         }
 
         unsafe static StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
@@ -706,6 +700,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -713,12 +711,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName))
-            {
-                instance_of_this_method.SendMessage(@methodName);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            instance_of_this_method.BroadcastMessage(@methodName);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -726,10 +722,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(g.gameObject, methodName))
-                    {
-                        g.SendMessage(@methodName);
-                    }
+                    DoSendMessageOnHotCode(g.gameObject, methodName);
                 }
                 catch (Exception e)
                 {
@@ -773,6 +766,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -780,12 +777,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            instance_of_this_method.BroadcastMessage(@methodName, @value);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -793,10 +788,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(g.gameObject, methodName, value))
-                    {
-                        g.SendMessage(@methodName, @value);
-                    }
+                    DoSendMessageOnHotCode(g.gameObject, methodName, value);
                 }
                 catch (Exception e)
                 {
@@ -840,6 +832,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -847,12 +843,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            instance_of_this_method.BroadcastMessage(@methodName, @options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -860,10 +854,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(g.gameObject, methodName, null, options))
-                    {
-                        g.SendMessage(@methodName, @options);
-                    }
+                    DoSendMessageOnHotCode(g.gameObject, methodName, null, options);
                 }
                 catch (Exception e)
                 {
@@ -913,6 +904,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -920,12 +915,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            instance_of_this_method.BroadcastMessage(@methodName, @value, @options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -933,10 +926,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(g.gameObject, methodName, value, options))
-                    {
-                        g.SendMessage(@methodName, @value, @options);
-                    }
+                    DoSendMessageOnHotCode(g.gameObject, methodName, value, options);
                 }
                 catch (Exception e)
                 {
@@ -974,6 +964,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -981,22 +975,17 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName))
-            {
-                instance_of_this_method.SendMessage(@methodName);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            instance_of_this_method.SendMessageUpwards(@methodName);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(go, methodName))
-                    {
-                        go.SendMessage(@methodName);
-                    }
+                    DoSendMessageOnHotCode(go, methodName);
                 }
                 catch (Exception e)
                 {
@@ -1043,6 +1032,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1050,22 +1043,17 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            instance_of_this_method.SendMessageUpwards(@methodName, @value);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(go, methodName, value))
-                    {
-                        go.SendMessage(@methodName, @value);
-                    }
+                    DoSendMessageOnHotCode(go, methodName, value);
                 }
                 catch (Exception e)
                 {
@@ -1111,6 +1099,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1118,22 +1110,17 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            instance_of_this_method.SendMessageUpwards(@methodName, @options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(go, methodName, null, options))
-                    {
-                        go.SendMessage(@methodName, @options);
-                    }
+                    DoSendMessageOnHotCode(go, methodName, null, options);
                 }
                 catch (Exception e)
                 {
@@ -1186,6 +1173,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1193,22 +1184,17 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            instance_of_this_method.SendMessageUpwards(@methodName, @value, @options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
             {
                 try
                 {
-                    if (!DoSendMessageOnHotCode(go, methodName, value, options))
-                    {
-                        go.SendMessage(@methodName, @value, @options);
-                    }
+                    DoSendMessageOnHotCode(go, methodName, value, options);
                 }
                 catch (Exception e)
                 {
@@ -1248,6 +1234,14 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1255,12 +1249,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName))
-            {
-                instance_of_this_method.SendMessage(@methodName);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            instance_of_this_method.SendMessage(@methodName);
 
             return __ret;
         }
@@ -1298,6 +1290,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1305,12 +1301,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            instance_of_this_method.SendMessage(@methodName, @value);
 
             return __ret;
         }
@@ -1348,6 +1342,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1355,12 +1353,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            instance_of_this_method.SendMessage(@methodName, @options);
 
             return __ret;
         }
@@ -1404,6 +1400,10 @@ namespace JEngine.Helper
             {
                 instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
             }
+            else if (instance is Component)
+            {
+                instance_of_this_method = ((Component) instance).gameObject;
+            }
             else
             {
                 return __esp;
@@ -1411,12 +1411,10 @@ namespace JEngine.Helper
 
             __intp.Free(ptr_of_this_method);
 
-            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更脚本的'{methodName}'方法，若热更里没有，则会尝试调用本地的该方法，如果本地没对应，会报错，可忽略");
+            Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            if (!DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options))
-            {
-                instance_of_this_method.SendMessage(@methodName, @value, @options);
-            }
+            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            instance_of_this_method.SendMessage(@methodName, @value, @options);
 
             return __ret;
         }

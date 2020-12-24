@@ -169,6 +169,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 - 支持  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** 在热更里使用
 - JEvent 支持 **监听基类方法**
 - **Bug 修复** 关于保存预制体的修改
+- **JSaver**支持**Get默认值**
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 

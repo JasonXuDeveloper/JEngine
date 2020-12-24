@@ -187,9 +187,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static int GetInt(string dataName, string encryptKey = null)
+        public static int GetInt(string dataName, int defaultValue = 0, string encryptKey = null)
         {
-            return int.Parse(GetString(dataName, encryptKey));
+            if (int.TryParse(GetString(dataName, encryptKey), out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -198,9 +202,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static short GetShort(string dataName, string encryptKey = null)
+        public static short GetShort(string dataName, short defaultValue = 0, string encryptKey = null)
         {
-            return short.Parse(GetString(dataName, encryptKey));
+            if (short.TryParse(GetString(dataName, encryptKey), out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -209,9 +217,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static long GetLong(string dataName, string encryptKey = null)
+        public static long GetLong(string dataName, long defaultValue = 0, string encryptKey = null)
         {
-            return long.Parse(GetString(dataName, encryptKey));
+            if (long.TryParse(GetString(dataName, encryptKey), out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -220,9 +232,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static decimal GetDecimal(string dataName, string encryptKey = null)
+        public static decimal GetDecimal(string dataName, decimal defaultValue = 0m, string encryptKey = null)
         {
-            return decimal.Parse(GetString(dataName, encryptKey));
+            if (decimal.TryParse(GetString(dataName, encryptKey), out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -231,9 +247,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static double GetDouble(string dataName, string encryptKey = null)
+        public static double GetDouble(string dataName, double defaultValue = 0d, string encryptKey = null)
         {
-            return double.Parse(GetString(dataName, encryptKey));
+            if (double.TryParse(GetString(dataName, encryptKey), out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -242,9 +262,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static float GetFloat(string dataName, string encryptKey = null)
+        public static float GetFloat(string dataName, float defaultValue = 0f, string encryptKey = null)
         {
-            return float.Parse(GetString(dataName, encryptKey));
+            if(float.TryParse(GetString(dataName, encryptKey),out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>
@@ -253,9 +277,13 @@ namespace JEngine.Core
         /// <param name="val"></param>
         /// <param name="encryptKey"></param>
         /// <returns>Saved value</returns>
-        public static bool GetBool(string dataName, string encryptKey = null)
+        public static bool GetBool(string dataName, bool defaultValue = false, string encryptKey = null)
         {
-            return bool.Parse(GetString(dataName, encryptKey));
+            if(bool.TryParse(GetString(dataName, encryptKey),out var result))
+            {
+                return result;
+            }
+            return defaultValue;
         }
 
         /// <summary>

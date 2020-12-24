@@ -152,8 +152,9 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 - Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
 - Generate **Editor** for Adapters
 - Support  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** in hot update scripts
-- JEvent support **Subscribe methods from base class**
+- JEvent supports **Subscribe methods from base class**
 - **Bug fix** on saving data on prefabs
+- **JSaver** supports **get Default Value**
 
 [Click here to see all version updates](CHANGE.md)
 

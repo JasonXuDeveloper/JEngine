@@ -19,6 +19,7 @@
 - Support  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** in hot update scripts
 - JEvent support **Subscribe methods from base class**
 - **Bug fix** on saving data on prefabs
+- **JSaver** supports **get Default Value**
 
 
 
