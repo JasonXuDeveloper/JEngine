@@ -40,6 +40,7 @@ namespace JEngine.Editor
                 return;
             }
             //打开导入
+            AssetDatabase.Refresh();
             EditorUtility.OpenWithDefaultApp(localPath);
             
             //删热更的
