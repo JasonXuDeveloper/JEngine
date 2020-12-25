@@ -62,6 +62,10 @@ namespace JEngine.Editor
         public const int CLASSBIND_TOOLS = 17;
         public const int CLASSBIND_AUTO_GET_FIELS= 18;
         public const int CLASSBIND_AUTO_SET_TYPES = 19;
+        public const int LOCAL_JENGINE = 20;
+        public const int HOT_JENGINE = 21;
+        public const int CHOOSE_BTN = 22;
+        public const int UPDATE_JENGINE = 23;
         #endregion
         
         public static Color RED_COLOR = new Color32(245, 80, 98, 255);
@@ -97,6 +101,10 @@ namespace JEngine.Editor
             new[] {"ClassBind助手", "ClassBind Tools"},
             new[] {"自动获取全部field", "Auto get fields for all"},
             new[] {"自动处理全部fieldType", "Auto get fieldTypes for all"},
+            new[] {"本地工程JEngine框架路径", "Local JEngine Source Code"},
+            new[] {"热更工程JEngine框架路径", "Hot Update JEngine Source Code"},
+            new[] {"选择", "Choose"},
+            new[] {"更新JEngine", "Update JEngine"},
         };
 
         /// <summary>
@@ -131,8 +139,26 @@ namespace JEngine.Editor
         /// </summary>
         public static string LastDLLCleanUpTime
         {
-            get => PlayerPrefs.GetString($"{prefix}.LastDLLCleanUpTime");
-            set => PlayerPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
+	        get => PlayerPrefs.GetString($"{prefix}.LastDLLCleanUpTime");
+	        set => PlayerPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
+        }
+        
+        /// <summary>
+        /// 本地框架路径
+        /// </summary>
+        public static string LocalPath
+        {
+	        get => PlayerPrefs.GetString($"{prefix}.LocalPath",new DirectoryInfo(Application.dataPath).FullName+"/Dependencies/JEngine");
+	        set => PlayerPrefs.SetString($"{prefix}.LocalPath", value);
+        }
+        
+        /// <summary>
+        /// 热更框架路径
+        /// </summary>
+        public static string HotPath
+        {
+	        get => PlayerPrefs.GetString($"{prefix}.HotPath",new DirectoryInfo(Application.dataPath).Parent.FullName+"/HotUpdateScripts/JEngine");
+	        set => PlayerPrefs.SetString($"{prefix}.HotPath", value);
         }
 
         /// <summary>
@@ -242,6 +268,53 @@ namespace JEngine.Editor
                 GUI.enabled = true;
             });
             
+            GUILayout.Space(10);
+            
+            //本地路径
+            MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(LOCAL_JENGINE)); });
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            GUI.enabled = false;
+	            LocalPath = EditorGUILayout.TextField(LocalPath);
+	            GUI.enabled = true;
+	            if (GUILayout.Button(GetString(CHOOSE_BTN),GUILayout.Width(70)))
+	            {
+		            var path = EditorUtility.OpenFolderPanel(GetString(LOCAL_JENGINE), LocalPath,
+			            GetString(LOCAL_JENGINE));
+		            if (!string.IsNullOrEmpty(path))
+		            {
+			            LocalPath = path;
+		            }
+	            }
+            });
+            //热更路径
+            MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(HOT_JENGINE)); });
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            GUI.enabled = false;
+	            HotPath = EditorGUILayout.TextField(HotPath);
+	            GUI.enabled = true;
+	            if (GUILayout.Button(GetString(CHOOSE_BTN),GUILayout.Width(70)))
+	            {
+		            var path = EditorUtility.OpenFolderPanel(GetString(HOT_JENGINE), HotPath,
+			            GetString(HOT_JENGINE));
+		            if (!string.IsNullOrEmpty(path))
+		            {
+			            HotPath = path;
+		            }
+	            }
+            });
+            
+            GUILayout.Space(10);
+            MakeHorizontal(GetSpace(0.1f), () =>
+            {
+	            if (GUILayout.Button(GetString(UPDATE_JENGINE),GUILayout.Height(30)))
+	            {
+		            Helper.Update();
+	            }
+            });
+            
+
             //直接进热更场景
             GUILayout.Space(30);
             MakeHorizontal(GetSpace(0.1f), () =>
@@ -393,7 +466,7 @@ namespace JEngine.Editor
             {
 	            EditorGUILayout.EndScrollView();
             }
-            catch
+            catch(Exception e)
             {
 	            // ignored
             }

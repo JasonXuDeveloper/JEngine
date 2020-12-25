@@ -646,6 +646,11 @@ namespace JEngine.Helper
         private static void DoSendMessageOnHotCode(GameObject go, string methodName, object value = null,
             SendMessageOptions option = SendMessageOptions.RequireReceiver)
         {
+            //这个option控制了找不到方法是否要报错，但是报错看着太头大，所以我这边就不处理了，留着这个接口
+
+            if (!go.activeSelf) return;//不sendmessage隐藏的
+
+            bool invoked = false;
             var clrInstances = go.GetComponents<CrossBindingAdaptorType>();
             for (int i = 0; i < clrInstances.Length; i++)
             {
@@ -653,21 +658,19 @@ namespace JEngine.Helper
                 if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
                 {
                     IType t = clrInstance.ILInstance.Type;
-                    if (value == null)
-                    {
-                        IMethod m = t.GetMethod(methodName, 0);
-                        if (m != null)
-                        {
-                            Init.appdomain.Invoke(m, clrInstance.ILInstance, null);
-                        }
-                    }
-                    else
+                    if (value != null)//有参数就匹配去调用
                     {
                         IMethod m = t.GetMethod(methodName, 1);
                         if (m != null)
                         {
                             Init.appdomain.Invoke(m, clrInstance.ILInstance, value);
                         }
+                    }
+                    //有参数无匹配，或无参数，都会invoke
+                    IMethod method = t.GetMethod(methodName, 0);
+                    if (method != null)
+                    {
+                        Init.appdomain.Invoke(method, clrInstance.ILInstance, null);
                     }
                 }
             }
