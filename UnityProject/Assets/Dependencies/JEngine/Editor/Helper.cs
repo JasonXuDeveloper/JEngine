@@ -39,6 +39,8 @@ namespace JEngine.Editor
             {
                 return;
             }
+            //打开导入
+            EditorUtility.OpenWithDefaultApp(localPath);
             
             //删热更的
             hotDirectory.Delete(true);
@@ -54,12 +56,8 @@ namespace JEngine.Editor
                 $"请在IDE打开热更工程并重新导入JEngine源码"
                 ,"OK");  
             
-            //打开导入
-            EditorUtility.OpenWithDefaultApp(localPath);
-            
             //删本地的
             localDirectory.Delete(true);
-            AssetDatabase.Refresh();
         }
 
         public static void Unzip(string file, string path)
