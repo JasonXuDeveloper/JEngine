@@ -47,18 +47,19 @@ namespace JEngine.Editor
             //重新导入
             Directory.Move(tempDirectory.FullName+"/JEngine",hotDirectory.FullName);
             tempDirectory.Delete(true);
-            
-            //删本地的
-            AssetDatabase.Refresh();
-            localDirectory.Delete(true);
-            //打开导入
-            EditorUtility.OpenWithDefaultApp(localPath);
-            
+
             EditorUtility.DisplayDialog("Success",
                 $"下载成功\n" +
                 $"请点击导入后删除Core.unitypackage\n" +
                 $"请在IDE打开热更工程并重新导入JEngine源码"
                 ,"OK");  
+            
+            //打开导入
+            EditorUtility.OpenWithDefaultApp(localPath);
+            
+            //删本地的
+            localDirectory.Delete(true);
+            AssetDatabase.Refresh();
         }
 
         public static void Unzip(string file, string path)
