@@ -41,6 +41,8 @@ namespace JEngine.Examples
                 "继承了Mono，所以可以在CrossDomainDemo这个GameObject上看到，" +
                 "ClassBind自动挂了个ExampleAPIAdapter/Adapter");
 
+            Log.Print($"这个类用GetComponent获取是null嘛？{gameObject.GetComponent<CrossDomainDemo>() == null}");
+
             Log.Print("调用override方法，跨域继承");
             ExampleMethod();
 
@@ -56,7 +58,10 @@ namespace JEngine.Examples
             Log.Print("0秒后，会每秒重复执行Do");
             InvokeRepeating("Do", 0, 1);
             Log.Print($"Invoke状态：{IsInvoking()}");
-            
+
+            //小彩蛋，试试更改TimeScale，看看会对Invoke出现什么影响
+            //原生Unity的TimeScale就会影响Invoke，所以JEngine也对此作了处理，能保证百分百的原汁原味
+
         }
 
         public void MsgToSend(int code)

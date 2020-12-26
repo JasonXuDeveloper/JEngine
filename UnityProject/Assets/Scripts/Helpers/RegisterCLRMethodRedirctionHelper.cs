@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -7,7 +8,6 @@ using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
-using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
@@ -15,7 +15,8 @@ using JEngine.Core;
 using JEngine.Interface;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
-using Object = UnityEngine.Object;
+using Debug = UnityEngine.Debug;
+using Object = System.Object;
 
 namespace JEngine.Helper
 {
@@ -56,103 +57,103 @@ namespace JEngine.Helper
             appdomain.RegisterCLRMethodRedirection(getComponentMethod2, GetComponent);
             
             //get还能是字符串。
-            args = new Type[]{typeof(System.String)};
+            args = new[]{typeof(String)};
             var getComponentMethod3 = gameObjectType.GetMethod("GetComponent", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod3, GetComponent_1);
             var getComponentMethod4 = componentType.GetMethod("GetComponent", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod4, GetComponent_1);
 
             //注册send message
-            args = new Type[] {typeof(System.String)};
-            var SendMessageMethod_1 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_1, SendMessage_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var SendMessageMethod_2 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_2, SendMessage_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageMethod_3 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_3, SendMessage_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageMethod_4 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod_4, SendMessage_4);
+            args = new[] {typeof(String)};
+            var sendMessageMethod1 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod1, SendMessage_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var sendMessageMethod2 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod2, SendMessage_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var sendMessageMethod3 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod3, SendMessage_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var sendMessageMethod4 = gameObjectType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod4, SendMessage_4);
 
             //注册send message upwards
-            args = new Type[] {typeof(System.String)};
-            var SendMessageUpwardsMethod_1 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_1, SendMessageUpwards_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var SendMessageUpwardsMethod_2 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_2, SendMessageUpwards_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageUpwardsMethod_3 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_3, SendMessageUpwards_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageUpwardsMethod_4 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod_4, SendMessageUpwards_4);
+            args = new[] {typeof(String)};
+            var sendMessageUpwardsMethod1 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod1, SendMessageUpwards_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var sendMessageUpwardsMethod2 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod2, SendMessageUpwards_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var sendMessageUpwardsMethod3 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod3, SendMessageUpwards_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var sendMessageUpwardsMethod4 = gameObjectType.GetMethod("SendMessageUpwards", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod4, SendMessageUpwards_4);
 
             //注册BroadcastMessage
-            args = new Type[] {typeof(System.String)};
-            var BroadcastMessageMethod_1 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_1, BroadcastMessage_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var BroadcastMessageMethod_2 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_2, BroadcastMessage_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var BroadcastMessageMethod_3 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_3, BroadcastMessage_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var BroadcastMessageMethod_4 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod_4, BroadcastMessage_4);
+            args = new[] {typeof(String)};
+            var broadcastMessageMethod1 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod1, BroadcastMessage_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var broadcastMessageMethod2 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod2, BroadcastMessage_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var broadcastMessageMethod3 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod3, BroadcastMessage_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var broadcastMessageMethod4 = gameObjectType.GetMethod("BroadcastMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod4, BroadcastMessage_4);
 
             //注册send message 4 component
-            args = new Type[] {typeof(System.String)};
-            var SendMessageMethod4ComponentType_1 = componentType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_1, SendMessage_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var SendMessageMethod4ComponentType_2 = componentType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_2, SendMessage_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageMethod4ComponentType_3 = componentType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_3, SendMessage_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageMethod4ComponentType_4 = componentType.GetMethod("SendMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageMethod4ComponentType_4, SendMessage_4);
+            args = new[] {typeof(String)};
+            var sendMessageMethod4ComponentType1 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod4ComponentType1, SendMessage_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var sendMessageMethod4ComponentType2 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod4ComponentType2, SendMessage_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var sendMessageMethod4ComponentType3 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod4ComponentType3, SendMessage_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var sendMessageMethod4ComponentType4 = componentType.GetMethod("SendMessage", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(sendMessageMethod4ComponentType4, SendMessage_4);
 
             //注册send message upwards 4 component
-            args = new Type[] {typeof(System.String)};
-            var SendMessageUpwardsMethod4ComponentType_1 =
+            args = new[] {typeof(String)};
+            var sendMessageUpwardsMethod4ComponentType1 =
                 componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_1, SendMessageUpwards_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var SendMessageUpwardsMethod4ComponentType_2 =
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod4ComponentType1, SendMessageUpwards_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var sendMessageUpwardsMethod4ComponentType2 =
                 componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_2, SendMessageUpwards_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageUpwardsMethod4ComponentType_3 =
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod4ComponentType2, SendMessageUpwards_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var sendMessageUpwardsMethod4ComponentType3 =
                 componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_3, SendMessageUpwards_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var SendMessageUpwardsMethod4ComponentType_4 =
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod4ComponentType3, SendMessageUpwards_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var sendMessageUpwardsMethod4ComponentType4 =
                 componentType.GetMethod("SendMessageUpwards", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(SendMessageUpwardsMethod4ComponentType_4, SendMessageUpwards_4);
+            appdomain.RegisterCLRMethodRedirection(sendMessageUpwardsMethod4ComponentType4, SendMessageUpwards_4);
 
             //注册BroadcastMessage 4 component
-            args = new Type[] {typeof(System.String)};
-            var BroadcastMessageMethod4ComponentType_1 =
+            args = new[] {typeof(String)};
+            var broadcastMessageMethod4ComponentType1 =
                 componentType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_1, BroadcastMessage_1);
-            args = new Type[] {typeof(System.String), typeof(System.Object)};
-            var BroadcastMessageMethod4ComponentType_2 =
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod4ComponentType1, BroadcastMessage_1);
+            args = new[] {typeof(String), typeof(Object)};
+            var broadcastMessageMethod4ComponentType2 =
                 componentType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_2, BroadcastMessage_2);
-            args = new Type[] {typeof(System.String), typeof(UnityEngine.SendMessageOptions)};
-            var BroadcastMessageMethod4ComponentType_3 =
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod4ComponentType2, BroadcastMessage_2);
+            args = new[] {typeof(String), typeof(SendMessageOptions)};
+            var broadcastMessageMethod4ComponentType3 =
                 componentType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_3, BroadcastMessage_3);
-            args = new Type[] {typeof(System.String), typeof(System.Object), typeof(UnityEngine.SendMessageOptions)};
-            var BroadcastMessageMethod4ComponentType_4 =
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod4ComponentType3, BroadcastMessage_3);
+            args = new[] {typeof(String), typeof(Object), typeof(SendMessageOptions)};
+            var broadcastMessageMethod4ComponentType4 =
                 componentType.GetMethod("BroadcastMessage", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(BroadcastMessageMethod4ComponentType_4, BroadcastMessage_4);
+            appdomain.RegisterCLRMethodRedirection(broadcastMessageMethod4ComponentType4, BroadcastMessage_4);
 
             //注册3种Log
             Type debugType = typeof(Debug);
@@ -182,13 +183,13 @@ namespace JEngine.Helper
             }
 
             //注册Invoke
-            Type monoType = typeof(UnityEngine.MonoBehaviour);
-            args = new Type[] {typeof(System.String), typeof(System.Single)};
+            Type monoType = typeof(MonoBehaviour);
+            args = new[] {typeof(String), typeof(Single)};
             var invokeMethod = monoType.GetMethod("Invoke", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(invokeMethod, Invoke_1);
             
             //注册InvokeRepeating
-            args = new Type[]{typeof(System.String), typeof(System.Single), typeof(System.Single)};
+            args = new[]{typeof(String), typeof(Single), typeof(Single)};
             var invokeRepeatingMethod = monoType.GetMethod("InvokeRepeating", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(invokeRepeatingMethod, InvokeRepeating_2);
             
@@ -196,7 +197,7 @@ namespace JEngine.Helper
             args = new Type[]{};
             var cancelInvokeMethod = monoType.GetMethod("CancelInvoke", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(cancelInvokeMethod, CancelInvoke_3);
-            args = new Type[]{typeof(System.String)};
+            args = new[]{typeof(String)};
             cancelInvokeMethod = monoType.GetMethod("CancelInvoke", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(cancelInvokeMethod, CancelInvoke_4);
             
@@ -204,7 +205,7 @@ namespace JEngine.Helper
             args = new Type[]{};
             var isInvokingMethod = monoType.GetMethod("IsInvoking", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_5);
-            args = new Type[]{typeof(System.String)};
+            args = new[]{typeof(String)};
             isInvokingMethod = monoType.GetMethod("IsInvoking", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_6);
         }
@@ -220,22 +221,22 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe  StackObject* CancelInvoke_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
             
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
             //垃圾Unity，Invoke热更内的方法，目前得用本地的接口执行
             Type type = val.Type.ReflectionType;
             //系统反射接口
             MethodInfo[] methods = type.GetMethods(
-                System.Reflection.BindingFlags.IgnoreCase
-                | System.Reflection.BindingFlags.NonPublic
-                | System.Reflection.BindingFlags.Static);
+                BindingFlags.IgnoreCase
+                | BindingFlags.NonPublic
+                | BindingFlags.Static);
 
             adapter.CancelInvoke();
             foreach (var mi in methods)
@@ -264,42 +265,43 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe  StackObject* CancelInvoke_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            String methodName = (String)typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
             //垃圾Unity，Invoke热更内的方法，目前得用本地的接口执行
             Type type = val.Type.ReflectionType;
             //系统反射接口
             MethodInfo mi = type.GetMethod(methodName,
-                System.Reflection.BindingFlags.IgnoreCase
-                | System.Reflection.BindingFlags.NonPublic
-                | System.Reflection.BindingFlags.Static);
+                BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static
+                | BindingFlags.Instance
+                |BindingFlags.FlattenHierarchy
+                );
 
             if (mi == null)
             {
-                adapter.CancelInvoke(@methodName);
+                adapter.CancelInvoke(methodName);
                 return __ret;
             }
-            else
+
+            if (_invokeTokens.TryGetValue(mi, out var ts))
             {
-                if (_invokeTokens.TryGetValue(mi, out var ts))
-                {
-                    ts.Cancel();
-                }
-                if (_invokeRepeatingTokens.TryGetValue(mi, out ts))
-                {
-                    ts.Cancel();
-                }
+                ts.Cancel();
+            }
+            if (_invokeRepeatingTokens.TryGetValue(mi, out ts))
+            {
+                ts.Cancel();
             }
 
             return __ret;
@@ -316,13 +318,13 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe  StackObject* IsInvoking_5(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = adapter.IsInvoking();
@@ -332,9 +334,9 @@ namespace JEngine.Helper
                 Type type = val.Type.ReflectionType;
                 //系统反射接口
                 MethodInfo[] methods = type.GetMethods(
-                    System.Reflection.BindingFlags.IgnoreCase
-                    | System.Reflection.BindingFlags.NonPublic
-                    | System.Reflection.BindingFlags.Static);
+                    BindingFlags.IgnoreCase
+                    | BindingFlags.NonPublic
+                    | BindingFlags.Static);
                 foreach (var mi in methods)
                 {
                     if (_invokeTokens.TryGetValue(mi, out var ts))
@@ -372,29 +374,32 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* IsInvoking_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            String methodName = (String)typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
-            var result_of_this_method = adapter.IsInvoking(@methodName);
+            var result_of_this_method = adapter.IsInvoking(methodName);
             if (!result_of_this_method)
             {
                 //垃圾Unity，Invoke热更内的方法，目前得用本地的接口执行
                 Type type = val.Type.ReflectionType;
                 //系统反射接口
                 MethodInfo mi = type.GetMethod(methodName,
-                    System.Reflection.BindingFlags.IgnoreCase
-                    | System.Reflection.BindingFlags.NonPublic
-                    | System.Reflection.BindingFlags.Static);
+                BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static
+                | BindingFlags.Instance
+                |BindingFlags.FlattenHierarchy
+                );
                 if (_invokeTokens.TryGetValue(mi, out var ts))
                 {
                     if (!ts.IsCancellationRequested)
@@ -431,36 +436,39 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* InvokeRepeating_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 4);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Single @repeatRate = *(float*)&ptr_of_this_method->Value;
+            Single repeatRate = *(float*)&ptr_of_this_method->Value;
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Single @time = *(float*)&ptr_of_this_method->Value;
+            Single time = *(float*)&ptr_of_this_method->Value;
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            String methodName = (String)typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
             
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
             //垃圾Unity，Invoke热更内的方法，目前得用本地的接口执行
             Type type = val.Type.ReflectionType;
             //系统反射接口
             MethodInfo mi = type.GetMethod(methodName,
-                System.Reflection.BindingFlags.IgnoreCase
-                | System.Reflection.BindingFlags.NonPublic
-                | System.Reflection.BindingFlags.Static);
+                BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static
+                | BindingFlags.Instance
+                |BindingFlags.FlattenHierarchy
+                );
 
             if (mi == null)
             {
-                adapter.InvokeRepeating(@methodName, @time, @repeatRate);
+                adapter.InvokeRepeating(methodName, time, repeatRate);
                 return __ret;
             }
 
@@ -478,18 +486,7 @@ namespace JEngine.Helper
         {
             if (time > 0)
             {
-                try
-                {
-                    await Task.Delay((int) (time * 1000),_invokeRepeatingTokens[methodInfo].Token);
-                }
-                catch(Exception ex)
-                {
-                    //会抛出TaskCanceledException，表示等待被取消，直接返回
-                    if(ex is TaskCanceledException)
-                    {
-                        return;
-                    }
-                }
+                await Wait(time, _invokeRepeatingTokens[methodInfo].Token, go);
             }
 
             while (!_invokeRepeatingTokens[methodInfo].IsCancellationRequested)
@@ -510,7 +507,10 @@ namespace JEngine.Helper
                 }
                 try
                 {
-                    await Task.Delay((int) (duration * 1000),_invokeRepeatingTokens[methodInfo].Token);
+                    if (duration > 0)
+                    {
+                        await Wait(duration, _invokeRepeatingTokens[methodInfo].Token, go);
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -538,31 +538,34 @@ namespace JEngine.Helper
         private static unsafe StackObject* Invoke_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Single @time = *(float*) &ptr_of_this_method->Value;
+            Single time = *(float*) &ptr_of_this_method->Value;
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
             ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            UnityEngine.MonoBehaviour adapter = (UnityEngine.MonoBehaviour)typeof(UnityEngine.MonoBehaviour).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour)typeof(MonoBehaviour).CheckCLRTypes(val);
             __intp.Free(ptr_of_this_method);
 
             //垃圾Unity，Invoke热更内的方法，目前得用本地的接口执行
             Type type = val.Type.ReflectionType;
             //系统反射接口
             MethodInfo mi = type.GetMethod(methodName,
-                System.Reflection.BindingFlags.IgnoreCase
-                | System.Reflection.BindingFlags.NonPublic
-                | System.Reflection.BindingFlags.Static);
+                BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static
+                | BindingFlags.Instance
+                |BindingFlags.FlattenHierarchy
+                );
             
             if (mi == null)
             {
@@ -580,18 +583,7 @@ namespace JEngine.Helper
         {
             if (time > 0)
             {
-                try
-                {
-                    await Task.Delay((int) (time * 1000),_invokeTokens[methodInfo].Token);
-                }
-                catch(Exception ex)
-                {
-                    //会抛出TaskCanceledException，表示等待被取消，直接返回
-                    if(ex is TaskCanceledException)
-                    {
-                        return;
-                    }
-                }
+                await Wait(time, _invokeTokens[methodInfo].Token, go);
             }
 
             try
@@ -602,9 +594,50 @@ namespace JEngine.Helper
                     _invokeTokens.Remove(methodInfo);
                 }
             }
-            catch (MissingReferenceException)
+            catch (MissingReferenceException)//MissingReference是GO销毁
             {
             }
+        }
+
+        /// <summary>
+        /// 等待一定时间（针对Invoke设计）
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="token"></param>
+        /// <param name="go"></param>
+        /// <returns></returns>
+        private static async Task Wait(float time, CancellationToken token,GameObject go)
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            try
+            {
+                //当没取消的时候继续等
+                while (!token.IsCancellationRequested && go != null)
+                {
+                    //当计时器的时间小于暂停时间转毫秒除以时间系数时，等待1帧
+                    if (Time.timeScale == 0 || sw.ElapsedMilliseconds < (time * 1000) / Time.timeScale)
+                    {
+                        await Task.Delay(1, token);
+                    }
+                    else//不满足条件就结束了
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //会抛出TaskCanceledException，表示等待被取消，直接返回
+                //MissingReference是GO销毁
+                if (ex is TaskCanceledException || ex is MissingReferenceException)
+                {
+                    sw.Stop();
+                    return;
+                }
+            }
+                
+            sw.Stop();
         }
 
         /// <summary>
@@ -614,25 +647,24 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static GameObject FindGOFromHotClass(ILTypeInstance instance)
         {
-            var returnType = (instance as ILTypeInstance).Type;
+            var returnType = instance.Type;
             if (returnType.ReflectionType == typeof(MonoBehaviour))
             {
                 var pi = returnType.ReflectionType.GetProperty("gameObject");
-                return pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+                return pi.GetValue(instance.CLRInstance) as GameObject;
             }
-            else if (returnType.ReflectionType.IsSubclassOf(typeof(MonoBehaviour)))
+
+            if (returnType.ReflectionType.IsSubclassOf(typeof(MonoBehaviour)))
             {
                 var pi = returnType.ReflectionType.BaseType.GetProperty("gameObject");
-                return pi.GetValue((instance as ILTypeInstance).CLRInstance) as GameObject;
+                return pi.GetValue(instance.CLRInstance) as GameObject;
             }
-            else
-            {
-                // foreach (var p in returnType.ReflectionType.GetProperties())
-                // {
-                //     Debug.Log(p.Name);
-                // }
-                return null;
-            }
+
+            // foreach (var p in returnType.ReflectionType.GetProperties())
+            // {
+            //     Debug.Log(p.Name);
+            // }
+            return null;
         }
 
 
@@ -679,25 +711,25 @@ namespace JEngine.Helper
         unsafe static StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -717,7 +749,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName);
-            instance_of_this_method.BroadcastMessage(@methodName);
+            instance_of_this_method.BroadcastMessage(methodName);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -739,31 +771,31 @@ namespace JEngine.Helper
         unsafe static StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -783,7 +815,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
-            instance_of_this_method.BroadcastMessage(@methodName, @value);
+            instance_of_this_method.BroadcastMessage(methodName, value);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -805,31 +837,31 @@ namespace JEngine.Helper
         unsafe static StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -849,7 +881,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
-            instance_of_this_method.BroadcastMessage(@methodName, @options);
+            instance_of_this_method.BroadcastMessage(methodName, options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -871,37 +903,37 @@ namespace JEngine.Helper
         unsafe static StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 4);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -921,7 +953,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
-            instance_of_this_method.BroadcastMessage(@methodName, @value, @options);
+            instance_of_this_method.BroadcastMessage(methodName, value, options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
 
@@ -943,25 +975,25 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -981,7 +1013,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName);
-            instance_of_this_method.SendMessageUpwards(@methodName);
+            instance_of_this_method.SendMessageUpwards(methodName);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
@@ -1005,31 +1037,31 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1049,7 +1081,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
-            instance_of_this_method.SendMessageUpwards(@methodName, @value);
+            instance_of_this_method.SendMessageUpwards(methodName, value);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
@@ -1072,31 +1104,31 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1116,7 +1148,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
-            instance_of_this_method.SendMessageUpwards(@methodName, @options);
+            instance_of_this_method.SendMessageUpwards(methodName, options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
@@ -1140,37 +1172,37 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 4);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1190,7 +1222,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
-            instance_of_this_method.SendMessageUpwards(@methodName, @value, @options);
+            instance_of_this_method.SendMessageUpwards(methodName, value, options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
             while (go != null)
@@ -1213,25 +1245,25 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1255,7 +1287,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName);
-            instance_of_this_method.SendMessage(@methodName);
+            instance_of_this_method.SendMessage(methodName);
 
             return __ret;
         }
@@ -1263,31 +1295,31 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1307,7 +1339,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
-            instance_of_this_method.SendMessage(@methodName, @value);
+            instance_of_this_method.SendMessage(methodName, value);
 
             return __ret;
         }
@@ -1315,31 +1347,31 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1359,7 +1391,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
-            instance_of_this_method.SendMessage(@methodName, @options);
+            instance_of_this_method.SendMessage(methodName, options);
 
             return __ret;
         }
@@ -1367,37 +1399,37 @@ namespace JEngine.Helper
         unsafe static StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 4);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            UnityEngine.SendMessageOptions @options =
-                (UnityEngine.SendMessageOptions) typeof(UnityEngine.SendMessageOptions).CheckCLRTypes(
+            SendMessageOptions options =
+                (SendMessageOptions) typeof(SendMessageOptions).CheckCLRTypes(
                     StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Object @value =
-                (System.Object) typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            Object value =
+                typeof(Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            System.String @methodName =
-                (System.String) typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
+            String methodName =
+                (String) typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain,
                     __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
 
-            UnityEngine.GameObject instance_of_this_method;
+            GameObject instance_of_this_method;
 
             object instance = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             if (instance is GameObject)
             {
                 instance_of_this_method =
-                    (UnityEngine.GameObject) typeof(UnityEngine.GameObject).CheckCLRTypes(instance);
+                    (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
             else if (instance is ILTypeInstance)
             {
@@ -1417,7 +1449,7 @@ namespace JEngine.Helper
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
             DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
-            instance_of_this_method.SendMessage(@methodName, @value, @options);
+            instance_of_this_method.SendMessage(methodName, value, options);
 
             return __ret;
         }
@@ -1551,7 +1583,7 @@ namespace JEngine.Helper
             AppDomain __domain = __intp.AppDomain;
 
             var ptr = __esp - 1;
-            var instance = StackObject.ToObject(ptr, __domain, __mStack) as object;
+            var instance = StackObject.ToObject(ptr, __domain, __mStack);
             if (instance == null)
                 throw new NullReferenceException();
             __intp.Free(ptr);
@@ -1575,7 +1607,7 @@ namespace JEngine.Helper
                 parent = instance as Transform;
                 //获取真正的gameObject
                 var ptr2 = __esp - 2;
-                var param2 = StackObject.ToObject(ptr2, __domain, __mStack) as object;
+                var param2 = StackObject.ToObject(ptr2, __domain, __mStack);
                 __intp.Free(ptr2);
                 if (param2 is GameObject)
                 {
@@ -1597,7 +1629,7 @@ namespace JEngine.Helper
                 rotation = (Quaternion) instance;
                 //获取v3
                 var ptr2 = __esp - 2;
-                var param2 = StackObject.ToObject(ptr2, __domain, __mStack) as object;
+                var param2 = StackObject.ToObject(ptr2, __domain, __mStack);
                 position = (Vector3) param2;
                 __intp.Free(ptr2);
                 //获取真正的gameObject
@@ -1617,7 +1649,7 @@ namespace JEngine.Helper
                 __intp.Free(ptr2);
                 //获取真正的gameObject
                 var ptr3 = __esp - 3;
-                instance = StackObject.ToObject(ptr3, __domain, __mStack) as object;
+                instance = StackObject.ToObject(ptr3, __domain, __mStack);
                 __intp.Free(ptr3);
             }
 
@@ -1968,17 +2000,17 @@ namespace JEngine.Helper
                 {
                     //热更DLL内的类型比较麻烦。首先我们得自己手动创建实例
                     ILTypeInstance ilInstance = Init.appdomain.Instantiate(type.ReflectionType.FullName);
-                    JEngine.Core.Log.PrintWarning($"{type.ReflectionType.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
+                    Core.Log.PrintWarning($"{type.ReflectionType.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
 
                     Type t = type.ReflectionType; //获取实际属性
                     bool isMonoAdapter = t.BaseType?.FullName == typeof(MonoBehaviourAdapter.Adaptor).FullName;
 
-                    if (!isMonoAdapter && !Init.appdomain.LoadedTypes.ContainsKey(t.BaseType.FullName))
+                    if (!isMonoAdapter && Type.GetType(t.BaseType.FullName) != null)
                     {
                         Type adapterType = Type.GetType(t.BaseType?.FullName);
                         if (adapterType == null)
                         {
-                            JEngine.Core.Log.PrintError($"{t.FullName}, need to generate adapter");
+                            Core.Log.PrintError($"{t.FullName}, need to generate adapter");
                             return ILIntepreter.PushObject(ptr, __mStack, null);
                         }
 
@@ -2013,7 +2045,7 @@ namespace JEngine.Helper
 
                         if (awakeMethod == null)
                         {
-                            JEngine.Core.Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                            Core.Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
                         }
                         else if (!activated)
                         {
@@ -2053,19 +2085,19 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* GetComponent_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.String @type = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            String type = (String)typeof(String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            UnityEngine.GameObject instance_of_this_method = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            GameObject instance_of_this_method = (GameObject)typeof(GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
-            object result_of_this_method = instance_of_this_method.GetComponent(@type);//先从本地匹配
+            object result_of_this_method = instance_of_this_method.GetComponent(type);//先从本地匹配
             
             if (result_of_this_method == null)//本地没再从热更匹配
             {
@@ -2136,7 +2168,7 @@ namespace JEngine.Helper
                 else
                 {
                     Debug.LogError($"[GetComponent错误] 不支持的参数类型：{ins.GetType().FullName}，" +
-                                   $"请传参GameObject或继承MonoBehaviour的对象");
+                                   "请传参GameObject或继承MonoBehaviour的对象");
                     return __esp;
                 }
 

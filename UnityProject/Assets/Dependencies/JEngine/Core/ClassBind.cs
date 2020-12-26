@@ -444,12 +444,12 @@ namespace JEngine.Core
                 JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
 
             }
-
+            
             //这里是classbind的灵魂，我都佩服我自己这么写，所以别乱改这块
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
             //总之JEngine牛逼
             //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName && !Init.appdomain.LoadedTypes.ContainsKey(t.BaseType.FullName))
+            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName && Type.GetType(t.BaseType.FullName)!=null)
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName);
                 if (adapterType == null)

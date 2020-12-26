@@ -53,12 +53,9 @@ namespace JEngine.Editor
 
             EditorUtility.DisplayDialog("Success",
                 $"下载成功\n" +
-                $"请点击导入后删除Core.unitypackage\n" +
+                $"请导入并删除Core.unitypackage\n" +
                 $"请在IDE打开热更工程并重新导入JEngine源码"
                 ,"OK");  
-            
-            //删本地的
-            localDirectory.Delete(true);
         }
 
         public static void Unzip(string file, string path)
