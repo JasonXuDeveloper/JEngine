@@ -23,6 +23,13 @@ namespace JEngine.Helper
 
         public void Register(AppDomain appdomain)
         {
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Predicate<System.String>>((act) =>
+            {
+                return new System.Predicate<System.String>((obj) =>
+                {
+                    return ((Func<System.String, System.Boolean>)act)(obj);
+                });
+            });
             appdomain.DelegateManager.RegisterDelegateConvertor<System.Threading.ParameterizedThreadStart>((act) =>
             {
                 return new System.Threading.ParameterizedThreadStart((obj) =>

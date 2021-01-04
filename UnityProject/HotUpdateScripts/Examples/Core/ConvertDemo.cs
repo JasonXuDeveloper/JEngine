@@ -40,17 +40,26 @@ namespace JEngine.Examples
     {
         public override void Init()
         {
+            Log.Print($"[ConvertDemo] 本Demo用于示例多继承并至少有一个相同继承的类型如何存入数组");
+
             List<IDemo> list = new List<IDemo>(0);
+            Log.Print($"[ConvertDemo] 创建了IDemo列表list");
 
             var go = new UnityEngine.GameObject("demo1");
             go.transform.SetParent(UnityEngine.GameObject.Find("ConvertDemo").transform);
 
             Demo1 d1 = go.CreateJBehaviour<Demo1>();
+            Log.Print($"[ConvertDemo] 创建了一个{d1.GetType().FullName}对象d1，" +
+                $"继承了JBehaviour和IDemo，挂载在ConvertDemo/demo1下");
+
             Demo2 d2 = new Demo2();
+            Log.Print($"[ConvertDemo] 创建了一个{d2.GetType().FullName}对象d2，" +
+                $"继承了OtherClass和IDemo");
 
             list.Add(d1);
             list.Add(d2);
 
+            Log.Print($"[ConvertDemo] list 添加了d1和d2");
 
             Log.Print($"[ConvertDemo] list 有{list.Count}个元素");
         }

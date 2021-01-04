@@ -31,15 +31,10 @@ namespace JEngine.AntiCheat
 {
     public class AntiCheatHelper
     {
-        private AntiCheatHelper()
+        private static Action _onDetected= () =>
         {
-            _onDetected = () =>
-            {
-                Log.Print("被抓到修改内存了哦~");
-            };
-        }
-
-        private static Action _onDetected;
+            Log.Print("被抓到修改内存了哦~");
+        };
 
         public static void OnMemoryCheatDetected(Action toDo)
         {

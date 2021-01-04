@@ -1,4 +1,4 @@
-# JENGINE v0.6.0
+# JENGINE v0.6.1
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -62,81 +62,80 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   ## JEngine能够做些什么？
 
-  - **[热更新解决方案 ](https://github.com/JasonXuDeveloper/JEngine/wiki/开始使用)**
-
+  - **[热更新解决方案](https://xgamedev.uoyou.com/startup-v0-6.html)**
     - **资源热更**基于[**XAsset**](https://github.com/xasset/xasset)，JEngine的作者是该框架贡献成员之一
     - **C#代码热更**基于[**ILRuntime**](https://github.com/Ourpalm/ILRuntime)，JEngine的作者也是该框架U3D工程贡献成员之一
     - **代码加密**，C#热更代码生成的**DLL**会通过**AES-128-ECB**模式加密进Assetbundle，运行游戏时动态解密
     - **资源加密**，XAsset包含VFS功能，可以对资源进行一定程度的加密，AssetStudio无法破解资源
     - **自动赋值**，热更脚本可自动添加到游戏物体或预制体，且可自动赋值，不需要手动写代码赋值
-  - **[Action队列解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
-
+  - **[Action队列解决方案](https://xgamedev.uoyou.com/jaction-v0-6.html)**
     - **更少的代码，实现更多功能，效率大幅度提高**！
     - 轻松**执行、延时、等待、定期循环、条件循环、同步/异步运行、取消队列**
     - **主线程运行代码**
-  - **[UI解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
+  - **[UI解决方案](https://xgamedev.uoyou.com/jui-v0-6.html)**
     - **UI框架**，单例模式更好管理界面
     - **组件自动获取**，继承面板基类后**通过name获取UI组件**
     - **UI周期**，轻松管理**生命周期**，**链式编程**让代码**更美观**
     - UI**定期循环**更新，可以选择**毫秒更新或帧更新**，可以指定更新**频率**
     - UI**绑定数据**，当**数据更新**，即可**执行绑定的方法**
-  - **[基类解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
+  - **[基类解决方案](https://xgamedev.uoyou.com/jbehaviour-v0-6.html)**
     - **轻松管理**生命周期
     - 可以**帧循环**，或者**毫秒循环**
     - **不依赖MonoBehaviour**
     - **简单好用**
-  - **[基于XAsset的资源加载方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
+  - **[基于XAsset的资源加载方案](https://xgamedev.uoyou.com/jresource-v0-6.html)** 
     - 支持**同步/异步加载**资源
     - **泛型**方法，轻松使用
     - **异步加载**热更**场景**
-- **[自动绑定热更脚本到GameObject](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
-  - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
-  - 可对**该脚本public/private/static数值进行赋值**
-  - **特殊类型支持拖拽赋值**
-  - **不需要是Mono类**，非MonoBehaviour派生类也可正常绑定至GameObject进行赋值，并且可以正常获取
-- **[数据持久化解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
-  - 字符串存本地
-  - **JSON**存本地
-  - **Protobuf**二进制存本地
-  - **自带加密**
-- **[多语言解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+  - **[自动绑定热更脚本到GameObject](https://xgamedev.uoyou.com/classbind-v0-6.html)**
+    - 输入命名空间，类名，即可**自动绑定**热更脚本**至物体**
+    - 可对**该脚本public/private/static数值进行赋值**
+    - **特殊类型支持拖拽赋值**
+    - **不需要是Mono类**，非MonoBehaviour派生类也可正常绑定至GameObject进行赋值，并且可以正常获取
+  - **[数据持久化解决方案](https://xgamedev.uoyou.com/jsaver-v0-6.html)**
+    - 字符串存本地
+    - **JSON**存本地
+    - **Protobuf**二进制存本地
+    - **自带加密**
+  - **[多语言解决方案](https://xgamedev.uoyou.com/localization-v0-6.html)**
 
-  - **CSV配表**
-  - 轻松**转换语种**
-  - 可通过静态方法**获取key对应的字符串**
-  - 可让Text**自动根据语言切换文字**
-- **[内存加密解决方案](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
+    - **CSV配表**
+    - 轻松**转换语种**
+    - 可通过静态方法**获取key对应的字符串**
+    - 可让Text**自动根据语言切换文字**
+  - **[内存加密解决方案](https://xgamedev.uoyou.com/crypto-struct-v0-6.html)**
 
-  - 支持**90%数值类型**
-  - **偏移值**加密
-  - **转JSON和Protobuf**于**普通数据结构一样**
-  - 可以**捕获内存作弊**
-- **事件派发**解决方案
-  - **不同于其他**事件派发解决**方案**，**不需要注册方法名**，只需要注册类
-  - 给**类打标签**自动**注册类里全部方法**
-  - **可**选**主线程或子线程**派发
-- **网络层**解决方案
-  - 目前支持**Websocket**
-  - 有一套**SocketIO**的消息模型，开箱即用
-  - 支持同步、异步并行、纯异步发送消息
-- **对象池**解决方案
-  - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
-  - **无需重复**创建新对象！
-  - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
-- **加密解密**解决方案
+    - 支持**90%数值类型**
+    - **偏移值**加密
+    - **转JSON和Protobuf**于**普通数据结构一样**
+    - 可以**捕获内存作弊**
+  - **事件派发**解决方案
+    - **不同于其他**事件派发解决**方案**，**不需要注册方法名**，只需要注册类
+    - 给**类打标签**自动**注册类里全部方法**
+    - **可**选**主线程或子线程**派发
+  - **网络层**解决方案
+    - 目前支持**Websocket**
+    - 有一套**SocketIO**的消息模型，开箱即用
+    - 支持同步、异步并行、纯异步发送消息
+  - **对象池**解决方案
+    - 大幅度提升性能及减少内存开销，相比于常规Instantiate操作
+    - **无需重复**创建新对象！
+    - **智能算法**，贪心算法匹配GameObject，对象池满可自动添加！
+  - **加密解密**解决方案
 
-  - **AES**加密
-  - 支持**字符串**
-  - 支持**二进制**
-- **序列化**解决方案
+    - **AES**加密
+    - 支持**字符串**
+    - 支持**二进制**
+  - **序列化**解决方案
 
-  - 转**String**
-  - 转**JSON**
-  - 转**Protobuf-net**二进制
-- 面板类
-  - **ILRuntime适配器自动生成**
-  - **Protobfuf文件与CS类互转**
-- **JEngine面板**
+    - 转**String**
+    - 转**JSON**
+    - 转**Protobuf-net**二进制
+  - 面板类
+    - **ILRuntime适配器自动生成**
+    - **Protobfuf文件与CS类互转**
+  - **JEngine面板**
+  
   - 还有更多功能，尽情自行探索！
 
 
@@ -153,68 +152,30 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## v0.6.0 最新功能
+## v0.6.1 最新功能
 
-- **UI框架**
+- ILRuntime升级到 **v1.6.6**
+- ILRuntime **跨域适配器自动生成优化**
+- ILRuntime **自动注册适配器**
+- 更多 JEngine **Demos**
+- 更简洁的 **Logs**
+- JBehaviour & JEvent 等 **支持定位报错到准确行数**
+- UIUtility 新增缓存字典使 **加载UI组件更快**
+- 支持 **全部MonoBehaviour事件** 
+- 继承MonoBehaviour的基类自动生成 **带有MonoBehaviour周期事件注册的适配器**
+- ClassBind支持根据情况智能挂载 **不同的适配器**
+- 支持 **Add & Get Component** 更多 **基类继承MonoBehaviour**的类型
+- 针对MonoBehaviour派生类的**适配器自动生成编辑器脚本**
+- 支持  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** 在热更里使用
+- JEvent 支持 **监听基类方法**
+- **Bug 修复** 之对预制体修改的保存
+- **JSaver**支持**Get默认值**
+- 更好的**面板**
+- 支持XAsset Pro（主要特色分包，需自行订阅）
 
-- **优化** JSaver
+[点击此处查看历史版本功能（英文）](CHANGE.md)
 
-- **JAction**支持 ```DelayFrames```，即等待帧数
 
-- **修复一大堆Bug**
-
-- **JSON检查工具**
-
-- **JEvent**，类似于谷歌在Java的核心库之一，eventbus
-
-  - **监听整个类里全部方法**
-  - **监听单个方法**
-  - **广播数据**至**全部监听事件**
-  - 可以在 **主线程或子线程**运行
-
-- **优化** 自动绑定，更加强大
-
-  - 仅在特定的时候进行绑定，**对性能进行提升**
-  - 自动绑定由**ClassBindMgr**控制，**绑定步骤进行分离，对赋值更友好**
-  - 支持**自动获取热更类全部字段和属性**
-  - 支持**自动获取每个Filed的正确fieldType**
-
-- **JExtensions** 
-
-  - **支持从GameObject获取由ClassBind挂载的非MonoBehaviour派生类**
-  - **添加JBehaviour**到GameObject
-  - **添加JUI** 到GameObject
-  - **获取JBehaviour** 从GameObject
-  - **获取JUI** 从GameObject
-
-- **JWebSocket**
-
-  - **连接** 到websocket服务器
-  - **发送** 消息到websocket服务器
-  - **监听** 来自websocket服务器的消息
-  - **子线程发送监听**
-
-- **JEngine设置面板**
-
-  - **支持编辑器启动游戏后自动跳转Init场景**
-  - **热更场景快捷操作**
-  - **自动绑定工具**
-  - **错误修复工具**
-
-- **更多CLR重定向方法**
-
-  - 支持**MonoBehaviour.SendMessage** 广播到热更类
-  - 支持**MonoBehaviour.Instantiate**来生成带热更类的GameObject和复制热更对象
-
-- **JBehaviour优化**
-
-  - **区别编辑器与真机**，真机性能更好
-  - 支持 **Deltatime, loop counts**, 等
-  - **更强大的编辑器界面**
-
-  [点击此处查看历史版本功能（英文）](CHANGE.md)
-
-  
 
 ## 即将推出
 

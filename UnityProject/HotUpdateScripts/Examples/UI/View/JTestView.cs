@@ -60,6 +60,11 @@ namespace JEngine.Examples
 
             JBtnButton = UIUtility.BindClickEvent(Trans, "JBtnButton", OnClick);
 
+            UIUtility.BindClickEvent(Trans, "BackButton", (obj,data) =>
+            {
+                JResource.LoadSceneAsync("Game.unity");
+            });
+
             //注册子部件
             //JTestItem item = UIUtility.CreateItemNoClone<JTestItem>(Trans, "子部件名字");
         }

@@ -16,6 +16,13 @@ namespace ILRuntime.Runtime.Enviorment
 {
     unsafe static class CLRRedirections
     {
+        public static StackObject* GetCurrentStackTrace(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        {
+            StackObject* ret = esp - 1 - 1;
+            intp.Free(esp - 1);
+
+            return ILIntepreter.PushObject(ret, mStack, intp.AppDomain.DebugService.GetStackTrace(intp));
+        }
         public static StackObject* CreateInstance(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
         {
             IType[] genericArguments = method.GenericArguments;
@@ -1195,6 +1202,37 @@ namespace ILRuntime.Runtime.Enviorment
                 return ILIntepreter.PushOne(ret);
             else
                 return ILIntepreter.PushZero(ret);
+        }
+
+        public static StackObject* EnumCompareTo(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        {
+            var ret = esp - 1 - 1;
+            AppDomain domain = intp.AppDomain;
+
+            var p = esp - 1;
+            object val = StackObject.ToObject(p, domain, mStack);
+            intp.Free(p);
+
+            p = esp - 1 - 1;
+            object ins = StackObject.ToObject(p, domain, mStack);
+            intp.Free(p);
+
+            int res = 0;
+            if (ins is ILEnumTypeInstance)
+            {
+                ILEnumTypeInstance enumIns = (ILEnumTypeInstance)ins;
+                int num = enumIns.Fields[0].Value;
+                int valNum = ((ILEnumTypeInstance)val).Fields[0].Value;
+                res = (num - valNum);
+            }
+            else
+            {
+                res = ((Enum)ins).CompareTo(val);
+            }
+
+            ret->ObjectType = ObjectTypes.Integer;
+            ret->Value = res;
+            return ret + 1;
         }
 #endif
     }

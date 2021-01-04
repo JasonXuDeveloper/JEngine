@@ -40,7 +40,11 @@ public class Init : MonoBehaviour
         pdb = null;
         
         //开发模式
+        #if XASSET_PRO
+        if (!Assets.development)
+        #else
         if (!Assets.runtimeMode)
+        #endif
         {
             if (File.Exists(dllPath))//直接读DLL
             {

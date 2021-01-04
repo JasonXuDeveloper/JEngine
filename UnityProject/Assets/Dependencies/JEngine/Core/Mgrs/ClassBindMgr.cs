@@ -27,7 +27,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -42,7 +46,7 @@ namespace JEngine.Core
         }
 
         private static ClassBindMgr _instance;
-        private static List<Scene> _loadedScenes;
+        public static List<Scene> LoadedScenes;
         private static List<ClassBind> cbs;
 
         private void Awake()
@@ -52,19 +56,19 @@ namespace JEngine.Core
                 Destroy(this);
             }
             
-            _loadedScenes = new List<Scene>(0);
-            _loadedScenes.Add(SceneManager.GetActiveScene());
+            LoadedScenes = new List<Scene>(0);
+            LoadedScenes.Add(SceneManager.GetActiveScene());
             cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
-                _loadedScenes.Add(scene);
+                LoadedScenes.Add(scene);
                 DoBind();
             };
             
             SceneManager.sceneUnloaded+=(scene) =>
             {
-                _loadedScenes.Remove(scene);
+                LoadedScenes.Remove(scene);
             };
             DoBind();
         }
@@ -115,15 +119,8 @@ namespace JEngine.Core
         }
         public static void DoBind()
         {
-            cbs = FindObjectsOfTypeAll<ClassBind>();
+            cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
             DoBind(cbs);
-        }
-
-        public static List<T> FindObjectsOfTypeAll<T>()
-        {
-            return  _loadedScenes.SelectMany(scene=>scene.GetRootGameObjects())
-                .SelectMany(g => g.GetComponentsInChildren<T>(true))
-                .ToList();
         }
     }
 }

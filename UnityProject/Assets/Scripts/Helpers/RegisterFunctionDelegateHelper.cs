@@ -20,6 +20,7 @@ namespace JEngine.Helper
         
         public void Register(AppDomain appdomain)
         {
+            appdomain.DelegateManager.RegisterFunctionDelegate<System.String, System.Boolean>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Object, System.String>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Reflection.ParameterInfo, System.String>();
             appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();

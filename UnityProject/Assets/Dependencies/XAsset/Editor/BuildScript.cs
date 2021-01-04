@@ -37,7 +37,6 @@ namespace libx
     public static class BuildScript
     {
         public static string outputPath = "DLC/" + GetPlatformName();
-
         public static void ClearAssetBundles()
         {
             var allAssetBundleNames = AssetDatabase.GetAllAssetBundleNames();
@@ -68,64 +67,6 @@ namespace libx
             {
                 Directory.CreateDirectory(hotUpdatePath);
             }
-            
-            rule.rules = new[]
-            {
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Controller",
-                    searchPattern = rule.searchPatternController,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Dll",
-                    searchPattern = rule.searchPatternText,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Material",
-                    searchPattern = rule.searchPatternMaterial,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Other",
-                    searchPattern = rule.searchPatternDir,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Prefab",
-                    searchPattern = rule.searchPatternPrefab,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"Scene",
-                    searchPattern = rule.searchPatternScene,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"ScriptableObject",
-                    searchPattern = rule.searchPatternAsset,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"TextAsset",
-                    searchPattern = rule.searchPatternText,
-                    nameBy = NameBy.Path
-                },
-                new BuildRule()
-                {
-                    searchPath = hotUpdatePath+"UI",
-                    searchPattern = rule.searchPatternPng,
-                    nameBy = NameBy.Path
-                }
-            };
 
             foreach (var _rule in rule.rules)
             {
@@ -387,7 +328,7 @@ namespace libx
             }
         }
 
-        private static T GetAsset<T>(string path) where T : ScriptableObject
+        public static T GetAsset<T>(string path) where T : ScriptableObject
         {
             var asset = AssetDatabase.LoadAssetAtPath<T>(path);
             if (asset == null)

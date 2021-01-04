@@ -424,7 +424,7 @@ namespace JEngine.Core
             }
             catch(Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e}, skipped init");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e.Message}, {e.Data["StackTrace"]}, skipped init");
             }
 
             try
@@ -433,7 +433,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e}, skipped run");
+                Log.PrintError($"{_gameObject.name}<{_instanceID}> Run failed: {e.Message}, {e.Data["StackTrace"]}, skipped run");
             }
 
             sw.Stop();
@@ -482,7 +482,7 @@ namespace JEngine.Core
                 }
                 catch (Exception ex)
                 {
-                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex}");
+                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex.Message}, {ex.Data["StackTrace"]}");
                     return;
                 }
 

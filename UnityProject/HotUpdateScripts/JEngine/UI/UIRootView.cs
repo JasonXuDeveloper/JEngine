@@ -79,7 +79,7 @@ namespace JEngine.UI
 
         public override void Init()
         {
-            Log.Print("初始化 UIRootView");
+            Log.Print("初始化 UIRootView成功");
             _instance = this;
             _roots = new Dictionary<UIPanelType, GameObject>();
             GameObject.DontDestroyOnLoad(this.gameObject);

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
-using Malee.List;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +8,9 @@ using System.Threading.Tasks;
 using JEngine.Core;
 using JEngine.Editor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
+using UnityEngine.SceneManagement;
+using ReorderableList = Malee.List.ReorderableList;
 
 namespace JEngine.Editor
 {
@@ -34,7 +36,7 @@ namespace JEngine.Editor
 
             GUILayout.Space(5);
 
-            JEngineSetting.MakeHorizontal(50, () =>
+            Setting.MakeHorizontal(50, () =>
             {
                 if (GUILayout.Button("自动获取fields", GUILayout.Height(30)))
                 {
@@ -44,7 +46,7 @@ namespace JEngine.Editor
             
             GUILayout.Space(5);
 
-            JEngineSetting.MakeHorizontal(50, () =>
+            Setting.MakeHorizontal(50, () =>
             {
                 if (GUILayout.Button("自动更新fieldType", GUILayout.Height(30)))
                 {
@@ -103,15 +105,28 @@ namespace JEngine.Editor
                 
             } 
             
-            var scene = EditorSceneManager.GetActiveScene();
-            bool saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+            //转换后保存场景
+            bool saveResult = false;
+            AssetDatabase.SaveAssets();
+            bool isPreviewSceneObject = EditorSceneManager.IsPreviewSceneObject(Selection.activeGameObject);
+            if (isPreviewSceneObject || PrefabUtility.IsPartOfAnyPrefab(instance.gameObject) || PrefabUtility.IsPartOfPrefabAsset(instance.gameObject))
+            {
+                PrefabUtility.SavePrefabAsset(instance.gameObject,out saveResult);
+                EditorSceneManager.SaveOpenScenes();
+            }
+            else
+            {
+                var scene = EditorSceneManager.GetActiveScene();
+                saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+            }
+            
             string result = saveResult ? "succeeded" : "failed";
             string resultZh = saveResult ? "成功" : "失败";
 
             EditorUtility.ClearProgressBar();
             EditorUtility.DisplayDialog("ClassBind Result",
                 $"Set {affectCounts} fieldTypes into ClassBind: {instance.name} and saved the scene {result}\n" +
-                $"ClassBind: {instance.name}中{affectCounts}个fields已自动设置FieldType，且场景保存{resultZh}",
+                $"ClassBind: {instance.name}中{affectCounts}个fields已自动设置FieldType，且保存{resultZh}",
                 "Done");
         }
 
@@ -211,15 +226,30 @@ namespace JEngine.Editor
             await Task.Delay(50); //延迟一下，动画更丝滑
 
             //转换后保存场景
-            var scene = EditorSceneManager.GetActiveScene();
-            bool saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+            bool saveResult = false;
+            AssetDatabase.SaveAssets();
+            bool isPreviewSceneObject = EditorSceneManager.IsPreviewSceneObject(Selection.activeGameObject);
+            if (PrefabUtility.IsPartOfAnyPrefab(instance.gameObject) || PrefabUtility.IsPartOfPrefabAsset(instance.gameObject))
+            {
+                PrefabUtility.SavePrefabAsset(instance.gameObject,out saveResult);
+            }
+            else if (isPreviewSceneObject)
+            {
+                EditorSceneManager.SaveOpenScenes();
+            }
+            else
+            {
+                var scene = EditorSceneManager.GetActiveScene();
+                saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+            }
+            
             string result = saveResult ? "succeeded" : "failed";
             string resultZh = saveResult ? "成功" : "失败";
 
             EditorUtility.ClearProgressBar();
             EditorUtility.DisplayDialog("ClassBind Result",
                 $"Added {affectCounts} fields into ClassBind: {instance.name} and saved the scene {result}\n" +
-                $"ClassBind: {instance.name}的fields添加了{affectCounts}个，且场景保存{resultZh}",
+                $"ClassBind: {instance.name}的fields添加了{affectCounts}个，且保存{resultZh}",
                 "Done");
 
         }

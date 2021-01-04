@@ -65,7 +65,7 @@ namespace libx
             List<EditorBuildSettingsScene> _scenes =new List<EditorBuildSettingsScene>(0);
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                if (scene.path.Equals(JEngineSetting.StartUpScenePath) || assets.Contains(scene.path))
+                if (scene.path.Equals(Setting.StartUpScenePath) || assets.Contains(scene.path))
                 {
                     continue;
                 }
@@ -74,7 +74,7 @@ namespace libx
 
             List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>(0);
             
-            scenes.Add(new EditorBuildSettingsScene(JEngineSetting.StartUpScenePath, true));//添加启动场景
+            scenes.Add(new EditorBuildSettingsScene(Setting.StartUpScenePath, true));//添加启动场景
             for (var index = 0; index < _scenes.Count; index++)//添加其他场景（用户自己加的）
             {
                 scenes.Add(new EditorBuildSettingsScene(_scenes[index].path, true));
@@ -82,7 +82,7 @@ namespace libx
             for (var index = 0; index < assets.Count; index++)//添加热更场景（用于编译测试）
             {
                 var asset = assets[index];
-                if (asset == JEngineSetting.StartUpScenePath) continue;
+                if (asset == Setting.StartUpScenePath) continue;
                 scenes.Add(new EditorBuildSettingsScene(asset, true));
             }
 

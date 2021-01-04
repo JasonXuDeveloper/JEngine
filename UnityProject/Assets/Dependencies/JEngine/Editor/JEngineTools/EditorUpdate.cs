@@ -1,5 +1,5 @@
 ﻿//
-// ChangeScene
+// EditorUpdate.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -24,33 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using JEngine.Core;
-using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 
 namespace JEngine.Editor
 {
-    internal class ChangeScene
+    [InitializeOnLoad]
+    internal class EditorUpdate
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Change()
+        /// <summary>
+        /// 注册各种Update
+        /// </summary>
+        static EditorUpdate()
         {
-            if (!JEngineSetting.JumpStartUp) return;
-            var scene = SceneManager.GetActiveScene();
-            if (scene.path != JEngineSetting.StartUpScenePath)
-            {
-                string name = JEngineSetting.StartUpScenePath
-                    .Substring(JEngineSetting.StartUpScenePath.LastIndexOf('/') + 1)
-                    .Replace(".unity", "");
-
-                SceneManager.LoadScene(name);
-            }
+            EditorApplication.update += Clean.Update;//处理DLL
+            EditorApplication.update += XAsset.Update;//验证XAsset
         }
     }
 }
-

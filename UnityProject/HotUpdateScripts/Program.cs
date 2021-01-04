@@ -35,7 +35,7 @@ namespace HotUpdateScripts
     {
         public static void RunGame()
         {
-            
+
         }
     }
 }

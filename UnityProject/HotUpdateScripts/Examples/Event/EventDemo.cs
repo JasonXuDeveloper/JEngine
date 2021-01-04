@@ -53,7 +53,7 @@ namespace JEngine.Examples
             sw.Start();
             JEvent.defaultEvent.Post();
             sw.Stop();
-            Log.Print("<color=#db4259>[JEvent] 注册后，执行无参数方法的事件（demo里有4个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
+            Log.Print("<color=#db4259>[JEvent] 注册后，执行无参数方法的事件（demo里有5个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
             sw.Reset();
 
             Log.Print("<color=#db4259>[JEvent] 现在取消注册EventClass，任何里面的方法都无法被广播到，我们来试试</color>");
@@ -94,9 +94,19 @@ namespace JEngine.Examples
         }
     }
 
+    //继承了也能被监听
+    [Subscriber(ThreadMode.Main)]
+    public class InheritTest
+    {
+        public void Test()
+        {
+            Log.Print("InheritTest: Test运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+        }
+    }
+
     //整个类的所有方法都被监听
     [Subscriber(ThreadMode.Other)]
-    public class EventClass
+    public class EventClass: InheritTest
     {
 
         public void MethodA()

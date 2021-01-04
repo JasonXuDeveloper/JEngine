@@ -24,9 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using ILRuntime.Runtime;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
@@ -66,40 +70,27 @@ namespace JEngine.Editor
             EditorGUILayout.HelpBox("本地工程类（没生成asmdef的），Assembly一栏不需要改，Class name一栏写类名（有命名空间带上）；\n" +
                                     "有生成asmdef的工程类，Assembly一栏写asmdef里写的名字，Class name一栏写类名（有命名空间带上）；\n" +
                                     "最后的Namespace是生成的适配器的命名空间，随便写，只要在适配器Helper引用激活即可\n\n" +
-                                    "如果要生成Unity类的适配器，请确定找到了对应的module，并添加进热更工程，HotUpdateScripts/Dlls文件夹内，不然无法获取",MessageType.Info);
-            
+                                    "如果要生成Unity类的适配器，请确定找到了对应的module，并添加进热更工程，HotUpdateScripts/Dlls文件夹内，不然无法获取",
+                MessageType.Info);
+
             //程序集
             GUILayout.Space(50);
-            JEngineSetting.MakeHorizontal(25, () =>
-            {
-                EditorGUILayout.LabelField("Assembly 类的程序集");
-            });
-            JEngineSetting.MakeHorizontal(25, () =>
-            {
-                _assembly = EditorGUILayout.TextField("", _assembly);
-            });
+            Setting.MakeHorizontal(25, () => { EditorGUILayout.LabelField("Assembly 类的程序集"); });
+            Setting.MakeHorizontal(25, () => { _assembly = EditorGUILayout.TextField("", _assembly); });
 
             //类名
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25, () =>
-            {
-                _class = EditorGUILayout.TextField("Class name 类名", _class);
-            });
+            Setting.MakeHorizontal(25, () => { _class = EditorGUILayout.TextField("Class name 类名", _class); });
 
             //命名空间
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25, () =>
-            {
-                EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间");
-            });
-            JEngineSetting.MakeHorizontal(25, () =>
-            {
-                _namespace = EditorGUILayout.TextField("", _namespace);
-            });
+            Setting.MakeHorizontal(25,
+                () => { EditorGUILayout.LabelField("Namespace for generated adapter 生成适配器的命名空间"); });
+            Setting.MakeHorizontal(25, () => { _namespace = EditorGUILayout.TextField("", _namespace); });
 
             //生成
             GUILayout.Space(10);
-            JEngineSetting.MakeHorizontal(25, () =>
+            Setting.MakeHorizontal(25, () =>
             {
                 if (GUILayout.Button("Generate 生成"))
                 {
@@ -111,7 +102,16 @@ namespace JEngine.Editor
         private void GenAdapter()
         {
             //获取主工程DLL的类
-            Type t = Type.GetType(_class);
+            Type t = null;
+            if (_class.Contains("UnityEngine") || _assembly.Contains("Unity"))
+            {
+                t = Type.GetType($"{_class},UnityEngine");
+            }
+            else
+            {
+                t = Type.GetType(_class);
+            }
+
             if (t == null)
             {
                 if (File.Exists(new DirectoryInfo(Application.dataPath).Parent?.FullName +
@@ -120,7 +120,7 @@ namespace JEngine.Editor
                     t = Assembly
                         .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
                                   $"/Library/ScriptAssemblies/{_assembly}.dll").GetType(_class);
-                    
+
                     if (t == null)
                     {
 
@@ -130,9 +130,9 @@ namespace JEngine.Editor
                             t = Assembly
                                 .LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
                                           $"/HotUpdateScripts/Dlls/{_assembly}.dll").GetType(_class);
-                        }   
+                        }
                     }
-                }  
+                }
             }
 
             //判断空
@@ -142,8 +142,8 @@ namespace JEngine.Editor
                 return;
             }
 
-            _class = t.FullName.Replace(".","_");
-            
+            _class = t.FullName.Replace(".", "_");
+
             if (!Directory.Exists(OUTPUT_PATH))
             {
                 Directory.CreateDirectory(OUTPUT_PATH);
@@ -161,7 +161,25 @@ namespace JEngine.Editor
                 AssetDatabase.Refresh();
             }
 
-            //生成
+            if (!Directory.Exists(OUTPUT_PATH + "/Editor"))
+            {
+                Directory.CreateDirectory(OUTPUT_PATH + "/Editor");
+            }
+
+            //如果有先删除
+            if (File.Exists($"{OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs"))
+            {
+                File.Delete($"{OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs");
+                if (File.Exists($"{OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs.meta"))
+                {
+                    File.Delete($"{OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs.meta");
+                }
+
+                AssetDatabase.Refresh();
+            }
+
+
+            //生成适配器
             FileStream stream = new FileStream($"{OUTPUT_PATH}/{_class}Adapter.cs", FileMode.Append, FileAccess.Write);
             StreamWriter sw = new StreamWriter(stream);
             Stopwatch watch = new Stopwatch();
@@ -171,15 +189,90 @@ namespace JEngine.Editor
             watch.Stop();
             Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +
                       watch.ElapsedMilliseconds + " ms.");
-            Log.Print($"Please insert " +
-                      $"'appdomain.RegisterCrossBindingAdaptor(new {_class}Adapter());' " +
-                      $"into 'Register(AppDomain appdomain)' method in " +
-                      $"Scripts/Helpers/RegisterCrossBindingAdaptorHelper.cs");
-
             sw.Dispose();
 
+            //生成编辑器
+            string editorText = GenerateCrossBindingAdapterEditorCode(t,_namespace);
+            if (editorText != null)
+            {
+                stream = new FileStream($"{OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs", FileMode.Append,
+                    FileAccess.Write);
+                sw = new StreamWriter(stream);
+                watch = new Stopwatch();
+                sw.WriteLine(editorText);
+                watch.Stop();
+                Log.Print($"Generated {OUTPUT_PATH}/Editor/{_class}AdapterEditor.cs in: " +
+                          watch.ElapsedMilliseconds + " ms.");
+                sw.Dispose();
+            }
+
+            window.Close();
 
             AssetDatabase.Refresh();
+        }
+
+        public static string GenerateCrossBindingAdapterEditorCode(Type baseType,string nameSpace)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<MethodInfo> methods = baseType
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).ToList();
+            List<MethodInfo> virtMethods = new List<MethodInfo>();
+            foreach (var i in methods)
+            {
+                if (i.IsVirtual || i.IsAbstract || baseType.IsInterface)
+                    virtMethods.Add(i);
+            }
+
+            bool isMono = baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
+
+            if (!isMono)
+            {
+                return null;
+            }
+            string clsName, realClsName;
+            bool isByRef;
+            baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
+            sb.Append(
+@"/*
+ * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
+ */
+#if UNITY_EDITOR
+using System;
+using LitJson;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using JEngine.Core;
+using System.Reflection;
+using System.Threading.Tasks;
+using UnityEditor.AnimatedValues;
+using ILRuntime.Runtime.Enviorment;
+using Tools = JEngine.Core.Tools;
+
+
+[CustomEditor(typeof(");
+            sb.Append(clsName);
+            sb.Append(@"), true)]
+public class ");
+            sb.Append(clsName);
+            sb.Append(@"AdapterEditor : Editor
+{
+");
+            var lines = File.ReadAllLines("Assets/Dependencies/JEngine/Templates/AdapterEditor.txt");
+            foreach (var line in lines)
+            {
+                if (line.Contains("MonoBehaviourAdapter.Adaptor clr = target as MonoBehaviourAdapter.Adaptor;"))
+                {
+                    sb.AppendLine($"        {nameSpace}.{clsName}Adapter.Adapter clr = target as {nameSpace}.{clsName}Adapter.Adapter;");
+                    continue;
+                }
+                sb.AppendLine(line);
+            }
+
+            sb.Append(@"
+}
+#endif");
+            return sb.ToString();
         }
     }
 }

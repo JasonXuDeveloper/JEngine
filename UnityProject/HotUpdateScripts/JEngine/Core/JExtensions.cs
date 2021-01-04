@@ -26,6 +26,7 @@
 using System;
 using JEngine.UI;
 using UnityEngine;
+using System.Reflection;
 
 namespace JEngine.Core
 {
@@ -46,7 +47,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponent(gameObject, typeof(T).FullName);
+                object result = Tools.GetHotComponent(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -74,7 +75,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponent(gameObject, typeof(T).FullName);
+                object result = Tools.GetHotComponent(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -102,7 +103,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
@@ -130,7 +131,7 @@ namespace JEngine.Core
             }
             else
             {
-                object result = ClassBind.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;

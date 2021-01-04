@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using ILRuntime.Runtime.Enviorment;
 using JEngine.Interface;
 using ProjectAdapter;
 using ProtoBuf;
@@ -20,12 +24,18 @@ namespace JEngine.Helper
         
         public void Register(AppDomain appdomain)
         {
-            appdomain.RegisterCrossBindingAdaptor(new MonoBehaviourAdapter());
-            appdomain.RegisterCrossBindingAdaptor(new CoroutineAdapter());
-            appdomain.RegisterCrossBindingAdaptor(new IAsyncStateMachineClassInheritanceAdaptor());
-            appdomain.RegisterCrossBindingAdaptor(new ExceptionAdapter());
-            appdomain.RegisterCrossBindingAdaptor(new IExtensibleAdapter()); 
-            appdomain.RegisterCrossBindingAdaptor(new ExampleAPIAdapter());
+            //自动注册一波，无需再手动添加了，如果想要性能也可以手动自己加
+            Assembly assembly = typeof(Init).Assembly;
+            foreach (Type type in assembly.GetTypes().ToList().FindAll(t=>t.IsSubclassOf(typeof(CrossBindingAdaptor))))
+            {
+                object obj = Activator.CreateInstance(type);
+                CrossBindingAdaptor adaptor = obj as CrossBindingAdaptor;
+                if (adaptor == null)
+                {
+                    continue;
+                }
+                appdomain.RegisterCrossBindingAdaptor(adaptor);
+            }
         }
     }
 }

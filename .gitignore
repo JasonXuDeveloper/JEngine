@@ -6,10 +6,6 @@ UnityProject/HotUpdateScripts/.vs/*
 UnityProject/Library/*
 UnityProject/Temp/*
 UnityProject/obj/*
-UnityProject/Assembly-CSharp-Editor.csproj
-UnityProject/Assembly-CSharp.csproj
-UnityProject/ILRuntime.csproj
+UnityProject/*.csproj
 UnityProject/UnityProject.sln
-UnityProject/Malee.ReorderableList.Editor.csproj
-UnityProject/Malee.ReorderableList.csproj
 UnityProject/HotUpdateScripts/obj/*

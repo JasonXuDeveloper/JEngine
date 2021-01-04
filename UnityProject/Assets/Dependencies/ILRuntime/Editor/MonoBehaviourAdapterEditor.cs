@@ -1,43 +1,47 @@
-﻿#if UNITY_EDITOR
+﻿/*
+ * JEngine作者匠心打造的Mono适配器编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
+ */
+#if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using LitJson;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using JEngine.Core;
 using System.Reflection;
 using System.Threading.Tasks;
-using ILRuntime.Runtime.Intepreter;
-using JEngine.Core;
-using LitJson;
-using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using ILRuntime.Runtime.Enviorment;
+using Tools = JEngine.Core.Tools;
 
-// using LitJson;
 
 [CustomEditor(typeof(MonoBehaviourAdapter.Adaptor), true)]
 public class MonoBehaviourAdapterEditor : Editor
 {
     private bool displaying;
-    
+
     private AnimBool[] fadeGroup = new AnimBool[2];
+
     private async void OnEnable()
     {
-        for(int i=0;i<fadeGroup.Length;i++)
+        for (int i = 0; i < fadeGroup.Length; i++)
         {
             fadeGroup[i] = new AnimBool(false);
             this.fadeGroup[i].valueChanged.AddListener(this.Repaint);
         }
-        
+
         displaying = true;
-        
+
         while (true && Application.isEditor && Application.isPlaying && displaying)
         {
             try
             {
                 this.Repaint();
             }
-            catch{}
+            catch
+            {
+            }
+
             await Task.Delay(500);
         }
     }
@@ -50,7 +54,7 @@ public class MonoBehaviourAdapterEditor : Editor
     private void OnDisable()
     {
         // 移除动画监听
-        for(int i=0;i<fadeGroup.Length;i++)
+        for (int i = 0; i < fadeGroup.Length; i++)
         {
             this.fadeGroup[i].valueChanged.RemoveListener(this.Repaint);
         }
@@ -65,14 +69,14 @@ public class MonoBehaviourAdapterEditor : Editor
         if (instance != null)
         {
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
-            
+
             //如果JBehaviour
             var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             var t = instance.Type.ReflectionType;
             if (t.IsSubclassOf(JBehaviourType.ReflectionType))
             {
                 var f = t.GetField("_instanceID", BindingFlags.NonPublic);
-                var id =  f.GetValue(instance).ToString();
+                var id = f.GetValue(instance).ToString();
                 EditorGUILayout.TextField("InstanceID", id);
 
                 this.fadeGroup[0].target = EditorGUILayout.Foldout(this.fadeGroup[0].target,
@@ -81,41 +85,42 @@ public class MonoBehaviourAdapterEditor : Editor
                 {
                     var fm = t.GetField("FrameMode", BindingFlags.Public);
                     bool frameMode = EditorGUILayout.Toggle("FrameMode", (bool) fm.GetValue(instance));
-                    fm.SetValue(instance,frameMode);
-                
+                    fm.SetValue(instance, frameMode);
+
                     var fq = t.GetField("Frequency", BindingFlags.Public);
                     int frequency = EditorGUILayout.IntField("Frequency", (int) fq.GetValue(instance));
-                    fq.SetValue(instance,frequency);
-                
+                    fq.SetValue(instance, frequency);
+
                     GUI.enabled = false;
-                
+
                     var paused = t.GetField("Paused", BindingFlags.NonPublic);
-                    EditorGUILayout.Toggle("Paused", (bool)paused.GetValue(instance));
-                
+                    EditorGUILayout.Toggle("Paused", (bool) paused.GetValue(instance));
+
                     var totalTime = t.GetField("TotalTime", BindingFlags.Public);
-                    EditorGUILayout.FloatField("TotalTime", (float)totalTime.GetValue(instance));
-                
+                    EditorGUILayout.FloatField("TotalTime", (float) totalTime.GetValue(instance));
+
                     var loopDeltaTime = t.GetField("LoopDeltaTime", BindingFlags.Public);
-                    EditorGUILayout.FloatField("LoopDeltaTime", (float)loopDeltaTime.GetValue(instance));
-                
+                    EditorGUILayout.FloatField("LoopDeltaTime", (float) loopDeltaTime.GetValue(instance));
+
                     var loopCounts = t.GetField("LoopCounts", BindingFlags.Public);
-                    EditorGUILayout.LongField("LoopCounts", (long)loopCounts.GetValue(instance));
-                    
+                    EditorGUILayout.LongField("LoopCounts", (long) loopCounts.GetValue(instance));
+
                     GUI.enabled = true;
-                
+
                     var timeScale = t.GetField("TimeScale", BindingFlags.Public);
-                    var ts = EditorGUILayout.FloatField("TimeScale", (float)timeScale.GetValue(instance));
-                    timeScale.SetValue(instance,ts);
+                    var ts = EditorGUILayout.FloatField("TimeScale", (float) timeScale.GetValue(instance));
+                    timeScale.SetValue(instance, ts);
                 }
+
                 EditorGUILayout.EndFadeGroup();
 
                 if (instance.Type.FieldMapping.Count > 0)
                 {
                     EditorGUILayout.Space(10);
-                    EditorGUILayout.HelpBox($"{t.Name} variables", MessageType.Info);   
+                    EditorGUILayout.HelpBox($"{t.Name} variables", MessageType.Info);
                 }
             }
-            
+
             int index = 0;
             foreach (var i in instance.Type.FieldMapping)
             {
@@ -154,7 +159,8 @@ public class MonoBehaviourAdapterEditor : Editor
                             {
                                 value = instance[i.Value].ToString() == "1";
                             }
-                            instance[i.Value] = EditorGUILayout.Toggle(name, value );
+
+                            instance[i.Value] = EditorGUILayout.Toggle(name, value);
                         }
                         else
                         {
@@ -180,7 +186,7 @@ public class MonoBehaviourAdapterEditor : Editor
                             instance[i.Value] = EditorGUILayout.TextField(name, "");
                         }
                     }
-                    else if (cType == typeof(JsonData))//可以折叠显示Json数据
+                    else if (cType == typeof(JsonData)) //可以折叠显示Json数据
                     {
                         if (instance[i.Value] != null)
                         {
@@ -191,6 +197,7 @@ public class MonoBehaviourAdapterEditor : Editor
                                     ((JsonData) instance[i.Value]).ToString()
                                 );
                             }
+
                             EditorGUILayout.EndFadeGroup();
                             EditorGUILayout.Space();
                         }
@@ -201,31 +208,31 @@ public class MonoBehaviourAdapterEditor : Editor
                     }
                     else if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
                     {
-                        if (obj == null && cType == typeof(MonoBehaviourAdapter.Adaptor))
+                        if (obj == null && cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
                             EditorGUILayout.LabelField(name, "未赋值的热更类");
                             break;
                         }
 
-                        if (cType == typeof(MonoBehaviourAdapter.Adaptor))
+                        if (cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
                             try
                             {
-                                var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                var clrInstance = (MonoBehaviour) Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>()
                                     .Find(adaptor =>
                                         adaptor.ILInstance == instance[i.Value]);
                                 GUI.enabled = true;
-                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
+                                EditorGUILayout.ObjectField(name, clrInstance, cType, true);
                                 GUI.enabled = false;
                             }
                             catch
                             {
                                 EditorGUILayout.LabelField(name, "未赋值的热更类");
                             }
-                            
+
                             break;
                         }
-                        
+
                         //处理Unity类型
                         var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
                         instance[i.Value] = res;
@@ -239,15 +246,17 @@ public class MonoBehaviourAdapterEditor : Editor
                         string genericTypeStr = type.ReflectionType.ToString().Split('`')[1].Replace("1<", "")
                             .Replace(">", "");
                         Type genericType = Type.GetType(genericTypeStr);
-                        if (genericType == null  || (!genericType.IsPrimitive && genericType != typeof(string)))//不是基础类型或字符串
+                        if (genericType == null ||
+                            (!genericType.IsPrimitive && genericType != typeof(string))) //不是基础类型或字符串
                         {
-                            EditorGUILayout.LabelField(name, val.ToString());//只显示字符串
+                            EditorGUILayout.LabelField(name, val.ToString()); //只显示字符串
                         }
                         else
                         {
                             //可更改
-                            var data = ConvertSimpleType(EditorGUILayout.TextField(name, val.ToString()), genericType);
-                            if (data != null)//尝试更改
+                            var data = Tools.ConvertSimpleType(EditorGUILayout.TextField(name, val.ToString()),
+                                genericType);
+                            if (data != null) //尝试更改
                             {
                                 fi.SetValue(obj, data);
                             }
@@ -258,18 +267,34 @@ public class MonoBehaviourAdapterEditor : Editor
                         //其他类型现在没法处理
                         if (obj != null)
                         {
-                            var clrInstance = ClassBindMgr.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
-                                .Find(adaptor =>
-                                    adaptor.ILInstance.Equals(instance[i.Value]));
-                            if (clrInstance != null)
+                            if (cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType))) //需要跨域继承的普遍都有适配器
                             {
-                                GUI.enabled = true;
-                                EditorGUILayout.ObjectField(name,clrInstance.gameObject ,typeof(GameObject),true);
-                                GUI.enabled = false;
+                                var clrInstance = (MonoBehaviour) Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>()
+                                    .Find(adaptor =>
+                                        adaptor.ILInstance.Equals(instance[i.Value]));
+                                if (clrInstance != null)
+                                {
+                                    GUI.enabled = true;
+                                    EditorGUILayout.ObjectField(name, clrInstance.gameObject, typeof(GameObject), true);
+                                    GUI.enabled = false;
+                                }
                             }
-                            else
+                            else //不需要跨域继承的，也有可能以ClassBind挂载
                             {
-                                EditorGUILayout.LabelField(name, obj.ToString());
+                                var clrInstance = Tools.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                                    .Find(adaptor =>
+                                        adaptor.ILInstance.Equals(instance[i.Value]));
+                                if (clrInstance != null)
+                                {
+                                    GUI.enabled = true;
+                                    EditorGUILayout.ObjectField(name, clrInstance, typeof(MonoBehaviourAdapter.Adaptor),
+                                        true);
+                                    GUI.enabled = false;
+                                }
+                                else
+                                {
+                                    EditorGUILayout.LabelField(name, obj.ToString());
+                                }
                             }
                         }
                         else
@@ -282,41 +307,5 @@ public class MonoBehaviourAdapterEditor : Editor
         // 应用属性修改
         this.serializedObject.ApplyModifiedProperties();
     }
-    
-   
-    
-    private object ConvertSimpleType(object value, Type destinationType) 
-    { 
-        object returnValue; 
-        if ((value == null) || destinationType.IsInstanceOfType(value)) 
-        { 
-            return value; 
-        } 
-        string str = value as string; 
-        if ((str != null) && (str.Length == 0)) 
-        { 
-            return destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-        } 
-        TypeConverter converter = TypeDescriptor.GetConverter(destinationType); 
-        bool flag = converter.CanConvertFrom(value.GetType()); 
-        if (!flag) 
-        { 
-            converter = TypeDescriptor.GetConverter(value.GetType()); 
-        } 
-        if (!flag && !converter.CanConvertTo(destinationType)) 
-        { 
-            Log.PrintError("无法转换成类型：'" + value.ToString() + "' ==> " + destinationType); 
-        } 
-        try 
-        { 
-            returnValue = flag ? converter.ConvertFrom(null, null, value) : converter.ConvertTo(null, null, value, destinationType); 
-        } 
-        catch (Exception e)
-        {
-            Log.PrintError("类型转换出错：'" + value.ToString() + "' ==> " + destinationType + "\n" + e.Message);
-            returnValue = destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-        } 
-        return returnValue; 
-    } 
 }
 #endif

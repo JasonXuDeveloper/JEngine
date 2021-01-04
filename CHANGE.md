@@ -1,5 +1,32 @@
 ## All Versions
 
+
+
+### v0.6.1 (Janurary 4 2021)
+
+- ILRuntime update to **v1.6.6**
+- ILRuntime **Adapter Generator Enhance**
+- ILRuntime **Automatically Register Adapters**
+- More JEngine **Demos**
+- Better **Logs**
+- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
+- UIUtility with a cache dictionary to **load UI components faster**
+- Support **all MonoBehaviour events** from now on
+- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
+- ClassBind supports binding **different adapters**
+- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
+- Generate **Editor** for Adapters
+- Support  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** in hot update scripts
+- JEvent support **Subscribe methods from base class**
+- **Bug fix** on saving data on prefabs
+- **JSaver** supports **get Default Value**
+- Better **Editor Panel**
+- Support XAsset Pro (Main feature is patching, needs to subscribe)
+
+
+
+
+
 ### v0.6.0 (December 6 2020)
 
 - **UI Framework**

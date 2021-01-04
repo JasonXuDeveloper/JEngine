@@ -1,4 +1,4 @@
-# JENGINE v0.6.0
+# JENGINE v0.6.1
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -54,54 +54,54 @@ This is branch is ```v0.5``` series branch, which is a Long term support (**LTS*
 
 ## What can JEngine do?
 
-  - **[Hot Update Solution ](https://github.com/JasonXuDeveloper/JEngine/wiki/开始使用)**
+  - **[Hot Update Solution ](https://xgamedev.uoyou.com/startup-v0-6.html)**
     - **Resource update** based on [**XAsset**](https://github.com/xasset/xasset), which JEngine's author is a contributor of this repo
     - **C# code update** based on [**ILRuntime**](https://github.com/Ourpalm/ILRuntime),  which JEngine's author is a contributor of this repo's Unity Demo
     - **Hot update code encryption**, Hot update **DLL** will be encrypted wiithin **AES-128-ECB** toAssetbundle, and will be decrypted while loading the game
     - **Resource encryption**, XAsset contains the feature of VFS, which can make some sort of encyption on resource, which AssetStudio is not able to hack resource
     - **Auto Class Bind**, scripts from hot update project is able to bind onto a gameObject/prefab, and can set values
 
-  - **[Action Sequence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JAction教程)**
+  - **[Action Sequence Solution](https://xgamedev.uoyou.com/jaction-v0-6.html)**
     - **Less code, more powerful**
     - Codes are able to **runs, delay, wait, loop in counts, loop in conditions, run async/non-blocking**
     - **Can run in main thread**
 
-  - **[UI Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JUI教程)**
+  - **[UI Solution](https://xgamedev.uoyou.com/jui-v0-6.html)**
     - **Easy to manage** life cycle of an UI, **support chaining-style** which makes codes **prettier**
     - Supports **Loop in frequency**, can choose **Loop in frames or milliseconds**
 
     - UI is **bindable to data**, when **data updates**, will **call the bound method of an UI**
 
-  - **[Base Class Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JBehaviour教程)**
+  - **[Base Class Solution](https://xgamedev.uoyou.com/jbehaviour-v0-6.html)**
     - **Easy to manage** lifecycle
     - Can **Loop in frame**, or **Loop in milliseconds**
     - **Does not need MonoBehaviour**
     - **Easy to use**
 
-  - **[Resource solution based on XAsset](https://github.com/JasonXuDeveloper/JEngine/wiki/JResource教程)** 
+  - **[Resource solution based on XAsset](https://xgamedev.uoyou.com/jresource-v0-6.html)** 
     - Support **Load resource sync/async**
     - **Generic method**, easy to get different format of resources
     - **Load scene async**
 
-- **[Auto Class Bind](https://github.com/JasonXuDeveloper/JEngine/wiki/代码绑定)**
+- **[Auto Class Bind](https://xgamedev.uoyou.com/classbind-v0-6.html)**
   - Write namespance, and class name, than it will **auto add hot update component** to a **gameObject/prefab**
   - Can set value **on public/private/static fields and properties**
   - **Support drag & drop on specific types**
   - **Does not require class to inherit MonoBehaviour**
 
-- **[Data Persistence Solution](https://github.com/JasonXuDeveloper/JEngine/wiki/JSaver教程)**
+- **[Data Persistence Solution](https://xgamedev.uoyou.com/jsaver-v0-6.html)**
   - Save string to local
   - Save **JSON**
   - Save **Protobuf**
   - **Auto encrypt**
 
-- **[Localization](https://github.com/JasonXuDeveloper/JEngine/wiki/Localization教程)**
+- **[Localization](https://xgamedev.uoyou.com/localization-v0-6.html)**
   - **CSV document to visualize and set up the words**
   - Easy to **switch language**
   - Can **get strings for differen keys in specific language**
   - **Text** can **bind to specific key**
 
-- **[Anti-Memory Cheat solution](https://github.com/JasonXuDeveloper/JEngine/wiki/内存加密结构)**
+- **[Anti-Memory Cheat solution](https://xgamedev.uoyou.com/crypto-struct-v0-6.html)**
   - Support **90% of data stucts**
   - **Offset** encryption
   - **Same size** while serialize to **JSON & Protobuf**
@@ -130,52 +130,35 @@ This is branch is ```v0.5``` series branch, which is a Long term support (**LTS*
 
 
 
+
 JEngine has its aim to support game developers with **streamlined, pretty and high-performance features**, and can help developers **make games easier**.
 
 **If JEngine helps you, please give JEngine a star!**
 
 
 
-## v0.6.0 Latest Features
+## v0.6.1 Latest Features
 
-- **UI Framework**
-- **Enhance** JSaver
-- **JAction** supports ```DelayFrames```
-- **Fixed a heaps of bugs**
-- **JSON Checker Tool**
-- **JEvent**, which is similar to Google core libraries for Java, eventbus
-  - **Subscribe Class**
-  - **Subscribe Method**
-  - **Post** data **to all subscribed events**
-  - Can be running on **Main Thread or sub Thread**
-- **Enhance** ClassBind, much more powerful
-  - Auto Bind when needed, **better performence**
-  - Controls by **ClassBindMgr**, **more advanced while setting fields**
-  - Support **Automatically get all field**s from a Hot Update Class
-  - Support **Automattically find the FieldType** for a field
-- **JExtensions** 
-  - **Allows get hot update class** from GameObject **via Classbind**
-  - **Add JBehaviour** to GameObject
-  - **Add JUI** to GameObject
-  - **Get JBehaviour** from GameObject
-  - **Get JUI** from GameObject
-- **JWebSocket**
-  - **Connect** to websocket servers
-  - **Send** message to websocket servers
-  - **Listen** message from websocket servers
-  - **Listen and Send in Sub Thread**
-- **JEngine Setting Panel**
-  - **Automatically jump to Init scene first while running**
-  - **Hot Update Scenes Shortcuts**
-  - **ClassBind Tools**
-  - **Error Rescue Tools**
-- **More CLR Redirection Methods**
-  - Support **MonoBehaviour.SendMessage** from Hot Update Class
-  - Support **MonoBehaviour.Instantiate** GameObject with Hot Update Classes & Single Hot Update Class
-- **JBehaviour enhance**
-  - **Perform better after built** than in Editor
-  - Support **Deltatime, loop counts**, etc.
-  - **Powerful Inspector**
+- ILRuntime update to **v1.6.6**
+- ILRuntime **Adapter Generator Enhance**
+- ILRuntime **Automatically Register Adapters**
+- More JEngine **Demos**
+- Better **Logs**
+- JBehaviour & JEvent & etc **supports stacktrace on specefic line**
+- UIUtility with a cache dictionary to **load UI components faster**
+- Support **all MonoBehaviour events** from now on
+- Auto Generate MonoBehaviour Events for **Adapters** which inherits MonoBehaviour
+- ClassBind supports binding **different adapters**
+- Support **Add & Get Component** with **different adapters** which inherits MonoBehaviour
+- Generate **Editor** for Adapters
+- Support  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** in hot update scripts
+- JEvent supports **Subscribe methods from base class**
+- **Bug fix** on saving data on prefabs
+- **JSaver** supports **get Default Value**
+- Better **Editor Panel**
+- Support XAsset Pro (Main feature is patching, needs to subscribe)
+
+
 
 [Click here to see all version updates](CHANGE.md)
 

@@ -74,6 +74,7 @@
     <Compile Include="JEngine\Core\JExtensions.cs" />
     <Compile Include="JEngine\Net\JWebSocket.cs" />
     <Compile Include="Examples\Net\JWebSocketDemo.cs" />
+    <Compile Include="Examples\Core\CrossDomainDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
