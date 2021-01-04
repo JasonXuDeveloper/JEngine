@@ -2,7 +2,7 @@
 
 
 
-### v0.6.1
+### v0.6.1 (Janurary 4 2021)
 
 - ILRuntime update to **v1.6.6**
 - ILRuntime **Adapter Generator Enhance**
@@ -20,6 +20,8 @@
 - JEvent support **Subscribe methods from base class**
 - **Bug fix** on saving data on prefabs
 - **JSaver** supports **get Default Value**
+- Better **Editor Panel**
+- Support XAsset Pro (Main feature is patching, needs to subscribe)
 
 
 

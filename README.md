@@ -1,4 +1,4 @@
-# JENGINE v0.6.1 beta2
+# JENGINE v0.6.1
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -152,7 +152,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## v0.6.1 beta2 最新功能
+## v0.6.1 最新功能
 
 - ILRuntime升级到 **v1.6.6**
 - ILRuntime **跨域适配器自动生成优化**
@@ -168,8 +168,10 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 - 针对MonoBehaviour派生类的**适配器自动生成编辑器脚本**
 - 支持  **```Invoke```, ```InvokeRepeating```, ```IsInvoking```, ```CancelInvoke```** 在热更里使用
 - JEvent 支持 **监听基类方法**
-- **Bug 修复** 关于保存预制体的修改
+- **Bug 修复** 之对预制体修改的保存
 - **JSaver**支持**Get默认值**
+- 更好的**面板**
+- 支持XAsset Pro（主要特色分包，需自行订阅）
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 

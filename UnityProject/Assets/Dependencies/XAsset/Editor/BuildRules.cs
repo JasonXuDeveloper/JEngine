@@ -101,20 +101,79 @@ namespace libx
         private readonly List<string> _duplicated = new List<string>();
         private readonly Dictionary<string, HashSet<string>> _tracker = new Dictionary<string, HashSet<string>>();
 		[Header("Patterns")]
-		public string searchPatternAsset = "*.asset";
-		public string searchPatternController = "*.controller";
-		public string searchPatternDir = "*";
-		public string searchPatternMaterial = "*.mat";
-		public string searchPatternPng = "*.png";
-		public string searchPatternPrefab = "*.prefab";
-		public string searchPatternScene = "*.unity";
-		public string searchPatternText = "*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt";
+		public static string searchPatternAsset = "*.asset";
+		public static string searchPatternController = "*.controller";
+		public static string searchPatternDir = "*";
+		public static string searchPatternMaterial = "*.mat";
+		public static string searchPatternPng = "*.png";
+		public static string searchPatternPrefab = "*.prefab";
+		public static string searchPatternScene = "*.unity";
+		public static string searchPatternText = "*.txt,*.bytes,*.json,*.csv,*.xml,*htm,*.html,*.yaml,*.fnt";
         public static bool nameByHash = true;
 		[Tooltip("构建的版本号")]
 		[Header("Builds")] 
         public int version;
         [Tooltip("BuildPlayer 的时候被打包的场景")] public SceneAsset[] scenesInBuild = new SceneAsset[0]; 
-        public BuildRule[] rules = new BuildRule[0]; 
+        
+        public static string hotUpdatePath = "Assets/HotUpdateResources/";
+
+        public BuildRule[] rules = new BuildRule[]
+        {
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Controller",
+                searchPattern = searchPatternController,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Dll",
+                searchPattern = searchPatternText,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Material",
+                searchPattern = searchPatternMaterial,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Other",
+                searchPattern = searchPatternDir,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Prefab",
+                searchPattern = searchPatternPrefab,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "Scene",
+                searchPattern = searchPatternScene,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "ScriptableObject",
+                searchPattern = searchPatternAsset,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "TextAsset",
+                searchPattern = searchPatternText,
+                nameBy = NameBy.Path
+            },
+            new BuildRule()
+            {
+                searchPath = hotUpdatePath + "UI",
+                searchPattern = searchPatternPng,
+                nameBy = NameBy.Directory
+            }
+        };
 		[Header("Assets")]
 		[HideInInspector]public RuleAsset[] ruleAssets = new RuleAsset[0];
         [HideInInspector]public RuleBundle[] ruleBundles = new RuleBundle[0];

@@ -1,4 +1,4 @@
-# JENGINE v0.6.1 beta2
+# JENGINE v0.6.1
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -137,7 +137,7 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 
 
 
-## v0.6.1 beta2 Latest Features
+## v0.6.1 Latest Features
 
 - ILRuntime update to **v1.6.6**
 - ILRuntime **Adapter Generator Enhance**
@@ -155,6 +155,10 @@ JEngine has its aim to support game developers with **streamlined, pretty and hi
 - JEvent supports **Subscribe methods from base class**
 - **Bug fix** on saving data on prefabs
 - **JSaver** supports **get Default Value**
+- Better **Editor Panel**
+- Support XAsset Pro (Main feature is patching, needs to subscribe)
+
+
 
 [Click here to see all version updates](CHANGE.md)
 
