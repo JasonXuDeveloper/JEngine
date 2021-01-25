@@ -66,7 +66,7 @@ namespace JEngine.Core
             {
                 get
                 {
-                    if(_instance == null)
+                    if (_instance == null)
                     {
                         _instance = new GameObject("JBehaviourMgr").AddComponent<JBehaviourMgr>();
                     }
@@ -116,10 +116,20 @@ namespace JEngine.Core
             /// </summary>
             private void CheckJBehaviour()
             {
-                for(int i = 0; i < JBehaviours.Count; i++)
+                for (int i = 0; i < JBehaviours.Count; i++)
                 {
                     var jb = JBehaviours.ElementAt(i);
-                    if (jb.Value._gameObject == null)
+                    try
+                    {
+                        if (jb.Value._gameObject == null)
+                        {
+                            jb.Value.LoopAwaitToken.Cancel();
+                            JBehaviours[jb.Value._instanceID] = null;
+                            JBehaviours.Remove(jb.Value._instanceID);
+                            i--;
+                        }
+                    }
+                    catch (MissingReferenceException)
                     {
                         jb.Value.LoopAwaitToken.Cancel();
                         JBehaviours[jb.Value._instanceID] = null;
@@ -422,7 +432,7 @@ namespace JEngine.Core
             {
                 Init();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.PrintError($"{_gameObject.name}<{_instanceID}> Init failed: {e.Message}, {e.Data["StackTrace"]}, skipped init");
             }
@@ -505,10 +515,10 @@ namespace JEngine.Core
                 {
                     await Task.Delay(duration, LoopAwaitToken.Token);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     //会抛出TaskCanceledException，表示等待被取消，直接Destory
-                    if(ex is TaskCanceledException)
+                    if (ex is TaskCanceledException)
                     {
                         Destroy();
                         return;
