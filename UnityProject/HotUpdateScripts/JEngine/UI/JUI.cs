@@ -226,6 +226,7 @@ namespace JEngine.UI
         private new void End()
         {
             _end?.Invoke(this);
+            _message = null;
         }
         #endregion
 

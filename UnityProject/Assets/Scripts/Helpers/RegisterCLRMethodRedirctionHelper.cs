@@ -1536,32 +1536,19 @@ namespace JEngine.Helper
                 }
 
                 //补上Awake
-                bool activated = false;
                 //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = clrInstance.GetType().GetMethod("Awake",
+                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
                     BindingFlags.Default | BindingFlags.Public
                                          | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
                                          BindingFlags.NonPublic | BindingFlags.Static);
-                if (awakeMethod == null)
+                if (awakeMethod != null)
                 {
-                    awakeMethod = t.GetMethod("Awake",
-                        BindingFlags.Default | BindingFlags.Public
-                                             | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                             BindingFlags.NonPublic | BindingFlags.Static);
+                    awakeMethod.Invoke(clrInstance, null);
                 }
                 else
                 {
-                    awakeMethod.Invoke(clrInstance, null);
-                    activated = true;
-                }
-
-                if (awakeMethod == null)
-                {
                     Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-                }
-                else if (!activated)
-                {
-                    awakeMethod.Invoke(t, null);
+
                 }
             }
         }
@@ -1690,9 +1677,29 @@ namespace JEngine.Helper
             }
 
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            if (res.GetComponent<ClassBind>() != null && res.GetComponent<CrossBindingAdaptorType>() != null)
+            if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
             {
-                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
+                if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
+                {
+                    ClassBindMgr.DoBind();
+                    
+                    if (returnScipt)
+                    {
+                        //如果返回本地类
+                        if (returnType == null)
+                        {
+                            scriptResult = res.GetComponent(instance.GetType());
+                        }
+
+                        return ILIntepreter.PushObject(ptr, __mStack, scriptResult);
+                    }
+
+                    return ILIntepreter.PushObject(ptr, __mStack, res);
+                }
+                else
+                {
+                    UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
+                }
             }
 
             //重新赋值instance的热更脚本
@@ -1737,32 +1744,19 @@ namespace JEngine.Helper
                 }
 
                 //补上Awake
-                bool activated = false;
                 //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = clrInstance.GetType().GetMethod("Awake",
+                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
                     BindingFlags.Default | BindingFlags.Public
                                          | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
                                          BindingFlags.NonPublic | BindingFlags.Static);
-                if (awakeMethod == null)
+                if (awakeMethod != null)
                 {
-                    awakeMethod = t.GetMethod("Awake",
-                        BindingFlags.Default | BindingFlags.Public
-                                             | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                             BindingFlags.NonPublic | BindingFlags.Static);
+                    awakeMethod.Invoke(clrInstance, null);
                 }
                 else
                 {
-                    awakeMethod.Invoke(clrInstance, null);
-                    activated = true;
-                }
-
-                if (awakeMethod == null)
-                {
                     Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-                }
-                else if (!activated)
-                {
-                    awakeMethod.Invoke(t, null);
+
                 }
 
                 if (ilInstance.Type == returnType && scriptResult == null)
@@ -1783,7 +1777,7 @@ namespace JEngine.Helper
 
             for (int i = 0; i < go.Length; i++)
             {
-                if (go[i] == res)
+                if (go[i] == res.transform)
                 {
                     continue;
                 }
