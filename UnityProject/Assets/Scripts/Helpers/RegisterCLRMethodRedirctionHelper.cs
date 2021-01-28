@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
@@ -201,13 +202,95 @@ namespace JEngine.Helper
             cancelInvokeMethod = monoType.GetMethod("CancelInvoke", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(cancelInvokeMethod, CancelInvoke_4);
             
-            
+            //注册isInvoking
             args = new Type[]{};
             var isInvokingMethod = monoType.GetMethod("IsInvoking", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_5);
             args = new[]{typeof(String)};
             isInvokingMethod = monoType.GetMethod("IsInvoking", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_6);
+            
+            //注册pb反序列化
+            Type pbSerializeType = typeof(ProtoBuf.Serializer);
+            args = new Type[]{typeof(System.Type), typeof(System.IO.Stream)};
+            var pbDeserializeMethod = pbSerializeType.GetMethod("Deserialize", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(pbDeserializeMethod, Deserialize_1);
+            args = new Type[]{typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance)};
+            Dictionary<string, List<MethodInfo>> genericMethods = new Dictionary<string, List<MethodInfo>>();
+            List<MethodInfo> lst = null;                 
+            if (genericMethods.TryGetValue("Deserialize", out lst))
+            {
+                foreach(var m in lst)
+                {
+                    if(m.MatchGenericParameters(args, typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance), typeof(System.IO.Stream)))
+                    {
+                        var method = m.MakeGenericMethod(args);
+                        appdomain.RegisterCLRMethodRedirection(method, Deserialize_2);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// pb net 反序列化重定向
+        /// </summary>
+        /// <param name="__intp"></param>
+        /// <param name="__esp"></param>
+        /// <param name="__mStack"></param>
+        /// <param name="__method"></param>
+        /// <param name="isNewObj"></param>
+        /// <returns></returns>
+        private static unsafe StackObject* Deserialize_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.Type @type = (System.Type)typeof(System.Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@type, @source);
+
+            object obj_result_of_this_method = result_of_this_method;
+            if(obj_result_of_this_method is CrossBindingAdaptorType)
+            {    
+                return ILIntepreter.PushObject(__ret, __mStack, ((CrossBindingAdaptorType)obj_result_of_this_method).ILInstance, true);
+            }
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method, true);
+        }
+
+        /// <summary>
+        /// pb net 反序列化重定向
+        /// </summary>
+        /// <param name="__intp"></param>
+        /// <param name="__esp"></param>
+        /// <param name="__mStack"></param>
+        /// <param name="__method"></param>
+        /// <param name="isNewObj"></param>
+        /// <returns></returns>
+        private static unsafe StackObject* Deserialize_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            var genericArgument = __method.GenericArguments;
+            var type = genericArgument[0];
+            var @realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
+            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@realType,@source);
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
         
         /// <summary>
@@ -495,7 +578,8 @@ namespace JEngine.Helper
                 {
                     if (go != null)
                     {
-                        methodInfo?.Invoke(val, null);
+                        Loom.QueueOnMainThread(o =>
+                            methodInfo?.Invoke(val, null), null);
                     }
                     else
                     {
@@ -504,6 +588,7 @@ namespace JEngine.Helper
                 }
                 catch (MissingReferenceException)
                 {
+                    _invokeRepeatingTokens[methodInfo].Cancel();
                 }
                 try
                 {
@@ -512,16 +597,11 @@ namespace JEngine.Helper
                         await Wait(duration, _invokeRepeatingTokens[methodInfo].Token, go);
                     }
                 }
-                catch(Exception ex)
+                catch(TaskCanceledException)
                 {
-                    //会抛出TaskCanceledException，表示等待被取消，直接返回
-                    if(ex is TaskCanceledException)
-                    {
-                        return;
-                    }
+                    //会抛出TaskCanceledException，表示等待被取消
                 }
             }
-
             _invokeRepeatingTokens.Remove(methodInfo);
         }
 
@@ -590,12 +670,14 @@ namespace JEngine.Helper
             {
                 if (go != null)
                 {
-                    methodInfo.Invoke(val, null);
+                    Loom.QueueOnMainThread(o =>
+                        methodInfo?.Invoke(val, null), null);
                     _invokeTokens.Remove(methodInfo);
                 }
             }
             catch (MissingReferenceException)//MissingReference是GO销毁
             {
+                _invokeTokens[methodInfo].Cancel();
             }
         }
 
@@ -675,7 +757,7 @@ namespace JEngine.Helper
         /// <param name="methodName"></param>
         /// <param name="value"></param>
         /// <param name="option"></param>
-        private static void DoSendMessageOnHotCode(GameObject go, string methodName, object value = null,
+        private static void DoSendMessageOnHotCode(AppDomain __domain, GameObject go, string methodName, object value = null,
             SendMessageOptions option = SendMessageOptions.RequireReceiver)
         {
             //这个option控制了找不到方法是否要报错，但是报错看着太头大，所以我这边就不处理了，留着这个接口
@@ -695,14 +777,14 @@ namespace JEngine.Helper
                         IMethod m = t.GetMethod(methodName, 1);
                         if (m != null)
                         {
-                            Init.appdomain.Invoke(m, clrInstance.ILInstance, value);
+                            __domain.Invoke(m, clrInstance.ILInstance, value);
                         }
                     }
                     //有参数无匹配，或无参数，都会invoke
                     IMethod method = t.GetMethod(methodName, 0);
                     if (method != null)
                     {
-                        Init.appdomain.Invoke(method, clrInstance.ILInstance, null);
+                        __domain.Invoke(method, clrInstance.ILInstance, null);
                     }
                 }
             }
@@ -748,7 +830,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName);
             instance_of_this_method.BroadcastMessage(methodName);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
@@ -757,7 +839,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(g.gameObject, methodName);
+                    DoSendMessageOnHotCode(__domain,g.gameObject, methodName);
                 }
                 catch (Exception e)
                 {
@@ -814,7 +896,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value);
             instance_of_this_method.BroadcastMessage(methodName, value);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
@@ -823,7 +905,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(g.gameObject, methodName, value);
+                    DoSendMessageOnHotCode(__domain,g.gameObject, methodName, value);
                 }
                 catch (Exception e)
                 {
@@ -880,7 +962,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, null, options);
             instance_of_this_method.BroadcastMessage(methodName, options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
@@ -889,7 +971,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(g.gameObject, methodName, null, options);
+                    DoSendMessageOnHotCode(__domain,g.gameObject, methodName, null, options);
                 }
                 catch (Exception e)
                 {
@@ -952,7 +1034,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"BroadcastMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value, options);
             instance_of_this_method.BroadcastMessage(methodName, value, options);
 
             var go = instance_of_this_method.GetComponentsInChildren<Transform>(true);
@@ -961,7 +1043,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(g.gameObject, methodName, value, options);
+                    DoSendMessageOnHotCode(__domain,g.gameObject, methodName, value, options);
                 }
                 catch (Exception e)
                 {
@@ -1012,7 +1094,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName);
             instance_of_this_method.SendMessageUpwards(methodName);
 
             var go = instance_of_this_method.transform.parent.gameObject;
@@ -1020,7 +1102,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(go, methodName);
+                    DoSendMessageOnHotCode(__domain,go, methodName);
                 }
                 catch (Exception e)
                 {
@@ -1080,7 +1162,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value);
             instance_of_this_method.SendMessageUpwards(methodName, value);
 
             var go = instance_of_this_method.transform.parent.gameObject;
@@ -1088,7 +1170,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(go, methodName, value);
+                    DoSendMessageOnHotCode(__domain,go, methodName, value);
                 }
                 catch (Exception e)
                 {
@@ -1147,7 +1229,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, null, options);
             instance_of_this_method.SendMessageUpwards(methodName, options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
@@ -1155,7 +1237,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(go, methodName, null, options);
+                    DoSendMessageOnHotCode(__domain,go, methodName, null, options);
                 }
                 catch (Exception e)
                 {
@@ -1221,7 +1303,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessageUpwards方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value, options);
             instance_of_this_method.SendMessageUpwards(methodName, value, options);
 
             var go = instance_of_this_method.transform.parent.gameObject;
@@ -1229,7 +1311,7 @@ namespace JEngine.Helper
             {
                 try
                 {
-                    DoSendMessageOnHotCode(go, methodName, value, options);
+                    DoSendMessageOnHotCode(__domain,go, methodName, value, options);
                 }
                 catch (Exception e)
                 {
@@ -1286,7 +1368,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName);
             instance_of_this_method.SendMessage(methodName);
 
             return __ret;
@@ -1338,7 +1420,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value);
             instance_of_this_method.SendMessage(methodName, value);
 
             return __ret;
@@ -1390,7 +1472,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, null, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, null, options);
             instance_of_this_method.SendMessage(methodName, options);
 
             return __ret;
@@ -1448,7 +1530,7 @@ namespace JEngine.Helper
 
             Debug.LogWarning($"SendMessage方法被重定向了，会尝试调用热更+本地脚本的'{methodName}'方法，如果本地没对应，会报错，可忽略");
 
-            DoSendMessageOnHotCode(instance_of_this_method, methodName, value, options);
+            DoSendMessageOnHotCode(__domain,instance_of_this_method, methodName, value, options);
             instance_of_this_method.SendMessage(methodName, value, options);
 
             return __ret;
@@ -1993,9 +2075,7 @@ namespace JEngine.Helper
                 else
                 {
                     //热更DLL内的类型比较麻烦。首先我们得自己手动创建实例
-                    ILTypeInstance ilInstance = Init.appdomain.Instantiate(type.ReflectionType.FullName);
-                    Core.Log.PrintWarning($"{type.ReflectionType.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
-
+                    ILTypeInstance ilInstance = new ILTypeInstance(type as ILType,false);
                     Type t = type.ReflectionType; //获取实际属性
                     bool isMonoAdapter = t.BaseType?.FullName == typeof(MonoBehaviourAdapter.Adaptor).FullName;
 
@@ -2015,9 +2095,8 @@ namespace JEngine.Helper
                         var AppDomain = t.GetField("appdomain",
                             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                         ILInstance.SetValue(clrInstance, ilInstance);
-                        AppDomain.SetValue(clrInstance, Init.appdomain);
+                        AppDomain.SetValue(clrInstance, __domain);
                         ilInstance.CLRInstance = clrInstance;
-
                         bool activated = false;
                         //不管是啥类型，直接invoke这个awake方法
                         var awakeMethod = clrInstance.GetType().GetMethod("Awake",
@@ -2059,6 +2138,12 @@ namespace JEngine.Helper
                     }
 
                     res = ilInstance;
+                    
+                    var m = type.GetConstructor(ILRuntime.CLR.Utils.Extensions.EmptyParamList);
+                    if (m != null)
+                    {
+                        __domain.Invoke(m, res, null);
+                    }
                 }
 
                 return ILIntepreter.PushObject(ptr, __mStack, res);

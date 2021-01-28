@@ -32,8 +32,7 @@ public static class InitILrt
         RegisterValueTypeBinderHelper.HelperRegister(appdomain);
 
         //Protobuf适配
-        ProtoBuf.PType.RegisterFunctionCreateInstance(PType_CreateInstance);
-        ProtoBuf.PType.RegisterFunctionGetRealType(PType_GetRealType);
+        ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
         
         //LitJson适配
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
@@ -41,18 +40,5 @@ public static class InitILrt
         //CLR绑定
         CLRBindings.Initialize(appdomain);
         Init.Inited = true;
-    }
-
-    
-    private static object PType_CreateInstance(string typeName){
-        return Init.appdomain.Instantiate (typeName);
-    }
-    private static Type PType_GetRealType(object o){
-        var type = o.GetType ();
-        if (type.FullName == "ILRuntime.Runtime.Intepreter.ILTypeInstance") {
-            var ilo = o as ILRuntime.Runtime.Intepreter.ILTypeInstance;
-            type = ProtoBuf.PType.FindType (ilo.Type.FullName);
-        }
-        return type;
     }
 }

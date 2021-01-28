@@ -434,16 +434,24 @@ namespace JEngine.Core
             bool needAdapter = t.BaseType != null &&
                                t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
 
-            var instance = _class.UseConstructor
-                ? Init.appdomain.Instantiate(classType)
-                : new ILTypeInstance(type as ILType, !isMono);
-            instance.CLRInstance = instance;
-
-            if (_class.UseConstructor && isMono)
+            ILTypeInstance instance = null;
+            if (_class.UseConstructor)
             {
-                JEngine.Core.Log.PrintWarning($"{t.FullName}由于带构造函数生成，会有来自Unity的警告，请忽略");
-
+                if (isMono)
+                {
+                    instance = new ILTypeInstance(type as ILType,false);
+                }
+                else
+                {
+                    instance = Init.appdomain.Instantiate(classType);
+                }
             }
+            else
+            {
+                instance = new ILTypeInstance(type as ILType, !isMono);
+            }
+            
+            instance.CLRInstance = instance;
             
             //这里是classbind的灵魂，我都佩服我自己这么写，所以别乱改这块
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
@@ -460,6 +468,7 @@ namespace JEngine.Core
 
                 //直接反射赋值一波了
                 var clrInstance = gameObject.AddComponent(adapterType);
+
                 var enabled = t.GetProperty("enabled",
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                 var ILInstance = t.GetField("instance",
@@ -505,6 +514,15 @@ namespace JEngine.Core
                     var f = t.GetField("_instanceID", BindingFlags.NonPublic);
                     var id = f.GetValue(clrInstance.ILInstance).ToString();
                     return id;
+                }
+            }
+            
+            if (_class.UseConstructor && isMono)
+            {
+                var m = type.GetConstructor(ILRuntime.CLR.Utils.Extensions.EmptyParamList);
+                if (m != null)
+                {
+                    Init.appdomain.Invoke(m, instance, null);
                 }
             }
 
