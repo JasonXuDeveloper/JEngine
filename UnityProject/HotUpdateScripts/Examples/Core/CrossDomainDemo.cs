@@ -50,14 +50,14 @@ namespace JEngine.Examples
             SendMessage("MsgToSend", 200);
 
             Log.Print("尝试Invoke方法。CLR重定向后Invoke等类似效果的代码已经可以使用");
-            Log.Print("1秒后会执行Do");
-            Invoke("Do", 1);
-            Log.Print($"Do执行状态：{IsInvoking("Do")}");
+            Log.Print("1秒后会执行Do1");
+            Invoke("Do1", 1);
+            Log.Print($"Do1执行状态：{IsInvoking("Do1")}");
 
             Log.Print("尝试InvokeRepeating方法。");
             Log.Print("0秒后，会每秒重复执行Do");
             InvokeRepeating("Do", 0, 1);
-            Log.Print($"Invoke状态：{IsInvoking()}");
+            Log.Print($"Invoke状态：{IsInvoking("Do")}");
 
             //小彩蛋，试试更改TimeScale，看看会对Invoke出现什么影响
             //原生Unity的TimeScale就会影响Invoke，所以JEngine也对此作了处理，能保证百分百的原汁原味
@@ -67,6 +67,11 @@ namespace JEngine.Examples
         public void MsgToSend(int code)
         {
             Log.Print($"code是：{code}");
+        }
+
+        public void Do1()
+        {
+            Log.Print($"Do1执行了");
         }
 
         int count = 0;

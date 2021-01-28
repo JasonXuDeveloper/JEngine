@@ -47,12 +47,12 @@ namespace ProtoBuf{
 
 		public delegate object DelegateFunctionCreateInstance(string typeName);
 		static DelegateFunctionCreateInstance CreateInstanceFunc;
-		public static void RegisterFunctionCreateInstance(DelegateFunctionCreateInstance func){
+		private static void RegisterFunctionCreateInstance(DelegateFunctionCreateInstance func){
 			CreateInstanceFunc = func;
 		}
 		public delegate Type DelegateFunctionGetRealType(object o);
 		static DelegateFunctionGetRealType GetRealTypeFunc;
-		public static void RegisterFunctionGetRealType(DelegateFunctionGetRealType func){
+		private static void RegisterFunctionGetRealType(DelegateFunctionGetRealType func){
 			GetRealTypeFunc = func;
 		}
 
@@ -78,6 +78,22 @@ namespace ProtoBuf{
 				return GetRealTypeFunc.Invoke (o);
 			}
 			return o.GetType ();
+		}
+
+		public static void RegisterILRuntimeCLRRedirection(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
+		{
+			RegisterFunctionCreateInstance(typeName => appdomain.Instantiate(typeName));
+			RegisterFunctionGetRealType(o =>
+			{
+				var type = o.GetType();
+				if (type.FullName == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+				{
+					var ilo = o as ILRuntime.Runtime.Intepreter.ILTypeInstance;
+					type = ProtoBuf.PType.FindType(ilo.Type.FullName);
+				}
+
+				return type;
+			});
 		}
 	}
 }
