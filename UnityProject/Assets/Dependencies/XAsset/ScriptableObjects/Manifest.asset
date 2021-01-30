@@ -14,170 +14,138 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVariants: []
   assets:
-  - bundle: 19
+  - bundle: 10
     dir: 0
     name: HotUpdateScripts.bytes
-  - bundle: 18
+  - bundle: 9
     dir: 1
     name: impact.ttf
-  - bundle: 16
+  - bundle: 4
     dir: 2
-    name: Game.unity
-  - bundle: 9
-    dir: 3
-    name: Localization.csv
-  - bundle: 17
-    dir: 4
-    name: Btn_Back_h.png
+    name: UI Root.prefab
+  - bundle: 0
+    dir: 2
+    name: uiview_btnview.prefab
   - bundle: 6
-    dir: 4
-    name: Btn_Buy1_n.png
-  - bundle: 13
-    dir: 4
-    name: Btn_Buy1_p.png
-  - bundle: 14
-    dir: 4
-    name: Btn_MainMenu_n.png
+    dir: 2
+    name: uiview_testView.prefab
+  - bundle: 8
+    dir: 3
+    name: Game.unity
+  - bundle: 2
+    dir: 3
+    name: UIDemo.unity
   - bundle: 5
     dir: 4
+    name: Localization.csv
+  - bundle: 3
+    dir: 5
+    name: Btn_Back_h.png
+  - bundle: 3
+    dir: 5
+    name: Btn_Buy1_n.png
+  - bundle: 3
+    dir: 5
+    name: Btn_Buy1_p.png
+  - bundle: 3
+    dir: 5
+    name: Btn_MainMenu_n.png
+  - bundle: 3
+    dir: 5
     name: Btn_Title_p.png
-  - bundle: 8
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: Icon_Back1.png
-  - bundle: 2
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: Title2_bg.png
-  - bundle: 7
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: background1.png
-  - bundle: 12
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: background4.png
   - bundle: 3
-    dir: 4
+    dir: 5
     name: background4_v2.png
-  - bundle: 15
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: background5_v2.png
-  - bundle: 10
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: bg_GoodsTitle.png
-  - bundle: 1
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: bg_Input0_n.png
-  - bundle: 11
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: bg_Title1.png
-  - bundle: 4
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: bg_Title2 .png
-  - bundle: 0
-    dir: 4
+  - bundle: 3
+    dir: 5
     name: small title02_bg.png
   bundles:
-  - deps: 
-    hash: 431dd1bd2d9c7c08f73b13fe9971a4f6
+  - deps: 0300000009000000
+    hash: 268b7995dff378ed7fad8aa26dfe2cc7
     id: 0
-    len: 12104
-    name: 10307e2579158266bb48c84de4e31f81.unity3d
-  - deps: 
-    hash: 2797efbf05992dfa31451c217229fdc5
+    len: 6962
+    name: 2cc9d2d03b72c42674e4411525c24790.unity3d
+  - deps: 07000000
+    hash: ce367c8e395bfaea3491fc66e51827fd
     id: 1
-    len: 4080
-    name: 27c5099dfaec456da35432abd9e7519f.unity3d
+    len: 4699
+    name: 2d1102018db1719d419f03859106f3f0.unity3d
   - deps: 
-    hash: e2b752aaa377cbd82e184e0916786d5d
+    hash: 57af103f54d760f876aa8814305c296e
     id: 2
-    len: 131962
-    name: 2e84f72bca55b4a2664807591fbbfe3c.unity3d
+    len: 4386
+    name: 2f0b45fb2f64cd4503a4b7b2fc975a94.unity3d
   - deps: 
-    hash: 57e154c750c43f9b68bb947ea8f6ec1d
+    hash: 55760bfbe0377d8e071a961ff82f7c1d
     id: 3
-    len: 509367
-    name: 2ea539b7e6776608840881784f687b61.unity3d
+    len: 1249347
+    name: 458d7bb25a97c536fb41988a2192cb89.unity3d
   - deps: 
-    hash: 06eef4602257911ede5074bf41041f0e
+    hash: 31ddc577d519639aade5faac4f53aaa2
     id: 4
-    len: 9941
-    name: 34cd07c7b5050c4125779e8fc1682aa7.unity3d
-  - deps: 
-    hash: 011335e28c78e019fc2bcf8cbdb9a93c
-    id: 5
-    len: 63032
-    name: 405201991a9a71af19b75ddc360ad2dd.unity3d
-  - deps: 
-    hash: af2ae251b8e68bb817aa130de4a39929
-    id: 6
-    len: 35914
-    name: 4ff9b922316f65b7af5caa11c61a61fe.unity3d
-  - deps: 
-    hash: c3b1b1cf4ca5b148e51e26cc763b50fa
-    id: 7
-    len: 625695
-    name: 56a148f67bbba8d1c2e1cab4e8e73500.unity3d
-  - deps: 
-    hash: 50d65815e49352af691206e6993489fe
-    id: 8
-    len: 4600
-    name: 582d81dd23ce97cbefd9f25233498fe3.unity3d
+    len: 5108
+    name: 569657f6619057b5506ced6e775264fa.unity3d
   - deps: 
     hash: 761a5588959be25907dbf93b25a35338
-    id: 9
+    id: 5
     len: 1265
     name: 6409362d6eb671d168aa187271cd33a8.unity3d
+  - deps: 010000000300000007000000
+    hash: 6ac25e88143e3429ce2564368da4640e
+    id: 6
+    len: 6961
+    name: aee39d30087b1a649001923b1e92a9ed.unity3d
   - deps: 
-    hash: 4343336ab3a4fd188a305d72971e82ac
-    id: 10
-    len: 20084
-    name: 643866ffc58d995dc55ac0c622318aed.unity3d
-  - deps: 
-    hash: d4395926fc2ed4cd1b91014bf6503b40
-    id: 11
-    len: 8721
-    name: 756e824e3c396004946abce0dfb24f39.unity3d
-  - deps: 
-    hash: eba6d0bb5445db6641bb8955e29125ac
-    id: 12
-    len: 401710
-    name: 7f29c2d974928b09cb4ca9c6e4ba1bee.unity3d
-  - deps: 
-    hash: 04a396778582647234de86cdfe046b81
-    id: 13
-    len: 40339
-    name: 985692b6599af4825887201642c1fc54.unity3d
-  - deps: 
-    hash: e89fb88a1159d296ca1a51e76ae7b89f
-    id: 14
-    len: 81130
-    name: 989028c25bfff14113e19b6f721808e8.unity3d
-  - deps: 
-    hash: 928038a2847e8235d316087cc2a57778
-    id: 15
-    len: 498200
-    name: 99e969c8b6bdaeaf6012f9c767df7903.unity3d
-  - deps: 01000000040000000600000007000000080000000b0000000c0000000d0000000e00000012000000
-    hash: dd52d28bcc17acf4e07a5e780a707998
-    id: 16
-    len: 32505
+    hash: ce2c1a74fddd63347703fcb10e19ff86
+    id: 7
+    len: 6578
+    name: c16c507490c5d89484a9d8ccf0110d93.unity3d
+  - deps: 01000000030000000700000009000000
+    hash: 3c09c19e64955e5acf76feb4a2090278
+    id: 8
+    len: 26426
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: 03c0213ba0a5b615ceb5757ce1594392
-    id: 17
-    len: 7866
-    name: ed4e8e2a86549760785bda16bd4be410.unity3d
-  - deps: 
     hash: e5244ae6d9a956d008b228bc8b81e25b
-    id: 18
+    id: 9
     len: 129517
     name: f027f62d736f2b9930b079d86f3b90c2.unity3d
   - deps: 
-    hash: b7049db39253f4b16ff648d71fdba459
-    id: 19
-    len: 31672
+    hash: e060b00e9d507538100db7179d25dbbb
+    id: 10
+    len: 105701
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll
   - Assets/HotUpdateResources/Other
+  - Assets/HotUpdateResources/Prefab
   - Assets/HotUpdateResources/Scene
   - Assets/HotUpdateResources/TextAsset
   - Assets/HotUpdateResources/UI
