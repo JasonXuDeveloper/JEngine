@@ -220,7 +220,7 @@ namespace libx
             if (!asset.StartsWith("Assets/")) return false;
 
             var ext = Path.GetExtension(asset).ToLower();
-            return ext != ".dll" && ext != ".cs" && ext != ".meta" && ext != ".js" && ext != ".boo";
+            return ext != ".dll" && ext != ".DS_Store" && ext != ".xml" && ext != ".cs" && ext != ".meta" && ext != ".js" && ext != ".boo";
         }
 
         private static bool IsScene(string asset)

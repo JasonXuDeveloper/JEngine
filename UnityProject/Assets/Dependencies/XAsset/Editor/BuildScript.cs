@@ -267,8 +267,16 @@ namespace libx
 					dirs.Add (dir);
 				}
 
-				var asset = new AssetRef { bundle = bundle2Ids [item.bundle], dir = index, name = Path.GetFileName (path) };
-				assets.Add (asset);
+                try
+                {
+                    var asset = new AssetRef
+                        {bundle = bundle2Ids[item.bundle], dir = index, name = Path.GetFileName(path)};
+                    assets.Add(asset);
+                }
+                catch(KeyNotFoundException)
+                {
+                    Debug.LogError($"{Path.GetFileName(path)}资源无法打进AB包");
+                }
 			}
 
 			manifest.dirs = dirs.ToArray ();
