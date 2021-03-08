@@ -105,6 +105,8 @@ namespace JEngine.Editor
                 
             } 
             
+            EditorUtility.ClearProgressBar();
+            
             //转换后保存场景
             bool saveResult = false;
             AssetDatabase.SaveAssets();
@@ -225,6 +227,8 @@ namespace JEngine.Editor
 
             await Task.Delay(50); //延迟一下，动画更丝滑
 
+            EditorUtility.ClearProgressBar();
+            
             //转换后保存场景
             bool saveResult = false;
             AssetDatabase.SaveAssets();
@@ -246,7 +250,6 @@ namespace JEngine.Editor
             string result = saveResult ? "succeeded" : "failed";
             string resultZh = saveResult ? "成功" : "失败";
 
-            EditorUtility.ClearProgressBar();
             EditorUtility.DisplayDialog("ClassBind Result",
                 $"Added {affectCounts} fields into ClassBind: {instance.name} and saved the scene {result}\n" +
                 $"ClassBind: {instance.name}的fields添加了{affectCounts}个，且保存{resultZh}",

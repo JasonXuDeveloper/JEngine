@@ -83,7 +83,9 @@ namespace JEngine.Editor
         public static async void GetXAssetPro()
         {
             string url = "https://api.uoyou.com/v1/download.php";
-            url += $"?file=xasset&account={Setting.XAssetAccount}&password={Setting.XAssetPassword}";
+            var acc = WebUtility.UrlEncode(Setting.XAssetAccount);
+            var pwd = WebUtility.UrlEncode(Setting.XAssetPassword);
+            url += $"?file=xasset&account={acc}&password={pwd}";
             string localPath = Application.dataPath + "/xasset-pro.unitypackage";
 
             installing = true;
