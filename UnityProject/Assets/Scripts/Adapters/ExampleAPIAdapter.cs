@@ -73,41 +73,49 @@ namespace ProjectAdapter
             
             public async void Awake()
             {
-                //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
-                if (instance != null)
+                try
                 {
-                    if (!mAwakeMethodGot)
+                    //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
+                    if (instance != null)
                     {
-                        mAwakeMethod = instance.Type.GetMethod("Awake", 0);
-                        mAwakeMethodGot = true;
-                    }
-            
-                    if (mAwakeMethod != null && !isAwaking)
-                    {
-                        isAwaking = true;
-                        //没激活就别awake
-                        try
+                        if (!mAwakeMethodGot)
                         {
-                            while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
+                            mAwakeMethod = instance.Type.GetMethod("Awake", 0);
+                            mAwakeMethodGot = true;
+                        }
+
+                        if (mAwakeMethod != null && !isAwaking)
+                        {
+                            isAwaking = true;
+                            //没激活就别awake
+                            try
                             {
-                                await Task.Delay(20);
+                                while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
+                                {
+                                    await Task.Delay(20);
+                                }
                             }
+                            catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                            {
+                                return;
+                            }
+
+                            if (destoryed || !Application.isPlaying)
+                            {
+                                return;
+                            }
+
+                            isAwaking = false;
+                            appdomain.Invoke(mAwakeMethod, instance, param0);
+                            awaked = true;
+                            OnEnable();
                         }
-                        catch (MissingReferenceException e)//如果gameObject被删了，就会触发这个，这个时候就直接return了
-                        {
-                            return;
-                        }
-            
-                        if (destoryed || !Application.isPlaying)
-                        {
-                            return;
-                        }
-            
-                        isAwaking = false;
-                        appdomain.Invoke(mAwakeMethod, instance, param0);
-                        awaked = true;
-                        OnEnable();
                     }
+                }
+                catch (NullReferenceException e)
+                {
+                    //如果出现了Null，那就重新Awake
+                    Awake();
                 }
             }
             
