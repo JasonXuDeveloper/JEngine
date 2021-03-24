@@ -71,7 +71,7 @@ public class MonoBehaviourAdapterEditor : Editor
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
 
             //如果JBehaviour
-            var JBehaviourType = Init.appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+            var JBehaviourType = Init.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             var t = instance.Type.ReflectionType;
             if (t.IsSubclassOf(JBehaviourType.ReflectionType))
             {

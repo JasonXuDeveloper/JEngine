@@ -144,6 +144,63 @@ namespace JEngine.Core
                 return null;
             }
         }
+        
+        /// <summary>
+        /// AES 算法加密(ECB模式) 无padding填充，用于分块解密
+        /// </summary>
+        /// <param name="toEncryptArray,">明文</param>
+        /// <param name="Key">密钥</param>
+        /// <returns>加密后base64编码的密文</returns>
+        public static byte[] AesEncryptWithNoPadding(byte[] toEncryptArray, string Key)
+        {
+            try
+            {
+                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+
+                RijndaelManaged rDel = new RijndaelManaged();
+                rDel.Key = keyArray;
+                rDel.Mode = CipherMode.ECB;
+                rDel.Padding = PaddingMode.None;
+
+                ICryptoTransform cTransform = rDel.CreateEncryptor();
+                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+
+                return resultArray;
+            }
+            catch (Exception ex)
+            {
+                Log.PrintError(ex);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// AES 算法解密(ECB模式) 无padding填充，用于分块解密
+        /// </summary>
+        /// <param name="toDecryptArray">密文</param>
+        /// <param name="Key">密钥</param>
+        /// <returns>明文</returns>
+        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string Key)
+        {
+            try
+            {
+                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+
+                RijndaelManaged rDel = new RijndaelManaged();
+                rDel.Key = keyArray;
+                rDel.Mode = CipherMode.ECB;
+                rDel.Padding = PaddingMode.None;
+
+                ICryptoTransform cTransform = rDel.CreateDecryptor();
+                byte[] resultArray = cTransform.TransformFinalBlock(toDecryptArray, 0, toDecryptArray.Length);
+                return resultArray;
+            }
+            catch (Exception ex)
+            {
+                Log.PrintError(ex);
+                return null;
+            }
+        }
     }
 
 }

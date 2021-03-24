@@ -178,8 +178,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static JEngineLanguage Language
 		{
-			get => (JEngineLanguage) (int.Parse(EditorPrefs.GetString($"{prefix}.PanelLanguage", "0")));
-			set => EditorPrefs.SetString($"{prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
+			get => (JEngineLanguage) (int.Parse(PlayerPrefs.GetString($"{prefix}.PanelLanguage", "0")));
+			set => PlayerPrefs.SetString($"{prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
 		}
 
 		/// <summary>
@@ -187,8 +187,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string StartUpScenePath
 		{
-			get => EditorPrefs.GetString($"{prefix}.StartUpScenePath", "Assets/Init.unity");
-			set => EditorPrefs.SetString($"{prefix}.StartUpScenePath", value);
+			get => PlayerPrefs.GetString($"{prefix}.StartUpScenePath", "Assets/Init.unity");
+			set => PlayerPrefs.SetString($"{prefix}.StartUpScenePath", value);
 		}
 
 		/// <summary>
@@ -196,8 +196,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static bool JumpStartUp
 		{
-			get => EditorPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
-			set => EditorPrefs.SetString($"{prefix}.JumpStartUpScene", value ? "1" : "0");
+			get => PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
+			set => PlayerPrefs.SetString($"{prefix}.JumpStartUpScene", value ? "1" : "0");
 		}
 
 		/// <summary>
@@ -205,8 +205,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string LastDLLCleanUpTime
 		{
-			get => EditorPrefs.GetString($"{prefix}.LastDLLCleanUpTime");
-			set => EditorPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
+			get => PlayerPrefs.GetString($"{prefix}.LastDLLCleanUpTime");
+			set => PlayerPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
 		}
 
 		/// <summary>
@@ -214,9 +214,9 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string LocalPath
 		{
-			get => EditorPrefs.GetString($"{prefix}.LocalPath",
+			get => PlayerPrefs.GetString($"{prefix}.LocalPath",
 				new DirectoryInfo(Application.dataPath).FullName + "/Dependencies/JEngine");
-			set => EditorPrefs.SetString($"{prefix}.LocalPath", value);
+			set => PlayerPrefs.SetString($"{prefix}.LocalPath", value);
 		}
 
 		/// <summary>
@@ -224,9 +224,9 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string HotPath
 		{
-			get => EditorPrefs.GetString($"{prefix}.HotPath",
+			get => PlayerPrefs.GetString($"{prefix}.HotPath",
 				new DirectoryInfo(Application.dataPath).Parent.FullName + "/HotUpdateScripts/JEngine");
-			set => EditorPrefs.SetString($"{prefix}.HotPath", value);
+			set => PlayerPrefs.SetString($"{prefix}.HotPath", value);
 		}
 
 		/// <summary>
@@ -234,8 +234,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static bool XAssetLoggedIn
 		{
-			get => EditorPrefs.GetString($"{prefix}.XAssetLoggedIn", "0") == "1";
-			set => EditorPrefs.SetString($"{prefix}.XAssetLoggedIn", value ? "1" : "0");
+			get => PlayerPrefs.GetString($"{prefix}.XAssetLoggedIn", "0") == "1";
+			set => PlayerPrefs.SetString($"{prefix}.XAssetLoggedIn", value ? "1" : "0");
 		}
 		
 		/// <summary>
@@ -243,8 +243,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string XAssetAccount
 		{
-			get => EditorPrefs.GetString($"{prefix}.XAssetAccount","");
-			set => EditorPrefs.SetString($"{prefix}.XAssetAccount", value);
+			get => PlayerPrefs.GetString($"{prefix}.XAssetAccount","");
+			set => PlayerPrefs.SetString($"{prefix}.XAssetAccount", value);
 		}
 
 		
@@ -253,8 +253,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string XAssetPassword
 		{
-			get => EditorPrefs.GetString($"{prefix}.XAssetPassword","");
-			set => EditorPrefs.SetString($"{prefix}.XAssetPassword", value);
+			get => PlayerPrefs.GetString($"{prefix}.XAssetPassword","");
+			set => PlayerPrefs.SetString($"{prefix}.XAssetPassword", value);
 		}
 		
 		/// <summary>
@@ -262,8 +262,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static int XAssetRemain
 		{
-			get => EditorPrefs.GetInt($"{prefix}.XAssetRemain",0);
-			set => EditorPrefs.SetInt($"{prefix}.XAssetRemain", value);
+			get => PlayerPrefs.GetInt($"{prefix}.XAssetRemain",0);
+			set => PlayerPrefs.SetInt($"{prefix}.XAssetRemain", value);
 		}
 
 

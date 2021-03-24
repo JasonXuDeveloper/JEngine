@@ -31,17 +31,29 @@ namespace JEngine.Core
     public class GameStats : MonoBehaviour
     {
         public static float fps;
+        public static bool Debug;
 
         private int _frames = 0;
         private float _timer = 1;
 
-        public static void Init()
+        public static void Initialize()
         {
             if (GameObject.Find("GameStats")) return;
             var go = new GameObject("GameStats");
             go.AddComponent<GameStats>();
             DontDestroyOnLoad(go);
         }
+        
+        private void Update()
+        {
+            if (Debug && Init.Success)
+            {
+                #if UNITY_EDITOR
+                Log.Print($"本帧JStream将DLL分为了{Init.EncryptedCounts}块提供给ILRuntime");
+                #endif
+            }
+        }
+
 
         void FixedUpdate()
         {
