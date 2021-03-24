@@ -41,7 +41,7 @@ public class Init : MonoBehaviour
         
         //开发模式
         #if XASSET_PRO
-        if (!Assets.development)
+        if (Assets.development)
         #else
         if (!Assets.runtimeMode)
         #endif

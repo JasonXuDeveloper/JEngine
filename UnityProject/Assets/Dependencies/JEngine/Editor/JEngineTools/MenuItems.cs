@@ -24,7 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #if UNITY_EDITOR
+using System.Diagnostics;
+using System.IO;
 using UnityEngine;
+using JEngine.Core;
+using JEngine.Editor;
+using libx;
+using UnityEditor;
 namespace JEngine.Editor
 {
     [System.Reflection.Obfuscation(Exclude = true)]
@@ -41,6 +47,41 @@ namespace JEngine.Editor
         {
             Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine");
         }
+        // Xasset Pro,打包需采用AES加密
+#if XASSET_PRO
+        [MenuItem("JEngine/DLL加密 （XASSET PRO请先执行这个再去打Bundles）")]
+        private static void BuildAssetBundles()
+        {
+            DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+            CryptoWindow.ShowWindow();
+            CryptoWindow.Build = s =>
+            {
+                var watch = new Stopwatch();
+                watch.Start();
+                var bytes = DLLMgr.FileToByte(DLLMgr.DllPath);
+                var result = DLLMgr.ByteToFile(CryptoHelper.AesEncrypt(bytes, s),
+                    "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+                watch.Stop();
+                Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
+                if (!result)
+                {
+                    Log.PrintError("DLL转Byte[]出错！");
+                }
+
+                watch = new Stopwatch();
+                watch.Start();
+                BuildScript.BuildRules();
+                watch.Stop();
+                Log.Print("ApplyBuildRules in: " + watch.ElapsedMilliseconds + " ms.");
+
+                watch = new Stopwatch();
+                watch.Start();
+                BuildScript.BuildAssetBundles();
+                watch.Stop();
+                Log.Print("BuildAssetBundles in: " + watch.ElapsedMilliseconds + " ms.");
+            };
+        }
+#endif
     }
 }
 #endif
