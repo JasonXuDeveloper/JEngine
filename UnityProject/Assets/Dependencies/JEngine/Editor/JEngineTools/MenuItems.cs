@@ -49,7 +49,7 @@ namespace JEngine.Editor
         }
         // Xasset Pro,打包需采用AES加密
 #if XASSET_PRO
-        [MenuItem("JEngine/Build/Bundles For Aes加密 ")]
+        [MenuItem("JEngine/DLL加密 （XASSET PRO请先执行这个再去打Bundles）")]
         private static void BuildAssetBundles()
         {
             DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
