@@ -117,7 +117,9 @@ public class Init : MonoBehaviour
             return;
         }
 
+#if UNITY_EDITOR
         Log.Print($"JStream将DLL分为了{Init.EncryptedCounts}块，并成功加载到ILRuntime");
+#endif
         Success = true;
         
         InitILrt.InitializeILRuntime(Appdomain);
