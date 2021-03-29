@@ -37,6 +37,9 @@ namespace JEngine.Core
         {
             Reset();
         }
+        
+        public int Progress => _progress;
+        private int _progress;
 
         private bool _executing = false;
         private bool _parallel = false;
@@ -194,6 +197,7 @@ namespace JEngine.Core
 
         private void _reset()
         {
+            _progress = 0;
             _executing = false;
             _parallel = false;
             _cancel = false;
@@ -226,6 +230,7 @@ namespace JEngine.Core
 
             for (int i = 0; i < _toDo.Count; i++)
             {
+                _progress++;
                 int index = i;
 
                 if (_cancel || !Application.isPlaying) return this;
