@@ -102,16 +102,11 @@ namespace libx
                 listener.OnVersion(ver);
             }
         }
-
-        private void Awake()
-        {
-            var Init = FindObjectOfType<Init>();
-            Init.enabled = false;
-            DontDestroyOnLoad(Init.gameObject);
-        }
-
+        
         private void Start()
         {
+            baseURL = baseURL.EndsWith("/") ? baseURL : baseURL + "/";
+            
             _downloader = gameObject.GetComponent<Downloader>();
             _downloader.onUpdate = OnUpdate;
             _downloader.onFinished = OnComplete;

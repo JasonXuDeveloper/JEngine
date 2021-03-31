@@ -95,8 +95,8 @@ namespace JEngine.Editor
                          {
                              if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
                              {
-                                 DLLMgr.Delete(file.FullName.Replace("Hidden~", "../Dll"));
-                                 File.Move(file.FullName, file.FullName.Replace("Hidden~", "../Dll"));
+                                 DLLMgr.Delete(file.FullName.Replace("Hidden~", "../.."));
+                                 File.Move(file.FullName, file.FullName.Replace("Hidden~", "../.."));
                                  Log.Print(
                                      $"Find new referenced dll `{name}`, note that your hot update code may not be able " +
                                      $"to run without rebuild application\n" +
