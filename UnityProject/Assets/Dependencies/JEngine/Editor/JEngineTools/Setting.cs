@@ -705,7 +705,6 @@ namespace JEngine.Editor
 				if (GUILayout.Button(GetString(MISSING_ASSEMBLY_BTN), GUILayout.MinHeight(50)))
 				{
 					PlayerSettings.allowUnsafeCode = false;
-					PlayerSettings.allowUnsafeCode = true;
 				}
 			});
 

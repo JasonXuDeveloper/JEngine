@@ -47,7 +47,6 @@
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
-    <Compile Include="JEngine\Core\BindableProperty.cs" />
     <Compile Include="JEngine\UI\UIKit\UIUtility.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />

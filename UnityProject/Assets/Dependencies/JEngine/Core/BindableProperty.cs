@@ -29,7 +29,7 @@ namespace JEngine.Core
 {
     public class BindableProperty<T>
     {
-        public delegate void onChange();
+        public delegate void onChange(T val);
         public onChange OnChange;
 
         private T _value = default(T);
@@ -44,7 +44,7 @@ namespace JEngine.Core
                 if (!Equals(_value, value))
                 {
                     _value = value;
-                    OnChange?.Invoke();
+                    OnChange?.Invoke(_value);
                 }
             }
         }

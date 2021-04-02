@@ -4,7 +4,7 @@ using UnityEditor;
 
 namespace JEngine.Editor
 {
-    public class XAsset
+    internal static class XAsset
     {
         private static bool _delaying = false;
         private static bool _verifying = false;

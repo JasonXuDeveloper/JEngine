@@ -34,7 +34,7 @@ using UnityEngine;
 
 namespace JEngine.Editor
 {
-    internal class Clean
+    internal static class Clean
          {
              private static bool isDone = true;
      

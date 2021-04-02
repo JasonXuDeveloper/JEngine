@@ -86,11 +86,16 @@ namespace JEngine.UI
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="val"></param>
+        /// <param name="onChange">非必填optional</param>
         /// <returns></returns>
-        public JUI Bind<T>(BindableProperty<T> val)
+        public JUI Bind<T>(BindableProperty<T> val,Action<T> onChange = null)
         {
             _bind = true;
-            val.OnChange += () => Message();
+            val.OnChange += (T val) =>
+            {
+                Message();
+                onChange?.Invoke(val);
+            };
             return this;
         }
 
