@@ -16,7 +16,6 @@ using System.Reflection.Emit;
 
 using ProtoBuf.Serializers;
 using System.Threading;
-using System.IO;
 
 
 namespace ProtoBuf.Meta

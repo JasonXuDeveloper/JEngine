@@ -30,11 +30,14 @@ namespace JEngine.Core
 {
     public class GameStats : MonoBehaviour
     {
-        public static float fps;
+        public static float FPS => _frames;
         public static bool Debug;
+        public static long TotalFrames => _totalFrames;
 
-        private int _frames = 0;
-        private float _timer = 1;
+        private static int _frames = 0;
+        private static float _timer = 1;
+        private static long _totalFrames = 0;
+        private static long _encryptedCounts = 0;
 
         public static void Initialize()
         {
@@ -46,10 +49,17 @@ namespace JEngine.Core
         
         private void Update()
         {
+            //进入热更了再开始
             if (Debug && Init.Success)
             {
+                //仅限于Editor的部分
                 #if UNITY_EDITOR
-                Log.Print($"本帧JStream将DLL分为了{Init.EncryptedCounts}块提供给ILRuntime");
+                if (_encryptedCounts != Init.EncryptedCounts)
+                {
+                    var diff = Init.EncryptedCounts - _encryptedCounts;
+                    Log.Print($"第{_totalFrames}帧JStream总共将热更DLL分为了{Init.EncryptedCounts}块，新增{diff}块，进行解释执行");
+                    _encryptedCounts = Init.EncryptedCounts;
+                }
                 #endif
             }
         }
@@ -57,10 +67,15 @@ namespace JEngine.Core
 
         void FixedUpdate()
         {
+            //增加帧率
             ++_frames;
+            ++_totalFrames;
+            
+            //计时器刷新
             _timer -= Time.deltaTime;
+            
+            //如果计时器时间到了，就更新
             if (!(_timer <= 0)) return;
-            GameStats.fps = _frames;
             _frames = 0;
             _timer = 1;
         }

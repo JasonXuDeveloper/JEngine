@@ -26,13 +26,11 @@
 
 #define SOCKET_IO_DEBUG			// Uncomment this for debug
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using WebSocketSharp;
-using WebSocketSharp.Net;
 
 namespace JEngine.Net
 {

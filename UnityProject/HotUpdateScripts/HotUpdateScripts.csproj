@@ -91,9 +91,6 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Dlls\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
       <HintPath>..\Library\ScriptAssemblies\UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
     </Reference>
@@ -141,6 +138,9 @@
     </Reference>
     <Reference Include="WebSocketSharp">
       <HintPath>..\Library\ScriptAssemblies\WebSocketSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

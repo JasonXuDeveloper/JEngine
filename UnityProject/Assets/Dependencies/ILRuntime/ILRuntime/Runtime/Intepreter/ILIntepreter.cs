@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 using ILRuntime.Runtime.Enviorment;
@@ -11,7 +10,6 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter.OpCodes;
 using ILRuntime.Runtime.Debugger;
 using ILRuntime.CLR.Utils;
-using ILRuntime.Other;
 
 namespace ILRuntime.Runtime.Intepreter
 {

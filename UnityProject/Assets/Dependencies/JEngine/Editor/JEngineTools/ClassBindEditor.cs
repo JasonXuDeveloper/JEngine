@@ -1,15 +1,11 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using JEngine.Core;
-using JEngine.Editor;
 using UnityEditor.SceneManagement;
-using UnityEditorInternal;
-using UnityEngine.SceneManagement;
 using ReorderableList = Malee.List.ReorderableList;
 
 namespace JEngine.Editor

@@ -499,7 +499,7 @@ namespace JEngine.Core
                 int duration;
                 if (FrameMode)//等待
                 {
-                    duration = (int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f);
+                    duration = (int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
                     duration = (int)(duration / TimeScale);
                 }
                 else

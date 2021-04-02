@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ILRuntime.Runtime.Intepreter.OpCodes
+﻿namespace ILRuntime.Runtime.Intepreter.OpCodes
 {
     enum OpCodeEnum
     {

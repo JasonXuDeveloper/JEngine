@@ -5,7 +5,6 @@ using JEngine.Core;
 using JEngine.Helper;
 using libx;
 using UnityEngine;
-using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public class Init : MonoBehaviour
@@ -17,7 +16,7 @@ public class Init : MonoBehaviour
     public static bool Success;
 
     #if UNITY_EDITOR
-    public static int EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
+    public static long EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
     #endif
     
     private const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
@@ -117,11 +116,7 @@ public class Init : MonoBehaviour
             return;
         }
 
-#if UNITY_EDITOR
-        Log.Print($"JStream将DLL分为了{Init.EncryptedCounts}块，并成功加载到ILRuntime");
-#endif
         Success = true;
-        
         InitILrt.InitializeILRuntime(Appdomain);
     }
     

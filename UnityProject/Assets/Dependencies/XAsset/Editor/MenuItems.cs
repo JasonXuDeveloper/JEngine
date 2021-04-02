@@ -27,12 +27,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using JEngine.Core;
 using JEngine.Editor;
-using Debug = UnityEngine.Debug;
 
 namespace libx
 {

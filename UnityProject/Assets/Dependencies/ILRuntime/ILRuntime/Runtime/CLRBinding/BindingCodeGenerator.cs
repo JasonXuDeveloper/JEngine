@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Other;
 
 namespace ILRuntime.Runtime.CLRBinding

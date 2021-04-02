@@ -246,7 +246,7 @@ namespace JEngine.Core
                 if (_delayFrames.ContainsKey(index))
                 {
                     //计算1帧时间(ms)
-                    var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate);
+                    var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
                     var duration = durationPerFrame * _delayFrames[index];
                     await Task.Delay(duration);
                     continue;

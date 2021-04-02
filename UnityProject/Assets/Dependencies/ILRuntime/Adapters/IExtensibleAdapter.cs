@@ -1,12 +1,7 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using ILRuntime.Other;
-using System;
-using System.Collections;
+﻿using System;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.CLR.Method;
-using ProtoBuf;
 
 namespace ProtoBuf
 {

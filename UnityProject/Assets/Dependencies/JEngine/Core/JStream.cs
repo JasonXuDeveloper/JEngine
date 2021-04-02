@@ -14,7 +14,7 @@ namespace JEngine.Core
         private string _defaultKey = "hello_JEngine_!_";
         
         #if UNITY_EDITOR
-        public int EncryptedCounts { get; set; }
+        public long EncryptedCounts { get; set; }
         #endif
 
         // Note that _capacity == _buffer.Length for non-user-provided byte[]'s

@@ -25,20 +25,15 @@
 // THE SOFTWARE.
 using libx;
 using System;
-using System.ComponentModel;
 using Malee.List;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using ProjectAdapter;
 using UnityEngine;
-using UnityEngine.Analytics;
 using Component = UnityEngine.Component;
 #if UNITY_EDITOR
-using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 

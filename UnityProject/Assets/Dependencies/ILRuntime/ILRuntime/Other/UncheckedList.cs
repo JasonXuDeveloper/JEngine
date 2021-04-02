@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.Versioning;
-using System.Threading;
 
 namespace ILRuntime.Other
 {

@@ -24,9 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace JEngine.Core
 {
@@ -35,19 +35,19 @@ namespace JEngine.Core
     {
         public string key;
 
-        [HideInInspector]public UnityEngine.UI.Text _text;
+        [FormerlySerializedAs("_text")] [HideInInspector]public UnityEngine.UI.Text text;
 
         private void Start()
         {
             Localization.AddText(this);
-            _text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
+            text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
             SetText();
         }
 
         public async void SetText()
         {
             await Task.Delay(100);
-            _text.text = Localization.GetString(key);
+            text.text = Localization.GetString(key);
         }
     }
 }

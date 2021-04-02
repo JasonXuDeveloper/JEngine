@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
 using JEngine.Interface;
-using ProjectAdapter;
-using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Helper

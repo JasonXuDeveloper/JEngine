@@ -37,7 +37,7 @@ namespace JEngine.Editor
 {
 	internal class Setting : EditorWindow
 	{
-		private const string prefix = "JEngine.Editor.Setting";
+		private static string prefix;
 
 		#region 代表了不同字符串的序号的常量
 
@@ -305,6 +305,7 @@ namespace JEngine.Editor
 		
 		private void OnEnable()
 		{
+			prefix = $"JEngine.Editor.Setting.{Application.productName}";
 			if (sceneSearchField == null) sceneSearchField = new AutocompleteSearchField();
 			sceneSearchField.onInputChanged = (s) => { sceneSearchPattern = s; };
 			sceneSearchField.onConfirm = (s) => { sceneSearchPattern = s; };
@@ -714,7 +715,7 @@ namespace JEngine.Editor
 			{
 				EditorGUILayout.EndScrollView();
 			}
-			catch (Exception e)
+			catch
 			{
 				// ignored
 			}

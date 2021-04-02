@@ -1,7 +1,6 @@
 ﻿using Google.Protobuf.Reflection;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 
 namespace ProtoBuf.Reflection

@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
@@ -336,25 +335,6 @@ namespace libx
                     return null;
             }
 #endif
-
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            switch (target)
-            {
-                case RuntimePlatform.Android:
-                    return "Android";
-                case RuntimePlatform.IPhonePlayer:
-                    return "iOS";
-                case RuntimePlatform.WebGLPlayer:
-                    return "WebGL";
-                case RuntimePlatform.WindowsPlayer:
-                case RuntimePlatform.WindowsEditor:
-                    return "Windows";
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
-                    return "OSX";
-                default:
-                    return null;
-            }
         }
 
         private string GetDownloadURL(string filename)

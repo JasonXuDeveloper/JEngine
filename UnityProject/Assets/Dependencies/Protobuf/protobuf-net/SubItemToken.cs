@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 namespace ProtoBuf
 {
     /// <summary>

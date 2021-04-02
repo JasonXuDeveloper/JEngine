@@ -24,13 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #if UNITY_EDITOR
-using System.Diagnostics;
-using System.IO;
 using UnityEngine;
-using JEngine.Core;
-using JEngine.Editor;
-using libx;
-using UnityEditor;
+
 namespace JEngine.Editor
 {
     [System.Reflection.Obfuscation(Exclude = true)]

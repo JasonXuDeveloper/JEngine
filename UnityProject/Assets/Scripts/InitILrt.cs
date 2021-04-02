@@ -1,16 +1,7 @@
-﻿using System;
-using LitJson;
-using UnityEngine;
+﻿using LitJson;
 using JEngine.Helper;
 using System.Threading;
-using ILRuntime.CLR.Method;
-using ILRuntime.Runtime.Stack;
-using ILRuntime.CLR.TypeSystem;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ILRuntime.Runtime.Generated;
-using ILRuntime.Runtime.Intepreter;
-using JEngine.Core;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class InitILrt

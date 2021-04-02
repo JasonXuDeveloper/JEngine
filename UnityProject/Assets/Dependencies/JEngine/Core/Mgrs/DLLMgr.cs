@@ -26,7 +26,6 @@
 
 using System.Diagnostics;
 using System.IO;
-using UnityEditor;
 
 namespace JEngine.Core
 {

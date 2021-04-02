@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System.Text;
-using ILRuntime.Runtime.Enviorment;
 using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.CLRBinding

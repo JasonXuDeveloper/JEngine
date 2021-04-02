@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using ILRuntime.Other;
+﻿using System.Collections.Generic;
 using System;
 using System.Collections;
 using ILRuntime.Runtime.Enviorment;

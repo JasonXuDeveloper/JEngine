@@ -25,7 +25,6 @@
  * THE SOFTWARE.
  */
 #endregion
-using UnityEngine;
 
 namespace JEngine.Net
 {
