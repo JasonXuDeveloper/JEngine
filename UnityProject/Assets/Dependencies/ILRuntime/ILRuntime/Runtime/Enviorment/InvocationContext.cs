@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using ILRuntime.CLR.Method;
+using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
@@ -198,6 +201,25 @@ namespace ILRuntime.Runtime.Enviorment
             paramCnt = 0;
             hasReturn = method.ReturnType != domain.VoidType;
         }
+
+        internal void SetInvoked(StackObject* esp)
+        {
+            this.esp = esp - 1;
+            invocated = true;
+        }
+
+        internal StackObject* ESP
+        {
+            get => esp;
+            set
+            {
+                esp = value;
+            }
+        }
+
+        internal ILIntepreter Intepreter => intp;
+
+        internal IList<object> ManagedStack => mStack;
 
         public void PushBool(bool val)
         {

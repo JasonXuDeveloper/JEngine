@@ -1,7 +1,7 @@
-﻿using LitJson;
+﻿using System;
+using LitJson;
 using JEngine.Helper;
 using System.Threading;
-using ILRuntime.Runtime.Generated;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class InitILrt
@@ -28,8 +28,16 @@ public static class InitILrt
         //LitJson适配
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
         
-        //CLR绑定
-        CLRBindings.Initialize(appdomain);
+        //CLR绑定（有再去绑定）
+        Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
+        if (t != null)
+        {
+            t.GetMethod("Initialize")?.Invoke(null, new object[]
+            {
+                appdomain
+            });
+        }
+        
         Init.Inited = true;
     }
 }

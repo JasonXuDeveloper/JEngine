@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Net.Sockets;
 using ILRuntime.CLR.TypeSystem;
@@ -305,7 +307,7 @@ namespace ILRuntime.Runtime.Debugger
             if (msg.IsLambda)
             {
                 ILMethod found = null;
-                foreach (var i in domain.LoadedTypes)
+                foreach (var i in domain.LoadedTypes.ToArray())
                 {
                     var vt = i.Value as ILType;
                     if (vt != null)

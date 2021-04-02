@@ -97,7 +97,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
         bool m_bGetBaseExceptionGot = false;
         IMethod m_GetBaseException = null;
 
-        public System.Exception GetBaseException()
+        public override System.Exception GetBaseException()
         {
             if (!m_bGetBaseExceptionGot)
             {
@@ -265,7 +265,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
         bool m_bToStringGot = false;
         IMethod m_ToString = null;
 
-        public System.String ToString()
+        public override System.String ToString()
         {
             if (!m_bToStringGot)
             {
@@ -286,7 +286,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
         bool m_bGetObjectDataGot = false;
         IMethod m_GetObjectData = null;
 
-        public void GetObjectData(System.Runtime.Serialization.SerializationInfo arg0,
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo arg0,
             System.Runtime.Serialization.StreamingContext arg1)
         {
             if (!m_bGetObjectDataGot)
@@ -308,7 +308,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
         bool m_bGetTypeGot = false;
         IMethod m_GetType = null;
 
-        public System.Type GetType()
+        public new System.Type GetType()
         {
             if (!m_bGetTypeGot)
             {

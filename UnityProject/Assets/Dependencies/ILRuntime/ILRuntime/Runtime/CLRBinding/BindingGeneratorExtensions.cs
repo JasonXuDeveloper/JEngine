@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 using System.Text;
 using ILRuntime.Runtime.Enviorment;
 
@@ -172,6 +173,10 @@ namespace ILRuntime.Runtime.CLRBinding
                         else
                             throw new NotSupportedException();
                     }
+                    else if (p.GetElementType().IsEnum)
+                    {
+                        sb.AppendLine(string.Format("            {0} @{1} = ({0})__intp.RetriveInt32(ptr_of_this_method, __mStack);", realClsName, name));
+                    }
                     else
                     {
                         sb.AppendLine(string.Format("            {0} @{1} = ({0})typeof({0}).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack));", realClsName, name));
@@ -332,6 +337,12 @@ namespace ILRuntime.Runtime.CLRBinding
                 }
                 else
                     throw new NotImplementedException();
+            }
+            else if(type.IsEnum)
+            {
+                sb.AppendLine("                        ___dst->ObjectType = ObjectTypes.Integer;");
+                sb.Append("                        ___dst->Value = (int)@" + paramName);
+                sb.AppendLine(";");
             }
             else
             {

@@ -534,8 +534,8 @@ namespace ILRuntime.Runtime.Enviorment
             string baseType;
             List<string> genericParams;
             bool isArray;
-
-            ParseGenericType(fullname, out baseType, out genericParams, out isArray);
+            byte rank;
+            ParseGenericType(fullname, out baseType, out genericParams, out isArray, out rank);
 
 
             bool isByRef = baseType.EndsWith("&");
@@ -557,7 +557,7 @@ namespace ILRuntime.Runtime.Enviorment
                     for (int i = 0; i < genericArguments.Length; i++)
                     {
                         string key = null;
-                        if(bt is ILType ilt)
+                        if (bt is ILType ilt)
                         {
                             key = ilt.TypeDefinition.GenericParameters[i].FullName;
                         }
@@ -586,7 +586,7 @@ namespace ILRuntime.Runtime.Enviorment
                             /*if (genericParams[i].Contains(","))
                                 sb.Append(genericParams[i].Substring(0, genericParams[i].IndexOf(',')));
                             else*/
-                                sb.Append(genericParams[i]);
+                            sb.Append(genericParams[i]);
                         }
                         sb.Append('>');
                         var asmName = sb.ToString();
@@ -597,7 +597,7 @@ namespace ILRuntime.Runtime.Enviorment
 
                 if (isArray)
                 {
-                    bt = bt.MakeArrayType(1);
+                    bt = bt.MakeArrayType(rank);
                     if (bt is CLRType)
                         clrTypeMapping[bt.TypeForCLR] = bt;
                     mapType[bt.FullName] = bt;
@@ -645,15 +645,17 @@ namespace ILRuntime.Runtime.Enviorment
             return null;
         }
 
-        internal static void ParseGenericType(string fullname, out string baseType, out List<string> genericParams, out bool isArray)
+        internal static void ParseGenericType(string fullname, out string baseType, out List<string> genericParams, out bool isArray, out byte rank)
         {
             StringBuilder sb = new StringBuilder();
             int depth = 0;
+            rank = 0;
             baseType = "";
             genericParams = null;
             if (fullname.Length > 2 && fullname.Substring(fullname.Length - 2) == "[]")
             {
                 fullname = fullname.Substring(0, fullname.Length - 2);
+                rank = 1;
                 isArray = true;
             }
             else
@@ -680,6 +682,8 @@ namespace ILRuntime.Runtime.Enviorment
                             name = name.Substring(1, name.Length - 2);
                         if (!string.IsNullOrEmpty(name))
                             genericParams.Add(name);
+                        else
+                            ++rank;
                         sb.Length = 0;
                         continue;
                     }
@@ -698,6 +702,7 @@ namespace ILRuntime.Runtime.Enviorment
                                 if (!isArray)
                                 {
                                     isArray = true;
+                                    ++rank;
                                 }
                                 else
                                 {
@@ -995,15 +1000,16 @@ namespace ILRuntime.Runtime.Enviorment
         /// Prewarm all methods of the specified type
         /// </summary>
         /// <param name="type"></param>
-        public void Prewarm(string type)
+        /// <param name="recursive"></param>
+        public void Prewarm(string type, bool recursive = true)
         {
             IType t = GetType(type);
             if (t == null || t is CLRType)
                 return;
             var methods = t.GetMethods();
-            foreach(var i in methods)
+            foreach (var i in methods)
             {
-                ((ILMethod)i).Prewarm();
+                ((ILMethod)i).Prewarm(recursive);
             }
         }
 
@@ -1011,7 +1017,8 @@ namespace ILRuntime.Runtime.Enviorment
         /// Prewarm all methods specified by the parameter
         /// </summary>
         /// <param name="info"></param>
-        public void Prewarm(PrewarmInfo[] info)
+        /// <param name="recursive"></param>
+        public void Prewarm(PrewarmInfo[] info, bool recursive = true)
         {
             foreach(var i in info)
             {
@@ -1026,7 +1033,7 @@ namespace ILRuntime.Runtime.Enviorment
                         ILMethod m = (ILMethod)j;
                         if(m.Name == mn && m.GenericParameterCount == 0)
                         {
-                            m.Prewarm();
+                            m.Prewarm(recursive);
                         }
                     }
                 }

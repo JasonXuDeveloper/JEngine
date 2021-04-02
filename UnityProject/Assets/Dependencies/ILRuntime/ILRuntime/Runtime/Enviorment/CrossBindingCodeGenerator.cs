@@ -1,10 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using ILRuntime.CLR.Method;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Runtime.Intepreter;
 using System.Reflection;
-using UnityEngine;
+using System.Threading;
 
 namespace ILRuntime.Runtime.Enviorment
 {
@@ -23,17 +25,8 @@ namespace ILRuntime.Runtime.Enviorment
         public static string GenerateCrossBindingAdapterCode(Type baseType, string nameSpace)
         {
             StringBuilder sb = new StringBuilder();
-            List<MethodInfo> methods = baseType
-                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).ToList();
             List<MethodInfo> virtMethods = new List<MethodInfo>();
-            foreach (var i in methods)
-            {
-                if (i.IsVirtual || i.IsAbstract || baseType.IsInterface)
-                    virtMethods.Add(i);
-            }
-
-            bool isMono = baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
-
+            GetMethods(baseType, virtMethods);
             string clsName, realClsName;
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
@@ -41,14 +34,8 @@ namespace ILRuntime.Runtime.Enviorment
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-");
-            if (isMono)
-            {
-                sb.AppendLine("using UnityEngine;");
-                sb.AppendLine("using System.Threading.Tasks;");
-                sb.AppendLine("");
-            }
-            sb.Append(@"namespace ");
+
+namespace ");
             sb.AppendLine(nameSpace);
             sb.Append(@"{   
     public class ");
@@ -100,22 +87,9 @@ using ILRuntime.Runtime.Intepreter;
             public ILTypeInstance ILInstance { get { return instance; } }
 ");
             GenerateCrossBindingMethodBody(sb, virtMethods);
-            
-            //mono脚本
-            if (isMono)
+            sb.Append(@"            public override string ToString()
             {
-                var lines = File.ReadAllLines("Assets/Dependencies/JEngine/Templates/MonoAdapter.txt");
-                foreach (var line in lines)
-                {
-                    sb.AppendLine(line);
-                }
-            }
-            
-            sb.Append(@"
-            public override string ToString()
-            {
-                IMethod m = appdomain.ObjectType.GetMethod(");
-            sb.AppendLine("\"ToString\", 0);");
+                IMethod m = appdomain.ObjectType.GetMethod("); sb.AppendLine("\"ToString\", 0);");
             sb.AppendLine(@"                m = instance.Type.GetVirtualMethod(m);
                 if (m == null || m is ILMethod)
                 {
@@ -141,10 +115,23 @@ using ILRuntime.Runtime.Intepreter;
                 bool isProperty = i.IsSpecialName && (i.Name.StartsWith("get_") || i.Name.StartsWith("set_"));
                 PropertyGenerateInfo pInfo = null;
                 bool isGetter = false;
+                bool isIndexFunc = false;
+                bool isByRef;
+                string clsName, realClsName;
                 StringBuilder oriBuilder = null;
+
                 if (isProperty)
                 {
                     string pName = i.Name.Substring(4);
+                    if (i.Name == "get_Item" || i.Name == "set_Item")
+                    {
+                        StringBuilder sBuilder = new StringBuilder();
+                        var p = i.GetParameters()[0];
+                        p.ParameterType.GetClassName(out clsName, out realClsName, out isByRef, true);
+                        pName = $"this [{realClsName + " " + p.Name}]";
+
+                        isIndexFunc = true;
+                    }
                     isGetter = i.Name.StartsWith("get_");
                     oriBuilder = sb;
                     sb = new StringBuilder();
@@ -154,7 +141,6 @@ using ILRuntime.Runtime.Intepreter;
                         pInfo.Name = pName;
                         pendingProperties[pName] = pInfo;
                     }
-
                     if (pInfo.ReturnType == null)
                     {
                         if (isGetter)
@@ -167,13 +153,10 @@ using ILRuntime.Runtime.Intepreter;
                         }
                     }
                 }
-
                 var param = i.GetParameters();
                 string modifier = i.IsFamily ? "protected" : "public";
-                string overrideStr = i.DeclaringType.IsInterface ? "" : "override ";
-                string clsName, realClsName;
+                string overrideStr = i.DeclaringType.IsInterface ? "" : (i.IsFinal ? "new " : "override ");
                 string returnString = "";
-                bool isByRef;
                 if (i.ReturnType != typeof(void))
                 {
                     i.ReturnType.GetClassName(out clsName, out realClsName, out isByRef, true);
@@ -181,7 +164,6 @@ using ILRuntime.Runtime.Intepreter;
                 }
                 else
                     realClsName = "void";
-
                 if (!isProperty)
                 {
                     sb.Append(string.Format("            {0} {3}{1} {2}(", modifier, realClsName, i.Name, overrideStr));
@@ -194,36 +176,32 @@ using ILRuntime.Runtime.Intepreter;
                     pInfo.Modifier = modifier;
                     pInfo.OverrideString = overrideStr;
                 }
-
                 if (!i.IsAbstract)
                 {
-                    sb.AppendLine(string.Format("                if (m{0}_{1}.CheckShouldInvokeBase(this.instance))",
-                        i.Name, index));
+                    sb.AppendLine(string.Format("                if (m{0}_{1}.CheckShouldInvokeBase(this.instance))", i.Name, index));
                     if (isProperty)
                     {
+                        string baseMethodName = isIndexFunc
+                            ? $"base[{i.GetParameters()[0].Name}]"
+                            : $"base.{i.Name.Substring(4)}";
                         if (isGetter)
                         {
-                            sb.AppendLine(string.Format("                    return base.{0};", i.Name.Substring(4)));
+                            sb.AppendLine(string.Format("                    return {0};", baseMethodName));
                         }
                         else
                         {
-                            sb.AppendLine(string.Format("                    base.{0} = value;", i.Name.Substring(4)));
+                            sb.AppendLine(string.Format("                    {0} = value;", baseMethodName));
                         }
                     }
                     else
-                        sb.AppendLine(string.Format("                    {2}base.{0}({1});", i.Name,
-                            GetParameterName(param, true), returnString));
-
+                        sb.AppendLine(string.Format("                    {2}base.{0}({1});", i.Name, GetParameterName(param, true), returnString));
                     sb.AppendLine("                else");
-                    sb.AppendLine(string.Format("                    {3}m{0}_{1}.Invoke(this.instance{2});", i.Name,
-                        index, GetParameterName(param, false), returnString));
+                    sb.AppendLine(string.Format("                    {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index, GetParameterName(param, false), returnString));
                 }
                 else
                 {
-                    sb.AppendLine(string.Format("                {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index,
-                        GetParameterName(param, false), returnString));
+                    sb.AppendLine(string.Format("                {3}m{0}_{1}.Invoke(this.instance{2});", i.Name, index, GetParameterName(param, false), returnString));
                 }
-
                 if (isProperty)
                 {
                     if (isGetter)
@@ -234,7 +212,6 @@ using ILRuntime.Runtime.Intepreter;
                     {
                         pInfo.SettingBody = sb.ToString();
                     }
-
                     sb = oriBuilder;
                 }
                 else
@@ -242,7 +219,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.AppendLine("            }");
                     sb.AppendLine();
                 }
-
                 index++;
             }
 
@@ -252,8 +228,7 @@ using ILRuntime.Runtime.Intepreter;
                 string clsName, realClsName;
                 bool isByRef;
                 pInfo.ReturnType.GetClassName(out clsName, out realClsName, out isByRef, true);
-                sb.AppendLine(string.Format("            {0} {3}{1} {2}", pInfo.Modifier, realClsName, pInfo.Name,
-                    pInfo.OverrideString));
+                sb.AppendLine(string.Format("            {0} {3}{1} {2}", pInfo.Modifier, realClsName, pInfo.Name, pInfo.OverrideString));
                 sb.AppendLine("            {");
                 if (!string.IsNullOrEmpty(pInfo.GetterBody))
                 {
@@ -263,7 +238,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.AppendLine("            }");
 
                 }
-
                 if (!string.IsNullOrEmpty(pInfo.SettingBody))
                 {
                     sb.AppendLine("            set");
@@ -272,7 +246,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.AppendLine("            }");
 
                 }
-
                 sb.AppendLine("            }");
                 sb.AppendLine();
             }
@@ -289,44 +262,52 @@ using ILRuntime.Runtime.Intepreter;
                 if (NeedGenerateCrossBindingMethodClass(param))
                 {
                     GenerateCrossBindingMethodClass(sb, i.Name, index, param, i.ReturnType);
-                    sb.AppendLine(string.Format("        static {0}_{1}Info m{0}_{1} = new {0}_{1}Info();", i.Name,
-                        index));
+                    sb.AppendLine(string.Format("        static {0}_{1}Info m{0}_{1} = new {0}_{1}Info();", i.Name, index));
                 }
                 else
                 {
                     if (i.ReturnType != typeof(void))
                     {
-                        sb.AppendLine(string.Format(
-                            "        static CrossBindingFunctionInfo<{0}> m{1}_{2} = new CrossBindingFunctionInfo<{0}>(\"{1}\");",
-                            GetParametersString(param, i.ReturnType), i.Name, index));
+                        sb.AppendLine(string.Format("        static CrossBindingFunctionInfo<{0}> m{1}_{2} = new CrossBindingFunctionInfo<{0}>(\"{1}\");", GetParametersString(param, i.ReturnType), i.Name, index));
                     }
                     else
                     {
                         if (param.Length > 0)
-                            sb.AppendLine(string.Format(
-                                "        static CrossBindingMethodInfo<{0}> m{1}_{2} = new CrossBindingMethodInfo<{0}>(\"{1}\");",
-                                GetParametersString(param, i.ReturnType), i.Name, index));
+                            sb.AppendLine(string.Format("        static CrossBindingMethodInfo<{0}> m{1}_{2} = new CrossBindingMethodInfo<{0}>(\"{1}\");", GetParametersString(param, i.ReturnType), i.Name, index));
                         else
-                            sb.AppendLine(string.Format(
-                                "        static CrossBindingMethodInfo m{0}_{1} = new CrossBindingMethodInfo(\"{0}\");",
-                                i.Name, index));
+                            sb.AppendLine(string.Format("        static CrossBindingMethodInfo m{0}_{1} = new CrossBindingMethodInfo(\"{0}\");", i.Name, index));
                     }
                 }
-
                 index++;
             }
         }
 
         static bool ShouldSkip(MethodInfo info)
         {
+            var paramInfos = info.GetParameters();
             if (info.Name == "ToString" || info.Name == "GetHashCode" || info.Name == "Finalize")
-                return info.GetParameters().Length == 0;
-            if (info.Name == "Equals" && info.GetParameters().Length == 1 &&
-                info.GetParameters()[0].ParameterType == typeof(object))
+                return paramInfos.Length == 0;
+            if (info.Name == "Equals" && paramInfos.Length == 1 && paramInfos[0].ParameterType == typeof(object))
                 return true;
+            if (info.IsAssembly || info.IsFamilyOrAssembly || info.IsPrivate || info.IsFinal)
+                return true;
+            if (info.GetCustomAttributes(typeof(ObsoleteAttribute), true).Length > 0)
+                return true;
+
+            for (int i = 0; i < paramInfos.Length; ++i)
+            {
+                var paramType = paramInfos[i].ParameterType;
+                if (paramType.IsPointer || paramType.IsNotPublic || paramType.IsNested && !paramType.IsNestedPublic)
+                {
+                    return true;
+                }
+            }
+            var returnType = info.ReturnType;
+            if (returnType.IsNotPublic || returnType.IsNested && !returnType.IsNestedPublic)
+                return true;
+
             return false;
         }
-
         static string GetParametersString(ParameterInfo[] param, Type returnType)
         {
             StringBuilder sb = new StringBuilder();
@@ -342,7 +323,6 @@ using ILRuntime.Runtime.Intepreter;
                 i.ParameterType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
-
             if (returnType != typeof(void))
             {
                 if (!first)
@@ -352,7 +332,6 @@ using ILRuntime.Runtime.Intepreter;
                 returnType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
-
             return sb.ToString();
         }
 
@@ -375,7 +354,6 @@ using ILRuntime.Runtime.Intepreter;
                 if (isByRef)
                     sb.Append(".MakeByRefType()");
             }
-
             if (returnType != typeof(void))
             {
                 if (!first)
@@ -385,7 +363,6 @@ using ILRuntime.Runtime.Intepreter;
                 returnType.GetClassName(out clsName, out realClsName, out isByRef, true);
                 sb.Append(realClsName);
             }
-
             return sb.ToString();
         }
 
@@ -398,7 +375,6 @@ using ILRuntime.Runtime.Intepreter;
                 if (i.IsOut || i.ParameterType.IsByRef)
                     return true;
             }
-
             return false;
         }
 
@@ -418,7 +394,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.Append("ref ");
                 sb.Append(p.Name);
             }
-
             return sb.ToString();
         }
 
@@ -444,8 +419,7 @@ using ILRuntime.Runtime.Intepreter;
             }
         }
 
-        static void GenerateCrossBindingMethodClass(StringBuilder sb, string funcName, int index, ParameterInfo[] param,
-            Type returnType)
+        static void GenerateCrossBindingMethodClass(StringBuilder sb, string funcName, int index, ParameterInfo[] param, Type returnType)
         {
             sb.AppendLine(string.Format("        class {0}_{1}Info : CrossBindingMethodInfo", funcName, index));
             sb.Append(@"        {
@@ -473,7 +447,6 @@ using ILRuntime.Runtime.Intepreter;
             {
                 sb.AppendFormat("typeof({0})", realClsName);
             }
-
             sb.AppendLine(@"; } }
 
             protected override Type[] Parameters { get { return pTypes; } }");
@@ -481,7 +454,9 @@ using ILRuntime.Runtime.Intepreter;
             GetParameterDefinition(sb, param, false);
             sb.AppendLine(@")
             {
-                EnsureMethod(instance);
+                EnsureMethod(instance);");
+            GenInitParams(sb, param);
+            sb.AppendLine(@"
                 if (method != null)
                 {
                     invoking = true;");
@@ -502,7 +477,6 @@ using ILRuntime.Runtime.Intepreter;
                     refIndex[p] = idx++;
                 }
             }
-
             sb.AppendLine("                            ctx.PushObject(instance);");
             foreach (var p in param)
             {
@@ -515,7 +489,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.AppendLine(GetPushString(p.ParameterType, p.Name));
                 }
             }
-
             sb.AppendLine("                            ctx.Invoke();");
             if (hasReturn)
                 sb.AppendLine(GetReadString(returnType, rtRealName, "", "__res"));
@@ -528,7 +501,6 @@ using ILRuntime.Runtime.Intepreter;
                     sb.AppendLine(GetReadString(p.ParameterType, realClsName, refIndex[p].ToString(), p.Name));
                 }
             }
-
             sb.AppendLine("                        }");
             sb.AppendLine(@"                    }
                     finally
@@ -548,6 +520,72 @@ using ILRuntime.Runtime.Intepreter;
                 throw new NotSupportedException();
             }
         }");
+        }
+
+        static void GetMethods(Type type, List<MethodInfo> list)
+        {
+            if (type == null)
+                return;
+
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            foreach (var i in methods)
+            {
+                if ((i.IsVirtual || i.IsAbstract || type.IsInterface) && !i.ContainsGenericParameters)
+                {
+                    if (list.Any(m => IsMethodEqual(m, i)))
+                        continue;
+
+                    list.Add(i);
+                }
+            }
+
+            var interfaceArray = type.GetInterfaces();
+            if (interfaceArray != null)
+            {
+                for (int i = 0; i < interfaceArray.Length; ++i)
+                {
+                    GetMethods(interfaceArray[i], list);
+                }
+            }
+        }
+
+        static bool IsMethodEqual(MethodInfo left, MethodInfo right)
+        {
+            var leftParams = left.GetParameters();
+            var rightParams = right.GetParameters();
+            if (leftParams.Length != rightParams.Length)
+            {
+                return false;
+            }
+
+            // 有些继承了多个interface的类，且这几个interface的类有相同函数名的时候，子类实现的接口就会带上interfere的fullName
+            string leftMethodName = left.Name.Replace(left.DeclaringType.FullName, "");
+            string rightMethodName = right.Name.Replace(right.DeclaringType.FullName, "");
+            if (leftMethodName != rightMethodName)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < leftParams.Length; ++i)
+            {
+                if (leftParams[i].ParameterType != rightParams[i].ParameterType)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        static void GenInitParams(StringBuilder sb, ParameterInfo[] param)
+        {
+            foreach (var p in param)
+            {
+                if (p.IsOut)
+                {
+                    sb.AppendLine($"                    {p.Name} = default({p.ParameterType.GetElementType().FullName});");
+                }
+            }
         }
 
         static string GetPushString(Type type, string argName)
@@ -625,8 +663,7 @@ using ILRuntime.Runtime.Intepreter;
                 }
                 else if (type == typeof(short))
                 {
-                    return string.Format("                            {1} = (short)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (short)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(bool))
                 {
@@ -634,8 +671,7 @@ using ILRuntime.Runtime.Intepreter;
                 }
                 else if (type == typeof(ushort))
                 {
-                    return string.Format("                            {1} = (ushort)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (ushort)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(float))
                 {
@@ -647,36 +683,30 @@ using ILRuntime.Runtime.Intepreter;
                 }
                 else if (type == typeof(byte))
                 {
-                    return string.Format("                            {1} = (byte)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (byte)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(sbyte))
                 {
-                    return string.Format("                            {1} = (sbyte)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (sbyte)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(uint))
                 {
-                    return string.Format("                            {1} = (uint)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (uint)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(char))
                 {
-                    return string.Format("                            {1} = (char)ctx.ReadInteger({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (char)ctx.ReadInteger({0});", argName, valName);
                 }
                 else if (type == typeof(ulong))
                 {
-                    return string.Format("                            {1} = (ulong)ctx.ReadLong({0});", argName,
-                        valName);
+                    return string.Format("                            {1} = (ulong)ctx.ReadLong({0});", argName, valName);
                 }
                 else
                     throw new NotImplementedException();
             }
             else
             {
-                return string.Format("                            {2} = ctx.ReadObject<{1}>({0});", argName,
-                    realClsName, valName);
+                return string.Format("                            {2} = ctx.ReadObject<{1}>({0});", argName, realClsName, valName);
             }
         }
     }
