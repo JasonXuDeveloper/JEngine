@@ -1466,16 +1466,26 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             }
         }
 
+        IMethod mToStringMethod;
+        bool mToStringMethodGot;
         public override string ToString()
         {
-            IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);
-            m = instance.Type.GetVirtualMethod(m);
-            if (m == null || m is ILMethod)
+            if (instance != null)
             {
-                return instance.ToString();
+                if (!mToStringMethodGot)
+                {
+                    mToStringMethod =
+                        instance.Type.GetMethod("ToString", 0);
+                    mToStringMethodGot = true;
+                }
+
+                if (mToStringMethod != null)
+                {
+                    appdomain.Invoke(mToStringMethod, instance, param0);
+                }
             }
 
-            return instance.Type.FullName;
+            return instance?.Type?.FullName ?? base.ToString();
         }
     }
 }

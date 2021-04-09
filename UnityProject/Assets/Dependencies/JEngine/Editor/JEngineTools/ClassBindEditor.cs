@@ -15,21 +15,21 @@ namespace JEngine.Editor
     [CustomEditor(typeof(ClassBind))]
     internal class ClassBindEditor : UnityEditor.Editor
     {
-
-        private ReorderableList list1;
+        private static string _dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
+        private ReorderableList _classBinds;
 
         void OnEnable()
         {
-            list1 = new ReorderableList(serializedObject.FindProperty("scriptsToBind"));
-            list1.elementNameProperty = "Class";
+            _classBinds = new ReorderableList(serializedObject.FindProperty("scriptsToBind"))
+            {
+                elementNameProperty = "Class"
+            };
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
-            //draw the list using GUILayout, you can of course specify your own position and label
-            list1.DoLayoutList();
+            _classBinds.DoLayoutList();
             serializedObject.ApplyModifiedProperties();
 
             GUILayout.Space(5);
@@ -59,11 +59,11 @@ namespace JEngine.Editor
         public static async void DoFieldType(ClassBind instance)
         {
             int affectCounts = 0;
-            foreach (var _cb in instance.scriptsToBind) //遍历
+            foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{_cb.classNamespace}.{_cb.className}";
+                string className = $"{data.classNamespace}.{data.className}";
                 Assembly hotCode = Assembly
-                    .LoadFile("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll");
+                    .LoadFile(_dllPath);
                 Type t = hotCode.GetType(className); //加载热更类
 
                 if (t == null)
@@ -74,17 +74,13 @@ namespace JEngine.Editor
                     return;
                 }
 
-                foreach (var field in _cb.fields)
+                foreach (var field in data.fields)
                 {
                     var fieldType = t.GetField(field.fieldName,
                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.FieldType;
-                    if (fieldType == null)
-                    {
-                        fieldType = t.GetProperty(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static)?.PropertyType;
-                    }
+                        BindingFlags.Static)?.FieldType ?? t.GetProperty(field.fieldName,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                        BindingFlags.Static)?.PropertyType;
 
                     if (fieldType == null)
                     {
@@ -95,8 +91,8 @@ namespace JEngine.Editor
                     affectCounts++;
 
                     EditorUtility.DisplayProgressBar("ClassBind Progress",
-                        $"Getting Field for {field.fieldName} {_cb.fields.IndexOf(field)}/{_cb.fields.Length}",
-                        _cb.fields.IndexOf(field) / (float) _cb.fields.Length);
+                        $"Getting Field for {field.fieldName} {data.fields.IndexOf(field)}/{data.fields.Length}",
+                        data.fields.IndexOf(field) / (float) data.fields.Length);
 
                     await Task.Delay(50); //延迟一下，动画更丝滑
                 }
@@ -106,7 +102,7 @@ namespace JEngine.Editor
             EditorUtility.ClearProgressBar();
             
             //转换后保存场景
-            bool saveResult = false;
+            bool saveResult;
             AssetDatabase.SaveAssets();
             bool isPreviewSceneObject = EditorSceneManager.IsPreviewSceneObject(Selection.activeGameObject);
             if (isPreviewSceneObject || PrefabUtility.IsPartOfAnyPrefab(instance.gameObject) || PrefabUtility.IsPartOfPrefabAsset(instance.gameObject))
@@ -133,11 +129,11 @@ namespace JEngine.Editor
         public static async void DoConvert(ClassBind instance)
         {
             int affectCounts = 0;
-            foreach (var _cb in instance.scriptsToBind) //遍历
+            foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{_cb.classNamespace}.{_cb.className}";
+                string className = $"{data.classNamespace}.{data.className}";
                 Assembly hotCode = Assembly
-                    .LoadFile("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll");
+                    .LoadFile(_dllPath);
                 Type t = hotCode.GetType(className); //加载热更类
 
                 if (t == null)
@@ -155,7 +151,7 @@ namespace JEngine.Editor
                     hotInstance = Activator.CreateInstance(t);
                 }
 
-                var fieldsInCb = _cb.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
+                var fieldsInCb = data.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
                 var fs = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
                                      BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 var ps = t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
@@ -178,7 +174,7 @@ namespace JEngine.Editor
                         SetType(cf, field.FieldType, hotCode);
                         SetVal(ref cf, field, hotCode, hotInstance);
 
-                        _cb.fields.Add(cf);
+                        data.fields.Add(cf);
                         affectCounts++;
                     }
 
@@ -205,7 +201,7 @@ namespace JEngine.Editor
                         SetType(cf, property.PropertyType, hotCode);
                         SetVal(ref cf, property, hotCode, hotInstance);
 
-                        _cb.fields.Add(cf);
+                        data.fields.Add(cf);
                         affectCounts++;
                     }
 
@@ -262,7 +258,8 @@ namespace JEngine.Editor
             {
                 cf.fieldType = ClassField.FieldType.GameObject;
             }
-            else if (type == typeof(Component) || type.IsSubclassOf(typeof(MonoBehaviour)) || type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+            else if (type == typeof(Component) || type.IsSubclassOf(typeof(MonoBehaviour)) ||
+                     type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
             {
                 cf.fieldType = ClassField.FieldType.UnityComponent;
             }
@@ -272,39 +269,13 @@ namespace JEngine.Editor
             }
             else
             {
-                if (type == typeof(short))
+                var numType = new[]
                 {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(ushort))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(int))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(uint))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(long))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(ulong))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(float))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(decimal))
-                {
-                    cf.fieldType = ClassField.FieldType.Number;
-                }
-                else if (type == typeof(double))
+                    typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long),
+                    typeof(ulong),
+                    typeof(float), typeof(decimal), typeof(double)
+                };
+                if (numType.Contains(type))
                 {
                     cf.fieldType = ClassField.FieldType.Number;
                 }
@@ -325,28 +296,23 @@ namespace JEngine.Editor
 
         private static void SetVal(ref ClassField cf, FieldInfo field, Assembly hotCode, object hotInstance)
         {
-            if (field.FieldType != typeof(Object) ||
-                !field.FieldType.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
-            {
-                try
-                {
-                    cf.value = field.GetValue(hotInstance).ToString();
-                }
-                catch
-                {
-                    Log.PrintWarning($"无法对JBehaviour派生类的字段{cf.fieldName}自动赋值构造值（如果没有可忽略）");
-                }
-            }
+            SetVal(ref cf, field.FieldType, hotCode, field.GetValue(hotInstance));
+
         }
 
         private static void SetVal(ref ClassField cf, PropertyInfo field, Assembly hotCode, object hotInstance)
         {
-            if (field.PropertyType != typeof(Object) ||
-                !field.PropertyType.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+            SetVal(ref cf, field.PropertyType, hotCode, field.GetValue(hotInstance));
+        }
+
+        private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value)
+        {
+            if (type != typeof(Object) ||
+                !type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
             {
                 try
                 {
-                    cf.value = field.GetValue(hotInstance).ToString();
+                    cf.value = value.ToString();
                 }
                 catch
                 {

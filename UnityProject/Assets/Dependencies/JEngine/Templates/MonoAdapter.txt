@@ -1165,4 +1165,26 @@
                 }
             }
             
+            IMethod mToStringMethod;
+            bool mToStringMethodGot;
+            public override string ToString()
+            {
+                if (instance != null)
+                {
+                    if (!mToStringMethodGot)
+                    {
+                        mToStringMethod =
+                            instance.Type.GetMethod("ToString", 0);
+                        mToStringMethodGot = true;
+                    }
+    
+                    if (mToStringMethod != null)
+                    {
+                        appdomain.Invoke(mToStringMethod, instance, param0);
+                    }
+                }
+    
+                return instance?.Type?.FullName ?? base.ToString();
+            }
+            
             #endregion

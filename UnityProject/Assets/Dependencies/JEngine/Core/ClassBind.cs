@@ -1,30 +1,4 @@
-﻿//
-// ClassBind.cs
-//
-// Author:
-//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
-//
-// Copyright (c) 2020 JEngine
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-using libx;
+﻿using libx;
 using System;
 using Malee.List;
 using System.Linq;
@@ -49,25 +23,26 @@ namespace JEngine.Core
         /// <summary>
         /// Set value
         /// </summary>
-        /// <param name="class"></param>
-        public void SetVal(ClassData @class)
+        /// <param name="classData"></param>
+        public void SetVal(ClassData classData)
         {
-            string classType = $"{@class.classNamespace + (@class.classNamespace == "" ? "" : ".")}{@class.className}";
-            IType type = Init.Appdomain.LoadedTypes[classType];
-            Type t = type.ReflectionType;//获取实际属性
+            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
+            Init.Appdomain.LoadedTypes.TryGetValue(classType,out var type);
+            Type t = type?.ReflectionType;//获取实际属性
             //这里获取适配器类型接口，不直接获取Mono适配器了，因为不同的类型适配器不一样
             var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
                 .Last(clr => clr.ILInstance.Type == type as ILType);
             //绑定数据
-            if (@class.requireBindFields)
+            if (classData.requireBindFields)
             {
-                @class.BoundData = false;
-                var fields = @class.fields.ToArray();
+                classData.BoundData = false;
+                var fields = classData.fields.ToArray();
 
                 foreach (ClassField field in fields)
                 {
-                    object obj = new object();
-                    
+                    if (field.fieldType == ClassField.FieldType.NotSupported) continue;
+
+                    object obj = null;
                     try
                     {
                         if (field.fieldType == ClassField.FieldType.Number)
@@ -81,70 +56,70 @@ namespace JEngine.Core
                             if (fieldType.FullName == typeof(SByte).FullName)
                             {
                                 obj = SByte.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Byte).FullName)
                             {
                                 obj = Byte.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Int16).FullName)
                             {
                                 obj = Int16.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(UInt16).FullName)
                             {
                                 obj = UInt16.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Int32).FullName)
                             {
                                 obj = Int32.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(UInt32).FullName)
                             {
                                 obj = UInt32.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Int64).FullName)
                             {
                                 obj = Int64.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(UInt64).FullName)
                             {
                                 obj = UInt64.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Single).FullName)
                             {
                                 obj = Single.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Decimal).FullName)
                             {
                                 obj = Decimal.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                             else if (fieldType.FullName == typeof(Double).FullName)
                             {
                                 obj = Double.Parse(field.value);
-                                @class.BoundData = true;
+                                classData.BoundData = true;
                             }
                         }
 
                         else if (field.fieldType == ClassField.FieldType.String)
                         {
                             obj = field.value;
-                            @class.BoundData = true;
+                            classData.BoundData = true;
                         }
                         else if (field.fieldType == ClassField.FieldType.Bool)
                         {
                             field.value = field.value.ToLower();
                             obj = field.value == "true";
-                            @class.BoundData = true;
+                            classData.BoundData = true;
                         }
 
                         if (field.fieldType == ClassField.FieldType.GameObject)
@@ -177,7 +152,7 @@ namespace JEngine.Core
                             }
 
                             obj = go;
-                            @class.BoundData = true;
+                            classData.BoundData = true;
                         }
                         else if (field.fieldType == ClassField.FieldType.UnityComponent)
                         {
@@ -228,7 +203,7 @@ namespace JEngine.Core
                                         if (c.ILInstance.Type.Name == tName)
                                         {
                                             obj = c.ILInstance;
-                                            @class.BoundData = true;
+                                            classData.BoundData = true;
                                             break;
                                         }
                                     }
@@ -240,7 +215,7 @@ namespace JEngine.Core
                                     if (component != null)
                                     {
                                         obj = component;
-                                        @class.BoundData = true;
+                                        classData.BoundData = true;
                                     }
                                 }
                             }
@@ -260,7 +235,7 @@ namespace JEngine.Core
                                             if (c.ILInstance.Type.Name == tName)
                                             {
                                                 obj = c.ILInstance;
-                                                @class.BoundData = true;
+                                                classData.BoundData = true;
                                                 break;
                                             }
                                         }
@@ -272,7 +247,7 @@ namespace JEngine.Core
                                         if (component != null)
                                         {
                                             obj = component;
-                                            @class.BoundData = true;
+                                            classData.BoundData = true;
                                         }
                                     }
                                 }
@@ -286,7 +261,7 @@ namespace JEngine.Core
                         else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
                         {
                             obj = Assets.LoadAsset(field.value, typeof(Object)).asset;
-                            @class.BoundData = true;
+                            classData.BoundData = true;
                         }
                     }
                     catch (Exception except)
@@ -296,7 +271,7 @@ namespace JEngine.Core
                     }
 
                     //如果有数据再绑定
-                    if (@class.BoundData)
+                    if (classData.BoundData)
                     {
                         var fi = t.GetField(field.fieldName,
                             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
@@ -336,19 +311,19 @@ namespace JEngine.Core
         /// <summary>
         /// Active
         /// </summary>
-        /// <param name="class"></param>
-        public void Active(ClassData @class)
+        /// <param name="classData"></param>
+        public void Active(ClassData classData)
         {
-            string classType = $"{@class.classNamespace + (@class.classNamespace == "" ? "" : ".")}{@class.className}";
+            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
             IType type = Init.Appdomain.LoadedTypes[classType];
             Type t = type.ReflectionType; //获取实际属性
             //这边获取clrInstance的基类，这样可以获取不同适配器
             var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
                 .Last(clr => clr.ILInstance.Type == type as ILType);
             //是否激活
-            if (@class.activeAfter)
+            if (classData.activeAfter)
             {
-                if (@class.BoundData == false && @class.requireBindFields && @class.fields.Count > 0)
+                if (classData.BoundData == false && classData.requireBindFields && classData.fields.Count > 0)
                 {
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
@@ -374,19 +349,19 @@ namespace JEngine.Core
                 else
                 {
                     awakeMethod.Invoke(clrInstance, null);
-                    @class.Activated = true;
+                    classData.Activated = true;
                 }
 
                 if (awakeMethod == null)
                 {
                     Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
                 }
-                else if (!@class.Activated)
+                else if (!classData.Activated)
                 {
                     awakeMethod.Invoke(t, null);
                 }
 
-                @class.Activated = true;
+                classData.Activated = true;
             }
 
             Remove();
@@ -404,12 +379,12 @@ namespace JEngine.Core
         /// <summary>
         /// Add class
         /// </summary>
-        /// <param name="class"></param>
+        /// <param name="classData"></param>
         /// <returns></returns>
-        public string AddClass(ClassData @class)
+        public string AddClass(ClassData classData)
         {
             //添加脚本
-            string classType = $"{@class.classNamespace + (@class.classNamespace == "" ? "" : ".")}{@class.className}";
+            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
             if (!Init.Appdomain.LoadedTypes.ContainsKey(classType))
             {
                 Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
@@ -428,7 +403,7 @@ namespace JEngine.Core
                                t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
 
             ILTypeInstance instance;
-            if (@class.useConstructor)
+            if (classData.useConstructor)
             {
                 instance = isMono ? new ILTypeInstance(type as ILType,false) : Init.Appdomain.Instantiate(classType);
             }
@@ -484,7 +459,7 @@ namespace JEngine.Core
                 //判断类型
                 clrInstance.isMonoBehaviour = isMono;
                 
-                @class.Added = true;
+                classData.Added = true;
 
                 //JBehaviour额外处理
                 if (isJBehaviour)
@@ -506,7 +481,7 @@ namespace JEngine.Core
                 }
             }
             
-            if (@class.useConstructor && isMono)
+            if (classData.useConstructor && isMono)
             {
                 var m = type.GetConstructor(Extensions.EmptyParamList);
                 if (m != null)

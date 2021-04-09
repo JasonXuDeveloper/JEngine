@@ -49,9 +49,9 @@ namespace JEngine.Editor
                      return;
                  }
      
-                 if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~")) //DLL导入到隐藏文件夹，防止每次加载浪费时间
+                 if (!di.Exists) //DLL导入到隐藏文件夹，防止每次加载浪费时间
                  {
-                     Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
+                     di.Create();
                  }
      
                  if (!File.Exists(DLLMgr.DllPath)) //没热更dll就返回
@@ -70,7 +70,6 @@ namespace JEngine.Editor
                      List<string> fileNames = Directory.GetFiles("Assets/",
                          "*.dll", SearchOption.AllDirectories).ToList();
                      
-                     DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
                      watch = new Stopwatch();
                      DLLMgr.MakeBytes();
                      watch.Stop();

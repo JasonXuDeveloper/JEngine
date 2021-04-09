@@ -38,7 +38,5 @@ public static class InitILrt
                 appdomain
             });
         }
-        
-        Init.Inited = true;
     }
 }

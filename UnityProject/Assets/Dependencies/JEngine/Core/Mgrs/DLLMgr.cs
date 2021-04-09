@@ -99,7 +99,7 @@ namespace JEngine.Core
             bool result = false;
             try
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(byteArray, 0, byteArray.Length);
                     result = true;

@@ -68,25 +68,25 @@ namespace ILRuntime.Runtime.Generated
 
         static object get_Key_1(ref object o)
         {
-            return ((global::Init)o).Key;
+            return ((global::Init)o).key;
         }
 
         static StackObject* CopyToStack_Key_1(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
-            var result_of_this_method = ((global::Init)o).Key;
+            var result_of_this_method = ((global::Init)o).key;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
         static void set_Key_1(ref object o, object v)
         {
-            ((global::Init)o).Key = (System.String)v;
+            ((global::Init)o).key = (System.String)v;
         }
 
         static StackObject* AssignFromStack_Key_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.String @Key = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            ((global::Init)o).Key = @Key;
+            ((global::Init)o).key = @Key;
             return ptr_of_this_method;
         }
 
