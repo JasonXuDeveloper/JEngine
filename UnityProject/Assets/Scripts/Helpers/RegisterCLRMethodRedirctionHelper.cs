@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -14,9 +15,11 @@ using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
 using JEngine.Interface;
+using ProtoBuf;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Debug = UnityEngine.Debug;
+using Extensions = ILRuntime.CLR.Utils.Extensions;
 using Object = System.Object;
 
 namespace JEngine.Helper
@@ -214,18 +217,18 @@ namespace JEngine.Helper
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_6);
             
             //注册pb反序列化
-            Type pbSerializeType = typeof(ProtoBuf.Serializer);
-            args = new Type[]{typeof(System.Type), typeof(System.IO.Stream)};
+            Type pbSerializeType = typeof(Serializer);
+            args = new[]{typeof(Type), typeof(Stream)};
             var pbDeserializeMethod = pbSerializeType.GetMethod("Deserialize", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(pbDeserializeMethod, Deserialize_1);
-            args = new Type[]{typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance)};
+            args = new[]{typeof(ILTypeInstance)};
             Dictionary<string, List<MethodInfo>> genericMethods = new Dictionary<string, List<MethodInfo>>();
             List<MethodInfo> lst = null;                 
             if (genericMethods.TryGetValue("Deserialize", out lst))
             {
                 foreach(var m in lst)
                 {
-                    if(m.MatchGenericParameters(args, typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance), typeof(System.IO.Stream)))
+                    if(m.MatchGenericParameters(args, typeof(ILTypeInstance), typeof(Stream)))
                     {
                         var method = m.MakeGenericMethod(args);
                         appdomain.RegisterCLRMethodRedirection(method, Deserialize_2);
@@ -246,20 +249,20 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Stream source = (Stream)typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Type @type = (System.Type)typeof(System.Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Type type = (Type)typeof(Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
 
-            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@type, @source);
+            var result_of_this_method = Serializer.Deserialize(type, source);
 
             object obj_result_of_this_method = result_of_this_method;
             if(obj_result_of_this_method is CrossBindingAdaptorType)
@@ -280,18 +283,18 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Stream source = (Stream)typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             var genericArgument = __method.GenericArguments;
             var type = genericArgument[0];
-            var @realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
-            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@realType,@source);
+            var realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
+            var result_of_this_method = Serializer.Deserialize(realType,source);
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
@@ -1781,10 +1784,8 @@ namespace JEngine.Helper
 
                     return ILIntepreter.PushObject(ptr, __mStack, res);
                 }
-                else
-                {
-                    UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
-                }
+
+                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
             }
 
             //重新赋值instance的热更脚本
@@ -2116,7 +2117,7 @@ namespace JEngine.Helper
 
                 res = ilInstance;
 
-                var m = type.GetConstructor(ILRuntime.CLR.Utils.Extensions.EmptyParamList);
+                var m = type.GetConstructor(Extensions.EmptyParamList);
                 if (m != null)
                 {
                     __domain.Invoke(m, res, null);
@@ -2150,7 +2151,7 @@ namespace JEngine.Helper
             
             //成员方法的第2个参数为Type
             var ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Type _type = (System.Type)typeof(System.Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Type _type = (Type)typeof(Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
             if (_type == null)
                 throw new NullReferenceException();

@@ -1,8 +1,9 @@
 ﻿#if UNITY_EDITOR
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-[System.Reflection.Obfuscation(Exclude = true)]
+[Obfuscation(Exclude = true)]
 public class ILRuntimeMenu
 {
 

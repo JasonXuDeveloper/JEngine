@@ -3,17 +3,17 @@
  */
 #if UNITY_EDITOR
 using System;
-using LitJson;
 using System.Linq;
-using UnityEditor;
-using UnityEngine;
-using JEngine.Core;
 using System.Reflection;
 using System.Threading.Tasks;
-using UnityEditor.AnimatedValues;
 using ILRuntime.Runtime.Enviorment;
+using JEngine.Core;
+using LitJson;
+using UnityEditor;
+using UnityEditor.AnimatedValues;
+using UnityEngine;
+using Object = UnityEngine.Object;
 using Tools = JEngine.Core.Tools;
-
 
 [CustomEditor(typeof(MonoBehaviourAdapter.Adaptor), true)]
 public class MonoBehaviourAdapterEditor : Editor
@@ -27,7 +27,7 @@ public class MonoBehaviourAdapterEditor : Editor
         for (int i = 0; i < fadeGroup.Length; i++)
         {
             fadeGroup[i] = new AnimBool(false);
-            this.fadeGroup[i].valueChanged.AddListener(this.Repaint);
+            fadeGroup[i].valueChanged.AddListener(Repaint);
         }
 
         displaying = true;
@@ -36,7 +36,7 @@ public class MonoBehaviourAdapterEditor : Editor
         {
             try
             {
-                this.Repaint();
+                Repaint();
             }
             catch
             {
@@ -56,7 +56,7 @@ public class MonoBehaviourAdapterEditor : Editor
         // 移除动画监听
         for (int i = 0; i < fadeGroup.Length; i++)
         {
-            this.fadeGroup[i].valueChanged.RemoveListener(this.Repaint);
+            fadeGroup[i].valueChanged.RemoveListener(Repaint);
         }
 
     }
@@ -79,9 +79,9 @@ public class MonoBehaviourAdapterEditor : Editor
                 var id = f.GetValue(instance).ToString();
                 EditorGUILayout.TextField("InstanceID", id);
 
-                this.fadeGroup[0].target = EditorGUILayout.Foldout(this.fadeGroup[0].target,
+                fadeGroup[0].target = EditorGUILayout.Foldout(fadeGroup[0].target,
                     "JBehaviour Stats", true);
-                if (EditorGUILayout.BeginFadeGroup(this.fadeGroup[0].faded))
+                if (EditorGUILayout.BeginFadeGroup(fadeGroup[0].faded))
                 {
                     var fm = t.GetField("FrameMode", BindingFlags.Public);
                     bool frameMode = EditorGUILayout.Toggle("FrameMode", (bool) fm.GetValue(instance));
@@ -142,7 +142,7 @@ public class MonoBehaviourAdapterEditor : Editor
                         }
                         else if (cType == typeof(double))
                         {
-                            instance[i.Value] = EditorGUILayout.DoubleField(name, (float) instance[i.Value]);
+                            instance[i.Value] = EditorGUILayout.DoubleField(name, (double) instance[i.Value]);
                         }
                         else if (cType == typeof(int))
                         {
@@ -190,8 +190,8 @@ public class MonoBehaviourAdapterEditor : Editor
                     {
                         if (instance[i.Value] != null)
                         {
-                            this.fadeGroup[1].target = EditorGUILayout.Foldout(this.fadeGroup[1].target, name, true);
-                            if (EditorGUILayout.BeginFadeGroup(this.fadeGroup[1].faded))
+                            fadeGroup[1].target = EditorGUILayout.Foldout(fadeGroup[1].target, name, true);
+                            if (EditorGUILayout.BeginFadeGroup(fadeGroup[1].faded))
                             {
                                 instance[i.Value] = EditorGUILayout.TextArea(
                                     ((JsonData) instance[i.Value]).ToString()
@@ -206,7 +206,7 @@ public class MonoBehaviourAdapterEditor : Editor
                             EditorGUILayout.LabelField(name, "暂无值的JsonData");
                         }
                     }
-                    else if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
+                    else if (typeof(Object).IsAssignableFrom(cType))
                     {
                         if (obj == null && cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
@@ -222,7 +222,7 @@ public class MonoBehaviourAdapterEditor : Editor
                                     .Find(adaptor =>
                                         adaptor.ILInstance == instance[i.Value]);
                                 GUI.enabled = true;
-                                EditorGUILayout.ObjectField(name, clrInstance, cType, true);
+                                instance[i.Value] = EditorGUILayout.ObjectField(name, clrInstance, cType, true);
                                 GUI.enabled = false;
                             }
                             catch
@@ -234,7 +234,7 @@ public class MonoBehaviourAdapterEditor : Editor
                         }
 
                         //处理Unity类型
-                        var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
+                        var res = EditorGUILayout.ObjectField(name, obj as Object, cType, true);
                         instance[i.Value] = res;
                     }
                     //可绑定值，可以尝试更改
@@ -305,7 +305,7 @@ public class MonoBehaviourAdapterEditor : Editor
         }
 
         // 应用属性修改
-        this.serializedObject.ApplyModifiedProperties();
+        serializedObject.ApplyModifiedProperties();
     }
 }
 #endif

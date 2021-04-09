@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using JEngine.Core;
+
 namespace JEngine.AntiCheat
 {
     public struct JString
@@ -34,7 +36,7 @@ namespace JEngine.AntiCheat
         private string Value {
             get
             {
-                var result = JEngine.Core.CryptoHelper.DecryptStr(_obscuredString,Init.Instance.Key);
+                var result = CryptoHelper.DecryptStr(_obscuredString,Init.Instance.Key);
                 if (!_originalValue.Equals(result))
                 {
                     AntiCheatHelper.OnDetected();
@@ -47,7 +49,7 @@ namespace JEngine.AntiCheat
                 _originalValue = value;
                 unchecked
                 {
-                    _obscuredString = JEngine.Core.CryptoHelper.EncryptStr(value, Init.Instance.Key);
+                    _obscuredString = CryptoHelper.EncryptStr(value, Init.Instance.Key);
                 }
             }
         }
@@ -67,7 +69,7 @@ namespace JEngine.AntiCheat
         public static JString operator + (JString a, JString b) => new JString(a.Value + b.Value);
         public static JString operator + (JString a, string b) => new JString(a.Value + b);
         
-        public override string ToString() => Value.ToString();
+        public override string ToString() => Value;
 
         public override int GetHashCode() => Value.GetHashCode();
 

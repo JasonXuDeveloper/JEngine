@@ -109,7 +109,7 @@ namespace JEngine.Editor
             return result;
         }
 
-        private static bool isPopping = false;
+        private static bool isPopping;
 
         private static async void Pop(string title, string info)
         {

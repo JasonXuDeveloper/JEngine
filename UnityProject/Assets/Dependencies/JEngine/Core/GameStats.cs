@@ -34,10 +34,10 @@ namespace JEngine.Core
         public static bool Debug;
         public static long TotalFrames => _totalFrames;
 
-        private static int _frames = 0;
+        private static int _frames;
         private static float _timer = 1;
-        private static long _totalFrames = 0;
-        private static long _encryptedCounts = 0;
+        private static long _totalFrames;
+        private static long _encryptedCounts;
 
         public static void Initialize()
         {

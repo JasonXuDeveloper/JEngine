@@ -46,6 +46,7 @@ namespace ILRuntime.Runtime.Generated
             System_Reflection_MemberInfo_Binding.Register(app);
             System_Object_Binding.Register(app);
             System_Reflection_MethodBase_Binding.Register(app);
+            JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_SByte_GameObject_Binding.Register(app);
@@ -116,7 +117,7 @@ namespace ILRuntime.Runtime.Generated
             System_Double_Binding.Register(app);
             System_Single_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
-            JEngine_Core__ClassBind_Binding.Register(app);
+            JEngine_Core_ClassData_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);
             System_Collections_Generic_List_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);

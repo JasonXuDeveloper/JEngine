@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
+using ILRuntime.Runtime.Intepreter;
 using JEngine.Interface;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
-using Object = UnityEngine.Object;
 
 namespace JEngine.Helper
 {
@@ -20,27 +23,27 @@ namespace JEngine.Helper
         
         public void Register(AppDomain appdomain)
         {
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.String, System.Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Object, System.String>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Reflection.ParameterInfo, System.String>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<Object, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<String, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Object, String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<ParameterInfo, String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Task<ILTypeInstance>>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<UnityEngine.Object, Boolean>();
             appdomain.DelegateManager.RegisterFunctionDelegate<Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Reflection.ParameterInfo, System.Type>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Type, System.String>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Object, System.Type>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Object>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.List<ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.List<ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Collections.Generic.IEnumerable<ILRuntime.Runtime.Intepreter.ILTypeInstance>>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<ParameterInfo, Type>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Type, String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Object, Type>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Object>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<List<ILTypeInstance>, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<List<ILTypeInstance>, IEnumerable<ILTypeInstance>>();
             appdomain.DelegateManager.RegisterFunctionDelegate<float>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Threading.Tasks.Task>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<global::CoroutineAdapter.Adaptor, System.Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<global::CoroutineAdapter.Adaptor, System.String>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<global::MonoBehaviourAdapter.Adaptor, System.Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<ILRuntime.Runtime.Intepreter.ILTypeInstance, System.String>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>, ILRuntime.Runtime.Intepreter.ILTypeInstance>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.Boolean>();
-            appdomain.DelegateManager.RegisterFunctionDelegate<System.Collections.Generic.KeyValuePair<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>, System.String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<Task>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<CoroutineAdapter.Adaptor, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<CoroutineAdapter.Adaptor, String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<MonoBehaviourAdapter.Adaptor, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<ILTypeInstance, String>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<String, ILTypeInstance>, ILTypeInstance>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<String, ILTypeInstance>, Boolean>();
+            appdomain.DelegateManager.RegisterFunctionDelegate<KeyValuePair<String, ILTypeInstance>, String>();
         }
     }
 }

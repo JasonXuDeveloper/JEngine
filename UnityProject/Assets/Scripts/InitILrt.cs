@@ -1,7 +1,8 @@
 ﻿using System;
-using LitJson;
-using JEngine.Helper;
 using System.Threading;
+using JEngine.Helper;
+using LitJson;
+using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class InitILrt
@@ -23,7 +24,7 @@ public static class InitILrt
         RegisterValueTypeBinderHelper.HelperRegister(appdomain);
 
         //Protobuf适配
-        ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
+        PType.RegisterILRuntimeCLRRedirection(appdomain);
         
         //LitJson适配
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);

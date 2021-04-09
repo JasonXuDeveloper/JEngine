@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using JEngine.Core;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -154,7 +155,7 @@ namespace JEngine.Net
 				{
 					if (config.debug)
 					{
-						JEngine.Core.Log.Print(s);
+						Log.Print(s);
 					}
 				};
 			}
@@ -654,7 +655,7 @@ namespace JEngine.Net
 				return;
 			}
 
-			foreach (Action<SocketIOEvent> handler in this.handlers[ev.name])
+			foreach (Action<SocketIOEvent> handler in handlers[ev.name])
 			{
 				try
 				{

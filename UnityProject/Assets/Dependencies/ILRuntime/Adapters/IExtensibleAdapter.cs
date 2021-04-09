@@ -1,7 +1,8 @@
 ﻿using System;
+using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using ILRuntime.CLR.Method;
+using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace ProtoBuf
 {
@@ -23,7 +24,7 @@ namespace ProtoBuf
             }
         }
 
-        public override object CreateCLRInstance(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+        public override object CreateCLRInstance(AppDomain appdomain, ILTypeInstance instance)
         {
             return new Adaptor(appdomain, instance);
         }
@@ -31,14 +32,14 @@ namespace ProtoBuf
         internal class Adaptor : IExtensible, CrossBindingAdaptorType
         {
             ILTypeInstance instance;
-            ILRuntime.Runtime.Enviorment.AppDomain appdomain;
+            AppDomain appdomain;
 
-            public Adaptor():base()
+            public Adaptor()
             {
 
             }
 
-            public Adaptor(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+            public Adaptor(AppDomain appdomain, ILTypeInstance instance)
             {
                 this.appdomain = appdomain;
                 this.instance = instance;

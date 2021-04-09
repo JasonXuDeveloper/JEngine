@@ -6,8 +6,8 @@ namespace JEngine.Editor
 {
     internal static class XAsset
     {
-        private static bool _delaying = false;
-        private static bool _verifying = false;
+        private static bool _delaying;
+        private static bool _verifying;
         private static float _frequency = 3600;
 
         public static async void Update()

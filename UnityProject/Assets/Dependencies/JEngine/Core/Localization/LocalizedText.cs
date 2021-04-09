@@ -27,20 +27,21 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace JEngine.Core
 {
-    [RequireComponent(typeof(UnityEngine.UI.Text))]
+    [RequireComponent(typeof(Text))]
     public class LocalizedText : MonoBehaviour
     {
         public string key;
 
-        [FormerlySerializedAs("_text")] [HideInInspector]public UnityEngine.UI.Text text;
+        [FormerlySerializedAs("_text")] [HideInInspector]public Text text;
 
         private void Start()
         {
             Localization.AddText(this);
-            text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
+            text = gameObject.GetComponent<Text>();
             SetText();
         }
 

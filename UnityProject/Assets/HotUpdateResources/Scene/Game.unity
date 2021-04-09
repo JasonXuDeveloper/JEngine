@@ -150,13 +150,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: EventDemo
-    ActiveAfter: 1
-    RequireBindFields: 0
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: EventDemo
+    activeAfter: 1
+    requireBindFields: 0
+    useConstructor: 1
+    fields:
       array: []
 --- !u!4 &40430357
 Transform:
@@ -763,6 +763,65 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163517237}
   m_CullTransparentMesh: 0
+--- !u!1 &163974365
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 163974367}
+  - component: {fileID: 163974366}
+  m_Layer: 0
+  m_Name: t
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &163974366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163974365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scriptsToBind:
+  - classNamespace: HotUpdateScripts
+    className: Test
+    activeAfter: 0
+    requireBindFields: 0
+    useConstructor: 1
+    fields:
+      array:
+      - fieldType: 6
+        fieldName: ints
+        value: 
+        gameObject: {fileID: 0}
+      - fieldType: 0
+        fieldName: a
+        value: 0
+        gameObject: {fileID: 0}
+--- !u!4 &163974367
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163974365}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 969.3728, y: 449.8623, z: -9517.566}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &183879961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,13 +1420,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: JumpToUIDemo
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: JumpToUIDemo
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 3
         fieldName: btn_JumpTo
@@ -3739,13 +3798,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: CrossDomainDemo
-    ActiveAfter: 1
-    RequireBindFields: 0
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: CrossDomainDemo
+    activeAfter: 1
+    requireBindFields: 0
+    useConstructor: 1
+    fields:
       array: []
 --- !u!4 &1228777208
 Transform:
@@ -4421,13 +4480,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: JBehaviourExample
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: JBehaviourExample
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 3
         fieldName: Panel
@@ -5099,13 +5158,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: JSaverExample
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: JSaverExample
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 4
         fieldName: Value
@@ -5123,12 +5182,12 @@ MonoBehaviour:
         fieldName: SaveAsProtobufBtn
         value: 
         gameObject: {fileID: 1289204602}
-  - Namespace: JEngine.Examples
-    Class: DataClass
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  - classNamespace: JEngine.Examples
+    className: DataClass
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 2
         fieldName: gm
@@ -5177,13 +5236,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: ConvertDemo
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: ConvertDemo
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array: []
 --- !u!4 &1813329113
 Transform:
@@ -5643,13 +5702,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: AutoBindDemo1
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: AutoBindDemo1
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 2
         fieldName: BoolProperty
@@ -5675,12 +5734,12 @@ MonoBehaviour:
         fieldName: a2
         value: 
         gameObject: {fileID: 1925922024}
-  - Namespace: JEngine.Examples
-    Class: AutoBindDemo2
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  - classNamespace: JEngine.Examples
+    className: AutoBindDemo2
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 5
         fieldName: txtFile
@@ -6026,7 +6085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: GameSceneTitle
-  _text: {fileID: 0}
+  text: {fileID: 0}
 --- !u!1 &2048244361
 GameObject:
   m_ObjectHideFlags: 0
@@ -6261,13 +6320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 136c8f5360d9a4f13a42b9b074fc8038, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptsToBind:
-  - Namespace: JEngine.Examples
-    Class: JUIExample
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  scriptsToBind:
+  - classNamespace: JEngine.Examples
+    className: JUIExample
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 4
         fieldName: JUIVal
@@ -6277,12 +6336,12 @@ MonoBehaviour:
         fieldName: NormalVal
         value: 
         gameObject: {fileID: 1022627434}
-  - Namespace: JEngine.Examples
-    Class: DataModifyExample
-    ActiveAfter: 1
-    RequireBindFields: 1
-    UseConstructor: 1
-    Fields:
+  - classNamespace: JEngine.Examples
+    className: DataModifyExample
+    activeAfter: 1
+    requireBindFields: 1
+    useConstructor: 1
+    fields:
       array:
       - fieldType: 3
         fieldName: Panel

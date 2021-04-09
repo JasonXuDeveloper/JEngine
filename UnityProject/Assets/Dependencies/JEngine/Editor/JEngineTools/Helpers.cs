@@ -37,7 +37,7 @@ namespace JEngine.Editor
             }
 
             var url = "https://api.uoyou.com/v1/xasset.php";
-            Dictionary<string, string> postParams = new Dictionary<string, string>()
+            Dictionary<string, string> postParams = new Dictionary<string, string>
             {
                 {"account", Setting.XAssetAccount},
                 {"password", Setting.XAssetPassword}
@@ -95,13 +95,13 @@ namespace JEngine.Editor
             
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Success",
-                $"下载成功\n" +
-                $"请根据XAsset Pro升级步骤进行操作"
+                "下载成功\n" +
+                "请根据XAsset Pro升级步骤进行操作"
                 , "OK");
         }
 
 
-        public static bool installing = false;
+        public static bool installing;
 
         public static async void Update()
         {
@@ -145,9 +145,9 @@ namespace JEngine.Editor
 
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Success",
-                $"下载成功\n" +
-                $"请导入并删除Core.unitypackage\n" +
-                $"请在IDE打开热更工程并重新导入JEngine源码"
+                "下载成功\n" +
+                "请导入并删除Core.unitypackage\n" +
+                "请在IDE打开热更工程并重新导入JEngine源码"
                 , "OK");
         }
     }

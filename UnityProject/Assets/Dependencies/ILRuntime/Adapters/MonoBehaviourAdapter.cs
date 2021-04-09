@@ -126,12 +126,12 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         }
 
         object[] param0 = new object[0];
-        private bool destoryed = false;
+        private bool destoryed;
 
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
-        private bool awaked = false;
-        private bool isAwaking = false;
+        private bool awaked;
+        private bool isAwaking;
 
         public async void Awake()
         {

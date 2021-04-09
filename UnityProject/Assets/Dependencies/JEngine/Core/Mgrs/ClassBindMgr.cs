@@ -40,7 +40,7 @@ namespace JEngine.Core
 
         private static ClassBindMgr _instance;
         public static List<Scene> LoadedScenes;
-        private static List<ClassBind> cbs;
+        private static List<ClassBind> _cbs;
 
         private void Awake()
         {
@@ -51,7 +51,7 @@ namespace JEngine.Core
             
             LoadedScenes = new List<Scene>(0);
             LoadedScenes.Add(SceneManager.GetActiveScene());
-            cbs = new List<ClassBind>(0);
+            _cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
@@ -59,7 +59,7 @@ namespace JEngine.Core
                 DoBind();
             };
             
-            SceneManager.sceneUnloaded+=(scene) =>
+            SceneManager.sceneUnloaded+=scene =>
             {
                 LoadedScenes.Remove(scene);
             };
@@ -71,7 +71,7 @@ namespace JEngine.Core
             foreach (var cb in cbs)
             {
                 //先添加
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData _class in cb.scriptsToBind)
                 {
                     if (_class == null || _class.Added)
                     {
@@ -85,7 +85,7 @@ namespace JEngine.Core
             foreach (var cb in cbs)
             {
                 //再赋值
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData _class in cb.scriptsToBind)
                 {
                     if (_class == null || _class.BoundData)
                     {
@@ -99,7 +99,7 @@ namespace JEngine.Core
             //激活
             foreach (var cb in cbs)
             {
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData _class in cb.scriptsToBind)
                 {
                     if (_class == null ||_class.Activated)
                     {
@@ -112,8 +112,8 @@ namespace JEngine.Core
         }
         public static void DoBind()
         {
-            cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
-            DoBind(cbs);
+            _cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
+            DoBind(_cbs);
         }
     }
 }

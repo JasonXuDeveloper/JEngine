@@ -186,12 +186,12 @@ namespace JEngine.Core
 
             var jBehaviour = type;
             var cb = gameObject.AddComponent<ClassBind>();
-            var _cb = new _ClassBind()
+            var _cb = new ClassData()
             {
-                Namespace = jBehaviour.Namespace,
-                Class = jBehaviour.Name,
-                ActiveAfter = activeAfter,
-                UseConstructor = true
+                classNamespace = jBehaviour.Namespace,
+                className = jBehaviour.Name,
+                activeAfter = activeAfter,
+                useConstructor = true
             };
             var id = cb.AddClass(_cb);
             cb.Active(_cb);

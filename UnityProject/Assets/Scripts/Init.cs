@@ -23,7 +23,7 @@ public class Init : MonoBehaviour
     private const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
     [SerializeField] public string Key;
-    [SerializeField] public bool UsePdb = false;
+    [SerializeField] public bool UsePdb;
     [SerializeField] public bool Debug = true;
     
     private Stream _fs;

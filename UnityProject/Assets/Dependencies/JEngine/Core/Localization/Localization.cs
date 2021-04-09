@@ -26,14 +26,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using libx;
 using UnityEngine;
-using System.Text.RegularExpressions;
 using Object = UnityEngine.Object;
-
 
 namespace JEngine.Core
 {
@@ -63,7 +63,7 @@ namespace JEngine.Core
             }
             
             _phrases = new Dictionary<string, Dictionary<string, string>>(0);
-            ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",System.Globalization.CultureInfo.InstalledUICulture.Name));
+            ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",CultureInfo.InstalledUICulture.Name));
             
             var req = Assets.LoadAsset(CsvLoc,typeof(TextAsset));
             TextAsset file = (TextAsset)req.asset;
@@ -72,7 +72,7 @@ namespace JEngine.Core
             List<string> allRows = new List<string>(0);
             byte[] array = Encoding.UTF8.GetBytes(file.text);            
             MemoryStream stream = new MemoryStream(array);
-            System.IO.StreamReader sr = new System.IO.StreamReader(stream, Encoding.Default);
+            StreamReader sr = new StreamReader(stream, Encoding.Default);
             String line;
             while ((line = sr.ReadLine()) != null)
             {  
@@ -113,7 +113,7 @@ namespace JEngine.Core
             }
 
             char p = '"';
-            string pattern = p.ToString() + p.ToString();
+            string pattern = p + p.ToString();
             string p2 = p+"";
             val = val.Replace(pattern, p2);
             return val;

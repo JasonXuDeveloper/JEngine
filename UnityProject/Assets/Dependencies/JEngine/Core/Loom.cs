@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -27,7 +27,7 @@ namespace JEngine.Core
         {
             _current = this;
             initialized = true;
-            UnityEngine.Object.DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
 
         static bool initialized;
@@ -43,7 +43,7 @@ namespace JEngine.Core
                 var g = new GameObject("Loom");
                 _current = g.AddComponent<Loom>();
 #if !ARTIST_BUILD
-                UnityEngine.Object.DontDestroyOnLoad(g);
+                DontDestroyOnLoad(g);
 #endif
             }
 

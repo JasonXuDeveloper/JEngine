@@ -1,4 +1,4 @@
-using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+using ILRuntime.Runtime.Enviorment;
 
 namespace JEngine.Interface
 {

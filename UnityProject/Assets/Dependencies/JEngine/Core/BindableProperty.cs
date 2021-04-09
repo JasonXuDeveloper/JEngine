@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 
 namespace JEngine.Core
@@ -32,7 +33,7 @@ namespace JEngine.Core
         public delegate void onChange(T val);
         public onChange OnChange;
 
-        private T _value = default(T);
+        private T _value;
         public T Value
         {
             get

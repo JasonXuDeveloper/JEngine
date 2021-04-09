@@ -25,14 +25,13 @@
 // THE SOFTWARE.
 
 using System;
-using System.IO;
 using System.Diagnostics;
-using UnityEngine;
-using UnityEditor;
-using ProtoBuf;
+using System.IO;
 using System.Reflection;
 using JEngine.Core;
-using Application = UnityEngine.Application;
+using ProtoBuf;
+using UnityEditor;
+using UnityEngine;
 
 namespace JEngine.Editor
 {
@@ -107,7 +106,7 @@ namespace JEngine.Editor
 				//本地找
 				t = Assembly
 					.LoadFile(new DirectoryInfo(Application.dataPath).Parent?.FullName +
-					          $"/Library/ScriptAssemblies/Assembly-CSharp.dll").GetType(_class);
+					          "/Library/ScriptAssemblies/Assembly-CSharp.dll").GetType(_class);
 			}
 
 			//都没

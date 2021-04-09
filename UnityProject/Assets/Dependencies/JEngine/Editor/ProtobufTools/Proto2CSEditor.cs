@@ -25,12 +25,11 @@
 // THE SOFTWARE.
 
 using System.IO;
-using UnityEngine;
-using UnityEditor;
 using Google.Protobuf.Reflection;
-using ProtoBuf.Reflection;
 using JEngine.Core;
-using Application = UnityEngine.Application;
+using ProtoBuf.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace JEngine.Editor
 {

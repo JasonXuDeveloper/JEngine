@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,7 +84,7 @@ namespace JEngine.Editor
                      Setting.LastDLLCleanUpTime = lastModifiedStr;
      
                      isDone = false;
-                     fileNames = fileNames.FindAll((x) => !x.Contains("~"));
+                     fileNames = fileNames.FindAll(x => !x.Contains("~"));
                      
                      watch.Start();
                      foreach (var file in files)
@@ -99,7 +100,7 @@ namespace JEngine.Editor
                                  File.Move(file.FullName, file.FullName.Replace("Hidden~", "../.."));
                                  Log.Print(
                                      $"Find new referenced dll `{name}`, note that your hot update code may not be able " +
-                                     $"to run without rebuild application\n" +
+                                     "to run without rebuild application\n" +
                                      $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
                              }
                              else //存在就删了

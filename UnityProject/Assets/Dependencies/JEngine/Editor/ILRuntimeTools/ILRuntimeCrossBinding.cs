@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,6 +32,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using ILRuntime.Runtime;
+using ILRuntime.Runtime.Enviorment;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
@@ -183,7 +185,7 @@ namespace JEngine.Editor
             StreamWriter sw = new StreamWriter(stream);
             Stopwatch watch = new Stopwatch();
             sw.WriteLine(
-                ILRuntime.Runtime.Enviorment.CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,
+                CrossBindingCodeGenerator.GenerateCrossBindingAdapterCode(t,
                     _namespace));
             watch.Stop();
             Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using JEngine.Core;
 
 namespace JEngine.AntiCheat
 {
@@ -51,8 +52,8 @@ namespace JEngine.AntiCheat
                 _originalValue = value;
                 unchecked
                 {
-                    _obscuredKey = (int) JRandom.RandomNum((int)value);
-                    _obscuredChar = (int) ((int)value + _obscuredKey);
+                    _obscuredKey = JRandom.RandomNum(value);
+                    _obscuredChar = value + _obscuredKey;
                 }
             }
         }
@@ -64,11 +65,11 @@ namespace JEngine.AntiCheat
             _originalValue = ' ';
             try
             {
-                Value = System.Convert.ToChar(val);
+                Value = Convert.ToChar(val);
             }
             catch
             {
-                JEngine.Core.Log.PrintError($"无法将{val}变为{Value.GetType()},已改为{Char.MinValue}");
+                Log.PrintError($"无法将{val}变为{Value.GetType()},已改为{Char.MinValue}");
                 Value = Char.MinValue;
             }
         }
@@ -81,7 +82,7 @@ namespace JEngine.AntiCheat
             var result = char.TryParse(val,out var _value);
             if (!result)
             {
-                JEngine.Core.Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
+                Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
                 Value = Char.MinValue;
             }
             else

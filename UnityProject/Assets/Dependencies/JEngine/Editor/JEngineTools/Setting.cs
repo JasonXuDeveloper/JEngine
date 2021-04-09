@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +32,7 @@ using libx;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
@@ -307,14 +309,14 @@ namespace JEngine.Editor
 		{
 			prefix = $"JEngine.Editor.Setting.{Application.productName}";
 			if (sceneSearchField == null) sceneSearchField = new AutocompleteSearchField();
-			sceneSearchField.onInputChanged = (s) => { sceneSearchPattern = s; };
-			sceneSearchField.onConfirm = (s) => { sceneSearchPattern = s; };
+			sceneSearchField.onInputChanged = s => { sceneSearchPattern = s; };
+			sceneSearchField.onConfirm = s => { sceneSearchPattern = s; };
 			scrollPos = new Vector2(position.width, position.height);
 		}
 
 		private int GetSpace(float percentage)
 		{
-			int result = (int) (this.position.width * percentage);
+			int result = (int) (position.width * percentage);
 			return result;
 		}
 
@@ -348,7 +350,7 @@ namespace JEngine.Editor
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
 				Language = (JEngineLanguage) EditorGUILayout.EnumPopup(GetString(DISPLAY_LANGUAGE), Language);
-				this.titleContent.text = GetString(JENGINE_SETTING);
+				titleContent.text = GetString(JENGINE_SETTING);
 			});
 
 			//选择场景
@@ -636,7 +638,7 @@ namespace JEngine.Editor
 
 						if (GUILayout.Button(GetString(UNLOAD_SCENE_BTN)))
 						{
-							EditorSceneManager.CloseScene(EditorSceneManager.GetSceneByPath(asset), true);
+							EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
 						}
 					});
 				}

@@ -1,9 +1,10 @@
 using System;
+using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
-using System.Threading.Tasks;
+using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace ProjectAdapter
 {   
@@ -14,7 +15,7 @@ namespace ProjectAdapter
         {
             get
             {
-                return typeof(global::ExampleAPI);
+                return typeof(ExampleAPI);
             }
         }
 
@@ -26,22 +27,22 @@ namespace ProjectAdapter
             }
         }
 
-        public override object CreateCLRInstance(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+        public override object CreateCLRInstance(AppDomain appdomain, ILTypeInstance instance)
         {
             return new Adapter(appdomain, instance);
         }
 
-        public class Adapter : global::ExampleAPI, CrossBindingAdaptorType
+        public class Adapter : ExampleAPI, CrossBindingAdaptorType
         {
             ILTypeInstance instance;
-            ILRuntime.Runtime.Enviorment.AppDomain appdomain;
+            AppDomain appdomain;
 
             public Adapter()
             {
 
             }
 
-            public Adapter(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+            public Adapter(AppDomain appdomain, ILTypeInstance instance)
             {
                 this.appdomain = appdomain;
                 this.instance = instance;
@@ -51,10 +52,10 @@ namespace ProjectAdapter
 
             public override void ExampleMethod()
             {
-                if (mExampleMethod_0.CheckShouldInvokeBase(this.instance))
+                if (mExampleMethod_0.CheckShouldInvokeBase(instance))
                     base.ExampleMethod();
                 else
-                    mExampleMethod_0.Invoke(this.instance);
+                    mExampleMethod_0.Invoke(instance);
             }
 
             #region Generate For Mono Events from template
@@ -65,11 +66,11 @@ namespace ProjectAdapter
              * 你还有什么理由不去用JEngine？
              */
             object[] param0 = new object[0];
-            private bool destoryed = false;
+            private bool destoryed;
             
             IMethod mAwakeMethod;
-            bool mAwakeMethodGot;private bool awaked = false;
-            private bool isAwaking = false;
+            bool mAwakeMethodGot;private bool awaked;
+            private bool isAwaking;
             
             public async void Awake()
             {
@@ -1234,8 +1235,8 @@ namespace ProjectAdapter
                 {
                     return instance.ToString();
                 }
-                else
-                    return instance.Type.FullName;
+
+                return instance.Type.FullName;
             }
         }
     }

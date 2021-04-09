@@ -24,20 +24,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #if UNITY_EDITOR
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace JEngine.Editor
 {
-    [System.Reflection.Obfuscation(Exclude = true)]
+    [Obfuscation(Exclude = true)]
     internal class MenuItems
     {
-        [UnityEditor.MenuItem("JEngine/Open Documents",priority = 1999)]
+        [MenuItem("JEngine/Open Documents",priority = 1999)]
         public static void OpenDocument()
         {
             Application.OpenURL("https://xgamedev.uoyou.com");
         }
         
-        [UnityEditor.MenuItem("JEngine/Open on Github",priority = 2000)]
+        [MenuItem("JEngine/Open on Github",priority = 2000)]
         public static void OpenGithub()
         {
             Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine");
