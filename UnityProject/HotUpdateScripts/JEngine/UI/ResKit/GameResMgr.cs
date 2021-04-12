@@ -115,7 +115,7 @@ namespace JEngine.UI.ResKit
             {
                 _gameActionDic.Add(name, callback);
                 res = Assets.LoadAssetAsync(ResPath.Instance.GetPath(name, assetType), typeof(T));
-                res.completed += delegate (AssetRequest resource)
+                Action<AssetRequest> call = (resource) =>
                 {
                     AddAssetRequest(res, name, loadType);
                     //callback?.Invoke(resource.asset as T);
@@ -125,6 +125,11 @@ namespace JEngine.UI.ResKit
                         _gameActionDic.Remove(name);
                     }
                 };
+                if (res.isDone)
+                {
+                    call.Invoke(res);
+                }
+                res.completed += call;
             }
         }
 

@@ -63,6 +63,7 @@ namespace ILRuntime.Runtime.Generated
             libx_Assets_Binding.Register(app);
             System_Action_1_Object_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Action_1_Object_Binding.Register(app);
+            System_Action_1_AssetRequest_Binding.Register(app);
             System_Runtime_CompilerServices_AsyncVoidMethodBuilder_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_AssetRequest_Binding_ValueCollection_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_AssetRequest_Binding_ValueCollection_Binding_Enumerator_Binding.Register(app);
@@ -106,7 +107,6 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_PlayerPrefs_Binding.Register(app);
             System_Char_Binding.Register(app);
             System_Text_StringBuilder_Binding.Register(app);
-            Init_Binding.Register(app);
             System_Exception_Binding.Register(app);
             System_Collections_IDictionary_Binding.Register(app);
             JEngine_Core_CryptoHelper_Binding.Register(app);
@@ -116,6 +116,7 @@ namespace ILRuntime.Runtime.Generated
             System_Decimal_Binding.Register(app);
             System_Double_Binding.Register(app);
             System_Single_Binding.Register(app);
+            Init_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
             JEngine_Core_ClassData_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);
@@ -134,7 +135,9 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_Int32_Func_1_Boolean_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Action_Binding.Register(app);
             System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_Collections_Generic_List_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_GC_Binding.Register(app);
+            System_Collections_Generic_List_1_CoroutineAdapter_Binding_Adaptor_Binding_Enumerator_Binding.Register(app);
             System_Func_1_Boolean_Binding.Register(app);
             System_Threading_Tasks_Task_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_Runtime_CompilerServices_TaskAwaiter_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);

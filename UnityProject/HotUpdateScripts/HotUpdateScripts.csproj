@@ -90,12 +90,6 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Dlls\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.XR.LegacyInputHelpers">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.SpatialTracking">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.SpatialTracking.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Monetization">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.Monetization.dll</HintPath>
     </Reference>
@@ -108,9 +102,6 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime">
-      <HintPath>..\Library\ScriptAssemblies\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>..\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
@@ -120,20 +111,8 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>..\Library\ScriptAssemblies\Unity.Analytics.DataPrivacy.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TestRunner">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="Malee.ReorderableList">
-      <HintPath>..\Library\ScriptAssemblies\Malee.ReorderableList.dll</HintPath>
     </Reference>
     <Reference Include="WebSocketSharp">
       <HintPath>..\Library\ScriptAssemblies\WebSocketSharp.dll</HintPath>

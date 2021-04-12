@@ -40,14 +40,14 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            JEngine.Core.ClassData @class = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            JEngine.Core.ClassData @classData = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             JEngine.Core.ClassBind instance_of_this_method = (JEngine.Core.ClassBind)typeof(JEngine.Core.ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
-            var result_of_this_method = instance_of_this_method.AddClass(@class);
+            var result_of_this_method = instance_of_this_method.AddClass(@classData);
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
@@ -59,14 +59,14 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            JEngine.Core.ClassData @class = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            JEngine.Core.ClassData @classData = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             JEngine.Core.ClassBind instance_of_this_method = (JEngine.Core.ClassBind)typeof(JEngine.Core.ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
-            instance_of_this_method.Active(@class);
+            instance_of_this_method.Active(@classData);
 
             return __ret;
         }

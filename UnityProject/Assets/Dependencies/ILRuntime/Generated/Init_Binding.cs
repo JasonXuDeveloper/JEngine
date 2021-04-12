@@ -27,10 +27,10 @@ namespace ILRuntime.Runtime.Generated
             app.RegisterCLRFieldGetter(field, get_Instance_0);
             app.RegisterCLRFieldSetter(field, set_Instance_0);
             app.RegisterCLRFieldBinding(field, CopyToStack_Instance_0, AssignFromStack_Instance_0);
-            field = type.GetField("Key", flag);
-            app.RegisterCLRFieldGetter(field, get_Key_1);
-            app.RegisterCLRFieldSetter(field, set_Key_1);
-            app.RegisterCLRFieldBinding(field, CopyToStack_Key_1, AssignFromStack_Key_1);
+            field = type.GetField("key", flag);
+            app.RegisterCLRFieldGetter(field, get_key_1);
+            app.RegisterCLRFieldSetter(field, set_key_1);
+            app.RegisterCLRFieldBinding(field, CopyToStack_key_1, AssignFromStack_key_1);
 
 
         }
@@ -66,27 +66,27 @@ namespace ILRuntime.Runtime.Generated
             return ptr_of_this_method;
         }
 
-        static object get_Key_1(ref object o)
+        static object get_key_1(ref object o)
         {
             return ((global::Init)o).key;
         }
 
-        static StackObject* CopyToStack_Key_1(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
+        static StackObject* CopyToStack_key_1(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
         {
             var result_of_this_method = ((global::Init)o).key;
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
-        static void set_Key_1(ref object o, object v)
+        static void set_key_1(ref object o, object v)
         {
             ((global::Init)o).key = (System.String)v;
         }
 
-        static StackObject* AssignFromStack_Key_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
+        static StackObject* AssignFromStack_key_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @Key = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            ((global::Init)o).key = @Key;
+            System.String @key = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            ((global::Init)o).key = @key;
             return ptr_of_this_method;
         }
 
