@@ -36,7 +36,7 @@ namespace JEngine.Editor
 
             Setting.MakeHorizontal(50, () =>
             {
-                if (GUILayout.Button("自动获取fields", GUILayout.Height(30)))
+                if (GUILayout.Button(Setting.GetString((int) SettingString.ClassBindGetAllField), GUILayout.Height(30)))
                 {
                     DoConvert(target as ClassBind);
                 }
@@ -46,7 +46,7 @@ namespace JEngine.Editor
 
             Setting.MakeHorizontal(50, () =>
             {
-                if (GUILayout.Button("自动更新fieldType", GUILayout.Height(30)))
+                if (GUILayout.Button(Setting.GetString((int) SettingString.ClassBindGetAllType), GUILayout.Height(30)))
                 {
                     DoFieldType(target as ClassBind);
                 }
@@ -68,9 +68,9 @@ namespace JEngine.Editor
 
                 if (t == null)
                 {
-                    EditorUtility.DisplayDialog("ClassBind Error", $"Class {className} does not exist " +
-                                                                   "in hot update scripts solution!\n" +
-                                                                   $"'{className}'类在热更工程中不存在", "OK");
+                    EditorUtility.DisplayDialog(Setting.GetString((int) SettingString.ClassBindErrorTitle),
+                        String.Format(Setting.GetString((int) SettingString.ClassBindErrorContent),
+                            className), "OK");
                     return;
                 }
 
@@ -84,14 +84,16 @@ namespace JEngine.Editor
 
                     if (fieldType == null)
                     {
-                        Log.PrintError($"{className}不存在{field.fieldName}，已跳过");
+                        Log.PrintError(String.Format(Setting.GetString((int) SettingString.ClassBindInvalidField),
+                            className, field.fieldName));
                     }
 
                     SetType(field, fieldType, hotCode);
                     affectCounts++;
 
-                    EditorUtility.DisplayProgressBar("ClassBind Progress",
-                        $"Getting Field for {field.fieldName} {data.fields.IndexOf(field)}/{data.fields.Length}",
+                    EditorUtility.DisplayProgressBar(Setting.GetString((int) SettingString.ClassBindProgress),
+                        String.Format(Setting.GetString((int) SettingString.ClassBindProgressContentForGetField),
+                            field.fieldName, data.fields.IndexOf(field), data.fields.Length),
                         data.fields.IndexOf(field) / (float) data.fields.Length);
 
                     await Task.Delay(50); //延迟一下，动画更丝滑
@@ -115,15 +117,14 @@ namespace JEngine.Editor
                 var scene = SceneManager.GetActiveScene();
                 saveResult = EditorSceneManager.SaveScene(scene, scene.path);
             }
-            
-            string result = saveResult ? "succeeded" : "failed";
-            string resultZh = saveResult ? "成功" : "失败";
+
+            string result = Setting.GetString(saveResult ? (int) SettingString.Success : (int) SettingString.Fail);
 
             EditorUtility.ClearProgressBar();
-            EditorUtility.DisplayDialog("ClassBind Result",
-                $"Set {affectCounts} fieldTypes into ClassBind: {instance.name} and saved the scene {result}\n" +
-                $"ClassBind: {instance.name}中{affectCounts}个fields已自动设置FieldType，且保存{resultZh}",
-                "Done");
+            EditorUtility.DisplayDialog(Setting.GetString((int) SettingString.ClassBindResultTitle),
+                String.Format(Setting.GetString((int) SettingString.ClassBindResultContent),
+                    affectCounts, instance.name, result),
+                Setting.GetString((int) SettingString.Done));
         }
 
         public static async void DoConvert(ClassBind instance)

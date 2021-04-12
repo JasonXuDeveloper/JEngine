@@ -29,6 +29,24 @@ namespace JEngine.Helper
 
         public void Register(AppDomain appdomain)
         {
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Int64>.onChange>((act) =>
+            {
+                return new JEngine.Core.BindableProperty<System.Int64>.onChange((val) =>
+                {
+                    ((Action<System.Int64>)act)(val);
+                });
+            });
+
+
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Object>.onChange>((act) =>
+            {
+                return new JEngine.Core.BindableProperty<System.Object>.onChange((val) =>
+                {
+                    ((Action<System.Object>)act)(val);
+                });
+            });
+
+
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<String>>(act =>
             {
                 return new Predicate<String>(obj =>

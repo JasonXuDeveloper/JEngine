@@ -37,12 +37,12 @@ namespace JEngine.Core
 
         public static void PrintWarning(object message)
         {
-            Debug.LogWarning("[JEngine Warnning] " + message);
+            Debug.LogWarning("<color=#ffa673>[JEngine Warnning]</yellow> " + message);
         }
 
         public static void PrintError(object message)
         {
-            Debug.LogError("[JEngine Error] " + message);
+            Debug.LogError("<color=#db4259[JEngine Error]</color> " + message);
         }
     }
 }

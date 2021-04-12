@@ -157,7 +157,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                                 await Task.Delay(20);
                             }
                         }
-                        catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                        catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
                         {
                             return;
                         }
@@ -174,7 +174,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     }
                 }
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
                 //如果出现了Null，那就重新Awake
                 Awake();

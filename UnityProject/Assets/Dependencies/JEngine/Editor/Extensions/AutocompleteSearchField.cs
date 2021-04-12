@@ -110,8 +110,8 @@ namespace JEngine.Editor
 			else
 			{
 				var s = asToolbar
-					? searchField.OnToolbarGUI(rect, Setting.GetString(Setting.SCENE_FILTER))
-					: searchField.OnGUI(rect, Setting.GetString(Setting.SCENE_FILTER));
+					? searchField.OnToolbarGUI(rect, Setting.GetString((int)SettingString.SceneFilter))
+					: searchField.OnGUI(rect, Setting.GetString((int)SettingString.SceneFilter));
 				searchString = "";
 			}
 

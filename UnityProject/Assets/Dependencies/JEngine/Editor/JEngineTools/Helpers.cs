@@ -63,7 +63,7 @@ namespace JEngine.Editor
                 {
                     int remain = json["remain"].ToString().ToInt32();
                     Setting.XAssetLoggedIn = true;
-                    Setting.XAssetRemain = remain;
+                    Setting.XAssetRemainTime = remain;
                     Setting.Refresh();
                 }
             }

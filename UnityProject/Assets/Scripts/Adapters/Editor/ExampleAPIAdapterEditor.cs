@@ -1,21 +1,19 @@
-
 /*
  * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
  */
 #if UNITY_EDITOR
 using System;
+using LitJson;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using JEngine.Core;
 using System.Reflection;
 using System.Threading.Tasks;
-using ILRuntime.Runtime.Enviorment;
-using JEngine.Core;
-using LitJson;
-using ProjectAdapter;
-using UnityEditor;
 using UnityEditor.AnimatedValues;
-using UnityEngine;
-using Object = UnityEngine.Object;
+using ILRuntime.Runtime.Enviorment;
 using Tools = JEngine.Core.Tools;
+
 
 [CustomEditor(typeof(ExampleAPI), true)]
 public class ExampleAPIAdapterEditor : Editor
@@ -29,7 +27,7 @@ public class ExampleAPIAdapterEditor : Editor
         for (int i = 0; i < fadeGroup.Length; i++)
         {
             fadeGroup[i] = new AnimBool(false);
-            fadeGroup[i].valueChanged.AddListener(Repaint);
+            this.fadeGroup[i].valueChanged.AddListener(this.Repaint);
         }
 
         displaying = true;
@@ -38,7 +36,7 @@ public class ExampleAPIAdapterEditor : Editor
         {
             try
             {
-                Repaint();
+                this.Repaint();
             }
             catch
             {
@@ -58,7 +56,7 @@ public class ExampleAPIAdapterEditor : Editor
         // 移除动画监听
         for (int i = 0; i < fadeGroup.Length; i++)
         {
-            fadeGroup[i].valueChanged.RemoveListener(Repaint);
+            this.fadeGroup[i].valueChanged.RemoveListener(this.Repaint);
         }
 
     }
@@ -66,7 +64,7 @@ public class ExampleAPIAdapterEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        ExampleAPIAdapter.Adapter clr = target as ExampleAPIAdapter.Adapter;
+        ProjectAdapter.ExampleAPIAdapter.Adapter clr = target as ProjectAdapter.ExampleAPIAdapter.Adapter;
         var instance = clr.ILInstance;
         if (instance != null)
         {
@@ -141,8 +139,8 @@ public class ExampleAPIAdapterEditor : Editor
                     {
                         if (instance[i.Value] != null)
                         {
-                            fadeGroup[1].target = EditorGUILayout.Foldout(fadeGroup[1].target, name, true);
-                            if (EditorGUILayout.BeginFadeGroup(fadeGroup[1].faded))
+                            this.fadeGroup[1].target = EditorGUILayout.Foldout(this.fadeGroup[1].target, name, true);
+                            if (EditorGUILayout.BeginFadeGroup(this.fadeGroup[1].faded))
                             {
                                 instance[i.Value] = EditorGUILayout.TextArea(
                                     ((JsonData) instance[i.Value]).ToString()
@@ -157,7 +155,7 @@ public class ExampleAPIAdapterEditor : Editor
                             EditorGUILayout.LabelField(name, "暂无值的JsonData");
                         }
                     }
-                    else if (typeof(Object).IsAssignableFrom(cType))
+                    else if (typeof(UnityEngine.Object).IsAssignableFrom(cType))
                     {
                         if (obj == null && cType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
                         {
@@ -185,7 +183,7 @@ public class ExampleAPIAdapterEditor : Editor
                         }
 
                         //处理Unity类型
-                        var res = EditorGUILayout.ObjectField(name, obj as Object, cType, true);
+                        var res = EditorGUILayout.ObjectField(name, obj as UnityEngine.Object, cType, true);
                         instance[i.Value] = res;
                     }
                     //可绑定值，可以尝试更改
@@ -256,7 +254,7 @@ public class ExampleAPIAdapterEditor : Editor
         }
 
         // 应用属性修改
-        serializedObject.ApplyModifiedProperties();
+        this.serializedObject.ApplyModifiedProperties();
     }
 
 }

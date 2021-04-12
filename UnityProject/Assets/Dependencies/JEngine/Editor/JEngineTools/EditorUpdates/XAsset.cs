@@ -14,10 +14,9 @@ namespace JEngine.Editor
         {
             if (!Setting.XAssetLoggedIn || _delaying || _verifying || Helpers.loggingXAsset) return;
 
-            bool result = false;
             //验证
             _verifying = true;
-            result = await Helpers.LoginXAsset();
+            var result = await Helpers.LoginXAsset();
             _verifying = false;
             
             if (!result)

@@ -1,10 +1,9 @@
 using System;
-using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
-using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+using System.Threading.Tasks;
 
 namespace ProjectAdapter
 {   
@@ -15,7 +14,7 @@ namespace ProjectAdapter
         {
             get
             {
-                return typeof(ExampleAPI);
+                return typeof(global::ExampleAPI);
             }
         }
 
@@ -27,22 +26,22 @@ namespace ProjectAdapter
             }
         }
 
-        public override object CreateCLRInstance(AppDomain appdomain, ILTypeInstance instance)
+        public override object CreateCLRInstance(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
         {
             return new Adapter(appdomain, instance);
         }
 
-        public class Adapter : ExampleAPI, CrossBindingAdaptorType
+        public class Adapter : global::ExampleAPI, CrossBindingAdaptorType
         {
             ILTypeInstance instance;
-            AppDomain appdomain;
+            ILRuntime.Runtime.Enviorment.AppDomain appdomain;
 
             public Adapter()
             {
 
             }
 
-            public Adapter(AppDomain appdomain, ILTypeInstance instance)
+            public Adapter(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
             {
                 this.appdomain = appdomain;
                 this.instance = instance;
@@ -52,10 +51,10 @@ namespace ProjectAdapter
 
             public override void ExampleMethod()
             {
-                if (mExampleMethod_0.CheckShouldInvokeBase(instance))
+                if (mExampleMethod_0.CheckShouldInvokeBase(this.instance))
                     base.ExampleMethod();
                 else
-                    mExampleMethod_0.Invoke(instance);
+                    mExampleMethod_0.Invoke(this.instance);
             }
 
             #region Generate For Mono Events from template
@@ -66,11 +65,11 @@ namespace ProjectAdapter
              * 你还有什么理由不去用JEngine？
              */
             object[] param0 = new object[0];
-            private bool destoryed;
+            private bool destoryed = false;
             
             IMethod mAwakeMethod;
-            bool mAwakeMethodGot;private bool awaked;
-            private bool isAwaking;
+            bool mAwakeMethodGot;private bool awaked = false;
+            private bool isAwaking = false;
             
             public async void Awake()
             {
@@ -96,7 +95,7 @@ namespace ProjectAdapter
                                     await Task.Delay(20);
                                 }
                             }
-                            catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
                             {
                                 return;
                             }
@@ -113,7 +112,7 @@ namespace ProjectAdapter
                         }
                     }
                 }
-                catch (NullReferenceException e)
+                catch (NullReferenceException)
                 {
                     //如果出现了Null，那就重新Awake
                     Awake();
@@ -1225,19 +1224,29 @@ namespace ProjectAdapter
                 }
             }
             
-            #endregion
-
+            IMethod mToStringMethod;
+            bool mToStringMethodGot;
             public override string ToString()
             {
-                IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);
-                m = instance.Type.GetVirtualMethod(m);
-                if (m == null || m is ILMethod)
+                if (instance != null)
                 {
-                    return instance.ToString();
+                    if (!mToStringMethodGot)
+                    {
+                        mToStringMethod =
+                            instance.Type.GetMethod("ToString", 0);
+                        mToStringMethodGot = true;
+                    }
+    
+                    if (mToStringMethod != null)
+                    {
+                        appdomain.Invoke(mToStringMethod, instance, param0);
+                    }
                 }
-
-                return instance.Type.FullName;
+    
+                return instance?.Type?.FullName ?? base.ToString();
             }
+            
+            #endregion
         }
     }
 }
