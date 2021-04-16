@@ -335,6 +335,7 @@ namespace libx
                     return null;
             }
 #endif
+            return null;
         }
 
         private string GetDownloadURL(string filename)

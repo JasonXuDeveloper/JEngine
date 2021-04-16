@@ -234,7 +234,7 @@ namespace JEngine.Editor
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
             sb.Append(
-@"/*
+                @"/*
  * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
  */
 #if UNITY_EDITOR
@@ -249,10 +249,12 @@ using System.Threading.Tasks;
 using UnityEditor.AnimatedValues;
 using ILRuntime.Runtime.Enviorment;
 using Tools = JEngine.Core.Tools;
+using " + nameSpace + @";
 
-
-[CustomEditor(typeof(");
-            sb.Append(clsName);
+");
+            sb.Append(
+                @"[CustomEditor(typeof(");
+            sb.Append(clsName + "Adapter.Adapter");
             sb.Append(@"), true)]
 public class ");
             sb.Append(clsName);

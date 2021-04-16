@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 using UnityEditor.AnimatedValues;
 using ILRuntime.Runtime.Enviorment;
 using Tools = JEngine.Core.Tools;
+using ProjectAdapter;
 
-
-[CustomEditor(typeof(ExampleAPI), true)]
+[CustomEditor(typeof(ExampleAPIAdapter.Adapter), true)]
 public class ExampleAPIAdapterEditor : Editor
 {
     private bool displaying;
