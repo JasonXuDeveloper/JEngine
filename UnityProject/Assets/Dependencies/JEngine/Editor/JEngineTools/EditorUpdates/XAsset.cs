@@ -12,16 +12,16 @@ namespace JEngine.Editor
 
         public static async void Update()
         {
-            if (!Setting.XAssetLoggedIn || _delaying || _verifying || Helpers.loggingXAsset) return;
+            if (!Setting.XAssetLoggedIn || _delaying || _verifying || XAssetHelper.loggingXAsset) return;
 
             //验证
             _verifying = true;
-            var result = await Helpers.LoginXAsset();
+            var result = await XAssetHelper.LoginXAsset();
             _verifying = false;
             
             if (!result)
             {
-                Helpers.LogOutXAsset();
+                XAssetHelper.LogOutXAsset();
                 EditorUtility.DisplayDialog("XAsset", "登入状态异常，请重新登入\n" +
                                                       "An error just occured, please log in again", "OK");
                 Setting.Refresh();

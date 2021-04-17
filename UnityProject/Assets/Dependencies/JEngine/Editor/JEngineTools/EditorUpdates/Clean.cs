@@ -66,7 +66,7 @@ namespace JEngine.Editor
      
                  //有的话比较日期
                  DateTime lastModified = File.GetLastWriteTime(DLLMgr.DllPath);
-                 string lastModifiedStr = lastModified.ToString(Setting.GetString((int)SettingString.DateFormat));
+                 string lastModifiedStr = lastModified.ToString(Setting.GetString(SettingString.DateFormat));
                  if (Setting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
                  {
                      var files = HiddenDirectory.GetFiles();
@@ -80,7 +80,7 @@ namespace JEngine.Editor
                      watch.Stop();
                      if (watch.ElapsedMilliseconds > 0)
                      {
-                         Log.Print(String.Format(Setting.GetString((int)SettingString.DLLConvertLog),
+                         Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
                              watch.ElapsedMilliseconds));
                      }
      
@@ -120,7 +120,7 @@ namespace JEngine.Editor
                              catch
                              {
                                  Log.Print(String.Format(
-                                     Setting.GetString((int) SettingString.DeleteErrorLog),
+                                     Setting.GetString(SettingString.DeleteErrorLog),
                                      file.Name));
                                  success = false;
                              }
@@ -135,7 +135,7 @@ namespace JEngine.Editor
                                  {
                                      File.Move(file.FullName, newPath.FullName + "/" + file.Name);
                                      Log.Print(String.Format(
-                                         Setting.GetString((int) SettingString.DLLNewReferenceLog),
+                                         Setting.GetString(SettingString.DLLNewReferenceLog),
                                          newPath.FullName + "/" + file.Name));
                                  }
                              }
@@ -145,7 +145,7 @@ namespace JEngine.Editor
                      watch.Stop();
                      if (counts > 0) //如果删除过东西，就代表DLL更新了，就需要生成文件
                      {
-                         Log.Print(String.Format(Setting.GetString((int) SettingString.DLLCleanLog),
+                         Log.Print(String.Format(Setting.GetString(SettingString.DLLCleanLog),
                              counts,
                              watch.ElapsedMilliseconds));
                      }
@@ -160,7 +160,7 @@ namespace JEngine.Editor
                      watch.Start();
                      DLLMgr.MakeBytes();
                      watch.Stop();
-                     Log.Print(String.Format(Setting.GetString((int)SettingString.DLLConvertLog),
+                     Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
                          watch.ElapsedMilliseconds));
                      AssetDatabase.Refresh();
                      _isDone = true;

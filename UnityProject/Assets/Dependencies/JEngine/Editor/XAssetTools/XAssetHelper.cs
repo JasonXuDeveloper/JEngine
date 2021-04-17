@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace JEngine.Editor
 {
-    public static class Helpers
+    public static class XAssetHelper
     {
         public static void SignUpXAsset()
         {
@@ -17,7 +17,7 @@ namespace JEngine.Editor
 
         public static void RechargeXAsset()
         {
-            Application.OpenURL("https://game4d.cn/Pay/299");
+            Application.OpenURL("https://game4d.cn");
         }
 
         public static void LogOutXAsset()

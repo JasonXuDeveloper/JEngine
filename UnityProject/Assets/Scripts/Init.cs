@@ -122,6 +122,6 @@ public class Init : MonoBehaviour
     public void OnHotFixLoaded()
     {
         Appdomain.Invoke("HotUpdateScripts.Program", "RunGame", _param0, _param0);
-        HotFixLoadedHelper.Init();
+        HotFixLoadedHelper.Init(Appdomain);
     }
 }

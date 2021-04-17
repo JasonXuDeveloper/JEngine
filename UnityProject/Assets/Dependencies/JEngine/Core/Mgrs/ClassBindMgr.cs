@@ -48,9 +48,8 @@ namespace JEngine.Core
             {
                 Destroy(this);
             }
-            
-            LoadedScenes = new List<Scene>(0);
-            LoadedScenes.Add(SceneManager.GetActiveScene());
+
+            LoadedScenes = new List<Scene>(0) {SceneManager.GetActiveScene()};
             _cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
@@ -71,42 +70,42 @@ namespace JEngine.Core
             foreach (var cb in cbs)
             {
                 //先添加
-                foreach (ClassData _class in cb.scriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null || _class.Added)
+                    if (data == null || data.Added)
                     {
                         continue;
                     }
 
-                    cb.AddClass(_class);
+                    cb.AddClass(data);
                 }
             }
 
             foreach (var cb in cbs)
             {
                 //再赋值
-                foreach (ClassData _class in cb.scriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null || _class.BoundData)
+                    if (data == null || data.BoundData)
                     {
                         continue;
                     }
 
-                    cb.SetVal(_class);
+                    cb.SetVal(data);
                 }
             }
 
             //激活
             foreach (var cb in cbs)
             {
-                foreach (ClassData _class in cb.scriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null ||_class.Activated)
+                    if (data == null ||data.Activated)
                     {
                         continue;
                     }
 
-                    cb.Active(_class);
+                    cb.Active(data);
                 }
             }
         }

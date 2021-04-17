@@ -37,7 +37,7 @@ namespace JEngine.Core
 
         public static void PrintWarning(object message)
         {
-            Debug.LogWarning("<color=#ffa673>[JEngine Warnning]</yellow> " + message);
+            Debug.LogWarning("<color=#ffa673>[JEngine Warnning]</color> " + message);
         }
 
         public static void PrintError(object message)
