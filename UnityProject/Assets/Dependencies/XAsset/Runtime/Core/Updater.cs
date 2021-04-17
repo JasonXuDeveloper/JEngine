@@ -513,8 +513,8 @@ namespace libx
             var v2 = -1;
             var hasFile = string.IsNullOrEmpty(request.error);
             if (hasFile) { v2 = Versions.LoadVersion(path); }
-            var steamFileThenSave = v2 > v1;
-            if (steamFileThenSave) { Debug.LogWarning("本地流目录版本高于网络目录版本"); }
+            var steamFileThenSave = v2 >= v1;
+            if (steamFileThenSave) { Debug.LogWarning("本地流目录版本高于或等于网络目录版本"); }
             _step = hasFile && steamFileThenSave ? Step.Coping : Step.Versions;
             request.Dispose();
         }

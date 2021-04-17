@@ -39,63 +39,62 @@ namespace JEngine.Editor
 {
 	internal enum SettingString
 	{
-		JEngineSetting = 0,
-		DisplayLanguage = 1,
-		StartUpScene = 2,
-		LastDLLCleanTime = 3,
-		DateFormat = 4,
-		JumpToStartUpScene = 5,
-		MissingAssembly = 6,
-		MissingAssemblyBtn = 7,
-		ErrorRescueTools = 8,
-		ErrorRescueToolsInfo = 9,
-		InvalidSceneObject = 10,
-		PanelInfo = 11,
-		ScenesTitle = 12,
-		LoadSceneBtn = 13,
-		LoadSceneAdditiveBtn = 14,
-		UnloadSceneBtn = 15,
-		SceneFilter = 16,
-		ClassBindTools = 17,
-		ClassBindAutoGetFields = 18,
-		ClassBindAutoSetTypes = 19,
-		LocalJEngine = 20,
-		HotJEngine = 21,
-		ChooseBtn = 22,
-		UpdateJEngine = 23,
-		UpdateHelpBox = 24,
-		XAssetTitle = 25,
-		XAssetHelpBox = 26,
-		XAssetButton = 27,
-		XAssetAccount = 28,
-		XAssetPassword = 29,
-		Login = 30,
-		SignUp = 31,
-		LogOut = 32,
-		XAssetRemain = 33,
-		Recharge = 34,
-		Charge = 35,
-		XAssetChargeTxt = 36,
-		DLLConvertLog = 37,
-		DLLCleanLog = 38,
-		DLLNewReferenceLog = 39,
-		DeleteErrorLog = 40,
-		ClassBindErrorTitle = 41,
-		ClassBindErrorContent = 42,
-		ClassBindInvalidField = 43,
-		ClassBindGetAllField = 44,
-		ClassBindGetAllType = 45,
-		ClassBindProgress = 46,
-		ClassBindProgressContentForGetField = 47,
-		ClassBindProgressContentForGetType = 48,
-		Success = 49,
-		Fail = 50,
-		ClassBindResultTitle = 51,
-		ClassBindResultContentForGetType = 52,
-		Done = 53,
-		HotSceneList = 54,
-		ClassBindResultContentForSetField = 55,
-		ClassBindUnableSetFieldValue = 56,
+		JEngineSetting,
+		DisplayLanguage,
+		StartUpScene,
+		LastDLLCleanTime,
+		DateFormat,
+		JumpToStartUpScene,
+		MissingAssembly,
+		MissingAssemblyBtn,
+		ErrorRescueTools,
+		ErrorRescueToolsInfo,
+		InvalidSceneObject,
+		PanelInfo,
+		ScenesTitle,
+		LoadSceneBtn,
+		LoadSceneAdditiveBtn,
+		UnloadSceneBtn,
+		ClassBindTools,
+		ClassBindAutoGetFields,
+		ClassBindAutoSetTypes,
+		LocalJEngine,
+		HotJEngine,
+		ChooseBtn,
+		UpdateJEngine,
+		UpdateHelpBox,
+		XAssetTitle,
+		XAssetHelpBox,
+		XAssetButton,
+		XAssetAccount,
+		XAssetPassword,
+		Login,
+		SignUp,
+		LogOut,
+		XAssetRemain,
+		Recharge,
+		Charge,
+		XAssetChargeTxt,
+		DLLConvertLog,
+		DLLCleanLog,
+		DLLNewReferenceLog,
+		DeleteErrorLog,
+		ClassBindErrorTitle,
+		ClassBindErrorContent,
+		ClassBindInvalidField,
+		ClassBindGetAllField,
+		ClassBindGetAllType,
+		ClassBindProgress,
+		ClassBindProgressContentForGetField,
+		ClassBindProgressContentForGetType,
+		Success,
+		Fail,
+		ClassBindResultTitle,
+		ClassBindResultContentForGetType,
+		Done,
+		HotSceneList,
+		ClassBindResultContentForSetField,
+		ClassBindUnableSetFieldValue,
 	}
 
 	internal class Setting : EditorWindow
@@ -142,7 +141,6 @@ namespace JEngine.Editor
 			new[] {"打开", "Open"},
 			new[] {"加载", "Load"},
 			new[] {"卸载", "Unload"},
-			new[] {"筛选场景", "Scene Filter"},
 			new[] {"ClassBind助手", "ClassBind Tools"},
 			new[] {"自动获取全部field", "Auto get fields for all"},
 			new[] {"自动处理全部fieldType", "Auto get fieldTypes for all"},
@@ -325,16 +323,6 @@ namespace JEngine.Editor
 		/// </summary>
 		private bool _showScenes = true;
 
-		/// <summary>
-		/// 筛选场景搜索框
-		/// </summary>
-		[SerializeField] private AutocompleteSearchField sceneSearchField;
-
-		/// <summary>
-		/// 筛选场景字符串
-		/// </summary>
-		private string _sceneSearchPattern = "";
-
 		private Vector2 _scrollPos;
 
 		private static Setting _instance;
@@ -360,10 +348,6 @@ namespace JEngine.Editor
 		{
 			_prefix = $"JEngine.Editor.Setting.{Application.productName}";
 			_dataPath = new DirectoryInfo(Application.dataPath);
-
-			if (sceneSearchField == null) sceneSearchField = new AutocompleteSearchField();
-			sceneSearchField.onInputChanged = s => { _sceneSearchPattern = s; };
-			sceneSearchField.onConfirm = s => { _sceneSearchPattern = s; };
 			_scrollPos = new Vector2(position.width, position.height);
 		}
 
@@ -641,9 +625,6 @@ namespace JEngine.Editor
 			//如果场景
 			if (_showScenes)
 			{
-				//筛选框
-				sceneSearchField.OnGUI(GetSpace(0.1f));
-
 				//获取热更场景
 				Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
 				Assets.loadDelegate = AssetDatabase.LoadAssetAtPath;
@@ -675,13 +656,6 @@ namespace JEngine.Editor
 					{
 						GUI.enabled = false;
 						Object sceneObj = AssetDatabase.LoadAssetAtPath<Object>(asset);
-
-						//筛选
-						if (!sceneObj.name.StartsWith(_sceneSearchPattern))
-						{
-							GUI.enabled = true;
-							return;
-						}
 
 						EditorGUILayout.ObjectField(sceneObj,
 							typeof(Object), false);
@@ -784,7 +758,7 @@ namespace JEngine.Editor
 					PlayerSettings.allowUnsafeCode = false;
 				}
 			});
-
+			GUILayout.Space(10);
 			#endregion
 
 			try
