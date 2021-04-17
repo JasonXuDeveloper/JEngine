@@ -42,7 +42,7 @@ namespace JEngine.Core
 
         public static void PrintError(object message)
         {
-            Debug.LogError("<color=#db4259[JEngine Error]</color> " + message);
+            Debug.LogError("<color=#db4259>[JEngine Error]</color> " + message);
         }
     }
 }
