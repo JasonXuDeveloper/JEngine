@@ -41,7 +41,22 @@ namespace JEngine.Examples
                 "继承了Mono，所以可以在CrossDomainDemo这个GameObject上看到，" +
                 "ClassBind自动挂了个ExampleAPIAdapter/Adapter");
 
-            Log.Print($"这个类用GetComponent获取是null嘛？{gameObject.GetComponent<CrossDomainDemo>() == null}");
+            Log.Print($"这个对象用GetComponent获取是null嘛？{gameObject.GetComponent<CrossDomainDemo>() == null}");
+
+            Log.Print("再来一个跨域继承泛型的Demo吧，JEngine这个框架实现了太多不可能了😂");
+            Log.Print("参考UnityProject/Assets/Scripts/Adapters/GenericExampleAdapter.cs这个文件，提供了泛型跨域继承的2个demo");
+            Log.Print("首先是public class GenericTest1 : GenericExample<GenericTest1>这种，泛型参数是它本身的继承，本地工程需要写一个继承Adapter的泛型适配器，参考GenericExampleAdapter1，即可");
+            Log.Print("现在挂一个这个类到该gameObject上");
+            gameObject.AddComponent<GenericTest1>().LogTest();
+            Log.Print("不出意外，来了一句Log，还顺带打印了T的类型，是Adapter");
+
+            Log.Print("现在是public class GenericTest2 : GenericExample<JBehaviour>这种，泛型参数是其他的无跨域继承的热更类型，本地工程需要写一个继承ILTypeInstance的泛型适配器，参考GenericExampleAdapter2，即可");
+            Log.Print("现在挂一个这个类到该gameObject上");
+            gameObject.AddComponent<GenericTest2>().LogTest();
+            Log.Print("不出意外，来了一句Log，还顺带打印了T的类型，是ILTypeInstance");
+
+            Log.Print("那么泛型跨域适配器的演示到此为止了，记住一点：泛型参数是啥，适配器那边就注册啥");
+
 
             Log.Print("调用override方法，跨域继承");
             ExampleMethod();
@@ -88,5 +103,15 @@ namespace JEngine.Examples
                 CancelInvoke("Do");
             }
         }
+    }
+
+    public class GenericTest1 : GenericExample<GenericTest1>
+    {
+
+    }
+
+    public class GenericTest2 : GenericExample<JBehaviour>
+    {
+
     }
 }
