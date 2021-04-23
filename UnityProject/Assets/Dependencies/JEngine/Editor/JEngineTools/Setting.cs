@@ -95,6 +95,7 @@ namespace JEngine.Editor
 		HotSceneList,
 		ClassBindResultContentForSetField,
 		ClassBindUnableSetFieldValue,
+		MemberVariables,
 	}
 
 	internal class Setting : EditorWindow
@@ -221,6 +222,7 @@ namespace JEngine.Editor
 			new[] {"热更场景列表", "Hot Update Scene List"},
 			new[] {"<{1}>:ClassBind新增了{0}个fields", "Add {0} fields into ClassBind: {1}"},
 			new[] {"无法对<{0}>ClassBind上{2}({1})进行自动赋值构造值", "Unable to set value for field {1}:{2} on ClassBind:<{0}>"},
+			new[] {"{0}的成员变量", "{0} variables"},
 
 		};
 

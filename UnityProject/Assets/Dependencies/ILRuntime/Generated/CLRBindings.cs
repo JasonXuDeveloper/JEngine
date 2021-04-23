@@ -159,6 +159,8 @@ namespace ILRuntime.Runtime.Generated
             WebSocketSharp_MessageEventArgs_Binding.Register(app);
             JEngine_Net_SocketIOEvent_Binding.Register(app);
             JSONObject_Binding.Register(app);
+            GenericExample_1_ProjectAdapter_GenericExampleAdapter2_Binding_Adapter_Binding.Register(app);
+            GenericExample_1_ILTypeInstance_Binding.Register(app);
             ExampleAPI_Binding.Register(app);
         }
 

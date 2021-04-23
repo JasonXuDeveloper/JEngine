@@ -237,19 +237,11 @@ namespace JEngine.Editor
                 @"/*
  * JEngine自动生成的编辑器脚本，作者已经代替你掉了头发，帮你写出了这个编辑器脚本，让你能够直接看对象序列化后的字段
  */
-#if UNITY_EDITOR
-using System;
-using LitJson;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using JEngine.Core;
-using System.Reflection;
-using System.Threading.Tasks;
-using UnityEditor.AnimatedValues;
-using ILRuntime.Runtime.Enviorment;
-using Tools = JEngine.Core.Tools;
+using JEngine.Editor;
 using " + nameSpace + @";
+using UnityEditor.AnimatedValues;
 
 ");
             sb.Append(
@@ -272,9 +264,7 @@ public class ");
                 sb.AppendLine(line);
             }
 
-            sb.Append(@"
-}
-#endif");
+            sb.Append(@"}");
             return sb.ToString();
         }
     }
