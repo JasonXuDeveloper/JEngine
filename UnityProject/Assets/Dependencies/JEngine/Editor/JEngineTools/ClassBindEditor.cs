@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -173,19 +174,44 @@ namespace JEngine.Editor
 
 
                 var fieldsInCb = data.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
-                var fs = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                var ps = t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-
-                foreach (var field in fs)
+                var members = new List<MemberInfo>(0);
+                if (Setting.ClassBindIgnorePrivate)
                 {
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public));
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public));
+                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public));
+                }
+                else
+                {
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public | BindingFlags.NonPublic));
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public | BindingFlags.NonPublic));
+                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                     BindingFlags.Public | BindingFlags.NonPublic));
+                }
+
+                foreach (var field in members)
+                {
+                    //跳过标签的
+                    if (Setting.ClassBindIgnoreHideInInspector)
+                    {
+                        var attr = field.GetCustomAttributes(typeof(HideInInspector), false);
+                        if (attr.Length > 0)
+                        {
+                            continue;
+                        }
+                    }
+                    
                     //遍历字段
                     EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
                         String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetType),
                             $"{t.Name}:{field.Name}",
-                            fs.ToList().IndexOf(field), fs.Length),
-                        fs.ToList().IndexOf(field) / (float) fs.Length);
+                            members.ToList().IndexOf(field), members.Count),
+                        members.ToList().IndexOf(field) / (float) members.Count);
 
                     if (!fieldsInCb.Contains(field.Name))
                     {
@@ -193,33 +219,12 @@ namespace JEngine.Editor
                         string fieldName = field.Name;
                         cf.fieldName = fieldName;
 
-                        SetType(cf, field.FieldType, hotCode);
+                        Type fieldType = (field is PropertyInfo)
+                            ? ((PropertyInfo) field).PropertyType
+                            : ((FieldInfo) field).FieldType;
+                        
+                        SetType(cf, fieldType, hotCode);
                         SetVal(ref cf, field, hotCode, hotInstance,instance.gameObject);
-
-                        data.fields.Add(cf);
-                        affectCounts++;
-                    }
-
-                    await Task.Delay(10); //延迟一下，动画更丝滑
-                }
-
-                foreach (var property in ps)
-                {
-                    //遍历属性
-
-                    EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
-                        String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetType),
-                            $"{t.Name}:{property.Name}",
-                            ps.ToList().IndexOf(property), ps.Length),
-                        ps.ToList().IndexOf(property) / (float) ps.Length);
-                    if (!fieldsInCb.Contains(property.Name))
-                    {
-                        ClassField cf = new ClassField();
-                        string fieldName = property.Name;
-                        cf.fieldName = fieldName;
-
-                        SetType(cf, property.PropertyType, hotCode);
-                        SetVal(ref cf, property, hotCode, hotInstance,instance.gameObject);
 
                         data.fields.Add(cf);
                         affectCounts++;
@@ -318,36 +323,29 @@ namespace JEngine.Editor
             }
         }
 
-        private static void SetVal(ref ClassField cf, FieldInfo field, Assembly hotCode, object hotInstance,GameObject instance)
+        private static void SetVal(ref ClassField cf, MemberInfo field, Assembly hotCode, object hotInstance,GameObject instance)
         {
             object value;
+            var type = (field is PropertyInfo)
+                ? ((PropertyInfo) field).PropertyType
+                : ((FieldInfo) field).FieldType;
             if (hotInstance == null)
             {
-                var type = field.FieldType;
                 value = type.IsValueType ? Activator.CreateInstance(type) : null;
             }
             else
             {
-                value = field.GetValue(hotInstance);
+                if (field is PropertyInfo)
+                {
+                    value = ((PropertyInfo)field).GetValue(hotInstance);
+                }
+                else
+                {
+                    value = ((FieldInfo)field).GetValue(hotInstance);
+                }
             }
 
-            SetVal(ref cf, field.FieldType, hotCode, value,instance);
-        }
-
-        private static void SetVal(ref ClassField cf, PropertyInfo field, Assembly hotCode, object hotInstance,GameObject instance)
-        {
-            object value;
-            if (hotInstance == null)
-            {
-                var type = field.PropertyType;
-                value = type.IsValueType ? Activator.CreateInstance(type) : null;
-            }
-            else
-            {
-                value = field.GetValue(hotInstance);
-            }
-
-            SetVal(ref cf, field.PropertyType, hotCode, value,instance);
+            SetVal(ref cf, type, hotCode, value,instance);
         }
 
         private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value,GameObject instance)

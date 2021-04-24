@@ -56,8 +56,6 @@ namespace JEngine.Editor
 		LoadSceneAdditiveBtn,
 		UnloadSceneBtn,
 		ClassBindTools,
-		ClassBindAutoGetFields,
-		ClassBindAutoSetTypes,
 		LocalJEngine,
 		HotJEngine,
 		ChooseBtn,
@@ -96,6 +94,8 @@ namespace JEngine.Editor
 		ClassBindResultContentForSetField,
 		ClassBindUnableSetFieldValue,
 		MemberVariables,
+		ClassBindIgnorePrivate,
+		ClassBindIgnoreHideInInspector,
 	}
 
 	internal class Setting : EditorWindow
@@ -143,8 +143,6 @@ namespace JEngine.Editor
 			new[] {"加载", "Load"},
 			new[] {"卸载", "Unload"},
 			new[] {"ClassBind助手", "ClassBind Tools"},
-			new[] {"自动获取全部field", "Auto get fields for all"},
-			new[] {"自动处理全部fieldType", "Auto get fieldTypes for all"},
 			new[] {"本地工程JEngine框架路径", "Local JEngine Source Code"},
 			new[] {"热更工程JEngine框架路径", "Hot Update JEngine Source Code"},
 			new[] {"选择", "Choose"},
@@ -209,8 +207,8 @@ namespace JEngine.Editor
 				                   "in hot update scripts solution!"
 			},
 			new[] {"{0}不存在{1}，已跳过", "{0} does not contain field: {1}, skipped assigning this field"},
-			new[] {"自动获取fields", "Get all fields for ClassBind"},
-			new[] {"自动获取type", "Get all types for ClassBind"},
+			new[] {"自动匹配全部fields", "Get all fields for ClassBind"},
+			new[] {"自动矫正field的type", "Get all types for ClassBind"},
 			new[] {"ClassBind转换进度", "ClassBind convert progress"},
 			new[] {"正在获取{0}的字段：{1}/{2}", "Getting Field for {0} {1}/{2}"},
 			new[] {"正在获取{0}的字段类型：{1}/{2}", "Getting Field Type for {0} {1}/{2}"},
@@ -223,6 +221,8 @@ namespace JEngine.Editor
 			new[] {"<{1}>:ClassBind新增了{0}个fields", "Add {0} fields into ClassBind: {1}"},
 			new[] {"无法对<{0}>ClassBind上{2}({1})进行自动赋值构造值", "Unable to set value for field {1}:{2} on ClassBind:<{0}>"},
 			new[] {"{0}的成员变量", "{0} variables"},
+			new[] {"不匹配Private成员变量", "Banned getting private fields"},
+			new[] {"不匹配带有标签\n[HideInInspector]的变量", "Banned getting fields with\n attribute [HideInInspector]"},
 
 		};
 
@@ -317,6 +317,24 @@ namespace JEngine.Editor
 		{
 			get => PlayerPrefs.GetInt($"{_prefix}.XAssetRemain", 0);
 			set => PlayerPrefs.SetInt($"{_prefix}.XAssetRemain", value);
+		}
+		
+		/// <summary>
+		/// ClassBind不获取private
+		/// </summary>
+		public static bool ClassBindIgnorePrivate
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnorePrivate", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnorePrivate", value ? "1" : "0");
+		}
+		
+		/// <summary>
+		/// ClassBind不获取HideInInspector
+		/// </summary>
+		public static bool ClassBindIgnoreHideInInspector
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnoreHideInInspector", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnoreHideInInspector", value ? "1" : "0");
 		}
 
 
@@ -706,9 +724,26 @@ namespace JEngine.Editor
 				GUILayout.Label(GetString(SettingString.ClassBindTools), textStyle);
 			});
 			GUILayout.Space(10);
+			//是否跳过private
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnorePrivate), GUILayout.MinHeight(20));
+					ClassBindIgnorePrivate = EditorGUILayout.Toggle(ClassBindIgnorePrivate,GUILayout.MinHeight(20));
+				});
+			//是否跳过标签
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnoreHideInInspector),
+						GUILayout.MinHeight(30));
+					ClassBindIgnoreHideInInspector =
+						EditorGUILayout.Toggle(ClassBindIgnoreHideInInspector, GUILayout.MinHeight(30));
+				});
+			GUILayout.Space(10);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(SettingString.ClassBindAutoGetFields)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllField),GUILayout.Height(30)))
 				{
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
@@ -721,7 +756,7 @@ namespace JEngine.Editor
 
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(SettingString.ClassBindAutoSetTypes)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllType),GUILayout.Height(30)))
 				{
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
