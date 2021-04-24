@@ -664,7 +664,7 @@ namespace ILRuntime.CLR.TypeSystem
                     if (q.IsGenericType)
                     {
                         var t1 = type.GetGenericTypeDefinition();
-                        var t2 = type.GetGenericTypeDefinition();
+                        var t2 = q.GetGenericTypeDefinition();
                         if (t1 == t2)
                         {
                             var argA = type.GetGenericArguments();
@@ -871,7 +871,27 @@ namespace ILRuntime.CLR.TypeSystem
                 {
                     args[i] = genericArguments[i].Value.TypeForCLR;
                 }
-                Type newType = clrType.MakeGenericType(args);
+
+                Type newType = null;
+#if UNITY_EDITOR || (DEBUG && !DISABLE_ILRUNTIME_DEBUG)
+                try
+                {
+#endif
+                    newType = clrType.MakeGenericType(args);
+#if UNITY_EDITOR || (DEBUG && !DISABLE_ILRUNTIME_DEBUG)
+                }
+                catch (Exception e)
+                {
+                    string argString = "";
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        argString += args[i].FullName + ", ";
+                    }
+
+                    argString = argString.Substring(0, argString.Length - 2);
+                    throw new Exception($"MakeGenericType failed : {clrType.FullName}<{argString}>");
+                }
+#endif
                 var res = new CLRType(newType, appdomain);
                 res.genericArguments = genericArguments;
 

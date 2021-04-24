@@ -12,30 +12,28 @@ public class Init : MonoBehaviour
 {
     public static Init Instance;
     public static AppDomain Appdomain;
-
-    public static bool Inited = false;
     public static bool Success;
 
     #if UNITY_EDITOR
-    public static int EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
+    public static long EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
     #endif
     
     private const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
     private const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
-    [SerializeField] public string Key;
-    [SerializeField] public bool UsePdb = false;
-    [SerializeField] public bool Debug = true;
+    [FormerlySerializedAs("Key")] [SerializeField] public string key;
+    [FormerlySerializedAs("UsePdb")] [SerializeField] public bool usePdb;
+    [FormerlySerializedAs("Debug")] [SerializeField] public bool debug = true;
     
     private Stream _fs;
     private Stream _pdb;
     
-    private object[] _param0 = new object[0];
+    private readonly object[] _param0 = new object[0];
 
     public void Load()
     {
         Instance = this;
-        GameStats.Debug = Debug;
+        GameStats.Debug = debug;
         GameStats.Initialize();
         LoadHotFixAssembly();
     }
@@ -59,7 +57,7 @@ public class Init : MonoBehaviour
                 buffer = DLLMgr.FileToByte(DLLPath);
                 
                 //模拟加密
-                buffer = CryptoHelper.AesEncrypt(buffer, Key);
+                buffer = CryptoHelper.AesEncrypt(buffer, key);
             }
             else
             {
@@ -68,7 +66,7 @@ public class Init : MonoBehaviour
             }
                 
             //查看是否有PDB文件
-            if (File.Exists(PdbPath) && UsePdb && (File.GetLastWriteTime(DLLPath)-File.GetLastWriteTime(PdbPath)).Seconds < 30)
+            if (File.Exists(PdbPath) && usePdb && (File.GetLastWriteTime(DLLPath)-File.GetLastWriteTime(PdbPath)).Seconds < 30)
             {
                 _pdb = new MemoryStream(DLLMgr.FileToByte(PdbPath));
             }
@@ -90,7 +88,7 @@ public class Init : MonoBehaviour
         {
             // var original = CryptoHelper.AesDecrypt(dll.bytes, Key);以前的用法，过时了
                 
-            _fs = new JStream(buffer, Key);
+            _fs = new JStream(buffer, key);
                 
             /*
              * 如果一定要先解密，可以这样：
@@ -104,30 +102,26 @@ public class Init : MonoBehaviour
         catch(Exception e)
         {
             Log.PrintError("加载热更DLL错误：\n" + e);
-            if (!UsePdb)
+            if (!usePdb)
             {
                 Log.PrintError("加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
             }
             else
             {
                 Log.PrintError("PDB不可用，可能是DLL和PDB版本不一致，可能DLL是Release，如果是Release出包，请取消UsePdb选项，本次已跳过使用PDB");
-                UsePdb = false;
+                usePdb = false;
                 LoadHotFixAssembly();
             }
             return;
         }
-
-#if UNITY_EDITOR
-        Log.Print($"JStream将DLL分为了{Init.EncryptedCounts}块，并成功加载到ILRuntime");
-#endif
-        Success = true;
         
+        Success = true;
         InitILrt.InitializeILRuntime(Appdomain);
     }
     
     public void OnHotFixLoaded()
     {
         Appdomain.Invoke("HotUpdateScripts.Program", "RunGame", _param0, _param0);
-        HotFixLoadedHelper.Init();
+        HotFixLoadedHelper.Init(Appdomain);
     }
 }

@@ -1,18 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace JEngine.Editor
 {
     public class Tools
     {
+        
+        /// <summary>
+        /// 获取场景下全部的类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> FindObjectsOfTypeAll<T>()
+        {
+            return new List<Scene>{SceneManager.GetActiveScene()}.SelectMany(scene => scene.GetRootGameObjects())
+                .SelectMany(g => g.GetComponentsInChildren<T>(true))
+                .ToList();
+        }
+        
         /// <summary>
         /// Post请求
         /// </summary>
@@ -109,7 +124,7 @@ namespace JEngine.Editor
             return result;
         }
 
-        private static bool isPopping = false;
+        private static bool isPopping;
 
         private static async void Pop(string title, string info)
         {

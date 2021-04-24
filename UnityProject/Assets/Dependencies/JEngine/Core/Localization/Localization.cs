@@ -26,13 +26,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using libx;
 using UnityEngine;
-using System.Text.RegularExpressions;
-
+using Object = UnityEngine.Object;
 
 namespace JEngine.Core
 {
@@ -43,6 +44,7 @@ namespace JEngine.Core
         private static Dictionary<string, Dictionary<string, string>> _phrases;//language,key,value
 
         private static string _language;
+        private const string CsvLoc = "Localization.csv";
 
         public static string CurrentLanguage
         {
@@ -54,52 +56,52 @@ namespace JEngine.Core
         
         private static void Init()
         {
-            if (!MonoBehaviour.FindObjectOfType<Assets>())
+            if (!Object.FindObjectOfType<Assets>())
             {
                 Log.PrintError("请先初始化XAsset");
                 return;
             }
             
             _phrases = new Dictionary<string, Dictionary<string, string>>(0);
-            ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",System.Globalization.CultureInfo.InstalledUICulture.Name));
+            ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",CultureInfo.InstalledUICulture.Name));
             
-            var req = Assets.LoadAsset("Localization.csv",typeof(TextAsset));
+            var req = Assets.LoadAsset(CsvLoc,typeof(TextAsset));
             TextAsset file = (TextAsset)req.asset;
             
             //获取全部行
-            List<string> AllRows = new List<string>(0);
+            List<string> allRows = new List<string>(0);
             byte[] array = Encoding.UTF8.GetBytes(file.text);            
             MemoryStream stream = new MemoryStream(array);
-            System.IO.StreamReader sr = new System.IO.StreamReader(stream, Encoding.Default);
+            StreamReader sr = new StreamReader(stream, Encoding.Default);
             String line;
             while ((line = sr.ReadLine()) != null)
             {  
-                AllRows.Add(line);
+                allRows.Add(line);
             }
             sr.Close();
 
             string pattern = ",(?=(?:[^\\" + '"' + "]*\\" + '"' + "[^\\" + '"' + "]*\\" + '"' + ")*[^\\" + '"' + "]*$)";
 
             //获取语言
-            var header = Regex.Split(AllRows[0],pattern);
+            var header = Regex.Split(allRows[0],pattern);
 
             for (int i = 1; i < header.Length; i++)
             {
                 //某语言
                 string lang = _getExactValue(header[i]).ToLower();
                 //获取key和value
-                Dictionary<string,string> _p = new Dictionary<string, string>();
-                for (int j = 1; j < AllRows.Count; j++)
+                Dictionary<string,string> p = new Dictionary<string, string>();
+                for (int j = 1; j < allRows.Count; j++)
                 {
                     //某一行
-                    string row = AllRows[j];
+                    string row = allRows[j];
                     //切割
                     var cells = Regex.Split(row, pattern);
                     //添加key-value
-                    _p.Add(_getExactValue(cells[0]),_getExactValue(cells[i]));
+                    p.Add(_getExactValue(cells[0]),_getExactValue(cells[i]));
                 }
                 //添加lang
-                _phrases.Add(lang,_p);
+                _phrases.Add(lang,p);
             }
         }
 
@@ -111,7 +113,7 @@ namespace JEngine.Core
             }
 
             char p = '"';
-            string pattern = p.ToString() + p.ToString();
+            string pattern = p + p.ToString();
             string p2 = p+"";
             val = val.Replace(pattern, p2);
             return val;
@@ -136,6 +138,10 @@ namespace JEngine.Core
             }
         }
 
+        /// <summary>
+        /// 将组件加入列表
+        /// </summary>
+        /// <param name="lt"></param>
         public static void AddText(LocalizedText lt)
         {
             if (_texts == null)

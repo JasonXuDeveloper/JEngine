@@ -25,6 +25,7 @@
  * THE SOFTWARE.
  */
 #endregion
+
 using System;
 
 namespace JEngine.Net

@@ -1,20 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ILRuntime.Runtime;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Random = UnityEngine.Random;
 
 namespace JEngine.Editor
 {
-    public static class Helpers
+    public static class XAssetHelper
     {
         public static void SignUpXAsset()
         {
@@ -23,7 +17,7 @@ namespace JEngine.Editor
 
         public static void RechargeXAsset()
         {
-            Application.OpenURL("https://game4d.cn/Pay/299");
+            Application.OpenURL("https://game4d.cn");
         }
 
         public static void LogOutXAsset()
@@ -43,7 +37,7 @@ namespace JEngine.Editor
             }
 
             var url = "https://api.uoyou.com/v1/xasset.php";
-            Dictionary<string, string> postParams = new Dictionary<string, string>()
+            Dictionary<string, string> postParams = new Dictionary<string, string>
             {
                 {"account", Setting.XAssetAccount},
                 {"password", Setting.XAssetPassword}
@@ -69,7 +63,7 @@ namespace JEngine.Editor
                 {
                     int remain = json["remain"].ToString().ToInt32();
                     Setting.XAssetLoggedIn = true;
-                    Setting.XAssetRemain = remain;
+                    Setting.XAssetRemainTime = remain;
                     Setting.Refresh();
                 }
             }
@@ -101,13 +95,13 @@ namespace JEngine.Editor
             
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Success",
-                $"下载成功\n" +
-                $"请根据XAsset Pro升级步骤进行操作"
+                "下载成功\n" +
+                "请根据XAsset Pro升级步骤进行操作"
                 , "OK");
         }
 
 
-        public static bool installing = false;
+        public static bool installing;
 
         public static async void Update()
         {
@@ -151,9 +145,9 @@ namespace JEngine.Editor
 
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Success",
-                $"下载成功\n" +
-                $"请导入并删除Core.unitypackage\n" +
-                $"请在IDE打开热更工程并重新导入JEngine源码"
+                "下载成功\n" +
+                "请导入并删除Core.unitypackage\n" +
+                "请在IDE打开热更工程并重新导入JEngine源码"
                 , "OK");
         }
     }

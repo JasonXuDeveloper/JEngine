@@ -33,10 +33,44 @@ namespace JEngine.Core
 {
     public class JAction : IDisposable
     {
+        private static List<JAction> JActions = new List<JAction>();
         public JAction()
         {
             Reset();
+            JActions.Add(this);
         }
+
+        /// <summary>
+        /// Manager for Action
+        /// </summary>
+        private class JActionMgr : MonoBehaviour
+        {
+            /// <summary>
+            /// JBehaviour管理实例
+            /// </summary>
+            public static JActionMgr Instance
+            {
+                get
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new GameObject("JActionMgr").AddComponent<JActionMgr>();
+                    }
+                    return _instance;
+                }
+            }
+            private static JActionMgr _instance;
+
+            private void OnDestroy()
+            {
+                foreach(var action in JAction.JActions)
+                {
+                    action.Cancel();
+                }
+            }
+        }
+
+        private int _index;
 
         private bool _executing = false;
         private bool _parallel = false;
@@ -194,6 +228,7 @@ namespace JEngine.Core
 
         private void _reset()
         {
+            _index = JActions.Count;
             _executing = false;
             _parallel = false;
             _cancel = false;
@@ -213,6 +248,12 @@ namespace JEngine.Core
 
         private async Task<JAction> Do(bool onMainThread)
         {
+            //这边不log的时候，会有概率跳过，迫不得已加了个Log
+            if (onMainThread)
+            {
+                Log.Print($"正在往主线程增加JAction[{_index}]的任务");
+            }
+
             if (_executing == true && !_parallel)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
@@ -228,7 +269,7 @@ namespace JEngine.Core
             {
                 int index = i;
 
-                if (_cancel || !Application.isPlaying) return this;
+                if (_cancel || !Application.isPlaying) break;
 
                 //Delay
                 if (_delays.ContainsKey(index))
@@ -241,7 +282,7 @@ namespace JEngine.Core
                 if (_delayFrames.ContainsKey(index))
                 {
                     //计算1帧时间(ms)
-                    var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate);
+                    var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
                     var duration = durationPerFrame * _delayFrames[index];
                     await Task.Delay(duration);
                     continue;
@@ -306,40 +347,29 @@ namespace JEngine.Core
                     continue;
                 }
 
-                if (_toDo[index] != null)
+                //Do
+                await Task.Run(() =>
                 {
+                    void action(object p)
+                    {
+                        try
+                        {
+                            _toDo[index]?.Invoke();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                        }
+                    }
                     if (onMainThread)
                     {
-                        await Task.Run(() =>
-                        {
-                            Loom.QueueOnMainThread(p =>
-                            {
-                                try
-                                {
-                                    _toDo[index]();
-                                }
-                                catch(Exception e)
-                                {
-                                    Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
-                                }
-                            }, null);
-                        }, _cancellationTokenSource.Token);
+                        Loom.QueueOnMainThread(action, null);
                     }
                     else
                     {
-                        await Task.Run(()=>
-                        {
-                            try
-                            {
-                                _toDo[index]();
-                            }
-                            catch (Exception e)
-                            {
-                                Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
-                            }
-                        }, _cancellationTokenSource.Token);
+                        Loom.QueueOnOtherThread(action, null);
                     }
-                }
+                }, _cancellationTokenSource.Token);
             }
             _executing = false;
             return this;
@@ -372,6 +402,7 @@ namespace JEngine.Core
             _whenFrequency = null;
             _whenTimeout = null;
             _cancellationTokenSource = null;
+            JActions.Remove(this);
             GC.Collect();
             GC.SuppressFinalize(this);
         }

@@ -65,7 +65,7 @@ namespace JEngine.Examples
 
         AutoBindDemo1 a1 = null;
 
-        public float floatField;
+        [HideInInspector]public float floatField;
 
         public void Awake()
         {

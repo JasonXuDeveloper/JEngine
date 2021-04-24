@@ -5,7 +5,7 @@ using System;
 using Type = IKVM.Reflection.Type;
 using IKVM.Reflection;
 #else
-using System.Reflection;
+
 #endif
 
 namespace ProtoBuf.Serializers

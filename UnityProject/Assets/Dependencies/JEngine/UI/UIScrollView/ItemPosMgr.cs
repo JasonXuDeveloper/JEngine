@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
+﻿using System.Collections.Generic;
 
 namespace JEngine.UI
 {
     public class ItemSizeGroup
 {
 
-    public float[] mItemSizeArray = null;
-    public float[] mItemStartPosArray = null;
-    public int mItemCount = 0;
+    public float[] mItemSizeArray;
+    public float[] mItemStartPosArray;
+    public int mItemCount;
     int mDirtyBeginIndex = ItemPosMgr.mItemMaxCountPerGroup;
-    public float mGroupSize = 0;
-    public float mGroupStartPos = 0;
-    public float mGroupEndPos = 0;
-    public int mGroupIndex = 0;
-    float mItemDefaultSize = 0;
+    public float mGroupSize;
+    public float mGroupStartPos;
+    public float mGroupEndPos;
+    public int mGroupIndex;
+    float mItemDefaultSize;
     public ItemSizeGroup(int index, float itemDefaultSize)
     {
         mGroupIndex = index;
@@ -115,7 +110,8 @@ namespace JEngine.UI
             {
                 return mid;
             }
-            else if (pos > endPos)
+
+            if (pos > endPos)
             {
                 low = mid + 1;
             }
@@ -147,7 +143,7 @@ public class ItemPosMgr
     public const int mItemMaxCountPerGroup = 100;
     List<ItemSizeGroup> mItemSizeGroupList = new List<ItemSizeGroup>();
     int mDirtyBeginIndex = int.MaxValue;
-    public float mTotalSize = 0;
+    public float mTotalSize;
     public float mItemDefaultSize = 20;
 
     public ItemPosMgr(float itemDefaultSize)
@@ -249,7 +245,8 @@ public class ItemPosMgr
                 hitGroup = tGroup;
                 break;
             }
-            else if (pos > tGroup.mGroupEndPos)
+
+            if (pos > tGroup.mGroupEndPos)
             {
                 low = mid + 1;
             }

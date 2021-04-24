@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -27,7 +28,7 @@ namespace JEngine.Core
         {
             _current = this;
             initialized = true;
-            UnityEngine.Object.DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
 
         static bool initialized;
@@ -43,7 +44,7 @@ namespace JEngine.Core
                 var g = new GameObject("Loom");
                 _current = g.AddComponent<Loom>();
 #if !ARTIST_BUILD
-                UnityEngine.Object.DontDestroyOnLoad(g);
+                DontDestroyOnLoad(g);
 #endif
             }
 
@@ -72,6 +73,11 @@ namespace JEngine.Core
         {
             QueueOnMainThread(taction, tparam, 0f);
         }
+        
+        public static void QueueOnOtherThread(Action<object> taction, object tparam)
+        {
+            QueueOnOtherThread(taction, tparam, 0f);
+        }
 
         public static void QueueOnMainThread(Action<object> taction, object tparam, float time)
         {
@@ -88,6 +94,30 @@ namespace JEngine.Core
                 lock (Current._actions)
                 {
                     Current._actions.Add(new NoDelayedQueueItem {action = taction, param = tparam});
+                }
+            }
+        }
+
+        public static void QueueOnOtherThread(Action<object> taction, object tparam, float time)
+        {
+            async void Action(object p)
+            {
+                await Task.Run(() => { taction(p); });
+            }
+
+            if (time != 0)
+            {
+                lock (Current._delayed)
+                {
+                    Current._delayed.Add(new DelayedQueueItem
+                    { time = Time.time + time, action = Action, param = tparam });
+                }
+            }
+            else
+            {
+                lock (Current._actions)
+                {
+                    Current._actions.Add(new NoDelayedQueueItem { action = Action, param = tparam });
                 }
             }
         }
@@ -111,8 +141,9 @@ namespace JEngine.Core
             {
                 ((Action) action)();
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.LogError(ex);
             }
             finally
             {

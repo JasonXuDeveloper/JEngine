@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Serialization;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
+using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public class ExceptionAdapter : CrossBindingAdaptor
 {
@@ -11,7 +13,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
     {
         get
         {
-            return typeof(System.Exception); //这是你想继承的那个类
+            return typeof(Exception); //这是你想继承的那个类
         }
     }
 
@@ -23,17 +25,17 @@ public class ExceptionAdapter : CrossBindingAdaptor
         }
     }
 
-    public override object CreateCLRInstance(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+    public override object CreateCLRInstance(AppDomain appdomain, ILTypeInstance instance)
     {
         return new Adaptor(appdomain, instance); //创建一个新的实例
     }
 
 //实际的适配器类需要继承你想继承的那个类，并且实现CrossBindingAdaptorType接口
-    public class Adaptor : System.Exception, CrossBindingAdaptorType
+    public class Adaptor : Exception, CrossBindingAdaptorType
     {
         ILTypeInstance instance;
 
-        ILRuntime.Runtime.Enviorment.AppDomain appdomain;
+        AppDomain appdomain;
 
         //缓存这个数组来避免调用时的GC Alloc
         object[] param1 = new object[1];
@@ -43,7 +45,7 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
         }
 
-        public Adaptor(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+        public Adaptor(AppDomain appdomain, ILTypeInstance instance)
         {
             this.appdomain = appdomain;
             this.instance = instance;
@@ -54,10 +56,10 @@ public class ExceptionAdapter : CrossBindingAdaptor
             get { return instance; }
         }
 
-        bool m_bget_MessageGot = false;
-        IMethod m_get_Message = null;
+        bool m_bget_MessageGot;
+        IMethod m_get_Message;
 
-        public System.String get_Message()
+        public String get_Message()
         {
             if (!m_bget_MessageGot)
             {
@@ -67,18 +69,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_Message != null)
             {
-                return (System.String) appdomain.Invoke(m_get_Message, instance, null);
+                return (String) appdomain.Invoke(m_get_Message, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bget_DataGot = false;
-        IMethod m_get_Data = null;
+        bool m_bget_DataGot;
+        IMethod m_get_Data;
 
-        public System.Collections.IDictionary get_Data()
+        public IDictionary get_Data()
         {
             if (!m_bget_DataGot)
             {
@@ -88,18 +88,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_Data != null)
             {
-                return (System.Collections.IDictionary) appdomain.Invoke(m_get_Data, instance, null);
+                return (IDictionary) appdomain.Invoke(m_get_Data, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bGetBaseExceptionGot = false;
-        IMethod m_GetBaseException = null;
+        bool m_bGetBaseExceptionGot;
+        IMethod m_GetBaseException;
 
-        public System.Exception GetBaseException()
+        public override Exception GetBaseException()
         {
             if (!m_bGetBaseExceptionGot)
             {
@@ -109,18 +107,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_GetBaseException != null)
             {
-                return (System.Exception) appdomain.Invoke(m_GetBaseException, instance, null);
+                return (Exception) appdomain.Invoke(m_GetBaseException, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bget_InnerExceptionGot = false;
-        IMethod m_get_InnerException = null;
+        bool m_bget_InnerExceptionGot;
+        IMethod m_get_InnerException;
 
-        public System.Exception get_InnerException()
+        public Exception get_InnerException()
         {
             if (!m_bget_InnerExceptionGot)
             {
@@ -130,18 +126,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_InnerException != null)
             {
-                return (System.Exception) appdomain.Invoke(m_get_InnerException, instance, null);
+                return (Exception) appdomain.Invoke(m_get_InnerException, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bget_TargetSiteGot = false;
-        IMethod m_get_TargetSite = null;
+        bool m_bget_TargetSiteGot;
+        IMethod m_get_TargetSite;
 
-        public System.Reflection.MethodBase get_TargetSite()
+        public MethodBase get_TargetSite()
         {
             if (!m_bget_TargetSiteGot)
             {
@@ -151,18 +145,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_TargetSite != null)
             {
-                return (System.Reflection.MethodBase) appdomain.Invoke(m_get_TargetSite, instance, null);
+                return (MethodBase) appdomain.Invoke(m_get_TargetSite, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bget_StackTraceGot = false;
-        IMethod m_get_StackTrace = null;
+        bool m_bget_StackTraceGot;
+        IMethod m_get_StackTrace;
 
-        public System.String get_StackTrace()
+        public String get_StackTrace()
         {
             if (!m_bget_StackTraceGot)
             {
@@ -172,18 +164,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_StackTrace != null)
             {
-                return (System.String) appdomain.Invoke(m_get_StackTrace, instance, null);
+                return (String) appdomain.Invoke(m_get_StackTrace, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bget_HelpLinkGot = false;
-        IMethod m_get_HelpLink = null;
+        bool m_bget_HelpLinkGot;
+        IMethod m_get_HelpLink;
 
-        public System.String get_HelpLink()
+        public String get_HelpLink()
         {
             if (!m_bget_HelpLinkGot)
             {
@@ -193,18 +183,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_HelpLink != null)
             {
-                return (System.String) appdomain.Invoke(m_get_HelpLink, instance, null);
+                return (String) appdomain.Invoke(m_get_HelpLink, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bset_HelpLinkGot = false;
-        IMethod m_set_HelpLink = null;
+        bool m_bset_HelpLinkGot;
+        IMethod m_set_HelpLink;
 
-        public void set_HelpLink(System.String arg0)
+        public void set_HelpLink(String arg0)
         {
             if (!m_bset_HelpLinkGot)
             {
@@ -216,16 +204,12 @@ public class ExceptionAdapter : CrossBindingAdaptor
             {
                 appdomain.Invoke(m_set_HelpLink, instance, arg0);
             }
-            else
-            {
-
-            }
         }
 
-        bool m_bget_SourceGot = false;
-        IMethod m_get_Source = null;
+        bool m_bget_SourceGot;
+        IMethod m_get_Source;
 
-        public System.String get_Source()
+        public String get_Source()
         {
             if (!m_bget_SourceGot)
             {
@@ -235,18 +219,16 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_get_Source != null)
             {
-                return (System.String) appdomain.Invoke(m_get_Source, instance, null);
+                return (String) appdomain.Invoke(m_get_Source, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bset_SourceGot = false;
-        IMethod m_set_Source = null;
+        bool m_bset_SourceGot;
+        IMethod m_set_Source;
 
-        public void set_Source(System.String arg0)
+        public void set_Source(String arg0)
         {
             if (!m_bset_SourceGot)
             {
@@ -258,16 +240,12 @@ public class ExceptionAdapter : CrossBindingAdaptor
             {
                 appdomain.Invoke(m_set_Source, instance, arg0);
             }
-            else
-            {
-
-            }
         }
 
-        bool m_bToStringGot = false;
-        IMethod m_ToString = null;
+        bool m_bToStringGot;
+        IMethod m_ToString;
 
-        public System.String ToString()
+        public override String ToString()
         {
             if (!m_bToStringGot)
             {
@@ -277,19 +255,17 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_ToString != null)
             {
-                return (System.String) appdomain.Invoke(m_ToString, instance, null);
+                return (String) appdomain.Invoke(m_ToString, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
-        bool m_bGetObjectDataGot = false;
-        IMethod m_GetObjectData = null;
+        bool m_bGetObjectDataGot;
+        IMethod m_GetObjectData;
 
-        public void GetObjectData(System.Runtime.Serialization.SerializationInfo arg0,
-            System.Runtime.Serialization.StreamingContext arg1)
+        public override void GetObjectData(SerializationInfo arg0,
+            StreamingContext arg1)
         {
             if (!m_bGetObjectDataGot)
             {
@@ -301,16 +277,12 @@ public class ExceptionAdapter : CrossBindingAdaptor
             {
                 appdomain.Invoke(m_GetObjectData, instance, arg0, arg1);
             }
-            else
-            {
-
-            }
         }
 
-        bool m_bGetTypeGot = false;
-        IMethod m_GetType = null;
+        bool m_bGetTypeGot;
+        IMethod m_GetType;
 
-        public System.Type GetType()
+        public new Type GetType()
         {
             if (!m_bGetTypeGot)
             {
@@ -320,12 +292,10 @@ public class ExceptionAdapter : CrossBindingAdaptor
 
             if (m_GetType != null)
             {
-                return (System.Type) appdomain.Invoke(m_GetType, instance, null);
+                return (Type) appdomain.Invoke(m_GetType, instance, null);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using JEngine.Core;
+﻿using JEngine.Core;
 using UnityEngine;
 
 public class ExampleAPI :MonoBehaviour

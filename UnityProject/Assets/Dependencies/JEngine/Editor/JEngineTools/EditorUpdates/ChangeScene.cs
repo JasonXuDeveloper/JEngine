@@ -6,7 +6,7 @@ namespace JEngine.Editor
     /// <summary>
     /// 跳转场景
     /// </summary>
-    internal class Change
+    internal static class ChangeScene
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void DoChange()

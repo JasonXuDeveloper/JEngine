@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace JEngine.UI
 {
@@ -28,17 +29,12 @@ namespace JEngine.UI
         GameObject mPrefabObj;
         string mPrefabName;
         int mInitCreateCount = 1;
-        float mPadding = 0;
-        float mStartPosOffset = 0;
+        float mPadding;
+        float mStartPosOffset;
         List<LoopListItem> mTmpPooledItemList = new List<LoopListItem>();
         List<LoopListItem> mPooledItemList = new List<LoopListItem>();
-        static int mCurItemIdCount = 0;
-        RectTransform mItemParent = null;
-
-        public ItemPool()
-        {
-
-        }
+        static int mCurItemIdCount;
+        RectTransform mItemParent;
 
         public void Init(GameObject prefabObj, float padding, float startPosOffset, int createCount,
             RectTransform parent)
@@ -95,7 +91,7 @@ namespace JEngine.UI
             int count = mPooledItemList.Count;
             for (int i = 0; i < count; ++i)
             {
-                GameObject.DestroyImmediate(mPooledItemList[i].gameObject);
+                Object.DestroyImmediate(mPooledItemList[i].gameObject);
             }
 
             mPooledItemList.Clear();
@@ -105,7 +101,7 @@ namespace JEngine.UI
         {
 
             GameObject go =
-                GameObject.Instantiate<GameObject>(mPrefabObj, Vector3.zero, Quaternion.identity, mItemParent);
+                Object.Instantiate(mPrefabObj, Vector3.zero, Quaternion.identity, mItemParent);
             go.SetActive(true);
             RectTransform rf = go.GetComponent<RectTransform>();
             rf.localScale = Vector3.one;
@@ -148,10 +144,10 @@ namespace JEngine.UI
     [Serializable]
     public class ItemPrefabConfData
     {
-        public GameObject mItemPrefab = null;
-        public float mPadding = 0;
-        public int mInitCreateCount = 0;
-        public float mStartPosOffset = 0;
+        public GameObject mItemPrefab;
+        public float mPadding;
+        public int mInitCreateCount;
+        public float mStartPosOffset;
     }
 
 
@@ -189,10 +185,10 @@ namespace JEngine.UI
         class SnapData
         {
             public SnapStatus mSnapStatus = SnapStatus.NoTargetSet;
-            public int mSnapTargetIndex = 0;
-            public float mTargetSnapVal = 0;
-            public float mCurSnapVal = 0;
-            public bool mIsForceSnapTo = false;
+            public int mSnapTargetIndex;
+            public float mTargetSnapVal;
+            public float mCurSnapVal;
+            public bool mIsForceSnapTo;
 
             public void Clear()
             {
@@ -215,37 +211,37 @@ namespace JEngine.UI
 
         List<LoopListItem> mItemList = new List<LoopListItem>();
         RectTransform mContainerTrans;
-        ScrollRect mScrollRect = null;
-        RectTransform mScrollRectTransform = null;
-        RectTransform mViewPortRectTransform = null;
+        ScrollRect mScrollRect;
+        RectTransform mScrollRectTransform;
+        RectTransform mViewPortRectTransform;
         float mItemDefaultWithPaddingSize = 20;
-        int mItemTotalCount = 0;
-        bool mIsVertList = false;
+        int mItemTotalCount;
+        bool mIsVertList;
         Func<LoopListView, int, LoopListItem> mOnGetItemByIndex;
         Vector3[] mItemWorldCorners = new Vector3[4];
         Vector3[] mViewPortRectLocalCorners = new Vector3[4];
-        int mCurReadyMinItemIndex = 0;
-        int mCurReadyMaxItemIndex = 0;
+        int mCurReadyMinItemIndex;
+        int mCurReadyMaxItemIndex;
         bool mNeedCheckNextMinItem = true;
         bool mNeedCheckNextMaxItem = true;
-        ItemPosMgr mItemPosMgr = null;
+        ItemPosMgr mItemPosMgr;
         float mDistanceForRecycle0 = 300;
         float mDistanceForNew0 = 200;
         float mDistanceForRecycle1 = 300;
         float mDistanceForNew1 = 200;
         [SerializeField] bool mSupportScrollBar = true;
-        bool mIsDraging = false;
-        PointerEventData mPointerEventData = null;
+        bool mIsDraging;
+        PointerEventData mPointerEventData;
         public Action mOnBeginDragAction = null;
         public Action mOnDragingAction = null;
         public Action mOnEndDragAction = null;
-        int mLastItemIndex = 0;
-        float mLastItemPadding = 0;
-        float mSmoothDumpVel = 0;
+        int mLastItemIndex;
+        float mLastItemPadding;
+        float mSmoothDumpVel;
         float mSmoothDumpRate = 0.3f;
         float mSnapFinishThreshold = 0.1f;
         float mSnapVecThreshold = 145;
-        [SerializeField] bool mItemSnapEnable = false;
+        [SerializeField] bool mItemSnapEnable;
 
 
         Vector3 mLastFrameContainerPos = Vector3.zero;
@@ -253,18 +249,18 @@ namespace JEngine.UI
         public Action<LoopListView, LoopListItem> mOnSnapNearestChanged = null;
         int mCurSnapNearestItemIndex = -1;
         Vector2 mAdjustedVec;
-        bool mNeedAdjustVec = false;
+        bool mNeedAdjustVec;
         int mLeftSnapUpdateExtraCount = 1;
         [SerializeField] Vector2 mViewPortSnapPivot = Vector2.zero;
 
         [SerializeField] Vector2 mItemSnapPivot = Vector2.zero;
 
         //ScrollBarListener mScrollBarClickEventListener = null;
-        EventTriggerListener mScrollBarClickEventListener = null;
+        EventTriggerListener mScrollBarClickEventListener;
         SnapData mCurSnapData = new SnapData();
         Vector3 mLastSnapCheckPos = Vector3.zero;
-        bool mListViewInited = false;
-        int mListUpdateCheckFrameCount = 0;
+        bool mListViewInited;
+        int mListUpdateCheckFrameCount;
 
         public bool IsVertList
         {
@@ -425,14 +421,14 @@ namespace JEngine.UI
             AdjustContainerPivot(mContainerTrans);
             InitItemPool();
             mOnGetItemByIndex = onGetItemByIndex;
-            if (mListViewInited == true)
+            if (mListViewInited)
             {
                 Debug.LogError("LoopListView2.InitListView method can be called only once.");
             }
 
             mListViewInited = true;
             ResetListView();
-            SetListItemCount(itemTotalCount, true);
+            SetListItemCount(itemTotalCount);
         }
 
         void SetScrollbarListener()
@@ -584,10 +580,8 @@ namespace JEngine.UI
                 {
                     return mViewPortRectTransform.rect.height;
                 }
-                else
-                {
-                    return mViewPortRectTransform.rect.width;
-                }
+
+                return mViewPortRectTransform.rect.width;
             }
         }
 
@@ -1327,7 +1321,6 @@ namespace JEngine.UI
                     pos.y = pos.y - d;
                     mItemList[0].CachedRectTransform.localPosition = pos;
                     UpdateAllShownItemsPos();
-                    return;
                 }
             }
             else if (mArrangeType == ListItemArrangeType.BottomToTop)
@@ -1365,7 +1358,6 @@ namespace JEngine.UI
                     pos.y = pos.y + d;
                     mItemList[0].CachedRectTransform.localPosition = pos;
                     UpdateAllShownItemsPos();
-                    return;
                 }
             }
             else if (mArrangeType == ListItemArrangeType.LeftToRight)
@@ -1403,7 +1395,6 @@ namespace JEngine.UI
                     pos.x = pos.x + d;
                     mItemList[0].CachedRectTransform.localPosition = pos;
                     UpdateAllShownItemsPos();
-                    return;
                 }
             }
             else if (mArrangeType == ListItemArrangeType.RightToLeft)
@@ -1441,7 +1432,6 @@ namespace JEngine.UI
                     pos.x = pos.x - d;
                     mItemList[0].CachedRectTransform.localPosition = pos;
                     UpdateAllShownItemsPos();
-                    return;
                 }
             }
 
@@ -2476,26 +2466,24 @@ namespace JEngine.UI
                             mNeedCheckNextMinItem = false;
                             return false;
                         }
-                        else
+
+                        if (mSupportScrollBar)
                         {
-                            if (mSupportScrollBar)
-                            {
-                                SetItemSize(nIndex, newItem.CachedRectTransform.rect.height, newItem.Padding);
-                            }
-
-                            mItemList.Insert(0, newItem);
-                            float y = tViewItem0.CachedRectTransform.localPosition.y -
-                                      newItem.CachedRectTransform.rect.height - newItem.Padding;
-                            newItem.CachedRectTransform.localPosition = new Vector3(newItem.StartPosOffset, y, 0);
-                            UpdateContentSize();
-                            CheckIfNeedUpdataItemPos();
-                            if (nIndex < mCurReadyMinItemIndex)
-                            {
-                                mCurReadyMinItemIndex = nIndex;
-                            }
-
-                            return true;
+                            SetItemSize(nIndex, newItem.CachedRectTransform.rect.height, newItem.Padding);
                         }
+
+                        mItemList.Insert(0, newItem);
+                        float y = tViewItem0.CachedRectTransform.localPosition.y -
+                                  newItem.CachedRectTransform.rect.height - newItem.Padding;
+                        newItem.CachedRectTransform.localPosition = new Vector3(newItem.StartPosOffset, y, 0);
+                        UpdateContentSize();
+                        CheckIfNeedUpdataItemPos();
+                        if (nIndex < mCurReadyMinItemIndex)
+                        {
+                            mCurReadyMinItemIndex = nIndex;
+                        }
+
+                        return true;
 
                     }
                 }
@@ -2920,7 +2908,6 @@ namespace JEngine.UI
                     (lastItem.ItemIndex == mCurReadyMaxItemIndex && (-lastItem.BottomY) != viewMaxY))
                 {
                     UpdateAllShownItemsPos();
-                    return;
                 }
 
             }
@@ -2939,7 +2926,6 @@ namespace JEngine.UI
                     (lastItem.ItemIndex == mCurReadyMaxItemIndex && lastItem.TopY != viewMaxY))
                 {
                     UpdateAllShownItemsPos();
-                    return;
                 }
             }
             else if (mArrangeType == ListItemArrangeType.LeftToRight)
@@ -2957,7 +2943,6 @@ namespace JEngine.UI
                     (lastItem.ItemIndex == mCurReadyMaxItemIndex && lastItem.RightX != viewMaxX))
                 {
                     UpdateAllShownItemsPos();
-                    return;
                 }
 
             }
@@ -2976,7 +2961,6 @@ namespace JEngine.UI
                     (lastItem.ItemIndex == mCurReadyMaxItemIndex && (-lastItem.LeftX) != viewMaxX))
                 {
                     UpdateAllShownItemsPos();
-                    return;
                 }
 
             }

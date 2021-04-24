@@ -37,7 +37,6 @@
  */
 #endregion
 
-using System;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net

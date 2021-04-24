@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-using ILRuntime.Other;
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using ILRuntime.CLR.Method;
-
+using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public class CoroutineAdapter : CrossBindingAdaptor
 {
@@ -25,7 +23,7 @@ public class CoroutineAdapter : CrossBindingAdaptor
             //跨域继承只能有1个Adapter，因此应该尽量避免一个类同时实现多个外部接口，对于coroutine来说是IEnumerator<object>,IEnumerator和IDisposable，
             //ILRuntime虽然支持，但是一定要小心这种用法，使用不当很容易造成不可预期的问题
             //日常开发如果需要实现多个DLL外部接口，请在Unity这边先做一个基类实现那些个接口，然后继承那个基类
-            return new Type[] { typeof(IEnumerator<object>), typeof(IEnumerator), typeof(IDisposable) };
+            return new[] { typeof(IEnumerator<object>), typeof(IEnumerator), typeof(IDisposable) };
         }
     }
 
@@ -37,22 +35,22 @@ public class CoroutineAdapter : CrossBindingAdaptor
         }
     }
 
-    public override object CreateCLRInstance(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+    public override object CreateCLRInstance(AppDomain appdomain, ILTypeInstance instance)
     {
         return new Adaptor(appdomain, instance);
     }
     //Coroutine生成的类实现了IEnumerator<System.Object>, IEnumerator, IDisposable,所以都要实现，这个可以通过reflector之类的IL反编译软件得知
-    internal class Adaptor : IEnumerator<System.Object>, IEnumerator, IDisposable, CrossBindingAdaptorType
+    internal class Adaptor : IEnumerator<Object>, IEnumerator, IDisposable, CrossBindingAdaptorType
     {
         ILTypeInstance instance;
-        ILRuntime.Runtime.Enviorment.AppDomain appdomain;
+        AppDomain appdomain;
 
         public Adaptor()
         {
 
         }
 
-        public Adaptor(ILRuntime.Runtime.Enviorment.AppDomain appdomain, ILTypeInstance instance)
+        public Adaptor(AppDomain appdomain, ILTypeInstance instance)
         {
             this.appdomain = appdomain;
             this.instance = instance;
@@ -83,10 +81,8 @@ public class CoroutineAdapter : CrossBindingAdaptor
                     var res = appdomain.Invoke(mCurrentMethod, instance, null);
                     return res;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -124,10 +120,8 @@ public class CoroutineAdapter : CrossBindingAdaptor
             {
                 return (bool)appdomain.Invoke(mMoveNextMethod, instance, null);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         IMethod mResetMethod;
@@ -154,8 +148,8 @@ public class CoroutineAdapter : CrossBindingAdaptor
             {
                 return instance.ToString();
             }
-            else
-                return instance.Type.FullName;
+
+            return instance.Type.FullName;
         }
     }
 }

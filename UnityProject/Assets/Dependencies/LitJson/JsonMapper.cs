@@ -18,14 +18,23 @@ using System.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.Method;
-using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
-using JEngine.AntiCheat;
-using UnityEngine;
 using Object = System.Object;
 
 namespace LitJson
 {
+    /// <summary>
+    /// Attribute for skip json serialized/deserialized
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+    public class JsonIgnoreAttribute : Attribute
+    {
+        public JsonIgnoreAttribute()
+        {
+
+        }
+    }
+
     internal struct PropertyMetadata
     {
         public MemberInfo Info;
@@ -229,6 +238,8 @@ namespace LitJson
 
             data.Properties = new Dictionary<string, PropertyMetadata> ();
             foreach (PropertyInfo p_info in type.GetProperties ()) {
+                if (Attribute.IsDefined(p_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
                 if (p_info.Name == "Item") {
                     ParameterInfo[] parameters = p_info.GetIndexParameters ();
 
@@ -256,6 +267,8 @@ namespace LitJson
             }
 
             foreach (FieldInfo f_info in type.GetFields ()) {
+                if (Attribute.IsDefined(f_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -281,6 +294,9 @@ namespace LitJson
             IList<PropertyMetadata> props = new List<PropertyMetadata> ();
 
             foreach (PropertyInfo p_info in type.GetProperties ()) {
+                if (Attribute.IsDefined(p_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
+
                 if (p_info.Name == "Item")
                     continue;
 
@@ -291,6 +307,9 @@ namespace LitJson
             }
 
             foreach (FieldInfo f_info in type.GetFields ()) {
+                if (Attribute.IsDefined(f_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
+
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -361,21 +380,6 @@ namespace LitJson
                 Type json_type = reader.Value.GetType();
                 var vt = value_type is ILRuntime.Reflection.ILRuntimeWrapperType ? ((ILRuntime.Reflection.ILRuntimeWrapperType)value_type).CLRType.TypeForCLR : value_type;
 
-                if (vt.FullName.Contains("BindableProperty"))
-                {
-                    //获取泛型的T
-                    string TName = vt.FullName.Replace("JEngine.Core.BindableProperty`1<", "").Replace(">", "");
-                    Type GenericType = Type.GetType(TName);
-                    //强转值到T
-                    object[] parameters = new object[1];
-                    //泛型赋值的参数
-                    parameters[0] = Convert.ChangeType(reader.Value,GenericType);
-                    //生成实例且赋值
-                    object _instance = Init.Appdomain.Instantiate(vt.FullName,parameters);
-                    //返回可绑定数据
-                    return _instance;
-                }
-                
                 if (vt.IsAssignableFrom(json_type))
                     return reader.Value;
                 if (vt is ILRuntime.Reflection.ILRuntimeType && ((ILRuntime.Reflection.ILRuntimeType)vt).ILType.IsEnum)
@@ -821,12 +825,6 @@ namespace LitJson
             else
                 obj_type = obj.GetType();
 
-            if (obj_type.FullName.Contains("BindableProperty"))
-            {
-                FieldInfo fi = obj_type.GetField("_value");
-                obj = fi.GetValue(obj);
-            }
-            
             // See if there's a custom exporter for the object
             if (custom_exporters_table.ContainsKey (obj_type)) {
                 ExporterFunc exporter = custom_exporters_table[obj_type];

@@ -23,10 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -43,13 +43,13 @@ namespace JEngine.Core
         {
             try
             {
-                Byte[] keyArray = System.Text.Encoding.UTF8.GetBytes(key);
-                Byte[] toEncryptArray = System.Text.Encoding.UTF8.GetBytes(value);
-                var rijndael = new System.Security.Cryptography.RijndaelManaged();
+                Byte[] keyArray = Encoding.UTF8.GetBytes(key);
+                Byte[] toEncryptArray = Encoding.UTF8.GetBytes(value);
+                var rijndael = new RijndaelManaged();
                 rijndael.Key = keyArray;
-                rijndael.Mode = System.Security.Cryptography.CipherMode.ECB;
-                rijndael.Padding = System.Security.Cryptography.PaddingMode.PKCS7;
-                System.Security.Cryptography.ICryptoTransform cTransform = rijndael.CreateEncryptor();
+                rijndael.Mode = CipherMode.ECB;
+                rijndael.Padding = PaddingMode.PKCS7;
+                ICryptoTransform cTransform = rijndael.CreateEncryptor();
                 Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
                 return Convert.ToBase64String(resultArray, 0, resultArray.Length);
             }
@@ -71,15 +71,15 @@ namespace JEngine.Core
         {
             try
             {
-                Byte[] keyArray = System.Text.Encoding.UTF8.GetBytes(key);
+                Byte[] keyArray = Encoding.UTF8.GetBytes(key);
                 Byte[] toEncryptArray = Convert.FromBase64String(value);
-                var rijndael = new System.Security.Cryptography.RijndaelManaged();
+                var rijndael = new RijndaelManaged();
                 rijndael.Key = keyArray;
-                rijndael.Mode = System.Security.Cryptography.CipherMode.ECB;
-                rijndael.Padding = System.Security.Cryptography.PaddingMode.PKCS7;
-                System.Security.Cryptography.ICryptoTransform cTransform = rijndael.CreateDecryptor();
+                rijndael.Mode = CipherMode.ECB;
+                rijndael.Padding = PaddingMode.PKCS7;
+                ICryptoTransform cTransform = rijndael.CreateDecryptor();
                 Byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-                return System.Text.Encoding.UTF8.GetString(resultArray);
+                return Encoding.UTF8.GetString(resultArray);
             }
             catch (Exception ex)
             {

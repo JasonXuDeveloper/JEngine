@@ -25,7 +25,6 @@
  * THE SOFTWARE.
  */
 #endregion
-using UnityEngine;
 
 namespace JEngine.Net
 {
@@ -47,9 +46,9 @@ namespace JEngine.Net
 
 			if (json[1].type == JSONObject.Type.OBJECT || json[1].type == JSONObject.Type.STRING) {
 				return new SocketIOEvent(json[0].str, json[1]);
-			} else {
-				throw new SocketIOException("Invalid argument type. " + json[1].type + " received");
 			}
+
+			throw new SocketIOException("Invalid argument type. " + json[1].type + " received");
 		}
 	}
 }

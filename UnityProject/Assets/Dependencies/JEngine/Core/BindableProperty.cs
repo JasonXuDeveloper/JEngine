@@ -1,5 +1,5 @@
 ﻿//
-// EditorUpdate.cs
+// BindableProperty.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -24,20 +24,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using UnityEditor;
+using System;
 
-namespace JEngine.Editor
+namespace JEngine.Core
 {
-    [InitializeOnLoad]
-    internal class EditorUpdate
+    public class BindableProperty<T>
     {
-        /// <summary>
-        /// 注册各种Update
-        /// </summary>
-        static EditorUpdate()
+        public delegate void onChange(T val);
+        public onChange OnChange;
+
+        private T _value;
+        public T Value
         {
-            EditorApplication.update += Clean.Update;//处理DLL
-            EditorApplication.update += XAsset.Update;//验证XAsset
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (!Equals(_value, value))
+                {
+                    _value = value;
+                    OnChange?.Invoke(_value);
+                }
+            }
+        }
+
+        public BindableProperty(T val)
+        {
+            _value = val;
+        }
+
+        public override string ToString()
+        {
+            return (Value != null ? Convert.ToString(Value): "null");
+        }
+
+        public void Clear()
+        {
+            _value = default(T);
+        }
+
+        public static implicit operator T(BindableProperty<T> t)
+        {
+            return t.Value;
         }
     }
+
+
 }

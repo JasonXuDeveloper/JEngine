@@ -41,12 +41,14 @@ namespace libx
         {
             try
             {
-                version.text =  "资源版本号: v"+Application.version+"res"+Versions.LoadVersion(Application.persistentDataPath + '/' + Versions.Filename);
+                version.text = "资源版本号: v" + Application.version + "res" +
+                               Versions.LoadVersion(Application.persistentDataPath + "/DLC/" + Versions.Filename);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                version.text =  "初始版本";
+                version.text = "初始版本";
             }
+
             var updater = FindObjectOfType<Updater>();
             updater.listener = this;
         }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
@@ -128,12 +126,12 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         }
 
         object[] param0 = new object[0];
-        private bool destoryed = false;
+        private bool destoryed;
 
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
-        private bool awaked = false;
-        private bool isAwaking = false;
+        private bool awaked;
+        private bool isAwaking;
 
         public async void Awake()
         {
@@ -159,7 +157,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                                 await Task.Delay(20);
                             }
                         }
-                        catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                        catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
                         {
                             return;
                         }
@@ -176,7 +174,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                     }
                 }
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
                 //如果出现了Null，那就重新Awake
                 Awake();
@@ -1468,16 +1466,26 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             }
         }
 
+        IMethod mToStringMethod;
+        bool mToStringMethodGot;
         public override string ToString()
         {
-            IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);
-            m = instance.Type.GetVirtualMethod(m);
-            if (m == null || m is ILMethod)
+            if (instance != null)
             {
-                return instance.ToString();
+                if (!mToStringMethodGot)
+                {
+                    mToStringMethod =
+                        instance.Type.GetMethod("ToString", 0);
+                    mToStringMethodGot = true;
+                }
+
+                if (mToStringMethod != null)
+                {
+                    appdomain.Invoke(mToStringMethod, instance, param0);
+                }
             }
 
-            return instance.Type.FullName;
+            return instance?.Type?.FullName ?? base.ToString();
         }
     }
 }

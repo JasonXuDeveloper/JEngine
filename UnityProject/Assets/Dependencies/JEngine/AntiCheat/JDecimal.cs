@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using JEngine.Core;
+
 namespace JEngine.AntiCheat
 {
     public struct JDecimal
@@ -36,7 +38,7 @@ namespace JEngine.AntiCheat
         {
             get
             {
-                var result = (decimal) (_obscuredDecimal - _obscuredKey);
+                var result = _obscuredDecimal - _obscuredKey;
                 if (!_originalValue.Equals(result))
                 {
                     AntiCheatHelper.OnDetected();
@@ -51,7 +53,7 @@ namespace JEngine.AntiCheat
                 unchecked
                 {
                     _obscuredKey = JRandom.RandomNum((int) value);
-                    _obscuredDecimal = (decimal) (value + _obscuredKey);
+                    _obscuredDecimal = value + _obscuredKey;
                 }
             }
         }
@@ -72,7 +74,7 @@ namespace JEngine.AntiCheat
             var result = decimal.TryParse(val,out var _value);
             if (!result)
             {
-                JEngine.Core.Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
+                Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
                 Value = 0;
             }
             else

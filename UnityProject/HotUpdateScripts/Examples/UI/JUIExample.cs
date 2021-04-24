@@ -64,11 +64,11 @@ namespace JEngine.Examples
             //使用JUI绑定数据，已达到更新的目的 | JUI to bind data
             JUI jui = JUI.CreateOn(JUIVal.gameObject);//添加脚本 | Add JUI
             jui.Bind(DataModifyExample.data.BindableMoney)//绑定数据 | Bind Data
-                .onMessage(j =>
+                .onMessage<long>((j,value) =>
                 {
                     //数据更新后做什么 | What to do when data updated 
                     JUITimes++;
-                    JUIVal.text = $"Money = {DataModifyExample.data.BindableMoney}\n" +
+                    JUIVal.text = $"Money = {value}\n" +
                     $"JUI绑定方法，UI更新了{JUITimes}次";
                 })
                 .Activate();//激活 | Run JUI
