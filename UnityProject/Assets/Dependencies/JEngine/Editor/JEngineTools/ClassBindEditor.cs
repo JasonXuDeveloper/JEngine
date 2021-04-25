@@ -179,15 +179,11 @@ namespace JEngine.Editor
                 {
                     members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
                                                  BindingFlags.Public));
-                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                 BindingFlags.Public));
                     members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
                                                  BindingFlags.Public));
                 }
                 else
                 {
-                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                 BindingFlags.Public | BindingFlags.NonPublic));
                     members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
                                                  BindingFlags.Public | BindingFlags.NonPublic));
                     members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
