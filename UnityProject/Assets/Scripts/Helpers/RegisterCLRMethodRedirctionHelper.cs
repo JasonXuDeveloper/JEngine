@@ -232,117 +232,116 @@ namespace JEngine.Helper
             var objectType = typeof(UnityEngine.Object);
             var instantiateMethod = objectType.GetMethod("Instantiate", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_6);
-            genericMethods = new Dictionary<string, List<MethodInfo>>();
-            lst = null;     
-            foreach(var m in objectType.GetMethods())
+            var allMethods = objectType.GetMethods().ToList().FindAll(f => f.Name == "Instantiate");
+            args = new Type[] {typeof(UnityEngine.GameObject)};
+            foreach (var m in allMethods)
             {
-                if(m.IsGenericMethodDefinition)
+                if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject)))
                 {
-                    if (!genericMethods.TryGetValue(m.Name, out lst))
-                    {
-                        lst = new List<MethodInfo>();
-                        genericMethods[m.Name] = lst;
-                    }
-                    lst.Add(m);
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_7);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_8);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_9);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_10);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_11);
                 }
             }
-            args = new Type[]{typeof(UnityEngine.GameObject)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
+            args = new Type[] {typeof(UnityEngine.Object)};
+            foreach (var m in allMethods)
             {
-                foreach(var m in lst)
+                //Object
+                if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object)))
                 {
-                    if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject)))
-                    {
-                        instantiateMethod = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod , Instantiate_7);
-                        break;
-                    }
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_12);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
+                    typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_13);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
+                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_14);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_15);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_16);
+                }
+                else
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_17);
                 }
             }
-            args = new Type[]{typeof(UnityEngine.GameObject)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
+            args = new Type[] {typeof(MonoBehaviourAdapter.Adaptor)};
+            foreach (var m in allMethods)
             {
-                foreach(var m in lst)
+                //Object
+                if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor)))
                 {
-                    if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Transform)))
-                    {
-                        instantiateMethod  = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod , Instantiate_8);
-                        break;
-                    }
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_12);
+                }
+                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
+                    typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_13);
+                }
+                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
+                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_14);
+                }
+                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_15);
+                }
+                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_16);
+                }
+                else
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_17);
                 }
             }
-            args = new Type[]{typeof(UnityEngine.GameObject)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
-            {
-                foreach(var m in lst)
-                {
-                    if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Transform), typeof(System.Boolean)))
-                    {
-                        instantiateMethod  = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod , Instantiate_9);
-                        break;
-                    }
-                }
-            }
-            args = new Type[]{typeof(UnityEngine.GameObject)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
-            {
-                foreach(var m in lst)
-                {
-                    if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
-                    {
-                        instantiateMethod  = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod , Instantiate_10);
-                        break;
-                    }
-                }
-            }
-            args = new Type[]{typeof(UnityEngine.GameObject)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
-            {
-                foreach(var m in lst)
-                {
-                    if(m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
-                    {
-                        instantiateMethod  = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod , Instantiate_11);
-                        break;
-                    }
-                }
-            }
-            if (genericMethods.TryGetValue("Instantiate", out lst))
-            {
-                foreach(var m in lst)
-                {
-                    if(!m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject))&&
-                       !m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Transform))&&
-                       !m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Transform), typeof(System.Boolean))&&
-                       !m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion))&&
-                       !m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
-                    {
-                        appdomain.RegisterCLRMethodRedirection(m, Instantiate_12);
-
-                        break;
-                    }
-                }
-            }
-            
-            args = new Type[]{typeof(global::MonoBehaviourAdapter.Adaptor)};
-            if (genericMethods.TryGetValue("Instantiate", out lst))
-            {
-                foreach(var m in lst)
-                {
-                    if(m.MatchGenericParameters(args, typeof(global::MonoBehaviourAdapter.Adaptor), typeof(global::MonoBehaviourAdapter.Adaptor)))
-                    {
-                        instantiateMethod = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_12);
-
-                        break;
-                    }
-                }
-            }
-            
         }
         
         /// <summary>
@@ -370,8 +369,9 @@ namespace JEngine.Helper
                 ins = (instance as Component).gameObject;
             }
         }
-        
-        private static async void DoInstantiate(GameObject ins,GameObject res,AppDomain __domain)
+
+       
+        private static ILTypeInstance DoInstantiate(GameObject ins, GameObject res, AppDomain __domain,IType type = null)
         {
             //没adapter不需要注意什么
             if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
@@ -381,7 +381,7 @@ namespace JEngine.Helper
                     ClassBindMgr.DoBind();
                 }
 
-                return;
+                return null;
             }
 
             bool needClassBind = false;
@@ -393,25 +393,17 @@ namespace JEngine.Helper
             }
 
             //如果有适配器的话
-            //有适配器又有classBind，就等ClassBind
-            if (ins.GetComponentsInChildren<CrossBindingAdaptorType>().Length > 0)
-            {
-                while (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
-                {
-                    await Task.Delay(1);
-                }
-            }
             //没适配器就只有ClassBind，那就复制后再去ClasBind
-            else if(ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
+            if (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
             {
                 needClassBind = true;
             }
 
-
             //重新赋值instance的热更脚本
-            var clrInstances = res.GetComponents<CrossBindingAdaptorType>(); //clone的
-            var clrInstances4Ins = ins.GetComponents<CrossBindingAdaptorType>(); //原来的
+            var clrInstances = res.GetComponentsInChildren<CrossBindingAdaptorType>(true); //clone的
+            var clrInstances4Ins = ins.GetComponentsInChildren<CrossBindingAdaptorType>(true); //原来的
 
+            ILTypeInstance result = null;
             for (int i = 0; i < clrInstances.Length; i++)
             {
                 //获取对照适配器
@@ -423,6 +415,10 @@ namespace JEngine.Helper
                         clrInstance4Ins.ILInstance
                             .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
                 var t = clrInstance4Ins.GetType();
+                if (ilInstance.Type == type && result == null)
+                {
+                    result = ilInstance;
+                }
 
                 if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
                 {
@@ -452,7 +448,7 @@ namespace JEngine.Helper
 
                 //补上Awake
                 //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
+                var awakeMethod = (clrInstance.GetType() != null ? clrInstance.GetType() : t).GetMethod("Awake",
                     BindingFlags.Default | BindingFlags.Public
                                          | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
                                          BindingFlags.NonPublic | BindingFlags.Static);
@@ -465,42 +461,24 @@ namespace JEngine.Helper
                     Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
 
                 }
-            }
 
-            //处理子物体
-            var go = res.GetComponentsInChildren<Transform>(true);
-            var go2 = ins.GetComponentsInChildren<Transform>(true);
-
-            if (go.Length != go2.Length)
-            {
-                Debug.LogError("[Instantiate 错误] 生成实例与原对象脚本数量不匹配");
-            }
-
-            for (int i = 0; i < go.Length; i++)
-            {
-                if (go[i] == res.transform)
+                if (needClassBind)
                 {
-                    continue;
+                    ClassBindMgr.DoBind();
                 }
-
-                var subGo = go[i].gameObject;
-                CleanGoForInstantiate(ref subGo, go2[i].gameObject, __domain);
-            }
-            
-            if (needClassBind)
-            {
-                ClassBindMgr.DoBind();
-            }
-            else
-            {
-                //处理好了后，如果还有classbind就是prefab，需要重新bind
-                if (res.GetComponentInChildren<ClassBind>(true))
+                else
                 {
-                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                    //处理好了后，如果还有classbind就是prefab，需要重新bind
+                    if (res.GetComponentInChildren<ClassBind>(true))
+                    {
+                        ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                    }
                 }
             }
+
+            return result;
         }
-        
+
         private static unsafe StackObject* Instantiate_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
@@ -646,7 +624,118 @@ namespace JEngine.Helper
         
         private static unsafe StackObject* Instantiate_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            throw new NotSupportedException("JEngine仅支持Instantiate<GameObject>，暂时不支持Instantiate<T> where T: UnityEngine.Component");
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+
+            object @original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_13(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_14(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @worldPositionStays = ptr_of_this_method->Value == 1;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent, @worldPositionStays);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_15(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @position, @rotation);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_16(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go,  @position, @rotation, @parent);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+        
+        private static unsafe StackObject* Instantiate_17(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            throw new NotSupportedException("JEngine不支持这种Instantiate");
         }
 
         /// <summary>
@@ -1953,73 +2042,6 @@ namespace JEngine.Helper
             return __ret;
         }
         
-        private static void CleanGoForInstantiate(ref GameObject res, GameObject original, AppDomain __domain)
-        {
-            //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            if (res.GetComponent<ClassBind>() != null && res.GetComponent<CrossBindingAdaptorType>() != null)
-            {
-                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
-            }
-
-            //重新赋值instance的热更脚本
-            var clrInstances = res.GetComponents<CrossBindingAdaptorType>(); //clone的
-            var clrInstances4Ins = original.GetComponents<CrossBindingAdaptorType>(); //原来的
-            for (int i = 0; i < clrInstances.Length; i++)
-            {
-                //获取对照适配器
-                var clrInstance = clrInstances[i];
-                var clrInstance4Ins = clrInstances4Ins[i];
-
-                //重新搞ILInstance
-                ILTypeInstance
-                    ilInstance =
-                        clrInstance4Ins.ILInstance
-                            .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
-                var t = clrInstance4Ins.GetType();
-
-                if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
-                {
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).Reset(); //重置clone的
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).ILInstance = ilInstance;
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).AppDomain = __domain;
-                }
-                else
-                {
-                    var ILInstance = t.GetField("instance",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    var AppDomain = t.GetField("appdomain",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    ILInstance.SetValue(clrInstance, ilInstance);
-                    AppDomain.SetValue(clrInstance, __domain);
-                }
-
-                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins) //clr指向
-                {
-                    ilInstance.CLRInstance = clrInstance;
-                }
-                else
-                {
-                    ilInstance.CLRInstance = ilInstance;
-                }
-
-                //补上Awake
-                //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
-                    BindingFlags.Default | BindingFlags.Public
-                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                         BindingFlags.NonPublic | BindingFlags.Static);
-                if (awakeMethod != null)
-                {
-                    awakeMethod.Invoke(clrInstance, null);
-                }
-                else
-                {
-                    Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-
-                }
-            }
-        }
-        
         /// <summary>
         /// Log.PrintError 实现
         /// </summary>
@@ -2377,6 +2399,28 @@ namespace JEngine.Helper
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
+        private static object GetComp(IType type, GameObject instance)
+        {
+            object res = null;
+            //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
+            var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                var clrInstance = clrInstances[i];
+                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                {
+                    if (clrInstance.ILInstance.Type == type ||
+                        clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
+                    {
+                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                        break;
+                    }
+                }
+            }
+
+            return res;
+        }
+            
         private static object DoGetComponent(IType type, GameObject instance)
         {
             object res = null;
@@ -2387,52 +2431,32 @@ namespace JEngine.Helper
             }
             else
             {
-                //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
-                var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
-                for (int i = 0; i < clrInstances.Length; i++)
-                {
-                    var clrInstance = clrInstances[i];
-                    if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                    {
-                        if (clrInstance.ILInstance.Type == type ||
-                            clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
-                        {
-                            res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                            break;
-                        }
-                    }
-                }
+                res = GetComp(type,instance);
 
-                if (res == null) //如果是null，但有classBind，就先绑定
+                if (res == null)
                 {
                     var cb = instance.GetComponent<ClassBind>();
                     if (cb != null)
                     {
                         //执行绑定
-                        ClassBindMgr.DoBind();
-
-                        //再次循环
-                        clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
-                        for (int i = 0; i < clrInstances.Length; i++)
+                        ClassBindMgr.DoBind(new List<ClassBind>() {cb});
+                    }
+                    //尝试10次
+                    for (int i = 0; i < 10; i++)
+                    {
+                        res = GetComp(type,instance);
+                        if (res != null)
                         {
-                            var clrInstance = clrInstances[i];
-                            if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                            {
-                                if (clrInstance.ILInstance.Type == type)
-                                {
-                                    res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                                    break;
-                                }
-                            }
+                            break;
                         }
                     }
-
                 }
             }
 
             return res;
         }
 
+        
         /// <summary>
         /// GetComponent 的实现
         /// </summary>
@@ -2483,8 +2507,7 @@ namespace JEngine.Helper
 
 
                 var type = genericArgument[0];
-                var res = DoGetComponent(type, instance);
-
+                object res = DoGetComponent(type, instance);
                 return ILIntepreter.PushObject(ptr, __mStack, res);
             }
 

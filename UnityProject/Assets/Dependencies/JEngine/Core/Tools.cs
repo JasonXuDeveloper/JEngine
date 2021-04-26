@@ -55,7 +55,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.FullName == typeName)
                 .Select(a => a.ILInstance).ToArray();
         }
         
@@ -63,7 +63,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.FullName == typeName)
                 .Select(a => a.ILInstance).ToArray();
         }
     }
