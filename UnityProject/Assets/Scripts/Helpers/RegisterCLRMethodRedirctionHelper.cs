@@ -243,8 +243,8 @@ namespace JEngine.Helper
             //注册Instantiate
             var objectType = typeof(UnityEngine.Object);
             var instantiateMethod = objectType.GetMethod("Instantiate", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_6);
             var allMethods = objectType.GetMethods().ToList().FindAll(f => f.Name == "Instantiate");
+            //GameObject的方便点，不需要再去Get类型
             args = new Type[] {typeof(UnityEngine.GameObject)};
             foreach (var m in allMethods)
             {
@@ -278,76 +278,36 @@ namespace JEngine.Helper
                     appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_11);
                 }
             }
-            args = new Type[] {typeof(UnityEngine.Object)};
+            //其他的需要复杂一点的
             foreach (var m in allMethods)
             {
-                //Object
-                if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object)))
+                var allParams = m.GetParameters();
+                if (allParams.Length == 1)
                 {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_12);
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_12);
                 }
-                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
-                    typeof(UnityEngine.Transform)))
+                else if (allParams.Length == 2)
                 {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_13);
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_13);
                 }
-                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
-                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
+                else if (allParams.Length == 3 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Transform) &&
+                         allParams[2].ParameterType == typeof(System.Boolean))
                 {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_14);
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_14);
                 }
-                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
-                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
+                else if (allParams.Length == 3 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Vector3) &&
+                         allParams[2].ParameterType == typeof(UnityEngine.Quaternion))
                 {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_15);
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_15);
                 }
-                else if (m.MatchGenericParameters(args, typeof(UnityEngine.Object), typeof(UnityEngine.Object),
-                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
+                else if (allParams.Length == 4 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Vector3) &&
+                         allParams[2].ParameterType == typeof(UnityEngine.Quaternion) &&
+                         allParams[3].ParameterType == typeof(UnityEngine.Transform))
                 {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_16);
-                }
-                else
-                {
-                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_17);
-                }
-            }
-            args = new Type[] {typeof(MonoBehaviourAdapter.Adaptor)};
-            foreach (var m in allMethods)
-            {
-                //Object
-                if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor)))
-                {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_12);
-                }
-                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
-                    typeof(UnityEngine.Transform)))
-                {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_13);
-                }
-                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
-                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
-                {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_14);
-                }
-                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
-                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
-                {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_15);
-                }
-                else if (m.MatchGenericParameters(args, typeof(MonoBehaviourAdapter.Adaptor), typeof(MonoBehaviourAdapter.Adaptor),
-                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
-                {
-                    instantiateMethod = m.MakeGenericMethod(args);
-                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_16);
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_16);
                 }
                 else
                 {
@@ -383,7 +343,7 @@ namespace JEngine.Helper
         }
 
        
-        private static ILTypeInstance DoInstantiate(GameObject ins, GameObject res, AppDomain __domain,IType type = null)
+        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain __domain,IType type = null)
         {
             //没adapter不需要注意什么
             if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
@@ -393,7 +353,7 @@ namespace JEngine.Helper
                     ClassBindMgr.DoBind();
                 }
 
-                return null;
+                return res;
             }
 
             bool needClassBind = false;
@@ -488,36 +448,16 @@ namespace JEngine.Helper
                 }
             }
 
-            return result;
-        }
-
-        private static unsafe StackObject* Instantiate_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-
-            if (StackObject.ToObject(ptr_of_this_method, __domain, __mStack) is GameObject)
+            if (type != null)
             {
-                UnityEngine.Object @original = (UnityEngine.Object)typeof(UnityEngine.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-                __intp.Free(ptr_of_this_method);
-
-
-                var result_of_this_method = UnityEngine.Object.Instantiate(@original);
-                SetGOForInstantiate(original, out var go, out var type);
-                SetGOForInstantiate(result_of_this_method, out var result, out var resultType);
-            
-                DoInstantiate(go, result, __domain);
-
-                return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+                return result;
             }
             else
             {
-                throw new NotSupportedException("JEngine仅支持Instantiate<GameObject>，暂时不支持Instantiate<T> where T: UnityEngine.Component");
+                return res;
             }
         }
-
+        
         private static unsafe StackObject* Instantiate_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
@@ -530,9 +470,8 @@ namespace JEngine.Helper
 
 
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original);
-            DoInstantiate(original, result_of_this_method, __domain);
             
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
 
         private static unsafe StackObject* Instantiate_8(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
@@ -551,9 +490,8 @@ namespace JEngine.Helper
 
 
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @parent);
-            DoInstantiate(original, result_of_this_method, __domain);
 
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
 
         private static unsafe StackObject* Instantiate_9(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
@@ -575,9 +513,8 @@ namespace JEngine.Helper
 
 
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @parent, @worldPositionStays);
-            DoInstantiate(original, result_of_this_method, __domain);
 
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
 
         private static unsafe StackObject* Instantiate_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
@@ -600,9 +537,8 @@ namespace JEngine.Helper
 
 
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @position, @rotation);
-            DoInstantiate(original, result_of_this_method, __domain);
 
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
 
         private static unsafe StackObject* Instantiate_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
@@ -631,7 +567,7 @@ namespace JEngine.Helper
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @position, @rotation, @parent);
             DoInstantiate(original, result_of_this_method, __domain);
 
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
         
         private static unsafe StackObject* Instantiate_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
@@ -647,6 +583,11 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
             return ILIntepreter.PushObject(__ret, __mStack, res);
         }
 
@@ -667,6 +608,11 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
             return ILIntepreter.PushObject(__ret, __mStack, res);
         }
 
@@ -690,6 +636,11 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent, @worldPositionStays);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
             return ILIntepreter.PushObject(__ret, __mStack, res);
         }
 
@@ -714,6 +665,11 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @position, @rotation);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
             return ILIntepreter.PushObject(__ret, __mStack, res);
         }
 
@@ -742,6 +698,11 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go,  @position, @rotation, @parent);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
             return ILIntepreter.PushObject(__ret, __mStack, res);
         }
         
