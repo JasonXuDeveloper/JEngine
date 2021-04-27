@@ -184,9 +184,14 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         IMethod mStartMethod;
         bool mStartMethodGot;
 
-        void Start()
+        async void Start()
         {
             if (isJBehaviour || !isMonoBehaviour) return;
+
+            if (instance == null)
+            {
+                await Task.Delay(1);
+            }
 
             if (!mStartMethodGot)
             {
