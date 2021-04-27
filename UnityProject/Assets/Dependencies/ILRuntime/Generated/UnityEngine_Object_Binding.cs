@@ -127,6 +127,20 @@ namespace ILRuntime.Runtime.Generated
                     }
                 }
             }
+            args = new Type[]{typeof(UnityEngine.Canvas)};
+            if (genericMethods.TryGetValue("Instantiate", out lst))
+            {
+                foreach(var m in lst)
+                {
+                    if(m.MatchGenericParameters(args, typeof(UnityEngine.Canvas), typeof(UnityEngine.Canvas)))
+                    {
+                        method = m.MakeGenericMethod(args);
+                        app.RegisterCLRMethodRedirection(method, Instantiate_12);
+
+                        break;
+                    }
+                }
+            }
             args = new Type[]{typeof(global::MonoBehaviourAdapter.Adaptor)};
             if (genericMethods.TryGetValue("Instantiate", out lst))
             {
@@ -135,7 +149,7 @@ namespace ILRuntime.Runtime.Generated
                     if(m.MatchGenericParameters(args, typeof(global::MonoBehaviourAdapter.Adaptor), typeof(global::MonoBehaviourAdapter.Adaptor)))
                     {
                         method = m.MakeGenericMethod(args);
-                        app.RegisterCLRMethodRedirection(method, Instantiate_12);
+                        app.RegisterCLRMethodRedirection(method, Instantiate_13);
 
                         break;
                     }
@@ -384,6 +398,22 @@ namespace ILRuntime.Runtime.Generated
         }
 
         static StackObject* Instantiate_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Canvas @original = (UnityEngine.Canvas)typeof(UnityEngine.Canvas).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.Canvas>(@original);
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static StackObject* Instantiate_13(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

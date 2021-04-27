@@ -215,6 +215,18 @@ namespace JEngine.Helper
             args = new[]{typeof(ILTypeInstance)};
             Dictionary<string, List<MethodInfo>> genericMethods = new Dictionary<string, List<MethodInfo>>();
             List<MethodInfo> lst = null;                 
+            foreach(var m in pbSerializeType.GetMethods())
+            {
+                if(m.IsGenericMethodDefinition)
+                {
+                    if (!genericMethods.TryGetValue(m.Name, out lst))
+                    {
+                        lst = new List<MethodInfo>();
+                        genericMethods[m.Name] = lst;
+                    }
+                    lst.Add(m);
+                }
+            }
             if (genericMethods.TryGetValue("Deserialize", out lst))
             {
                 foreach(var m in lst)
