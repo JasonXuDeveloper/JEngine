@@ -148,6 +148,8 @@ namespace libx
                 default:
                     return null;
             }
+
+            return null;
         }
 
         private static string[] GetLevelsFromBuildSettings ()
