@@ -37,6 +37,8 @@ namespace JEngine.Editor
 {
     internal static class Clean
          {
+             public static bool hasAdded;
+             
              private static bool _isDone = true;
      
              private static readonly string HotProjectName = "HotUpdateScripts";
@@ -49,6 +51,8 @@ namespace JEngine.Editor
              
              public static void Update()
              {
+                 hasAdded = true;
+                 
                  if (!_isDone || EditorApplication.isPlaying)
                  {
                      return;

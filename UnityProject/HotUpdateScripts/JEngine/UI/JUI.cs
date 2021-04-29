@@ -92,9 +92,9 @@ namespace JEngine.UI
         {
             _bind = true;
             _bindType = typeof(T);
-            val.OnChange += (T val) =>
+            val.OnChange += (T value) =>
             {
-                Message(val);
+                Message(value);
             };
             return this;
         }

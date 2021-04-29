@@ -8,9 +8,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
-public class Init : MonoBehaviour
+public class InitJEngine : MonoBehaviour
 {
-    public static Init Instance;
+    public static InitJEngine Instance;
     public static AppDomain Appdomain;
     public static bool Success;
 
@@ -116,7 +116,7 @@ public class Init : MonoBehaviour
         }
         
         Success = true;
-        InitILrt.InitializeILRuntime(Appdomain);
+        LoadILRuntime.InitializeILRuntime(Appdomain);
     }
     
     public void OnHotFixLoaded()

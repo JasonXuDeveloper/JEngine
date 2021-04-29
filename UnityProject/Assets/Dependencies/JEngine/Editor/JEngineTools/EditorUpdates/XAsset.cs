@@ -6,12 +6,16 @@ namespace JEngine.Editor
 {
     internal static class XAsset
     {
+        public static bool hasAdded;
+        
         private static bool _delaying;
         private static bool _verifying;
         private static float _frequency = 3600;
 
         public static async void Update()
         {
+            hasAdded = true;
+            
             if (!Setting.XAssetLoggedIn || _delaying || _verifying || XAssetHelper.loggingXAsset) return;
 
             //验证

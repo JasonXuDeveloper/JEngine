@@ -37,7 +37,7 @@ namespace JEngine.Examples
             if (IsFirst)
             {
                 IsFirst = false;
-                var prefab = new JPrefab("InstantiateDemo", (result, prefab) =>
+                new JPrefab("InstantiateDemo", (result, prefab) =>
                  {
                      Log.Print("开始Instantiate");
 

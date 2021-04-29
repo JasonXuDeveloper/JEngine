@@ -24,15 +24,15 @@ namespace JEngine.Core
         private void Update()
         {
             //进入热更了再开始
-            if (Debug && Init.Success)
+            if (Debug && InitJEngine.Success)
             {
                 //仅限于Editor的部分
                 #if UNITY_EDITOR
-                if (_encryptedCounts != Init.EncryptedCounts)
+                if (_encryptedCounts != InitJEngine.EncryptedCounts)
                 {
-                    var diff = Init.EncryptedCounts - _encryptedCounts;
-                    Log.Print($"第{_totalFrames}帧JStream总共将热更DLL分为了{Init.EncryptedCounts}块，新增{diff}块，进行解释执行");
-                    _encryptedCounts = Init.EncryptedCounts;
+                    var diff = InitJEngine.EncryptedCounts - _encryptedCounts;
+                    Log.Print($"第{_totalFrames}帧JStream总共将热更DLL分为了{InitJEngine.EncryptedCounts}块，新增{diff}块，进行解释执行");
+                    _encryptedCounts = InitJEngine.EncryptedCounts;
                 }
                 #endif
             }
