@@ -5,7 +5,7 @@ using LitJson;
 using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
-public static class InitILrt
+public static class LoadILRuntime
 {
     public static void InitializeILRuntime(AppDomain appdomain)
     {

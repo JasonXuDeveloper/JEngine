@@ -162,9 +162,9 @@ namespace JEngine.Examples
                 //发送hi到服务端
                 socket.EmitToSocketIOServer("hi");//同步
 
-                socket.EmitToSocketIOServerAsync("hi", (bool result) =>
+                socket.EmitToSocketIOServerAsync("hi", (bool res) =>
                  {
-                     Log.Print("异步并行发送" + (result ? "成功" : "失败"));
+                     Log.Print("异步并行发送" + (res ? "成功" : "失败"));
                  });//异步并行
 
                 var result = await socket.EmitToSocketIOServerAsync("hi");

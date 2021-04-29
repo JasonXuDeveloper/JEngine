@@ -48,7 +48,7 @@ namespace JEngine.Core
             _key = key;
             if (_key.Length < 16)
             {
-                _key = Init.Instance.key.Length < 16 ? _defaultKey : Init.Instance.key;
+                _key = InitJEngine.Instance.key.Length < 16 ? _defaultKey : InitJEngine.Instance.key;
             }
         }
 
@@ -75,7 +75,7 @@ namespace JEngine.Core
             _key = key;
             if (_key.Length < 16)
             {
-                _key = Init.Instance.key.Length < 16 ? _defaultKey : Init.Instance.key;
+                _key = InitJEngine.Instance.key.Length < 16 ? _defaultKey : InitJEngine.Instance.key;
             }
         }
     

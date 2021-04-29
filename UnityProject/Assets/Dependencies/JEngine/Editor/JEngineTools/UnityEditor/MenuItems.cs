@@ -24,7 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #if UNITY_EDITOR
+using System.Diagnostics;
 using System.Reflection;
+using JEngine.Core;
+using libx;
 using UnityEditor;
 using UnityEngine;
 
@@ -68,7 +71,7 @@ namespace JEngine.Editor
 
                 watch = new Stopwatch();
                 watch.Start();
-                BuildScript.BuildRules();
+                BuildScript.ApplyBuildRules();
                 watch.Stop();
                 Log.Print("ApplyBuildRules in: " + watch.ElapsedMilliseconds + " ms.");
 

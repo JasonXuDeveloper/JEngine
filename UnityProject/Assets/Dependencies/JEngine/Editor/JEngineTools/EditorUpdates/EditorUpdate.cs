@@ -10,9 +10,25 @@ namespace JEngine.Editor
         /// </summary>
         static EditorUpdate()
         {
-            EditorApplication.update += Clean.Update;//处理DLL
-            EditorApplication.update += XAsset.Update;//验证XAsset
-            EditorApplication.update += AllowUnsafe.Update;//允许Unsafe code
+            if (!Clean.hasAdded)
+            {
+                EditorApplication.update += Clean.Update; //处理DLL
+            }
+
+            if (!XAsset.hasAdded)
+            {
+                EditorApplication.update += XAsset.Update; //验证XAsset
+            }
+
+            if (!AllowUnsafe.hasAdded)
+            {
+                EditorApplication.update += AllowUnsafe.Update; //允许Unsafe code
+            }
+
+            if (!SetData.hasAdded)
+            {
+                EditorApplication.update += SetData.Update; //设置某些需要在后台设置的东西
+            }
         }
     }
 }

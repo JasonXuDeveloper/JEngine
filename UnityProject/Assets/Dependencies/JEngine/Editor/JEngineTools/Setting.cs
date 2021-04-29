@@ -366,7 +366,6 @@ namespace JEngine.Editor
 
 		private void OnEnable()
 		{
-			_prefix = $"JEngine.Editor.Setting.{Application.productName}";
 			_dataPath = new DirectoryInfo(Application.dataPath);
 			_scrollPos = new Vector2(position.width, position.height);
 		}
@@ -377,8 +376,18 @@ namespace JEngine.Editor
 			return result;
 		}
 
+		public static void SetPrefix()
+		{
+			if (string.IsNullOrEmpty(_prefix))
+			{
+				_prefix = $"JEngine.Editor.Setting.{Application.productName}";
+			}
+		}
+
 		private void OnGUI()
 		{
+			SetPrefix();
+			
 			if (_instance == null)
 			{
 				_instance = this;

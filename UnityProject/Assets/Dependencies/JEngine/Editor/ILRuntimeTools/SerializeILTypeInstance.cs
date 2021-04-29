@@ -107,7 +107,7 @@ namespace JEngine.Editor
         public static bool SerializeJBehaviourType(AnimBool[] fadeGroup, ILTypeInstance instance)
         {
             //如果JBehaviour
-            var jBehaviourType = Init.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+            var jBehaviourType = InitJEngine.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
             var t = instance.Type.ReflectionType;
             if (t.IsSubclassOf(jBehaviourType.ReflectionType))
             {

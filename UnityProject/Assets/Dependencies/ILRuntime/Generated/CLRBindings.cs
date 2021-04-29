@@ -116,7 +116,7 @@ namespace ILRuntime.Runtime.Generated
             System_Decimal_Binding.Register(app);
             System_Double_Binding.Register(app);
             System_Single_Binding.Register(app);
-            Init_Binding.Register(app);
+            InitJEngine_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
             JEngine_Core_ClassData_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);

@@ -618,9 +618,9 @@ namespace libx
                 var scene = Assets.LoadSceneAsync(gameScene, false);
                 scene.completed += (AssetRequest request) =>
                 {
-                    FindObjectOfType<Init>().Load();
+                    FindObjectOfType<InitJEngine>().Load();
                     ClassBindMgr.Instantiate();
-                    FindObjectOfType<Init>().OnHotFixLoaded();
+                    FindObjectOfType<InitJEngine>().OnHotFixLoaded();
                 };
                 while (!scene.isDone)
                 {

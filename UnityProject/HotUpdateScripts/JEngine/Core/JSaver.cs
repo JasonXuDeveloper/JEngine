@@ -33,7 +33,7 @@ namespace JEngine.Core
     public static class JSaver
     {
         private const string JSaverKeys = "JEngine.Core.JSaver.Keys";
-        private static readonly string defaultEncryptKey = Init.Instance.key;
+        private static readonly string defaultEncryptKey = InitJEngine.Instance.key;
 
         private static void AddJSaverKeys(string key)
         {

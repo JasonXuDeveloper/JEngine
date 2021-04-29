@@ -36,7 +36,7 @@ namespace JEngine.AntiCheat
         private string Value {
             get
             {
-                var result = CryptoHelper.DecryptStr(_obscuredString,Init.Instance.key);
+                var result = CryptoHelper.DecryptStr(_obscuredString,InitJEngine.Instance.key);
                 if (!_originalValue.Equals(result))
                 {
                     AntiCheatHelper.OnDetected();
@@ -49,7 +49,7 @@ namespace JEngine.AntiCheat
                 _originalValue = value;
                 unchecked
                 {
-                    _obscuredString = CryptoHelper.EncryptStr(value, Init.Instance.key);
+                    _obscuredString = CryptoHelper.EncryptStr(value, InitJEngine.Instance.key);
                 }
             }
         }
