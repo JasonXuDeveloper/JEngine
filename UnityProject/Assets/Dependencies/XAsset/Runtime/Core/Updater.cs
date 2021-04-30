@@ -309,33 +309,23 @@ namespace libx
 
         private static string GetPlatformForAssetBundles(RuntimePlatform target)
         {
-#if UNITY_EDITOR
-            var t = EditorUserBuildSettings.activeBuildTarget;
-            switch (t)
+            switch (target)
             {
-                case BuildTarget.Android:
+                case RuntimePlatform.Android:
                     return "Android";
-                case BuildTarget.iOS:
+                case RuntimePlatform.IPhonePlayer:
                     return "iOS";
-                case BuildTarget.WebGL:
+                case RuntimePlatform.WebGLPlayer:
                     return "WebGL";
-                case BuildTarget.StandaloneWindows:
-                case BuildTarget.StandaloneWindows64:
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.WindowsEditor:
                     return "Windows";
-#if UNITY_2017_3_OR_NEWER
-                case BuildTarget.StandaloneOSX:
-                    return "OSX";
-#else
-                case BuildTarget.StandaloneOSXIntel:
-                case BuildTarget.StandaloneOSXIntel64:
-                case BuildTarget.StandaloneOSXUniversal:
-                    return "OSX";
-#endif
+                case RuntimePlatform.OSXEditor:
+                case RuntimePlatform.OSXPlayer:
+                    return "OSX"; // OSX
                 default:
                     return null;
             }
-#endif
-            return null;
         }
 
         private string GetDownloadURL(string filename)
