@@ -1,10 +1,10 @@
 ﻿//
-// Program.cs
+// ComplexLitJsonDemo.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
 //
-// Copyright (c) 2020 JEngine
+// Copyright (c) 2021 JEngine
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
+using LitJson;
 using JEngine.Core;
-using JEngine.AntiCheat;
-using JEngine.Examples;
-using JEngine.Net;
+using JEngine.Examples.Data;
 
-namespace HotUpdateScripts
+namespace JEngine.Examples
 {
-    public class Program
+    public class ComplexLitJsonDemo
     {
-        public void RunGame()
+        public void Awake()
         {
-           
+            Log.Print("这是一个复杂的LitJson序列化的测试，别的ILRuntime版本的Litjson并不支持（除非我把这个提交到ILRuntime）");
+            Log.Print("首先实例化一个本地泛型<热更类型>，GTest<HotData>");
+            GTest<HotData> d = new GTest<HotData>()
+            {
+                a = 1,
+                b = new HotData()
+                {
+                    v = 1,
+                    k = "第一个"
+                }
+            };
+            var json = JsonMapper.ToJson(d);
+            Log.Print($"序列化后的JSON: {json}");
+
+            Log.Print("现在反序列化json，转成一个新的GTest<HotData>");
+            var newD = JsonMapper.ToObject<GTest<HotData>>(json);
+            Log.Print(newD);
         }
     }
 }

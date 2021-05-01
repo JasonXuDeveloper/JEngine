@@ -30,15 +30,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Examples\UI\View\JTestItem.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Examples\Core\JBehaviourExample.cs" />
-    <Compile Include="Examples\Core\JSaverExample.cs" />
-    <Compile Include="Examples\Core\AutoBindDemo.cs" />
-    <Compile Include="Examples\Data\DataClass.cs" />
-    <Compile Include="Examples\Data\SafeData.cs" />
-    <Compile Include="Examples\UI\JUIExample.cs" />
-    <Compile Include="Examples\UI\JumpToUIDemo.cs" />
     <Compile Include="JEngine\Core\ProtoTypeRegister.cs" />
     <Compile Include="JEngine\Core\JSaver.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
@@ -62,19 +54,30 @@
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\Singleton.cs" />
     <Compile Include="JEngine\UI\UIKit\UIExpand\UIGroup.cs" />
-    <Compile Include="Examples\UI\View\JTestView.cs" />
-    <Compile Include="Examples\UI\View\JBtnView.cs" />
     <Compile Include="JEngine\UI\UIRootView.cs" />
-    <Compile Include="Examples\Core\ConvertDemo.cs" />
     <Compile Include="JEngine\Event\JEvent.cs" />
     <Compile Include="JEngine\Event\EventEnum.cs" />
-    <Compile Include="Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Event\EventAttributes.cs" />
     <Compile Include="JEngine\Core\JExtensions.cs" />
     <Compile Include="JEngine\Net\JWebSocket.cs" />
-    <Compile Include="Examples\Net\JWebSocketDemo.cs" />
-    <Compile Include="Examples\Core\CrossDomainDemo.cs" />
-    <Compile Include="Examples\Core\InstantiateDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\AutoBindDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\ConvertDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\CrossDomainDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\InstantiateDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\JBehaviourExample.cs" />
+    <Compile Include="JEngine\Examples\Core\JSaverExample.cs" />
+    <Compile Include="JEngine\Examples\Data\DataClass.cs" />
+    <Compile Include="JEngine\Examples\Data\SafeData.cs" />
+    <Compile Include="JEngine\Examples\Event\EventDemo.cs" />
+    <Compile Include="JEngine\Examples\Net\JWebSocketDemo.cs" />
+    <Compile Include="JEngine\Examples\UI\JUIExample.cs" />
+    <Compile Include="JEngine\Examples\UI\JumpToUIDemo.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JBtnView.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JTestItem.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JTestView.cs" />
+    <Compile Include="JEngine\Examples\Core\ComplexLitJsonDemo.cs" />
+    <Compile Include="JEngine\Examples\Data\HotData.cs" />
+    <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
@@ -125,9 +128,8 @@
   <ItemGroup>
     <Folder Include="Proto2cs\" />
     <Folder Include="JEngine\Event\" />
-    <Folder Include="Examples\Event\" />
     <Folder Include="JEngine\Net\" />
-    <Folder Include="Examples\Net\" />
+    <Folder Include="JEngine\Examples\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
