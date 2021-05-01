@@ -30,9 +30,27 @@ using JEngine.Examples.Data;
 
 namespace JEngine.Examples
 {
+    public class JsonTestClass
+    {
+        public int intVal;
+        public DataClass hotVal;
+
+        public override string ToString()
+        {
+            return $"a={intVal},b.isNull = {hotVal == null}";
+        }
+    }
     public class ComplexLitJsonDemo
     {
         public void Awake()
+        {
+
+            Test1();
+            Test2();
+            Test3();
+        }
+
+        private void Test1()
         {
             Log.Print("这是一个复杂的LitJson序列化的测试，别的ILRuntime版本的Litjson并不支持（除非我把这个提交到ILRuntime）");
             Log.Print("首先实例化一个本地泛型<热更类型>，GTest<HotData>");
@@ -51,6 +69,53 @@ namespace JEngine.Examples
             Log.Print("现在反序列化json，转成一个新的GTest<HotData>");
             var newD = JsonMapper.ToObject<GTest<HotData>>(json);
             Log.Print(newD);
+        }
+
+        private void Test2()
+        {
+            Log.Print("测试2，热更类型，内部分别有1个本地类型和1个热更类型字段");
+            var t2 = new JsonTestClass()
+            {
+                intVal = 10,
+                hotVal = new DataClass()
+                {
+                    gm = true,
+                    Money = 100,
+                    id = 1,
+                    name = "测试2"
+                }
+            };
+            var json = JsonMapper.ToJson(t2);
+            Log.Print($"序列化后的JSON: {json}");
+            var newT2 = JsonMapper.ToObject<JsonTestClass>(json);
+            Log.Print("反序列化t2:");
+            Log.Print(newT2);
+        }
+
+        private void Test3()
+        {
+            Log.Print("第3个测试，类似测试1，但这次是GTest<JsonTestClass>，这样会有3个字段，其中包含1个热更类型字段");
+            GTest<JsonTestClass> t3 = new GTest<JsonTestClass>()
+            {
+                a = 3,
+                b = new JsonTestClass()
+                {
+                    intVal = 999,
+                    hotVal = new DataClass()
+                    {
+                        gm = false,
+                        Money = 10000,
+                        id = 299,
+                        name = "测试3"
+                    }
+                }
+            };
+            var json = JsonMapper.ToJson(t3);
+            Log.Print($"序列化后的JSON: {json}");
+
+            Log.Print("现在反序列化json，转成一个新的GTest<HotData>");
+            var newT3 = JsonMapper.ToObject<GTest<JsonTestClass>>(json);
+            Log.Print(newT3);
         }
     }
 }

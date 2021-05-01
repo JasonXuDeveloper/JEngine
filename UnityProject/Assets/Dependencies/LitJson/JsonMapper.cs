@@ -486,11 +486,13 @@ namespace LitJson
                 else
                     instance = Activator.CreateInstance(value_type);
                 bool isIntKey = t_data.IsDictionary && value_type.GetGenericArguments()[0] == typeof(int);
-                
-                var valid = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments
+
+                var hotArguments = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments
                     .Select(i => i.Value)
                     .ToList()
-                    .FindAll(t => !(t is CLRType)).Count == 1;
+                    .FindAll(t => !(t is CLRType));
+                
+                var valid = hotArguments?.Count == 1;
                 
                 while (true)
                 {
@@ -520,7 +522,7 @@ namespace LitJson
                                     throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
                                 }
 
-                                realType = (inst_type as ILRuntimeWrapperType).CLRType.GenericArguments[0].Value.ReflectionType;
+                                realType = hotArguments[0].ReflectionType;
                             }
                             
                             ((FieldInfo) prop_data.Info).SetValue(
@@ -540,7 +542,7 @@ namespace LitJson
                                     throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
                                 }
 
-                                realType = (inst_type as ILRuntimeWrapperType).CLRType.GenericArguments[0].Value.ReflectionType;
+                                realType = hotArguments[0].ReflectionType;
                             }
 
                             if (p_info.CanWrite)
