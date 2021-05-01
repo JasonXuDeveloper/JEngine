@@ -14,11 +14,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.Method;
+using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using ILRuntime.Reflection;
 using Object = System.Object;
 
 namespace LitJson
@@ -188,7 +191,7 @@ namespace LitJson
 
             if (type.GetInterface ("System.Collections.IList") != null)
                 data.IsList = true;
-
+            
             if (type is ILRuntime.Reflection.ILRuntimeWrapperType)
             {
                 var wt = (ILRuntime.Reflection.ILRuntimeWrapperType)type;
@@ -429,7 +432,6 @@ namespace LitJson
             object instance = null;
 
             if (reader.Token == JsonToken.ArrayStart) {
-
                 AddArrayMetadata (inst_type);
                 ArrayMetadata t_data = array_metadata[inst_type];
 
@@ -484,6 +486,12 @@ namespace LitJson
                 else
                     instance = Activator.CreateInstance(value_type);
                 bool isIntKey = t_data.IsDictionary && value_type.GetGenericArguments()[0] == typeof(int);
+                
+                var valid = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments
+                    .Select(i => i.Value)
+                    .ToList()
+                    .FindAll(t => !(t is CLRType)).Count == 1;
+                
                 while (true)
                 {
                     reader.Read();
@@ -500,21 +508,48 @@ namespace LitJson
 
                         if (prop_data.IsField)
                         {
+                            var val = ((FieldInfo) prop_data.Info);
+                            var realType = prop_data.Type;
+                            if (val.FieldType.ToString() == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+                            {
+                                //支持一下本地泛型<热更类型>，这种属于CLRType，会new ILTypeIns导致错误
+                                //这里要做的就是把泛型参数里面的热更类型获取出来
+                                //但如果有超过1个热更类型在参数里，就没办法判断哪个是这个字段的ILTypeIns了，所以只能1个
+                                if (!valid)
+                                {
+                                    throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
+                                }
+
+                                realType = (inst_type as ILRuntimeWrapperType).CLRType.GenericArguments[0].Value.ReflectionType;
+                            }
+                            
                             ((FieldInfo) prop_data.Info).SetValue(
-                                instance, ReadValue(prop_data.Type, reader));
+                                instance, ReadValue(realType, reader));
                         }
                         else
                         {
                             PropertyInfo p_info =
                                 (PropertyInfo) prop_data.Info;
+                            
+                            var val = ((PropertyInfo) prop_data.Info);
+                            var realType = prop_data.Type;
+                            if (val.PropertyType.ToString() == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+                            {
+                                if (!valid)
+                                {
+                                    throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
+                                }
+
+                                realType = (inst_type as ILRuntimeWrapperType).CLRType.GenericArguments[0].Value.ReflectionType;
+                            }
 
                             if (p_info.CanWrite)
                                 p_info.SetValue(
                                     instance,
-                                    ReadValue(prop_data.Type, reader),
+                                    ReadValue(realType, reader),
                                     null);
                             else
-                                ReadValue(prop_data.Type, reader);
+                                ReadValue(realType, reader);
                         }
 
                     }
