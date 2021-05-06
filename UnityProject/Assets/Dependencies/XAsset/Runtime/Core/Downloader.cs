@@ -204,7 +204,7 @@ namespace libx
 
             if (_tostart.Count > 0)
             {
-                for (var i = 0; i < Math.Min(maxDownloads - _tostart.Count, _tostart.Count); ++i)
+                for (var i = 0; i < Math.Min(maxDownloads, _tostart.Count); ++i)
                 {
                     var item = _tostart[i];
                     item.Start();
@@ -219,20 +219,19 @@ namespace libx
             {
                 var download = _progressing[index];
                 download.Update();
-                if (download.finished)
+                if (!download.finished)
+                    continue;
+                if (!string.IsNullOrEmpty(download.error))
                 {
-                    if (!string.IsNullOrEmpty(download.error))
-                    {
-                        Debug.LogError(string.Format("Download Error:{0}, {1}", download.url, download.error));
-                        download.Retry();
-                        Debug.Log("Retry Download：" + download.url);   
-                    }
-                    else
-                    {
-                        _progressing.RemoveAt(index);
-                        --index;
-                        Debug.Log("Finish Download：" + download.url); 
-                    }
+                    Debug.LogError(string.Format("Download Error:{0}, {1}", download.url, download.error));
+                    download.Retry();
+                    Debug.Log("Retry Download：" + download.url);   
+                }
+                else
+                {
+                    _progressing.RemoveAt(index);
+                    --index;
+                    Debug.Log("Finish Download：" + download.url); 
                 }
             }
 
