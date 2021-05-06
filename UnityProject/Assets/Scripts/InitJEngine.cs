@@ -30,6 +30,11 @@ public class InitJEngine : MonoBehaviour
     
     private readonly object[] _param0 = new object[0];
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     public void Load()
     {
         Instance = this;
