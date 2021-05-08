@@ -575,6 +575,15 @@ namespace JEngine.Core
             }
             Launch();
         }
+
+        private void ResetJBehaviour(GameObject go)
+        {
+            _gameObject = go;
+            _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
+            JBehaviours.Add(_instanceID, this);
+
+            LoopAwaitToken = new CancellationTokenSource();
+        }
         #endregion
 
 

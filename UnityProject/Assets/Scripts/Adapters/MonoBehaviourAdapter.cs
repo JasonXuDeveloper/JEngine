@@ -130,8 +130,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         IMethod mAwakeMethod;
         bool mAwakeMethodGot;
-        private bool awaked;
-        private bool isAwaking;
+        public bool awaked;
+        public bool isAwaking;
 
         public async void Awake()
         {
@@ -167,8 +167,8 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                             return;
                         }
 
-                        isAwaking = false;
                         appdomain.Invoke(mAwakeMethod, instance, param0);
+                        isAwaking = false;
                         awaked = true;
                         OnEnable();
                     }

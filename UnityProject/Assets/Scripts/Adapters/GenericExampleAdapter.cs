@@ -96,8 +96,8 @@ namespace ProjectAdapter
                                 return;
                             }
 
-                            isAwaking = false;
                             appdomain.Invoke(mAwakeMethod, instance, param0);
+                            isAwaking = false;
                             awaked = true;
                             OnEnable();
                         }
@@ -1330,8 +1330,8 @@ namespace ProjectAdapter
                                 return;
                             }
 
-                            isAwaking = false;
                             appdomain.Invoke(mAwakeMethod, instance, param0);
+                            isAwaking = false;
                             awaked = true;
                             OnEnable();
                         }
