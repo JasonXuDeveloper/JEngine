@@ -350,14 +350,13 @@ namespace JEngine.Helper
             {
                 if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
                 {
-                    ClassBindMgr.DoBind();
+                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
                 }
 
                 return res;
             }
 
             bool needClassBind = false;
-
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
             foreach (var t in res.GetComponentsInChildren<Transform>())
             {
@@ -368,7 +367,6 @@ namespace JEngine.Helper
                     UnityEngine.Object.DestroyImmediate(cb); //防止重复的ClassBind
                 }
             }
-
             //如果有适配器的话
             //没适配器就只有ClassBind，那就复制后再去ClasBind
             if (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
@@ -387,10 +385,10 @@ namespace JEngine.Helper
                 var clrInstance = clrInstances[i];
                 var clrInstance4Ins = clrInstances4Ins[i];
 
-                ILTypeInstance
-                    ilInstance =
-                        clrInstance4Ins.ILInstance
-                            .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
+                ILTypeInstance ilInstance =
+                    clrInstance4Ins.ILInstance
+                        .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
+                
                 var t = clrInstance4Ins.GetType();
                 if (ilInstance.Type == type && result == null)
                 {
@@ -399,10 +397,23 @@ namespace JEngine.Helper
 
                 if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
                 {
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).Reset(); //重置clone的
+                    var adapter = ((MonoBehaviourAdapter.Adaptor) clrInstance4Ins);
+                    var self = ((MonoBehaviourAdapter.Adaptor) clrInstance);
+                    self.Reset(); //重置clone的
+                    
+                    var jBehaviourType = __domain.LoadedTypes["JEngine.Core.JBehaviour"];
+                    bool isJBehaviour = clrInstance4Ins.ILInstance.Type.ReflectionType.IsSubclassOf(jBehaviourType.ReflectionType);
+                    if (isJBehaviour)
+                    {
+                        self.isJBehaviour = true;
+                        var go = self.gameObject;
+                        jBehaviourType.ReflectionType.GetMethod("ResetJBehaviour",
+                            BindingFlags.Default | BindingFlags.NonPublic)?.Invoke(ilInstance, new object[] {go});
+                    }
+                    
                     //重新搞ILInstance
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).ILInstance = ilInstance;
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).AppDomain = __domain;
+                    self.ILInstance = ilInstance;
+                    self.AppDomain = __domain;
                 }
                 else
                 {
@@ -436,7 +447,6 @@ namespace JEngine.Helper
                 else
                 {
                     Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-
                 }
 
                 if (needClassBind)
@@ -475,7 +485,6 @@ namespace JEngine.Helper
 
 
             var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original);
-            
             return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
         }
 
