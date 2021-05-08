@@ -67,8 +67,17 @@ namespace ProtoBuf.Serializers
         {
             Helpers.DebugAssert(value != null);
             //value = property.GetValue(value, null);
-            value = property.GetGetMethod(true).Invoke(value, null);
-            if(value != null) Tail.Write(value, dest);
+            var type = property.PropertyType;
+            if (Helpers.IsEnum(type) && type.Assembly.FullName.Contains("ILRuntime"))
+            {
+                value = property.GetValue(value, null);
+                if(value != null) Tail.Write(value, dest);
+            }
+            else
+            {
+                value = property.GetGetMethod(true).Invoke(value, null);
+                if(value != null) Tail.Write(value, dest);
+            }
         }
         public override object Read(object value, ProtoReader source)
         {
