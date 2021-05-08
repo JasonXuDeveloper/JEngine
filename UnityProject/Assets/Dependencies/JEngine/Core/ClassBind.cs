@@ -195,7 +195,7 @@ namespace JEngine.Core
                             if (tp != null)
                             {
                                 string tName = tp.FieldType.Name;
-                                if (tp.FieldType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
+                                if (tp.FieldType is ILRuntime.Reflection.ILRuntimeType) //如果在热更中
                                 {
                                     var components = go.GetComponents<CrossBindingAdaptorType>();
                                     foreach (var c in components)
@@ -227,7 +227,7 @@ namespace JEngine.Core
                                 if (pi != null)
                                 {
                                     string tName = pi.PropertyType.Name;
-                                    if (pi.PropertyType.Assembly.ToString().Contains("ILRuntime")) //如果在热更中
+                                    if (pi.PropertyType is ILRuntime.Reflection.ILRuntimeType) //如果在热更中
                                     {
                                         var components = go.GetComponents<CrossBindingAdaptorType>();
                                         foreach (var c in components)

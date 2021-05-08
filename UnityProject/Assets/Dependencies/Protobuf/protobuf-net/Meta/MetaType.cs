@@ -995,7 +995,7 @@ namespace ProtoBuf.Meta
 #if WINRT || PORTABLE || CF || FX11 || COREFX
                     fieldNumber = Convert.ToInt32(((FieldInfo)member).GetValue(null));
 #else
-                    if (member.ReflectedType.Assembly.FullName.Contains("ILRuntime"))
+                    if (member.ReflectedType is ILRuntime.Reflection.ILRuntimeType)
                     {
                         fieldNumber = member.ReflectedType.GetFields().ToList().IndexOf((FieldInfo)member);
                     }

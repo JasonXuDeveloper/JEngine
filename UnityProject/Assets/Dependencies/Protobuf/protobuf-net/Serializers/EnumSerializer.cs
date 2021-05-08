@@ -54,7 +54,7 @@ namespace ProtoBuf.Serializers
         private ProtoTypeCode GetTypeCode() {
             Type type = Helpers.GetUnderlyingType(enumType);
             if(type == null) type = enumType;
-            if (Helpers.IsEnum(type) && type.Assembly.FullName.Contains("ILRuntime"))
+            if (Helpers.IsEnum(type) && type is ILRuntime.Reflection.ILRuntimeType)
             {
                 Type e_type = Enum.GetUnderlyingType (type);
                 if (e_type == typeof(long)
@@ -99,7 +99,7 @@ namespace ProtoBuf.Serializers
         private object WireToEnum(int value)
         {
             //ILRuntime enum就是int
-            if (Helpers.IsEnum(enumType) && enumType.Assembly.FullName.Contains("ILRuntime"))
+            if (Helpers.IsEnum(enumType) && enumType is ILRuntime.Reflection.ILRuntimeType)
             {
                 return value;
             }
