@@ -37,14 +37,26 @@ namespace JEngine.Examples
         /*
          * Fields to serialize
          */
-        [global::ProtoBuf.ProtoMember(1)] public List<HotData> a;
+        [global::ProtoBuf.ProtoMember(1)]
+        public List<HotData> a;
+
+        [global::ProtoBuf.ProtoMember(2)]
+        public Label label;
+
+       [global::ProtoBuf.ProtoContract()]
+        public enum Label
+        {
+            LABEL_OPTIONAL = 1,
+            LABEL_REQUIRED = 2,
+            LABEL_REPEATED = 3,
+        }
     }
 
     public class ProtobufDemo
     {
         public void Awake()
         {
-            Log.Print("JEngine顺便解决了，无法pb序列化List<热更类型>的问题");
+            Log.Print("JEngine顺便解决了，无法pb序列化List<热更类型>和序列化反序列化热更enum的问题");
             var pbtest = new PBTest()
             {
                 a = new List<HotData>()
@@ -59,7 +71,8 @@ namespace JEngine.Examples
                         v=2,
                         k="第二个"
                     },
-                }
+                },
+                label = PBTest.Label.LABEL_OPTIONAL
             };
             Log.Print("需要注意的是，得注册你pb序列化的Type，一次即可，用StringifyHelper.ProtoSerialize会自动注册，但是注册的类型内的List<T>的T需要自己手动注册");
             Log.Print("比如这里，PBTest内有个List<HotData>，就需要注册HotData，用JEngine.Core.ProtoTypeRegister.Register<HotData>();即可");
@@ -70,6 +83,8 @@ namespace JEngine.Examples
             var result = StringifyHelper.ProtoDeSerialize<PBTest>(bytes);
             Log.Print("反序列化成功，现在我们打印一下反序列化后的类型的a字段，也就是List<HotData>字段");
             Log.Print(string.Join(",", result.a));
+            Log.Print("反序列化成功，现在我们打印一下反序列化后的类型的label字段，也就是热更的enum");
+            Log.Print(result.label);
         }
     }
 }
