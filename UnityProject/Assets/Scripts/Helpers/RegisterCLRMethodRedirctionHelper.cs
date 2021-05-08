@@ -359,9 +359,14 @@ namespace JEngine.Helper
             bool needClassBind = false;
 
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            if (res.GetComponent<ClassBind>() != null && res.GetComponent<CrossBindingAdaptorType>() != null)
+            foreach (var t in res.GetComponentsInChildren<Transform>())
             {
-                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
+                var go = t.gameObject;
+                var cb = go.GetComponent<ClassBind>();
+                if (cb != null && go.GetComponent<CrossBindingAdaptorType>() != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(cb); //防止重复的ClassBind
+                }
             }
 
             //如果有适配器的话

@@ -8,10 +8,12 @@ namespace JEngine.Editor
     /// </summary>
     internal static class ChangeScene
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static void DoChange()
         {
-            if (!Setting.JumpStartUp) return;
+            var prefix = $"JEngine.Editor.Setting.{Application.productName}";
+            var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
+            if (!jump) return;
             var scene = SceneManager.GetActiveScene();
             if (scene.path != Setting.StartUpScenePath)
             {
