@@ -12,7 +12,7 @@
 - **Optimize** localization solution
 - **Optimize** hot object inspector **serialization**
 - **Optimize** ILRuntime **Cross domain adapter generator**
-- **Optimize **```GameObject.Instantiate``` CLR Redirection
+- **Optimize** ```GameObject.Instantiate``` CLR Redirection
 - **Upgrade** JEngine**Panel**
 - **Upgrade** JUI's **Bindable Property** feature
 - **Upgrade** ILRuntime to  **v1.6.7**
