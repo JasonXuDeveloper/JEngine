@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,63 +32,85 @@ using libx;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
 {
+	internal enum SettingString
+	{
+		JEngineSetting,
+		DisplayLanguage,
+		StartUpScene,
+		LastDLLCleanTime,
+		DateFormat,
+		JumpToStartUpScene,
+		MissingAssembly,
+		MissingAssemblyBtn,
+		ErrorRescueTools,
+		ErrorRescueToolsInfo,
+		InvalidSceneObject,
+		PanelInfo,
+		ScenesTitle,
+		LoadSceneBtn,
+		LoadSceneAdditiveBtn,
+		UnloadSceneBtn,
+		ClassBindTools,
+		LocalJEngine,
+		HotJEngine,
+		ChooseBtn,
+		UpdateJEngine,
+		UpdateHelpBox,
+		XAssetTitle,
+		XAssetHelpBox,
+		XAssetButton,
+		XAssetAccount,
+		XAssetPassword,
+		Login,
+		SignUp,
+		LogOut,
+		XAssetRemain,
+		Recharge,
+		Charge,
+		XAssetChargeTxt,
+		DLLConvertLog,
+		DLLCleanLog,
+		DLLNewReferenceLog,
+		DeleteErrorLog,
+		ClassBindErrorTitle,
+		ClassBindErrorContent,
+		ClassBindInvalidField,
+		ClassBindGetAllField,
+		ClassBindGetAllType,
+		ClassBindProgress,
+		ClassBindProgressContentForGetField,
+		ClassBindProgressContentForGetType,
+		Success,
+		Fail,
+		ClassBindResultTitle,
+		ClassBindResultContentForGetType,
+		Done,
+		HotSceneList,
+		ClassBindResultContentForSetField,
+		ClassBindUnableSetFieldValue,
+		MemberVariables,
+		ClassBindIgnorePrivate,
+		ClassBindIgnoreHideInInspector,
+	}
+
 	internal class Setting : EditorWindow
 	{
-		private const string prefix = "JEngine.Editor.Setting";
+		private static string _prefix;
 
-		#region 代表了不同字符串的序号的常量
+		private static DirectoryInfo _dataPath;
 
-		public const int JENGINE_SETTING = 0;
-		public const int DISPLAY_LANGUAGE = 1;
-		public const int START_UP_SCENE = 2;
-		public const int LAST_DLL_CLEAN_TIME = 3;
-		public const int DATE_FORMAT = 4;
-		public const int JUMP_TO_START_UP_SCENE = 5;
-		public const int MISSING_ASSEMBLY = 6;
-		public const int MISSING_ASSEMBLY_BTN = 7;
-		public const int ERROR_RESCUE_TOOLS = 8;
-		public const int ERROR_RESCUE_TOOLS_INFO = 9;
-		public const int INVALID_SCENE_OBJECT = 10;
-		public const int PANEL_INFO = 11;
-		public const int SCENES_TITLE = 12;
-		public const int LOAD_SCENE_BTN = 13;
-		public const int LOAD_SCENE_ADDITIVE_BTN = 14;
-		public const int UNLOAD_SCENE_BTN = 15;
-		public const int SCENE_FILTER = 16;
-		public const int CLASSBIND_TOOLS = 17;
-		public const int CLASSBIND_AUTO_GET_FIELS = 18;
-		public const int CLASSBIND_AUTO_SET_TYPES = 19;
-		public const int LOCAL_JENGINE = 20;
-		public const int HOT_JENGINE = 21;
-		public const int CHOOSE_BTN = 22;
-		public const int UPDATE_JENGINE = 23;
-		public const int UPDATE_HELPBOX = 24;
-		public const int XASSET_TITLE = 25;
-		public const int XASSET_HELPBOX = 26;
-		public const int XASSET_BUTTON = 27;
-		public const int XASSET_ACCOUNT = 28;
-		public const int XASSET_PASSWORD = 29;
-		public const int LOGIN = 30;
-		public const int SIGN_UP = 31;
-		public const int LOG_OUT = 32;
-		public const int XASSET_REMAIN = 33;
-		public const int RECHARGE = 34;
-		public const int CHARGE = 35;
-		public const int XASSET_CHARGE_TXT = 36;
-
-		#endregion
-
-		public static Color RED_COLOR = new Color32(190, 61, 75, 255);
-		public static Color CYAN_COLOR = new Color32(75, 226, 235, 255);
-		public static Color GREEN_COLOR = new Color32(73, 225, 146, 255);
-		public static Color PURPLE_COLOR = new Color32(141, 107, 225, 255);
+		private static readonly Color RedColor = new Color32(190, 61, 75, 255);
+		private static readonly Color CyanColor = new Color32(75, 226, 235, 255);
+		private static readonly Color GreenColor = new Color32(73, 225, 146, 255);
+		private static readonly Color PurpleColor = new Color32(141, 107, 225, 255);
 
 
-		private static string[][] Titles =
+		private static readonly string[][] Texts =
 		{
 			new[] {"JEngine设置面板", "JEngine Setting Panel"},
 			new[] {"显示语言", "Display Language"},
@@ -119,10 +142,7 @@ namespace JEngine.Editor
 			new[] {"打开", "Open"},
 			new[] {"加载", "Load"},
 			new[] {"卸载", "Unload"},
-			new[] {"筛选场景", "Scene Filter"},
 			new[] {"ClassBind助手", "ClassBind Tools"},
-			new[] {"自动获取全部field", "Auto get fields for all"},
-			new[] {"自动处理全部fieldType", "Auto get fieldTypes for all"},
 			new[] {"本地工程JEngine框架路径", "Local JEngine Source Code"},
 			new[] {"热更工程JEngine框架路径", "Hot Update JEngine Source Code"},
 			new[] {"选择", "Choose"},
@@ -159,7 +179,7 @@ namespace JEngine.Editor
 				"because XAsset Pro's build rules needs to be customize by you and JEngine can't do it for you this time\n" +
 				"8）Theoretically XAsset Pro supports hot upgrade the init scene, so it is recommended to redesign your init scene\n" +
 				"9）In Unity, ProjectSetting, Player, add `XASSET_PRO` into Scripting Define Symbols\n\n" +
-				"Please get to read the documentation for XAsset Pro before you start updgrade\n"
+				"Please get to read the documentation for XAsset Pro before you start upgrade\n"
 			},
 			new[] {"下载XAsset Pro", "Download XAsset Pro"},
 			new[] {"XAsset账号", "XAsset Account"},
@@ -171,15 +191,48 @@ namespace JEngine.Editor
 			new[] {"续费", "Recharge"},
 			new[] {"购买", "Buy"},
 			new[] {"当前还没购买XAsset Pro", "Hasn't bought XAsset Pro yet"},
+			new[] {"转换热更DLL耗时{0}ms", "Convert DLL in: {0} ms"},
+			new[] {"清理热更工程编译的{0}个文件耗时{1}ms", "Cleaned: {0} files in: {1} ms"},
+			new[]
+			{
+				"发现新的引用DLL`{0}`，请注意，游戏可能需要重新打包，否则热更代码将有可能无法运行",
+				"Find new referenced dll `{0}`, note that your hot update code may not be able " +
+				"to run without rebuild application"
+			},
+			new[] {"无法删除{0}，请手动删除", "Unable to delete {0}, please delete it manually"},
+			new[] {"ClassBind错误", "ClassBind Error"},
+			new[]
+			{
+				"'{0}'类在热更工程中不存在", "Class {0} does not exist " +
+				                   "in hot update scripts solution!"
+			},
+			new[] {"{0}不存在{1}，已跳过", "{0} does not contain field: {1}, skipped assigning this field"},
+			new[] {"自动匹配全部fields", "Get all fields for ClassBind"},
+			new[] {"自动矫正field的type", "Get all types for ClassBind"},
+			new[] {"ClassBind转换进度", "ClassBind convert progress"},
+			new[] {"正在获取{0}的字段：{1}/{2}", "Getting Field for {0} {1}/{2}"},
+			new[] {"正在获取{0}的字段类型：{1}/{2}", "Getting Field Type for {0} {1}/{2}"},
+			new[] {"成功", "Succeeded"},
+			new[] {"失败", "Failed"},
+			new[] {"ClassBind结果", "ClassBind Result"},
+			new[] {"<{1}>:ClassBind中{0}个fields已自动设置FieldType", "Set {0} fieldTypes into ClassBind: {1}"},
+			new[] {"完成", "Done"},
+			new[] {"热更场景列表", "Hot Update Scene List"},
+			new[] {"<{1}>:ClassBind新增了{0}个fields", "Add {0} fields into ClassBind: {1}"},
+			new[] {"无法对<{0}>ClassBind上{2}({1})进行自动赋值构造值", "Unable to set value for field {1}:{2} on ClassBind:<{0}>"},
+			new[] {"{0}的成员变量", "{0} variables"},
+			new[] {"不匹配Private成员变量", "Banned getting private fields"},
+			new[] {"不匹配带有标签\n[HideInInspector]的变量", "Banned getting fields with\n attribute [HideInInspector]"},
+
 		};
 
 		/// <summary>
 		/// 语言
 		/// </summary>
-		public static JEngineLanguage Language
+		private static JEngineLanguage Language
 		{
-			get => (JEngineLanguage) (int.Parse(PlayerPrefs.GetString($"{prefix}.PanelLanguage", "0")));
-			set => PlayerPrefs.SetString($"{prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
+			get => (JEngineLanguage) (int.Parse(PlayerPrefs.GetString($"{_prefix}.PanelLanguage", "0")));
+			set => PlayerPrefs.SetString($"{_prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
 		}
 
 		/// <summary>
@@ -187,8 +240,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string StartUpScenePath
 		{
-			get => PlayerPrefs.GetString($"{prefix}.StartUpScenePath", "Assets/Init.unity");
-			set => PlayerPrefs.SetString($"{prefix}.StartUpScenePath", value);
+			get => PlayerPrefs.GetString($"{_prefix}.StartUpScenePath", "Assets/Init.unity");
+			private set => PlayerPrefs.SetString($"{_prefix}.StartUpScenePath", value);
 		}
 
 		/// <summary>
@@ -196,8 +249,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static bool JumpStartUp
 		{
-			get => PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
-			set => PlayerPrefs.SetString($"{prefix}.JumpStartUpScene", value ? "1" : "0");
+			get => PlayerPrefs.GetString($"{_prefix}.JumpStartUpScene", "1") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.JumpStartUpScene", value ? "1" : "0");
 		}
 
 		/// <summary>
@@ -205,8 +258,8 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string LastDLLCleanUpTime
 		{
-			get => PlayerPrefs.GetString($"{prefix}.LastDLLCleanUpTime");
-			set => PlayerPrefs.SetString($"{prefix}.LastDLLCleanUpTime", value);
+			get => PlayerPrefs.GetString($"{_prefix}.LastDLLCleanUpTime");
+			set => PlayerPrefs.SetString($"{_prefix}.LastDLLCleanUpTime", value);
 		}
 
 		/// <summary>
@@ -214,9 +267,9 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string LocalPath
 		{
-			get => PlayerPrefs.GetString($"{prefix}.LocalPath",
-				new DirectoryInfo(Application.dataPath).FullName + "/Dependencies/JEngine");
-			set => PlayerPrefs.SetString($"{prefix}.LocalPath", value);
+			get => PlayerPrefs.GetString($"{_prefix}.LocalPath",
+				_dataPath.FullName + "/Dependencies/JEngine");
+			private set => PlayerPrefs.SetString($"{_prefix}.LocalPath", value);
 		}
 
 		/// <summary>
@@ -224,9 +277,9 @@ namespace JEngine.Editor
 		/// </summary>
 		public static string HotPath
 		{
-			get => PlayerPrefs.GetString($"{prefix}.HotPath",
-				new DirectoryInfo(Application.dataPath).Parent.FullName + "/HotUpdateScripts/JEngine");
-			set => PlayerPrefs.SetString($"{prefix}.HotPath", value);
+			get => PlayerPrefs.GetString($"{_prefix}.HotPath",
+				_dataPath.Parent?.FullName + "/HotUpdateScripts/JEngine");
+			private set => PlayerPrefs.SetString($"{_prefix}.HotPath", value);
 		}
 
 		/// <summary>
@@ -234,131 +287,151 @@ namespace JEngine.Editor
 		/// </summary>
 		public static bool XAssetLoggedIn
 		{
-			get => PlayerPrefs.GetString($"{prefix}.XAssetLoggedIn", "0") == "1";
-			set => PlayerPrefs.SetString($"{prefix}.XAssetLoggedIn", value ? "1" : "0");
+			get => PlayerPrefs.GetString($"{_prefix}.XAssetLoggedIn", "0") == "1";
+			set => PlayerPrefs.SetString($"{_prefix}.XAssetLoggedIn", value ? "1" : "0");
 		}
-		
+
 		/// <summary>
 		/// XAsset账号
 		/// </summary>
 		public static string XAssetAccount
 		{
-			get => PlayerPrefs.GetString($"{prefix}.XAssetAccount","");
-			set => PlayerPrefs.SetString($"{prefix}.XAssetAccount", value);
+			get => PlayerPrefs.GetString($"{_prefix}.XAssetAccount", "");
+			private set => PlayerPrefs.SetString($"{_prefix}.XAssetAccount", value);
 		}
 
-		
+
 		/// <summary>
 		/// XAsset密码
 		/// </summary>
 		public static string XAssetPassword
 		{
-			get => PlayerPrefs.GetString($"{prefix}.XAssetPassword","");
-			set => PlayerPrefs.SetString($"{prefix}.XAssetPassword", value);
+			get => PlayerPrefs.GetString($"{_prefix}.XAssetPassword", "");
+			private set => PlayerPrefs.SetString($"{_prefix}.XAssetPassword", value);
 		}
-		
+
 		/// <summary>
 		/// XAsset剩余时间
 		/// </summary>
-		public static int XAssetRemain
+		public static int XAssetRemainTime
 		{
-			get => PlayerPrefs.GetInt($"{prefix}.XAssetRemain",0);
-			set => PlayerPrefs.SetInt($"{prefix}.XAssetRemain", value);
+			get => PlayerPrefs.GetInt($"{_prefix}.XAssetRemain", 0);
+			set => PlayerPrefs.SetInt($"{_prefix}.XAssetRemain", value);
+		}
+		
+		/// <summary>
+		/// ClassBind不获取private
+		/// </summary>
+		public static bool ClassBindIgnorePrivate
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnorePrivate", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnorePrivate", value ? "1" : "0");
+		}
+		
+		/// <summary>
+		/// ClassBind不获取HideInInspector
+		/// </summary>
+		public static bool ClassBindIgnoreHideInInspector
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnoreHideInInspector", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnoreHideInInspector", value ? "1" : "0");
 		}
 
 
 		/// <summary>
 		/// 是否展示热更场景
 		/// </summary>
-		private bool ShowScenes = true;
+		private bool _showScenes = true;
 
-		/// <summary>
-		/// 筛选场景搜索框
-		/// </summary>
-		[SerializeField] private AutocompleteSearchField sceneSearchField;
+		private Vector2 _scrollPos;
 
-		/// <summary>
-		/// 筛选场景字符串
-		/// </summary>
-		private string sceneSearchPattern = "";
-
-		private Vector2 scrollPos;
-
-		public static Setting Instance;
+		private static Setting _instance;
 
 		[MenuItem("JEngine/Setting #&J", priority = 1998)]
 		private static void ShowWindow()
 		{
-			var window = GetWindow<Setting>(GetString(JENGINE_SETTING));
+			var window = GetWindow<Setting>(GetString(SettingString.JEngineSetting));
 			window.minSize = new Vector2(300, 500);
 			window.Show();
-			Instance = window;
+			_instance = window;
 		}
 
 		public static void Refresh()
 		{
-			if (Instance != null)
+			if (_instance != null)
 			{
-				Instance.Repaint();
+				_instance.Repaint();
 			}
 		}
-		
+
 		private void OnEnable()
 		{
-			if (sceneSearchField == null) sceneSearchField = new AutocompleteSearchField();
-			sceneSearchField.onInputChanged = (s) => { sceneSearchPattern = s; };
-			sceneSearchField.onConfirm = (s) => { sceneSearchPattern = s; };
-			scrollPos = new Vector2(position.width, position.height);
+			_dataPath = new DirectoryInfo(Application.dataPath);
+			_scrollPos = new Vector2(position.width, position.height);
 		}
 
 		private int GetSpace(float percentage)
 		{
-			int result = (int) (this.position.width * percentage);
+			int result = (int) (position.width * percentage);
 			return result;
+		}
+
+		public static void SetPrefix()
+		{
+			if (string.IsNullOrEmpty(_prefix))
+			{
+				_prefix = $"JEngine.Editor.Setting.{Application.productName}";
+			}
 		}
 
 		private void OnGUI()
 		{
-			if (Instance == null)
-			{
-				Instance = this;
-			}
+			SetPrefix();
 			
+			if (_instance == null)
+			{
+				_instance = this;
+			}
+
 			//只滚动y轴
-			var _scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-			scrollPos = new Vector2(scrollPos.x, _scrollPos.y);
+			var scrollPos = EditorGUILayout.BeginScrollView(this._scrollPos);
+			_scrollPos = new Vector2(this._scrollPos.x, scrollPos.y);
 
 			#region 顶部JEngin相关
 
 			//绘制标题
 			GUILayout.Space(10);
-			GUIStyle textStyle = new GUIStyle();
-			textStyle.normal.textColor = GUI.skin.label.normal.textColor;
-			textStyle.fontSize = 24;
-			textStyle.alignment = TextAnchor.MiddleCenter;
-			GUILayout.Label(GetString(JENGINE_SETTING), textStyle);
+			GUIStyle textStyle = new GUIStyle
+			{
+				normal = {textColor = GUI.skin.label.normal.textColor},
+				fontSize = 24,
+				alignment = TextAnchor.MiddleCenter
+			};
+			GUILayout.Label(GetString(SettingString.JEngineSetting), textStyle);
 			GUILayout.Space(10);
 
-			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.HelpBox(GetString(PANEL_INFO), MessageType.Info); });
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.PanelInfo), MessageType.Info); });
 
 			GUILayout.Space(10);
 
 			//选择语言
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				Language = (JEngineLanguage) EditorGUILayout.EnumPopup(GetString(DISPLAY_LANGUAGE), Language);
-				this.titleContent.text = GetString(JENGINE_SETTING);
+				Language = (JEngineLanguage) EditorGUILayout.EnumPopup(GetString(SettingString.DisplayLanguage),
+					Language);
+				titleContent.text = GetString(SettingString.JEngineSetting);
 			});
 
 			//选择场景
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				var sceneObj = EditorGUILayout.ObjectField(GetString(START_UP_SCENE),
+				var sceneObj = EditorGUILayout.ObjectField(GetString(SettingString.StartUpScene),
 					AssetDatabase.LoadAssetAtPath<Object>(StartUpScenePath),
 					typeof(Object), false);
 				if (sceneObj == null || !AssetDatabase.GetAssetPath(sceneObj).EndsWith(".unity"))
 				{
-					ShowNotification(new GUIContent(GetString(INVALID_SCENE_OBJECT)), 3);
+					ShowNotification(new GUIContent(GetString(SettingString.InvalidSceneObject)), 3);
 				}
 				else
 				{
@@ -368,15 +441,18 @@ namespace JEngine.Editor
 
 			//是否跳转
 			MakeHorizontal(GetSpace(0.1f),
-				() => { JumpStartUp = EditorGUILayout.Toggle(GetString(JUMP_TO_START_UP_SCENE), JumpStartUp); });
+				() =>
+				{
+					JumpStartUp = EditorGUILayout.Toggle(GetString(SettingString.JumpToStartUpScene), JumpStartUp);
+				});
 
 			//上次处理热更DLL时间
-			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(LAST_DLL_CLEAN_TIME)); });
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.LastDLLCleanTime)); });
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
 				GUI.enabled = false;
-				textStyle = new GUIStyle(EditorStyles.textField.name);
-				textStyle.alignment = TextAnchor.MiddleCenter;
+				textStyle = new GUIStyle(EditorStyles.textField.name) {alignment = TextAnchor.MiddleCenter};
 				EditorGUILayout.TextField(LastDLLCleanUpTime, textStyle);
 				GUI.enabled = true;
 			});
@@ -384,37 +460,42 @@ namespace JEngine.Editor
 			GUILayout.Space(10);
 
 			//本地路径
-			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(LOCAL_JENGINE)); });
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.LocalJEngine)); });
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
 				GUI.enabled = false;
 				LocalPath = EditorGUILayout.TextField(LocalPath);
 				GUI.enabled = true;
-				if (GUILayout.Button(GetString(CHOOSE_BTN), GUILayout.Width(70)))
+				if (GUILayout.Button(GetString(SettingString.ChooseBtn), GUILayout.Width(70)))
 				{
-					var path = EditorUtility.OpenFolderPanel(GetString(LOCAL_JENGINE), LocalPath,
-						GetString(LOCAL_JENGINE));
+					var path = EditorUtility.OpenFolderPanel(GetString(SettingString.LocalJEngine), LocalPath,
+						GetString(SettingString.LocalJEngine));
 					if (!string.IsNullOrEmpty(path))
 					{
 						LocalPath = path;
 					}
+
+					GUIUtility.ExitGUI();
 				}
 			});
 			//热更路径
-			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(HOT_JENGINE)); });
+			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(SettingString.HotJEngine)); });
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
 				GUI.enabled = false;
 				HotPath = EditorGUILayout.TextField(HotPath);
 				GUI.enabled = true;
-				if (GUILayout.Button(GetString(CHOOSE_BTN), GUILayout.Width(70)))
+				if (GUILayout.Button(GetString(SettingString.ChooseBtn), GUILayout.Width(70)))
 				{
-					var path = EditorUtility.OpenFolderPanel(GetString(HOT_JENGINE), HotPath,
-						GetString(HOT_JENGINE));
+					var path = EditorUtility.OpenFolderPanel(GetString(SettingString.HotJEngine), HotPath,
+						GetString(SettingString.HotJEngine));
 					if (!string.IsNullOrEmpty(path))
 					{
 						HotPath = path;
 					}
+
+					GUIUtility.ExitGUI();
 				}
 			});
 
@@ -422,16 +503,17 @@ namespace JEngine.Editor
 
 			//提示框
 			MakeHorizontal(GetSpace(0.1f),
-				() => { EditorGUILayout.HelpBox(GetString(UPDATE_HELPBOX), MessageType.Error); });
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.UpdateHelpBox), MessageType.Error); });
 
 			//更新按钮
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				GUI.enabled = !Helpers.installing;
-				
-				if (GUILayout.Button(GetString(UPDATE_JENGINE), GUILayout.Height(30)))
+				GUI.enabled = !XAssetHelper.installing;
+
+				if (GUILayout.Button(GetString(SettingString.UpdateJEngine), GUILayout.Height(30)))
 				{
-					Helpers.Update();
+					XAssetHelper.Update();
+					GUIUtility.ExitGUI();
 				}
 
 				GUI.enabled = true;
@@ -445,53 +527,47 @@ namespace JEngine.Editor
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				textStyle = new GUIStyle();
-				textStyle.fontSize = 16;
-				textStyle.normal.textColor = PURPLE_COLOR;
-				textStyle.alignment = TextAnchor.MiddleCenter;
-				GUILayout.Label(GetString(XASSET_TITLE), textStyle);
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = {textColor = PurpleColor}, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.XAssetTitle), textStyle);
 			});
 			GUILayout.Space(10);
 
 			//提示框
 			MakeHorizontal(GetSpace(0.1f),
-				() => { EditorGUILayout.HelpBox(GetString(XASSET_HELPBOX), MessageType.Warning); });
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.XAssetHelpBox), MessageType.Warning); });
 
 			//先登入，再出现按钮
 			if (!XAssetLoggedIn)
 			{
-				MakeHorizontal(GetSpace(0.2f), () =>
-				{
-					EditorGUILayout.LabelField(GetString(XASSET_ACCOUNT));
-				});
-				MakeHorizontal(GetSpace(0.2f), () =>
-				{
-					XAssetAccount = EditorGUILayout.TextField(XAssetAccount);
-				});
-				MakeHorizontal(GetSpace(0.2f), () =>
-				{
-					EditorGUILayout.LabelField(GetString(XASSET_PASSWORD));
-				});
-				MakeHorizontal(GetSpace(0.2f), () =>
-				{
-					XAssetPassword = EditorGUILayout.PasswordField(XAssetPassword);
-				});
-				
+				MakeHorizontal(GetSpace(0.2f),
+					() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetAccount)); });
+				MakeHorizontal(GetSpace(0.2f), () => { XAssetAccount = EditorGUILayout.TextField(XAssetAccount); });
+				MakeHorizontal(GetSpace(0.2f),
+					() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetPassword)); });
+				MakeHorizontal(GetSpace(0.2f),
+					() => { XAssetPassword = EditorGUILayout.PasswordField(XAssetPassword); });
+
 				GUILayout.Space(10);
-				
+
 				MakeHorizontal(GetSpace(0.2f), () =>
 				{
-					if (GUILayout.Button(GetString(SIGN_UP), GUILayout.Height(30)))
+					if (GUILayout.Button(GetString(SettingString.SignUp), GUILayout.Height(30)))
 					{
-						Helpers.SignUpXAsset();
+						XAssetHelper.SignUpXAsset();
+						GUIUtility.ExitGUI();
 					}
+
 					GUILayout.Space(50);
-					
-					GUI.enabled = !Helpers.loggingXAsset;
-					
-					if (GUILayout.Button(GetString(LOGIN), GUILayout.Height(30)))
+
+					GUI.enabled = !XAssetHelper.loggingXAsset;
+
+					if (GUILayout.Button(GetString(SettingString.Login), GUILayout.Height(30)))
 					{
-						_ = Helpers.LoginXAsset(true);
+						_ = XAssetHelper.LoginXAsset(true);
+						GUIUtility.ExitGUI();
 					}
 
 					GUI.enabled = true;
@@ -499,31 +575,34 @@ namespace JEngine.Editor
 			}
 			else
 			{
-				bool activated = XAssetRemain > 0;
-				
+				bool activated = XAssetRemainTime > 0;
+
 				GUILayout.Space(10);
-				
+
 				//续费
 				MakeHorizontal(GetSpace(0.1f), () =>
 				{
-					var style = new GUIStyle();
-					style.fontSize = GUI.skin.textField.fontSize;
-					style.normal.textColor = RED_COLOR;
-					style.alignment = TextAnchor.MiddleCenter;
-					style.fontStyle = FontStyle.Bold;
+					var style = new GUIStyle
+					{
+						fontSize = GUI.skin.textField.fontSize,
+						normal = {textColor = RedColor},
+						alignment = TextAnchor.MiddleCenter,
+						fontStyle = FontStyle.Bold
+					};
 					EditorGUILayout.LabelField(
 						activated
-							? string.Format(GetString(XASSET_REMAIN), XAssetRemain)
-							: GetString(XASSET_CHARGE_TXT), style);
+							? string.Format(GetString(SettingString.XAssetRemain), XAssetRemainTime)
+							: GetString(SettingString.XAssetChargeTxt), style);
 
 					GUILayout.Space(10);
 
-					if (GUILayout.Button(GetString(activated ? RECHARGE : CHARGE), GUILayout.Height(20)))
+					if (GUILayout.Button(GetString(activated ? SettingString.Recharge : SettingString.Charge),
+						GUILayout.Height(20)))
 					{
-						Helpers.RechargeXAsset();
+						XAssetHelper.RechargeXAsset();
 					}
 				});
-				
+
 				GUILayout.Space(10);
 
 				if (activated)
@@ -531,23 +610,25 @@ namespace JEngine.Editor
 					//更新按钮
 					MakeHorizontal(GetSpace(0.1f), () =>
 					{
-						GUI.enabled = !Helpers.installing;
-					
-						if (GUILayout.Button(GetString(XASSET_BUTTON), GUILayout.Height(30)))
+						GUI.enabled = !XAssetHelper.installing;
+
+						if (GUILayout.Button(GetString(SettingString.XAssetButton), GUILayout.Height(30)))
 						{
-							Helpers.GetXAssetPro();
+							XAssetHelper.GetXAssetPro();
+							GUIUtility.ExitGUI();
 						}
-					
+
 						GUI.enabled = true;
 					});
 				}
-				
+
 				//退出登入
 				MakeHorizontal(GetSpace(0.1f), () =>
 				{
-					if (GUILayout.Button(GetString(LOG_OUT), GUILayout.Height(30)))
+					if (GUILayout.Button(GetString(SettingString.LogOut), GUILayout.Height(30)))
 					{
-						Helpers.LogOutXAsset();
+						XAssetHelper.LogOutXAsset();
+						GUIUtility.ExitGUI();
 					}
 				});
 			}
@@ -555,25 +636,24 @@ namespace JEngine.Editor
 			#endregion
 
 			#region 热更场景相关
+
 #if !XASSET_PRO
 			//直接进热更场景
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				textStyle = new GUIStyle();
-				textStyle.fontSize = 16;
-				textStyle.normal.textColor = CYAN_COLOR;
-				textStyle.alignment = TextAnchor.MiddleCenter;
-				GUILayout.Label(GetString(SCENES_TITLE), textStyle);
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = {textColor = CyanColor}, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ScenesTitle), textStyle);
 			});
 			GUILayout.Space(10);
-			MakeHorizontal(GetSpace(0.1f), () => { MakeFoldOut(ref ShowScenes, "热更场景列表", () => { }); });
+			MakeHorizontal(GetSpace(0.1f),
+				() => { MakeFoldOut(ref _showScenes, GetString(SettingString.HotSceneList), () => { }); });
 			//如果场景
-			if (ShowScenes)
+			if (_showScenes)
 			{
-				//筛选框
-				sceneSearchField.OnGUI(GetSpace(0.1f));
-
 				//获取热更场景
 				Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
 				Assets.loadDelegate = AssetDatabase.LoadAssetAtPath;
@@ -606,75 +686,93 @@ namespace JEngine.Editor
 						GUI.enabled = false;
 						Object sceneObj = AssetDatabase.LoadAssetAtPath<Object>(asset);
 
-						//筛选
-						if (!sceneObj.name.StartsWith(sceneSearchPattern))
-						{
-							GUI.enabled = true;
-							return;
-						}
-
 						EditorGUILayout.ObjectField(sceneObj,
 							typeof(Object), false);
 						GUI.enabled = true;
 
 						GUILayout.Space(15);
 
-						if (GUILayout.Button(GetString(LOAD_SCENE_BTN)))
+						if (GUILayout.Button(GetString(SettingString.LoadSceneBtn)))
 						{
 							EditorSceneManager.OpenScene(asset);
+							GUIUtility.ExitGUI();
 						}
 
 						GUILayout.Space(5);
 
-						if (GUILayout.Button(GetString(LOAD_SCENE_ADDITIVE_BTN)))
+						if (GUILayout.Button(GetString(SettingString.LoadSceneAdditiveBtn)))
 						{
 							EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
+							GUIUtility.ExitGUI();
 						}
 
 						GUILayout.Space(5);
 
-						if (GUILayout.Button(GetString(UNLOAD_SCENE_BTN)))
+						if (GUILayout.Button(GetString(SettingString.UnloadSceneBtn)))
 						{
-							EditorSceneManager.CloseScene(EditorSceneManager.GetSceneByPath(asset), true);
+							EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
+							GUIUtility.ExitGUI();
 						}
 					});
 				}
 			}
 #endif
+
 			#endregion
 
 			#region ClassBind相关
 
-			//Classbind工具
+			//ClassBind工具
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				textStyle = new GUIStyle();
-				textStyle.fontSize = 16;
-				textStyle.normal.textColor = GREEN_COLOR;
-				textStyle.alignment = TextAnchor.MiddleCenter;
-				GUILayout.Label(GetString(CLASSBIND_TOOLS), textStyle);
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = {textColor = GreenColor}, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ClassBindTools), textStyle);
 			});
+			GUILayout.Space(10);
+			//是否跳过private
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnorePrivate), GUILayout.MinHeight(20));
+					ClassBindIgnorePrivate = EditorGUILayout.Toggle(ClassBindIgnorePrivate,GUILayout.MinHeight(20));
+				});
+			//是否跳过标签
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnoreHideInInspector),
+						GUILayout.MinHeight(30));
+					ClassBindIgnoreHideInInspector =
+						EditorGUILayout.Toggle(ClassBindIgnoreHideInInspector, GUILayout.MinHeight(30));
+				});
 			GUILayout.Space(10);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(CLASSBIND_AUTO_GET_FIELS)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllField),GUILayout.Height(30)))
 				{
-					foreach (var cb in FindObjectsOfType<ClassBind>())
+					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
-						ClassBindEditor.DoConvert(cb);
+						ClassBindEditor.DoConvert(cb, false);
 					}
+
+					GUIUtility.ExitGUI();
 				}
 			});
 
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(CLASSBIND_AUTO_SET_TYPES)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllType),GUILayout.Height(30)))
 				{
-					foreach (var cb in FindObjectsOfType<ClassBind>())
+					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
-						ClassBindEditor.DoFieldType(cb);
+						ClassBindEditor.DoFieldType(cb, false);
 					}
+
+					GUIUtility.ExitGUI();
 				}
 			});
 
@@ -686,35 +784,34 @@ namespace JEngine.Editor
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				textStyle = new GUIStyle();
-				textStyle.fontSize = 16;
-				textStyle.normal.textColor = RED_COLOR;
-				textStyle.alignment = TextAnchor.MiddleCenter;
-				GUILayout.Label(GetString(ERROR_RESCUE_TOOLS), textStyle);
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = {textColor = RedColor}, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ErrorRescueTools), textStyle);
 			});
 			GUILayout.Space(10);
 			MakeHorizontal(GetSpace(0.1f),
-				() => { EditorGUILayout.HelpBox(GetString(ERROR_RESCUE_TOOLS_INFO), MessageType.Warning); });
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.ErrorRescueToolsInfo), MessageType.Warning); });
 
 			//修复Missing Type
 			GUILayout.Space(10);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				EditorGUILayout.LabelField(GetString(MISSING_ASSEMBLY), GUILayout.MinHeight(50));
-				if (GUILayout.Button(GetString(MISSING_ASSEMBLY_BTN), GUILayout.MinHeight(50)))
+				EditorGUILayout.LabelField(GetString(SettingString.MissingAssembly), GUILayout.MinHeight(50));
+				if (GUILayout.Button(GetString(SettingString.MissingAssemblyBtn), GUILayout.MinHeight(50)))
 				{
 					PlayerSettings.allowUnsafeCode = false;
-					PlayerSettings.allowUnsafeCode = true;
 				}
 			});
-
+			GUILayout.Space(10);
 			#endregion
 
 			try
 			{
 				EditorGUILayout.EndScrollView();
 			}
-			catch (Exception e)
+			catch
 			{
 				// ignored
 			}
@@ -739,9 +836,9 @@ namespace JEngine.Editor
 			GUILayout.EndHorizontal();
 		}
 
-		public static string GetString(int index)
+		public static string GetString(SettingString index)
 		{
-			return Titles[index][(int) Language];
+			return Texts[(int) index][(int) Language];
 		}
 	}
 

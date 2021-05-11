@@ -273,6 +273,50 @@ namespace ILRuntime.Runtime.Intepreter
             }
         }
 
+        public unsafe void AssignFieldNoClone(int index, object value)
+        {
+            if (index < fields.Length && index >= 0)
+            {
+                fixed (StackObject* ptr = fields)
+                {
+                    StackObject* esp = &ptr[index];
+                    if (value != null)
+                    {
+                        var vt = value.GetType();
+                        if (vt.IsPrimitive)
+                        {
+                            ILIntepreter.UnboxObject(esp, value, managedObjs, type.AppDomain);
+                        }
+                        else if (vt.IsEnum)
+                        {
+                            esp->ObjectType = ObjectTypes.Integer;
+                            esp->Value = value.ToInt32();
+                            esp->ValueLow = 0;
+                        }
+                        else
+                        {
+
+                            esp->ObjectType = ObjectTypes.Object;
+                            esp->Value = index;
+                            managedObjs[index] = value;
+                        }
+                    }
+                    else
+                        *esp = StackObject.Null;
+                }
+            }
+            else
+            {
+                if (Type.FirstCLRBaseType != null && Type.FirstCLRBaseType is Enviorment.CrossBindingAdaptor)
+                {
+                    CLRType clrType = type.AppDomain.GetType(((Enviorment.CrossBindingAdaptor)Type.FirstCLRBaseType).BaseCLRType) as CLRType;
+                    clrType.SetFieldValue(index, ref clrInstance, value);
+                }
+                else
+                    throw new TypeLoadException();
+            }
+        }
+
         const int SizeOfILTypeInstance = 21;
         public unsafe int GetSizeInMemory(HashSet<object> traversedObj)
         {
@@ -386,8 +430,11 @@ namespace ILRuntime.Runtime.Intepreter
                 if (Type.FirstCLRBaseType != null && Type.FirstCLRBaseType is Enviorment.CrossBindingAdaptor)
                 {
                     CLRType clrType = intp.AppDomain.GetType(((Enviorment.CrossBindingAdaptor)Type.FirstCLRBaseType).BaseCLRType) as CLRType;
+                    var obj = clrType.GetFieldValue(fieldIdx, clrInstance);
+                    if (obj is CrossBindingAdaptorType)
+                        obj = ((CrossBindingAdaptorType)obj).ILInstance;
                     //if(!clrType.CopyFieldToStack(fieldIdx, clrInstance,))
-                    ILIntepreter.PushObject(esp, managedStack, clrType.GetFieldValue(fieldIdx, clrInstance));
+                    ILIntepreter.PushObject(esp, managedStack, obj);
                 }
                 else
                     throw new TypeLoadException();
@@ -638,7 +685,7 @@ namespace ILRuntime.Runtime.Intepreter
                 return base.GetHashCode();
         }
 
-        public bool CanAssignTo(IType type)
+        public virtual bool CanAssignTo(IType type)
         {
             return this.type.CanAssignTo(type);
         }

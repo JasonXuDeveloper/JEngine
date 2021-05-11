@@ -35,12 +35,12 @@ namespace JEngine.Net
 		public int packetId;
 		public DateTime time;
 
-		private System.Action<JSONObject> action;
+		private Action<JSONObject> action;
 
-		public Ack(int packetId, System.Action<JSONObject> action)
+		public Ack(int packetId, Action<JSONObject> action)
 		{
 			this.packetId = packetId;
-			this.time = DateTime.Now;
+			time = DateTime.Now;
 			this.action = action;
 		}
 

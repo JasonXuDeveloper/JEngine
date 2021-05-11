@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03142c330ced64e0ab46cddcd0484ab7, type: 3}
   m_Name: Rules
   m_EditorClassIdentifier: 
-  version: 7
+  version: 1
   scenesInBuild: []
   rules:
   - searchPath: Assets/HotUpdateResources/Controller

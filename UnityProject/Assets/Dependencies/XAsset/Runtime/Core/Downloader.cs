@@ -200,28 +200,39 @@ namespace libx
         private void Update()
         {
             if (!_started)
-                return; 
-            
+                return;
+
             if (_tostart.Count > 0)
             {
-                for (var i = 0; i < Math.Min(maxDownloads, _tostart.Count); i++)
+                for (var i = 0; i < Math.Min(maxDownloads, _tostart.Count); ++i)
                 {
                     var item = _tostart[i];
                     item.Start();
+                    Debug.Log("Start Download:" + item.url);
                     _tostart.RemoveAt(i);
                     _progressing.Add(item);
-                    i--;
+                    --i;
                 }
             }
-
-            for (var index = 0; index < _progressing.Count; index++)
+            
+            for (var index = 0; index < _progressing.Count; ++index)
             {
                 var download = _progressing[index];
                 download.Update();
                 if (!download.finished)
                     continue;
-                _progressing.RemoveAt(index);
-                index--;
+                if (!string.IsNullOrEmpty(download.error))
+                {
+                    Debug.LogError(string.Format("Download Error:{0}, {1}", download.url, download.error));
+                    download.Retry();
+                    Debug.Log("Retry Download：" + download.url);   
+                }
+                else
+                {
+                    _progressing.RemoveAt(index);
+                    --index;
+                    Debug.Log("Finish Download：" + download.url); 
+                }
             }
 
             position = GetDownloadSize(); 

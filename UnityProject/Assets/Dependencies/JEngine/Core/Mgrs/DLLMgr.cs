@@ -24,9 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Diagnostics;
 using System.IO;
-using UnityEditor;
 
 namespace JEngine.Core
 {
@@ -36,13 +34,9 @@ namespace JEngine.Core
         
         public static void MakeBytes()
         {
-            var watch = new Stopwatch();
-            watch.Start();
             var bytes = FileToByte(DllPath);
             var result = ByteToFile(CryptoHelper.AesEncrypt(bytes, "DevelopmentMode."),
                 "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-            watch.Stop();
-            Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
             if (!result)
             {
                 Log.PrintError("DLL转Byte[]出错！");
@@ -100,7 +94,7 @@ namespace JEngine.Core
             bool result = false;
             try
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(byteArray, 0, byteArray.Length);
                     result = true;

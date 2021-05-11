@@ -30,7 +30,7 @@ namespace JEngine.Core
             } 
             if (!flag && !converter.CanConvertTo(destinationType)) 
             { 
-                Log.PrintError("无法转换成类型：'" + value.ToString() + "' ==> " + destinationType); 
+                Log.PrintError("无法转换成类型：'" + value + "' ==> " + destinationType); 
             } 
             try 
             { 
@@ -38,7 +38,7 @@ namespace JEngine.Core
             } 
             catch (Exception e)
             {
-                Log.PrintError("类型转换出错：'" + value.ToString() + "' ==> " + destinationType + "\n" + e.Message);
+                Log.PrintError("类型转换出错：'" + value + "' ==> " + destinationType + "\n" + e.Message);
                 returnValue = destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
             } 
             return returnValue; 
@@ -55,7 +55,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.FullName == typeName)
                 .Select(a => a.ILInstance).ToArray();
         }
         
@@ -63,7 +63,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance.Type.ReflectionType.FullName == typeName)
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.FullName == typeName)
                 .Select(a => a.ILInstance).ToArray();
         }
     }

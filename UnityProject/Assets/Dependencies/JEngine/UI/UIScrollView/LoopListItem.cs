@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace JEngine.UI
 {
@@ -9,20 +7,20 @@ namespace JEngine.UI
     public int Index { get; set; }
     int mItemIndex = -1;
     int mItemId = -1;
-    LoopListView mParentListView = null;
-    bool mIsInitHandlerCalled = false;
+    LoopListView mParentListView;
+    bool mIsInitHandlerCalled;
     string mItemPrefabName;
     RectTransform mCachedRectTransform;
     float mPadding;
-    float mDistanceWithViewPortSnapCenter = 0;
-    int mItemCreatedCheckFrameCount = 0;
-    float mStartPosOffset = 0;
+    float mDistanceWithViewPortSnapCenter;
+    int mItemCreatedCheckFrameCount;
+    float mStartPosOffset;
 
-    object mUserObjectData = null;
-    int mUserIntData1 = 0;
-    int mUserIntData2 = 0;
-    string mUserStringData1 = null;
-    string mUserStringData2 = null;
+    object mUserObjectData;
+    int mUserIntData1;
+    int mUserIntData2;
+    string mUserStringData1;
+    string mUserStringData2;
 
     public object UserObjectData
     {
@@ -155,7 +153,8 @@ namespace JEngine.UI
             {
                 return CachedRectTransform.localPosition.y;
             }
-            else if (arrageType == ListItemArrangeType.BottomToTop)
+
+            if (arrageType == ListItemArrangeType.BottomToTop)
             {
                 return CachedRectTransform.localPosition.y + CachedRectTransform.rect.height;
             }
@@ -172,7 +171,8 @@ namespace JEngine.UI
             {
                 return CachedRectTransform.localPosition.y - CachedRectTransform.rect.height;
             }
-            else if (arrageType == ListItemArrangeType.BottomToTop)
+
+            if (arrageType == ListItemArrangeType.BottomToTop)
             {
                 return CachedRectTransform.localPosition.y;
             }
@@ -190,7 +190,8 @@ namespace JEngine.UI
             {
                 return CachedRectTransform.localPosition.x;
             }
-            else if (arrageType == ListItemArrangeType.RightToLeft)
+
+            if (arrageType == ListItemArrangeType.RightToLeft)
             {
                 return CachedRectTransform.localPosition.x - CachedRectTransform.rect.width;
             }
@@ -207,7 +208,8 @@ namespace JEngine.UI
             {
                 return CachedRectTransform.localPosition.x + CachedRectTransform.rect.width;
             }
-            else if (arrageType == ListItemArrangeType.RightToLeft)
+
+            if (arrageType == ListItemArrangeType.RightToLeft)
             {
                 return CachedRectTransform.localPosition.x;
             }
@@ -223,10 +225,8 @@ namespace JEngine.UI
             {
                 return CachedRectTransform.rect.height;
             }
-            else
-            {
-                return CachedRectTransform.rect.width;
-            }
+
+            return CachedRectTransform.rect.width;
         }
     }
 

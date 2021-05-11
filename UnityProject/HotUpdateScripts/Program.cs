@@ -27,15 +27,14 @@ using JEngine.Core;
 using JEngine.AntiCheat;
 using JEngine.Examples;
 using JEngine.Net;
-using UnityEngine;
 
 namespace HotUpdateScripts
 {
-    public static class Program
+    public class Program
     {
-        public static void RunGame()
+        public void RunGame()
         {
-
+           
         }
     }
 }

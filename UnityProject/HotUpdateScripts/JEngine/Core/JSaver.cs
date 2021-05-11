@@ -30,16 +30,17 @@ using UnityEngine;
 
 namespace JEngine.Core
 {
-    public class JSaver
+    public static class JSaver
     {
         private const string JSaverKeys = "JEngine.Core.JSaver.Keys";
+        private static readonly string defaultEncryptKey = InitJEngine.Instance.key;
 
         private static void AddJSaverKeys(string key)
         {
             var s = PlayerPrefs.GetString(JSaverKeys, key);
             if (!s.Split(',').ToList().Contains(key))
             {
-                StringBuilder sb = new StringBuilder(s);
+                var sb = new StringBuilder(s);
                 sb.Append($",{key}");
                 s = sb.ToString();
             }
@@ -57,7 +58,7 @@ namespace JEngine.Core
         {
             if(String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {
@@ -84,7 +85,7 @@ namespace JEngine.Core
         {
             if(String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {
@@ -118,7 +119,7 @@ namespace JEngine.Core
         {
             if(String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {
@@ -158,7 +159,7 @@ namespace JEngine.Core
             }
             if(String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {
@@ -304,7 +305,7 @@ namespace JEngine.Core
             }
             if (String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {
@@ -341,7 +342,7 @@ namespace JEngine.Core
             }
             if (String.IsNullOrEmpty(encryptKey))
             {
-                encryptKey = Init.Instance.Key;
+                encryptKey = defaultEncryptKey;
             }
             if (encryptKey.Length != 16)
             {

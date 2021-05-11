@@ -14,18 +14,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
-using JEngine.AntiCheat;
-using UnityEngine;
+using ILRuntime.Reflection;
 using Object = System.Object;
 
 namespace LitJson
 {
+    /// <summary>
+    /// Attribute for skip json serialized/deserialized
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+    public class JsonIgnoreAttribute : Attribute
+    {
+        public JsonIgnoreAttribute()
+        {
+
+        }
+    }
+
     internal struct PropertyMetadata
     {
         public MemberInfo Info;
@@ -179,7 +191,7 @@ namespace LitJson
 
             if (type.GetInterface ("System.Collections.IList") != null)
                 data.IsList = true;
-
+            
             if (type is ILRuntime.Reflection.ILRuntimeWrapperType)
             {
                 var wt = (ILRuntime.Reflection.ILRuntimeWrapperType)type;
@@ -229,6 +241,8 @@ namespace LitJson
 
             data.Properties = new Dictionary<string, PropertyMetadata> ();
             foreach (PropertyInfo p_info in type.GetProperties ()) {
+                if (Attribute.IsDefined(p_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
                 if (p_info.Name == "Item") {
                     ParameterInfo[] parameters = p_info.GetIndexParameters ();
 
@@ -256,6 +270,8 @@ namespace LitJson
             }
 
             foreach (FieldInfo f_info in type.GetFields ()) {
+                if (Attribute.IsDefined(f_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -281,6 +297,9 @@ namespace LitJson
             IList<PropertyMetadata> props = new List<PropertyMetadata> ();
 
             foreach (PropertyInfo p_info in type.GetProperties ()) {
+                if (Attribute.IsDefined(p_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
+
                 if (p_info.Name == "Item")
                     continue;
 
@@ -291,6 +310,9 @@ namespace LitJson
             }
 
             foreach (FieldInfo f_info in type.GetFields ()) {
+                if (Attribute.IsDefined(f_info, typeof(JsonIgnoreAttribute), true))
+                    continue;
+
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
@@ -361,21 +383,6 @@ namespace LitJson
                 Type json_type = reader.Value.GetType();
                 var vt = value_type is ILRuntime.Reflection.ILRuntimeWrapperType ? ((ILRuntime.Reflection.ILRuntimeWrapperType)value_type).CLRType.TypeForCLR : value_type;
 
-                if (vt.FullName.Contains("BindableProperty"))
-                {
-                    //获取泛型的T
-                    string TName = vt.FullName.Replace("JEngine.Core.BindableProperty`1<", "").Replace(">", "");
-                    Type GenericType = Type.GetType(TName);
-                    //强转值到T
-                    object[] parameters = new object[1];
-                    //泛型赋值的参数
-                    parameters[0] = Convert.ChangeType(reader.Value,GenericType);
-                    //生成实例且赋值
-                    object _instance = Init.Appdomain.Instantiate(vt.FullName,parameters);
-                    //返回可绑定数据
-                    return _instance;
-                }
-                
                 if (vt.IsAssignableFrom(json_type))
                     return reader.Value;
                 if (vt is ILRuntime.Reflection.ILRuntimeType && ((ILRuntime.Reflection.ILRuntimeType)vt).ILType.IsEnum)
@@ -425,7 +432,6 @@ namespace LitJson
             object instance = null;
 
             if (reader.Token == JsonToken.ArrayStart) {
-
                 AddArrayMetadata (inst_type);
                 ArrayMetadata t_data = array_metadata[inst_type];
 
@@ -480,6 +486,14 @@ namespace LitJson
                 else
                     instance = Activator.CreateInstance(value_type);
                 bool isIntKey = t_data.IsDictionary && value_type.GetGenericArguments()[0] == typeof(int);
+
+                var hotArguments = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments
+                    .Select(i => i.Value)
+                    .ToList()
+                    .FindAll(t => !(t is CLRType));
+                
+                var valid = hotArguments?.Count == 1;
+                
                 while (true)
                 {
                     reader.Read();
@@ -496,21 +510,48 @@ namespace LitJson
 
                         if (prop_data.IsField)
                         {
+                            var val = ((FieldInfo) prop_data.Info);
+                            var realType = prop_data.Type;
+                            if (val.FieldType.ToString() == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+                            {
+                                //支持一下本地泛型<热更类型>，这种属于CLRType，会new ILTypeIns导致错误
+                                //这里要做的就是把泛型参数里面的热更类型获取出来
+                                //但如果有超过1个热更类型在参数里，就没办法判断哪个是这个字段的ILTypeIns了，所以只能1个
+                                if (!valid)
+                                {
+                                    throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
+                                }
+
+                                realType = hotArguments[0].ReflectionType;
+                            }
+                            
                             ((FieldInfo) prop_data.Info).SetValue(
-                                instance, ReadValue(prop_data.Type, reader));
+                                instance, ReadValue(realType, reader));
                         }
                         else
                         {
                             PropertyInfo p_info =
                                 (PropertyInfo) prop_data.Info;
+                            
+                            var val = ((PropertyInfo) prop_data.Info);
+                            var realType = prop_data.Type;
+                            if (val.PropertyType.ToString() == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+                            {
+                                if (!valid)
+                                {
+                                    throw new NotSupportedException("仅支持解析1个热更类型做泛型参数的本地泛型类");
+                                }
+
+                                realType = hotArguments[0].ReflectionType;
+                            }
 
                             if (p_info.CanWrite)
                                 p_info.SetValue(
                                     instance,
-                                    ReadValue(prop_data.Type, reader),
+                                    ReadValue(realType, reader),
                                     null);
                             else
-                                ReadValue(prop_data.Type, reader);
+                                ReadValue(realType, reader);
                         }
 
                     }
@@ -821,12 +862,6 @@ namespace LitJson
             else
                 obj_type = obj.GetType();
 
-            if (obj_type.FullName.Contains("BindableProperty"))
-            {
-                FieldInfo fi = obj_type.GetField("_value");
-                obj = fi.GetValue(obj);
-            }
-            
             // See if there's a custom exporter for the object
             if (custom_exporters_table.ContainsKey (obj_type)) {
                 ExporterFunc exporter = custom_exporters_table[obj_type];

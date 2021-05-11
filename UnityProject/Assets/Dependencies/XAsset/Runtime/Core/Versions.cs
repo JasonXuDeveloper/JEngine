@@ -109,27 +109,38 @@ namespace libx
 			}
 		}
 
-		public static int LoadVersion (string filename)
+		public static int LoadVersion(string filename)
 		{
-			if (!File.Exists (filename))
+			if (!File.Exists(filename))
 				return -1;
-			try
+			using (var stream = File.OpenRead(filename))
 			{
-				using (var stream = File.OpenRead (filename)) {
-					var reader = new BinaryReader (stream);
-					while (reader.BaseStream.Position == reader.BaseStream.Length)
+				var reader = new BinaryReader(stream);
+				try
+				{
+					while (reader.PeekChar() != -1)
 					{
-						return reader.ReadInt32 ();
+						return reader.ReadInt32();
 					}
-
-					return -1;
 				}
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
+				catch
+				{
+					try
+					{
+						while (reader.BaseStream.Position == reader.BaseStream.Length)
+						{
+							return reader.ReadInt32();
+						}
+					}
+					catch (Exception ex)
+					{
+						Debug.LogException(ex);
+						return -1;
+					}
+				}
+
 				return -1;
-			} 
+			}
 		}
 
 		public static List<VFile> LoadVersions (string filename, bool update = false)

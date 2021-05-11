@@ -7,6 +7,15 @@ namespace ILRuntime.Runtime.Generated
     class CLRBindings
     {
 
+//will auto register in unity
+#if UNITY_5_3_OR_NEWER
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
+#endif
+        static private void RegisterBindingAction()
+        {
+            ILRuntime.Runtime.CLRBinding.CLRBindingUtils.RegisterBindingAction(Initialize);
+        }
+
 
         /// <summary>
         /// Initialize the CLR binding, please invoke this AFTER CLR Redirection registration
@@ -37,6 +46,7 @@ namespace ILRuntime.Runtime.Generated
             System_Reflection_MemberInfo_Binding.Register(app);
             System_Object_Binding.Register(app);
             System_Reflection_MethodBase_Binding.Register(app);
+            JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_SByte_GameObject_Binding.Register(app);
@@ -53,6 +63,7 @@ namespace ILRuntime.Runtime.Generated
             libx_Assets_Binding.Register(app);
             System_Action_1_Object_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_Action_1_Object_Binding.Register(app);
+            System_Action_1_AssetRequest_Binding.Register(app);
             System_Runtime_CompilerServices_AsyncVoidMethodBuilder_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_AssetRequest_Binding_ValueCollection_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_String_AssetRequest_Binding_ValueCollection_Binding_Enumerator_Binding.Register(app);
@@ -96,7 +107,6 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_PlayerPrefs_Binding.Register(app);
             System_Char_Binding.Register(app);
             System_Text_StringBuilder_Binding.Register(app);
-            Init_Binding.Register(app);
             System_Exception_Binding.Register(app);
             System_Collections_IDictionary_Binding.Register(app);
             JEngine_Core_CryptoHelper_Binding.Register(app);
@@ -106,8 +116,9 @@ namespace ILRuntime.Runtime.Generated
             System_Decimal_Binding.Register(app);
             System_Double_Binding.Register(app);
             System_Single_Binding.Register(app);
+            InitJEngine_Binding.Register(app);
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
-            JEngine_Core__ClassBind_Binding.Register(app);
+            JEngine_Core_ClassData_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);
             System_Collections_Generic_List_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);
@@ -124,7 +135,9 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_Dictionary_2_Int32_Func_1_Boolean_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Action_Binding.Register(app);
             System_Runtime_CompilerServices_AsyncTaskMethodBuilder_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_Collections_Generic_List_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_GC_Binding.Register(app);
+            System_Collections_Generic_List_1_CoroutineAdapter_Binding_Adaptor_Binding_Enumerator_Binding.Register(app);
             System_Func_1_Boolean_Binding.Register(app);
             System_Threading_Tasks_Task_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_Runtime_CompilerServices_TaskAwaiter_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
@@ -146,6 +159,8 @@ namespace ILRuntime.Runtime.Generated
             WebSocketSharp_MessageEventArgs_Binding.Register(app);
             JEngine_Net_SocketIOEvent_Binding.Register(app);
             JSONObject_Binding.Register(app);
+            GenericExample_1_ProjectAdapter_GenericExampleAdapter2_Binding_Adapter_Binding.Register(app);
+            GenericExample_1_ILTypeInstance_Binding.Register(app);
             ExampleAPI_Binding.Register(app);
         }
 

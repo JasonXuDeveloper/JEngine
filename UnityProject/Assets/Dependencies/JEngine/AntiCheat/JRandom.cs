@@ -39,7 +39,7 @@ namespace JEngine.AntiCheat
 
         public static int RandomNum(int max = 1024)
         {
-            return _random.Next(0, max < 0 ? 1024 : (int) max);
+            return _random.Next(0, max < 0 ? 1024 : max);
         }
 
         public static int RandomNum(uint max = 1024)

@@ -4,7 +4,6 @@ using System;
 using ProtoBuf.Compiler;
 #endif
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace ProtoBuf.Serializers
 {

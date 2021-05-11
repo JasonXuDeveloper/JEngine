@@ -186,12 +186,12 @@ namespace JEngine.Core
 
             var jBehaviour = type;
             var cb = gameObject.AddComponent<ClassBind>();
-            var _cb = new _ClassBind()
+            var _cb = new ClassData()
             {
-                Namespace = jBehaviour.Namespace,
-                Class = jBehaviour.Name,
-                ActiveAfter = activeAfter,
-                UseConstructor = true
+                classNamespace = jBehaviour.Namespace,
+                className = jBehaviour.Name,
+                activeAfter = activeAfter,
+                useConstructor = true
             };
             var id = cb.AddClass(_cb);
             cb.Active(_cb);
@@ -499,7 +499,7 @@ namespace JEngine.Core
                 int duration;
                 if (FrameMode)//等待
                 {
-                    duration = (int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.fps : Application.targetFrameRate)) * 1000f);
+                    duration = (int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
                     duration = (int)(duration / TimeScale);
                 }
                 else
@@ -574,6 +574,15 @@ namespace JEngine.Core
                 }
             }
             Launch();
+        }
+
+        private void ResetJBehaviour(GameObject go)
+        {
+            _gameObject = go;
+            _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
+            JBehaviours.Add(_instanceID, this);
+
+            LoopAwaitToken = new CancellationTokenSource();
         }
         #endregion
 

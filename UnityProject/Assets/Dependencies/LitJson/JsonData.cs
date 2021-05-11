@@ -15,7 +15,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Text.RegularExpressions;
 
 
 namespace LitJson
@@ -742,6 +741,10 @@ namespace LitJson
 
         private static void WriteJson (IJsonWrapper obj, JsonWriter writer)
         {
+            if(obj is JsonData && (obj as JsonData).type == JsonType.None)
+            {
+                (obj as JsonData).EnsureDictionary();
+            }
             if (obj == null) {
                 writer.Write (null);
                 return;
@@ -910,13 +913,10 @@ namespace LitJson
             StringWriter sw = new StringWriter ();
             JsonWriter writer = new JsonWriter (sw);
             writer.Validate = false;
-            writer.PrettyPrint = true;
+
             WriteJson (this, writer);
             json = sw.ToString ();
 
-            Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
-            json = reg.Replace(json, delegate (Match m) { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
-            
             return json;
         }
 
@@ -935,7 +935,7 @@ namespace LitJson
         {
             switch (type) {
             case JsonType.Array:
-                return ToJson();
+                return "JsonData array";
 
             case JsonType.Boolean:
                 return inst_boolean.ToString ();
@@ -950,7 +950,7 @@ namespace LitJson
                 return inst_long.ToString ();
 
             case JsonType.Object:
-                return ToJson();
+                return "JsonData object";
 
             case JsonType.String:
                 return inst_string;

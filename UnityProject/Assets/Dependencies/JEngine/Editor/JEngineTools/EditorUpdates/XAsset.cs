@@ -1,30 +1,31 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
-using UnityEngine;
 
 namespace JEngine.Editor
 {
-    public class XAsset
+    internal static class XAsset
     {
-        private static bool _delaying = false;
-        private static bool _verifying = false;
+        public static bool hasAdded;
+        
+        private static bool _delaying;
+        private static bool _verifying;
         private static float _frequency = 3600;
 
         public static async void Update()
         {
-            if (!Setting.XAssetLoggedIn || _delaying || _verifying || Helpers.loggingXAsset) return;
+            hasAdded = true;
+            
+            if (!Setting.XAssetLoggedIn || _delaying || _verifying || XAssetHelper.loggingXAsset) return;
 
-            bool result = false;
             //验证
             _verifying = true;
-            result = await Helpers.LoginXAsset();
+            var result = await XAssetHelper.LoginXAsset();
             _verifying = false;
             
             if (!result)
             {
-                Helpers.LogOutXAsset();
+                XAssetHelper.LogOutXAsset();
                 EditorUtility.DisplayDialog("XAsset", "登入状态异常，请重新登入\n" +
                                                       "An error just occured, please log in again", "OK");
                 Setting.Refresh();

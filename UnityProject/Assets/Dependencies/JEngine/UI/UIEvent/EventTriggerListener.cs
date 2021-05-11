@@ -23,8 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -51,7 +50,7 @@ namespace JEngine.UI
     {
         public class EventHandle<T> where T : BaseEventData
         {
-            private event UIEventHandle<T> m_Handle = null;
+            private event UIEventHandle<T> m_Handle;
 
             public void AddListener(UIEventHandle<T> handle)
             {
@@ -190,13 +189,13 @@ namespace JEngine.UI
         private const float PRESS_TIME = 0.5F;
 
         private Vector2 m_Delta;
-        private float m_CurrDownTime = 0f;
-        private bool m_IsPointDown = false;
-        private bool m_IsPress = false;
-        private bool m_IsDraging = false;
-        private bool m_IsTryClick = false;
-        private int m_ClickCount = 0;
-        private PointerEventData m_OnUpEventData = null;
+        private float m_CurrDownTime;
+        private bool m_IsPointDown;
+        private bool m_IsPress;
+        private bool m_IsDraging;
+        private bool m_IsTryClick;
+        private int m_ClickCount;
+        private PointerEventData m_OnUpEventData;
 
         public bool IsPress
         {

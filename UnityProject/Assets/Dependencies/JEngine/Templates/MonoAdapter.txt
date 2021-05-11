@@ -36,7 +36,7 @@
                                     await Task.Delay(20);
                                 }
                             }
-                            catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
                             {
                                 return;
                             }
@@ -46,14 +46,14 @@
                                 return;
                             }
 
-                            isAwaking = false;
                             appdomain.Invoke(mAwakeMethod, instance, param0);
+                            isAwaking = false;
                             awaked = true;
                             OnEnable();
                         }
                     }
                 }
-                catch (NullReferenceException e)
+                catch (NullReferenceException)
                 {
                     //如果出现了Null，那就重新Awake
                     Awake();
@@ -1163,6 +1163,28 @@
                         appdomain.Invoke(mOnRectTransformDimensionsChangeMethod, instance, param0);
                     }
                 }
+            }
+            
+            IMethod mToStringMethod;
+            bool mToStringMethodGot;
+            public override string ToString()
+            {
+                if (instance != null)
+                {
+                    if (!mToStringMethodGot)
+                    {
+                        mToStringMethod =
+                            instance.Type.GetMethod("ToString", 0);
+                        mToStringMethodGot = true;
+                    }
+    
+                    if (mToStringMethod != null)
+                    {
+                        appdomain.Invoke(mToStringMethod, instance, param0);
+                    }
+                }
+    
+                return instance?.Type?.FullName ?? base.ToString();
             }
             
             #endregion

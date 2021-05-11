@@ -30,15 +30,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Examples\UI\View\JTestItem.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Examples\Core\JBehaviourExample.cs" />
-    <Compile Include="Examples\Core\JSaverExample.cs" />
-    <Compile Include="Examples\Core\AutoBindDemo.cs" />
-    <Compile Include="Examples\Data\DataClass.cs" />
-    <Compile Include="Examples\Data\SafeData.cs" />
-    <Compile Include="Examples\UI\JUIExample.cs" />
-    <Compile Include="Examples\UI\JumpToUIDemo.cs" />
     <Compile Include="JEngine\Core\ProtoTypeRegister.cs" />
     <Compile Include="JEngine\Core\JSaver.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
@@ -47,7 +39,6 @@
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
-    <Compile Include="JEngine\Core\BindableProperty.cs" />
     <Compile Include="JEngine\UI\UIKit\UIUtility.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
     <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />
@@ -63,18 +54,30 @@
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\Singleton.cs" />
     <Compile Include="JEngine\UI\UIKit\UIExpand\UIGroup.cs" />
-    <Compile Include="Examples\UI\View\JTestView.cs" />
-    <Compile Include="Examples\UI\View\JBtnView.cs" />
     <Compile Include="JEngine\UI\UIRootView.cs" />
-    <Compile Include="Examples\Core\ConvertDemo.cs" />
     <Compile Include="JEngine\Event\JEvent.cs" />
     <Compile Include="JEngine\Event\EventEnum.cs" />
-    <Compile Include="Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Event\EventAttributes.cs" />
     <Compile Include="JEngine\Core\JExtensions.cs" />
     <Compile Include="JEngine\Net\JWebSocket.cs" />
-    <Compile Include="Examples\Net\JWebSocketDemo.cs" />
-    <Compile Include="Examples\Core\CrossDomainDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\AutoBindDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\ConvertDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\CrossDomainDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\InstantiateDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\JBehaviourExample.cs" />
+    <Compile Include="JEngine\Examples\Core\JSaverExample.cs" />
+    <Compile Include="JEngine\Examples\Data\DataClass.cs" />
+    <Compile Include="JEngine\Examples\Data\SafeData.cs" />
+    <Compile Include="JEngine\Examples\Event\EventDemo.cs" />
+    <Compile Include="JEngine\Examples\Net\JWebSocketDemo.cs" />
+    <Compile Include="JEngine\Examples\UI\JUIExample.cs" />
+    <Compile Include="JEngine\Examples\UI\JumpToUIDemo.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JBtnView.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JTestItem.cs" />
+    <Compile Include="JEngine\Examples\UI\View\JTestView.cs" />
+    <Compile Include="JEngine\Examples\Core\ComplexLitJsonDemo.cs" />
+    <Compile Include="JEngine\Examples\Data\HotData.cs" />
+    <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
@@ -91,15 +94,6 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Dlls\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.XR.LegacyInputHelpers">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.SpatialTracking">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.SpatialTracking.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Monetization">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.Monetization.dll</HintPath>
     </Reference>
@@ -112,9 +106,6 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime">
-      <HintPath>..\Library\ScriptAssemblies\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>..\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
@@ -124,31 +115,21 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>..\Library\ScriptAssemblies\Unity.Analytics.DataPrivacy.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TestRunner">
-      <HintPath>..\Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
     </Reference>
-    <Reference Include="Malee.ReorderableList">
-      <HintPath>..\Library\ScriptAssemblies\Malee.ReorderableList.dll</HintPath>
-    </Reference>
     <Reference Include="WebSocketSharp">
       <HintPath>..\Library\ScriptAssemblies\WebSocketSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Proto2cs\" />
     <Folder Include="JEngine\Event\" />
-    <Folder Include="Examples\Event\" />
     <Folder Include="JEngine\Net\" />
-    <Folder Include="Examples\Net\" />
+    <Folder Include="JEngine\Examples\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

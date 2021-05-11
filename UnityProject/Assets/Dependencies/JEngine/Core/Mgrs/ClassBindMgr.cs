@@ -24,14 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using ILRuntime.CLR.TypeSystem;
-using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,7 +40,7 @@ namespace JEngine.Core
 
         private static ClassBindMgr _instance;
         public static List<Scene> LoadedScenes;
-        private static List<ClassBind> cbs;
+        private static List<ClassBind> _cbs;
 
         private void Awake()
         {
@@ -55,10 +48,9 @@ namespace JEngine.Core
             {
                 Destroy(this);
             }
-            
-            LoadedScenes = new List<Scene>(0);
-            LoadedScenes.Add(SceneManager.GetActiveScene());
-            cbs = new List<ClassBind>(0);
+
+            LoadedScenes = new List<Scene>(0) {SceneManager.GetActiveScene()};
+            _cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
@@ -66,7 +58,7 @@ namespace JEngine.Core
                 DoBind();
             };
             
-            SceneManager.sceneUnloaded+=(scene) =>
+            SceneManager.sceneUnloaded+=scene =>
             {
                 LoadedScenes.Remove(scene);
             };
@@ -78,49 +70,49 @@ namespace JEngine.Core
             foreach (var cb in cbs)
             {
                 //先添加
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null || _class.Added)
+                    if (data == null || data.Added)
                     {
                         continue;
                     }
 
-                    cb.AddClass(_class);
+                    cb.AddClass(data);
                 }
             }
 
             foreach (var cb in cbs)
             {
                 //再赋值
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null || _class.BoundData)
+                    if (data == null || data.BoundData)
                     {
                         continue;
                     }
 
-                    cb.SetVal(_class);
+                    cb.SetVal(data);
                 }
             }
 
             //激活
             foreach (var cb in cbs)
             {
-                foreach (_ClassBind _class in cb.ScriptsToBind)
+                foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (_class == null ||_class.Activated)
+                    if (data == null ||data.Activated)
                     {
                         continue;
                     }
 
-                    cb.Active(_class);
+                    cb.Active(data);
                 }
             }
         }
         public static void DoBind()
         {
-            cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
-            DoBind(cbs);
+            _cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
+            DoBind(_cbs);
         }
     }
 }

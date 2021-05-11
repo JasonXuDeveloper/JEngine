@@ -1,5 +1,6 @@
 using ILRuntime.Runtime.Enviorment;
 using JEngine.AntiCheat;
+using JEngine.Core;
 using JEngine.Interface;
 using LitJson;
 
@@ -22,6 +23,38 @@ namespace JEngine.Helper
         {
             JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(obj.ToString())); //float->string
             JsonMapper.RegisterImporter<string, float>(input => float.Parse(input)); //string->float
+            
+            //给BindableProperty注册转换
+            //这里注册了几个简单的类型
+            JsonMapper.RegisterExporter<BindableProperty<object>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<object>>(input => new BindableProperty<object>(input));
+            JsonMapper.RegisterExporter<BindableProperty<byte>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<byte>>(input => new BindableProperty<byte>(byte.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<sbyte>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<sbyte>>(input => new BindableProperty<sbyte>(sbyte.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<int>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<int>>(input => new BindableProperty<int>(int.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<uint>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<uint>>(input => new BindableProperty<uint>(uint.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<bool>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<bool>>(input => new BindableProperty<bool>(bool.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<short>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<short>>(input => new BindableProperty<short>(short.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<ushort>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<ushort>>(input => new BindableProperty<ushort>(ushort.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<long>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<long>>(input => new BindableProperty<long>(long.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<ulong>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<ulong>>(input => new BindableProperty<ulong>(ulong.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<char>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<char>>(input => new BindableProperty<char>(char.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<double>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<double>>(input => new BindableProperty<double>(double.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<float>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<float>>(input => new BindableProperty<float>(float.Parse(input)));
+            JsonMapper.RegisterExporter<BindableProperty<decimal>>((obj, writer) => writer.Write(obj.ToString()));
+            JsonMapper.RegisterImporter<string, BindableProperty<decimal>>(input => new BindableProperty<decimal>(decimal.Parse(input)));
+            
             JsonMapper.RegisterExporter<JInt>((obj, writer) => writer.Write(obj.ToString())); //JInt->string
             JsonMapper.RegisterImporter<string, JInt>(input => new JInt(input)); //string->JInt
             JsonMapper.RegisterExporter<JBool>((obj, writer) => writer.Write(obj.ToString())); //JBool->string

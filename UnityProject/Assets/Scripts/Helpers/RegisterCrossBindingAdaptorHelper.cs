@@ -3,8 +3,6 @@ using System.Linq;
 using System.Reflection;
 using ILRuntime.Runtime.Enviorment;
 using JEngine.Interface;
-using ProjectAdapter;
-using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Helper
@@ -25,7 +23,7 @@ namespace JEngine.Helper
         public void Register(AppDomain appdomain)
         {
             //自动注册一波，无需再手动添加了，如果想要性能也可以手动自己加
-            Assembly assembly = typeof(Init).Assembly;
+            Assembly assembly = typeof(InitJEngine).Assembly;
             foreach (Type type in assembly.GetTypes().ToList().FindAll(t=>t.IsSubclassOf(typeof(CrossBindingAdaptor))))
             {
                 object obj = Activator.CreateInstance(type);

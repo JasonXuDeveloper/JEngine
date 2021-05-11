@@ -47,7 +47,6 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Text;
 
 namespace WebSocketSharp.Net

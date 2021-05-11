@@ -1,354 +1,366 @@
-using UnityEngine;
-using UnityEditor;
-using System.Collections;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using JEngine.Core;
-using JEngine.Editor;
+using Malee.List;
+using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditorInternal;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using ReorderableList = Malee.List.ReorderableList;
+using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
 {
     [CustomEditor(typeof(ClassBind))]
     internal class ClassBindEditor : UnityEditor.Editor
     {
-
-        private ReorderableList list1;
+        private static string _dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
+        private ReorderableList _classBinds;
 
         void OnEnable()
         {
-            list1 = new ReorderableList(serializedObject.FindProperty("ScriptsToBind"));
-            list1.elementNameProperty = "Class";
+            _classBinds = new ReorderableList(serializedObject.FindProperty("scriptsToBind"))
+            {
+                elementNameProperty = "Class"
+            };
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
-            //draw the list using GUILayout, you can of course specify your own position and label
-            list1.DoLayoutList();
+            _classBinds.DoLayoutList();
             serializedObject.ApplyModifiedProperties();
 
             GUILayout.Space(5);
 
             Setting.MakeHorizontal(50, () =>
             {
-                if (GUILayout.Button("自动获取fields", GUILayout.Height(30)))
+                if (GUILayout.Button(Setting.GetString(SettingString.ClassBindGetAllField), GUILayout.Height(30)))
                 {
                     DoConvert(target as ClassBind);
                 }
             });
-            
+
             GUILayout.Space(5);
 
             Setting.MakeHorizontal(50, () =>
             {
-                if (GUILayout.Button("自动更新fieldType", GUILayout.Height(30)))
+                if (GUILayout.Button(Setting.GetString(SettingString.ClassBindGetAllType), GUILayout.Height(30)))
                 {
                     DoFieldType(target as ClassBind);
                 }
             });
 
-            
+
             GUILayout.Space(15);
         }
 
-        public static async void DoFieldType(ClassBind instance)
+        public static async void DoFieldType(ClassBind instance,bool toast = true)
         {
             int affectCounts = 0;
-            foreach (var _cb in instance.ScriptsToBind) //遍历
+            foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{_cb.Namespace}.{_cb.Class}";
+                string className = $"{data.classNamespace}.{data.className}";
                 Assembly hotCode = Assembly
-                    .LoadFile("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll");
+                    .LoadFile(_dllPath);
                 Type t = hotCode.GetType(className); //加载热更类
 
                 if (t == null)
                 {
-                    EditorUtility.DisplayDialog("ClassBind Error", $"Class {className} does not exist " +
-                                                                   $"in hot update scripts solution!\n" +
-                                                                   $"'{className}'类在热更工程中不存在", "OK");
+                    EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindErrorTitle),
+                        String.Format(Setting.GetString(SettingString.ClassBindErrorContent),
+                            className), "OK");
                     return;
                 }
 
-                foreach (var field in _cb.Fields)
+                foreach (var field in data.fields)
                 {
                     var fieldType = t.GetField(field.fieldName,
                         BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.FieldType;
-                    if (fieldType == null)
-                    {
-                        fieldType = t.GetProperty(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static)?.PropertyType;
-                    }
+                        BindingFlags.Static)?.FieldType ?? t.GetProperty(field.fieldName,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                        BindingFlags.Static)?.PropertyType;
 
                     if (fieldType == null)
                     {
-                        Log.PrintError($"{className}不存在{field.fieldName}，已跳过");
+                        Log.PrintError(String.Format(Setting.GetString(SettingString.ClassBindInvalidField),
+                            className, field.fieldName));
                     }
 
                     SetType(field, fieldType, hotCode);
                     affectCounts++;
 
-                    EditorUtility.DisplayProgressBar("ClassBind Progress",
-                        $"Getting Field for {field.fieldName} {_cb.Fields.IndexOf(field)}/{_cb.Fields.Length}",
-                        (float) _cb.Fields.IndexOf(field) / (float) _cb.Fields.Length);
+                    EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
+                        String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetField),
+                            field.fieldName, data.fields.IndexOf(field), data.fields.Length),
+                        data.fields.IndexOf(field) / (float) data.fields.Length);
 
                     await Task.Delay(50); //延迟一下，动画更丝滑
                 }
-                
-            } 
-            
+
+            }
+
             EditorUtility.ClearProgressBar();
-            
+
             //转换后保存场景
-            bool saveResult = false;
-            AssetDatabase.SaveAssets();
-            bool isPreviewSceneObject = EditorSceneManager.IsPreviewSceneObject(Selection.activeGameObject);
-            if (isPreviewSceneObject || PrefabUtility.IsPartOfAnyPrefab(instance.gameObject) || PrefabUtility.IsPartOfPrefabAsset(instance.gameObject))
+            try
             {
-                PrefabUtility.SavePrefabAsset(instance.gameObject,out saveResult);
-                EditorSceneManager.SaveOpenScenes();
+                PrefabUtility.SavePrefabAsset(instance.gameObject, out _);
+            }
+            catch
+            {
+                try
+                {
+                    EditorSceneManager.SaveOpenScenes();
+                }
+                catch
+                {
+                    try
+                    {
+                        var scene = SceneManager.GetActiveScene();
+                        EditorSceneManager.SaveScene(scene, scene.path);
+                    }
+                    catch
+                    {
+                        //ignored
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            EditorUtility.ClearProgressBar();
+
+            if (toast)
+            {
+                EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindResultTitle),
+                    String.Format(Setting.GetString(SettingString.ClassBindResultContentForGetType),
+                        affectCounts, instance.name),
+                    Setting.GetString(SettingString.Done));
             }
             else
             {
-                var scene = EditorSceneManager.GetActiveScene();
-                saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+                Log.Print(String.Format(Setting.GetString(SettingString.ClassBindResultContentForGetType),
+                        affectCounts, instance.name));
             }
-            
-            string result = saveResult ? "succeeded" : "failed";
-            string resultZh = saveResult ? "成功" : "失败";
-
-            EditorUtility.ClearProgressBar();
-            EditorUtility.DisplayDialog("ClassBind Result",
-                $"Set {affectCounts} fieldTypes into ClassBind: {instance.name} and saved the scene {result}\n" +
-                $"ClassBind: {instance.name}中{affectCounts}个fields已自动设置FieldType，且保存{resultZh}",
-                "Done");
         }
 
-        public static async void DoConvert(ClassBind instance)
+        public static async void DoConvert(ClassBind instance,bool toast = true)
         {
             int affectCounts = 0;
-            foreach (var _cb in instance.ScriptsToBind) //遍历
+            foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{_cb.Namespace}.{_cb.Class}";
+                string className = $"{data.classNamespace}.{data.className}";
                 Assembly hotCode = Assembly
-                    .LoadFile("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll");
+                    .LoadFile(_dllPath);
                 Type t = hotCode.GetType(className); //加载热更类
 
                 if (t == null)
                 {
-                    EditorUtility.DisplayDialog("ClassBind Error", $"Class {className} does not exist " +
-                                                                   $"in hot update scripts solution!\n" +
-                                                                   $"'{className}'类在热更工程中不存在", "OK");
+                    EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindErrorTitle),
+                        String.Format(Setting.GetString(SettingString.ClassBindErrorContent),
+                            className), "OK");
                     return;
                 }
 
                 //热更实例
                 object hotInstance = null;
-                if (!t.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour"))) //JBehaviour派生类不构造对象，不进行赋值
+                if (!t.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")) &&
+                    !t.IsSubclassOf(typeof(MonoBehaviour))) //JBehaviour/MonoBehaviour派生类不构造对象，不进行赋值
                 {
                     hotInstance = Activator.CreateInstance(t);
                 }
 
-                var fieldsInCb = _cb.Fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
-                var fs = t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                var ps = t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
-                foreach (var field in fs)
+                var fieldsInCb = data.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
+                var members = new List<MemberInfo>(0);
+                if (Setting.ClassBindIgnorePrivate)
                 {
-                    //遍历字段
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public));
+                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public));
+                }
+                else
+                {
+                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                 BindingFlags.Public | BindingFlags.NonPublic));
+                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                                     BindingFlags.Public | BindingFlags.NonPublic));
+                }
 
-                    EditorUtility.DisplayProgressBar("ClassBind Progress",
-                        "Converting FieldInfos " + fs.ToList().IndexOf(field) + "/" + fs.Length,
-                        (float) fs.ToList().IndexOf(field) / (float) fs.Length);
+                foreach (var field in members)
+                {
+                    //跳过标签的
+                    if (Setting.ClassBindIgnoreHideInInspector)
+                    {
+                        var attr = field.GetCustomAttributes(typeof(HideInInspector), false);
+                        if (attr.Length > 0)
+                        {
+                            continue;
+                        }
+                    }
+                    
+                    //遍历字段
+                    EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
+                        String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetType),
+                            $"{t.Name}:{field.Name}",
+                            members.ToList().IndexOf(field), members.Count),
+                        members.ToList().IndexOf(field) / (float) members.Count);
 
                     if (!fieldsInCb.Contains(field.Name))
                     {
-                        _ClassField cf = new _ClassField();
+                        ClassField cf = new ClassField();
                         string fieldName = field.Name;
                         cf.fieldName = fieldName;
 
-                        SetType(cf, field.FieldType, hotCode);
-                        SetVal(ref cf, field, hotCode, hotInstance);
+                        Type fieldType = (field is PropertyInfo)
+                            ? ((PropertyInfo) field).PropertyType
+                            : ((FieldInfo) field).FieldType;
+                        
+                        SetType(cf, fieldType, hotCode);
+                        SetVal(ref cf, field, hotCode, hotInstance,instance.gameObject);
 
-                        _cb.Fields.Add(cf);
+                        data.fields.Add(cf);
                         affectCounts++;
                     }
 
                     await Task.Delay(10); //延迟一下，动画更丝滑
                 }
-
-                EditorUtility.DisplayProgressBar("ClassBind Progress",
-                    $"Converting FieldInfos {fs.Length}/{fs.Length}", 1);
-
-                await Task.Delay(50); //延迟一下，动画更丝滑
-
-                foreach (var property in ps)
-                {
-                    //遍历属性
-                    EditorUtility.DisplayProgressBar("ClassBind Progress",
-                        "Converting PropertyInfos " + ps.ToList().IndexOf(property) + "/" + ps.Length,
-                        (float) ps.ToList().IndexOf(property) / (float) ps.Length);
-                    if (!fieldsInCb.Contains(property.Name))
-                    {
-                        _ClassField cf = new _ClassField();
-                        string fieldName = property.Name;
-                        cf.fieldName = fieldName;
-
-                        SetType(cf, property.PropertyType, hotCode);
-                        SetVal(ref cf, property, hotCode, hotInstance);
-
-                        _cb.Fields.Add(cf);
-                        affectCounts++;
-                    }
-
-                    await Task.Delay(10); //延迟一下，动画更丝滑
-                }
-
-                EditorUtility.DisplayProgressBar("ClassBind Progress",
-                    $"Converting PropertyInfos {ps.Length}/{ps.Length}", 1);
-
-                await Task.Delay(50); //延迟一下，动画更丝滑
-
-                EditorUtility.DisplayProgressBar("ClassBind Progress",
-                    $"Processing next class", 1);
-
-                await Task.Delay(150); //延迟一下，动画更丝滑
             }
 
             await Task.Delay(50); //延迟一下，动画更丝滑
 
             EditorUtility.ClearProgressBar();
-            
+
             //转换后保存场景
-            bool saveResult = false;
-            AssetDatabase.SaveAssets();
-            bool isPreviewSceneObject = EditorSceneManager.IsPreviewSceneObject(Selection.activeGameObject);
-            if (PrefabUtility.IsPartOfAnyPrefab(instance.gameObject) || PrefabUtility.IsPartOfPrefabAsset(instance.gameObject))
+            try
             {
-                PrefabUtility.SavePrefabAsset(instance.gameObject,out saveResult);
+                PrefabUtility.SavePrefabAsset(instance.gameObject, out _);
             }
-            else if (isPreviewSceneObject)
+            catch
             {
-                EditorSceneManager.SaveOpenScenes();
+                try
+                {
+                    EditorSceneManager.SaveOpenScenes();
+                }
+                catch
+                {
+                    try
+                    {
+                        var scene = SceneManager.GetActiveScene();
+                        EditorSceneManager.SaveScene(scene, scene.path);
+                    }
+                    catch
+                    {
+                        //ignored
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            EditorUtility.ClearProgressBar();
+            
+            if (toast)
+            {
+                EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindResultTitle),
+                    String.Format(Setting.GetString(SettingString.ClassBindResultContentForSetField),
+                        affectCounts, instance.name),
+                    Setting.GetString(SettingString.Done));
             }
             else
             {
-                var scene = EditorSceneManager.GetActiveScene();
-                saveResult = EditorSceneManager.SaveScene(scene, scene.path);
+                Log.Print(String.Format(Setting.GetString(SettingString.ClassBindResultContentForSetField),
+                    affectCounts, instance.name));
             }
-            
-            string result = saveResult ? "succeeded" : "failed";
-            string resultZh = saveResult ? "成功" : "失败";
-
-            EditorUtility.DisplayDialog("ClassBind Result",
-                $"Added {affectCounts} fields into ClassBind: {instance.name} and saved the scene {result}\n" +
-                $"ClassBind: {instance.name}的fields添加了{affectCounts}个，且保存{resultZh}",
-                "Done");
-
         }
 
 
-        private static void SetType(_ClassField cf, Type type, Assembly hotCode)
+        private static void SetType(ClassField cf, Type type, Assembly hotCode)
         {
             if (type == typeof(GameObject))
             {
-                cf.fieldType = _ClassField.FieldType.GameObject;
+                cf.fieldType = ClassField.FieldType.GameObject;
             }
-            else if (type == typeof(UnityEngine.Component) || type.IsSubclassOf(typeof(MonoBehaviour)) || type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+            else if (type == typeof(Component) || type.IsSubclassOf(typeof(MonoBehaviour)) ||
+                     type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
             {
-                cf.fieldType = _ClassField.FieldType.UnityComponent;
+                cf.fieldType = ClassField.FieldType.UnityComponent;
             }
-            else if (type.IsSubclassOf(typeof(UnityEngine.Object)))
+            else if (type.IsSubclassOf(typeof(Object)))
             {
-                cf.fieldType = _ClassField.FieldType.HotUpdateResource;
+                cf.fieldType = ClassField.FieldType.HotUpdateResource;
             }
             else
             {
-                if (type == typeof(short))
+                var numType = new[]
                 {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(ushort))
+                    typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long),
+                    typeof(ulong),
+                    typeof(float), typeof(decimal), typeof(double)
+                };
+                if (numType.Contains(type))
                 {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(int))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(uint))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(long))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(ulong))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(float))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(decimal))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
-                }
-                else if (type == typeof(double))
-                {
-                    cf.fieldType = _ClassField.FieldType.Number;
+                    cf.fieldType = ClassField.FieldType.Number;
                 }
                 else if (type == typeof(string))
                 {
-                    cf.fieldType = _ClassField.FieldType.String;
+                    cf.fieldType = ClassField.FieldType.String;
                 }
                 else if (type == typeof(bool))
                 {
-                    cf.fieldType = _ClassField.FieldType.Bool;
+                    cf.fieldType = ClassField.FieldType.Bool;
+                }
+                else
+                {
+                    cf.fieldType = ClassField.FieldType.NotSupported;
                 }
             }
         }
 
-        private static void SetVal(ref _ClassField cf, FieldInfo field, Assembly hotCode, object hotInstance)
+        private static void SetVal(ref ClassField cf, MemberInfo field, Assembly hotCode, object hotInstance,GameObject instance)
         {
-            if (field.FieldType != typeof(UnityEngine.Object) ||
-                !field.FieldType.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+            object value;
+            var type = (field is PropertyInfo)
+                ? ((PropertyInfo) field).PropertyType
+                : ((FieldInfo) field).FieldType;
+            if (hotInstance == null)
             {
-                try
+                value = type.IsValueType ? Activator.CreateInstance(type) : null;
+            }
+            else
+            {
+                if (field is PropertyInfo)
                 {
-                    cf.value = field.GetValue(hotInstance).ToString();
+                    value = ((PropertyInfo)field).GetValue(hotInstance);
                 }
-                catch
+                else
                 {
-                    Log.PrintWarning($"无法对JBehaviour派生类的字段{cf.fieldName}自动赋值构造值（如果没有可忽略）");
+                    value = ((FieldInfo)field).GetValue(hotInstance);
                 }
             }
+
+            SetVal(ref cf, type, hotCode, value,instance);
         }
 
-        private static void SetVal(ref _ClassField cf, PropertyInfo field, Assembly hotCode, object hotInstance)
+        private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value,GameObject instance)
         {
-            if (field.PropertyType != typeof(UnityEngine.Object) ||
-                !field.PropertyType.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+            if (type != typeof(Object) ||
+                !type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
             {
                 try
                 {
-                    cf.value = field.GetValue(hotInstance).ToString();
+                    if (type == typeof(String))
+                    {
+                        value = "";
+                    }
+                    cf.value = value.ToString();
                 }
                 catch
                 {
-                    Log.PrintWarning($"无法对JBehaviour派生类的属性{cf.fieldName}自动赋值构造值（如果没有可忽略）");
+                    Log.PrintWarning(String.Format(Setting.GetString(SettingString.ClassBindUnableSetFieldValue),
+                        instance.name, type.Name, cf.fieldName));
                 }
             }
         }

@@ -439,13 +439,7 @@ namespace ILRuntime.Runtime.Intepreter
                                             break;
                                         case ObjectTypes.StackObjectReference:
                                             {
-                                                objRef2 = GetObjectAndResolveReference(objRef);
-                                                *objRef = *objRef2;
-                                                if (objRef->ObjectType >= ObjectTypes.Object)
-                                                {
-                                                    objRef->Value = mStack.Count;
-                                                    mStack.Add(mStack[objRef2->Value]);
-                                                }
+                                                CopyToStack(objRef, GetObjectAndResolveReference(objRef), mStack);
                                             }
                                             break;
                                         case ObjectTypes.FieldReference:
@@ -2408,7 +2402,7 @@ namespace ILRuntime.Runtime.Intepreter
 #region Initialization & Instantiation
                             case OpCodeEnum.Newobj:
                                 {
-                                    IMethod m = domain.GetMethod(ip->TokenInteger);
+                                   IMethod m = domain.GetMethod(ip->TokenInteger);
                                     if (m is ILMethod)
                                     {
                                         type = m.DeclearingType as ILType;
@@ -2425,21 +2419,27 @@ namespace ILRuntime.Runtime.Intepreter
                                             Free(esp - 1 - 1);
                                             esp = esp - 1 - 1;
                                             object dele;
-                                            if (mi is ILMethod)
+                                            var ilMethod = mi as ILMethod;
+                                            if (ilMethod != null)
                                             {
                                                 if (ins != null)
                                                 {
-                                                    dele = ((ILTypeInstance)ins).GetDelegateAdapter((ILMethod)mi);
+                                                    dele = ((ILTypeInstance) ins).GetDelegateAdapter(ilMethod);
                                                     if (dele == null)
-                                                        dele = domain.DelegateManager.FindDelegateAdapter((ILTypeInstance)ins, (ILMethod)mi);
+                                                    {
+                                                        var invokeMethod = type.GetMethod("Invoke", mi.ParameterCount);
+                                                        dele = domain.DelegateManager.FindDelegateAdapter(
+                                                            (ILTypeInstance) ins, ilMethod, invokeMethod);
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    if (((ILMethod)mi).DelegateAdapter == null)
+                                                    if (ilMethod.DelegateAdapter == null)
                                                     {
-                                                        ((ILMethod)mi).DelegateAdapter = domain.DelegateManager.FindDelegateAdapter(null, (ILMethod)mi);
+                                                        var invokeMethod = type.GetMethod("Invoke", mi.ParameterCount);
+                                                        ilMethod.DelegateAdapter = domain.DelegateManager.FindDelegateAdapter(null, ilMethod, invokeMethod);
                                                     }
-                                                    dele = ((ILMethod)mi).DelegateAdapter;
+                                                    dele = ilMethod.DelegateAdapter;
                                                 }
                                             }
 
@@ -2514,21 +2514,29 @@ namespace ILRuntime.Runtime.Intepreter
                                                 Free(esp - 1 - 1);
                                                 esp = esp - 1 - 1;
                                                 object dele;
-                                                if (mi is ILMethod)
+                                                var ilMethod = mi as ILMethod;
+                                                if (ilMethod != null)
                                                 {
                                                     if (ins != null)
                                                     {
-                                                        dele = ((ILTypeInstance)ins).GetDelegateAdapter((ILMethod)mi);
+                                                        dele = ((ILTypeInstance)ins).GetDelegateAdapter(ilMethod);
                                                         if (dele == null)
-                                                            dele = domain.DelegateManager.FindDelegateAdapter((ILTypeInstance)ins, (ILMethod)mi);
+                                                        {
+                                                            var invokeMethod =
+                                                                cm.DeclearingType.GetMethod("Invoke",
+                                                                    mi.ParameterCount);
+                                                            dele = domain.DelegateManager.FindDelegateAdapter(
+                                                                (ILTypeInstance) ins, ilMethod, invokeMethod);
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        if (((ILMethod)mi).DelegateAdapter == null)
+                                                        if (ilMethod.DelegateAdapter == null)
                                                         {
-                                                            ((ILMethod)mi).DelegateAdapter = domain.DelegateManager.FindDelegateAdapter(null, (ILMethod)mi);
+                                                            var invokeMethod = cm.DeclearingType.GetMethod("Invoke", mi.ParameterCount);
+                                                            ilMethod.DelegateAdapter = domain.DelegateManager.FindDelegateAdapter(null, ilMethod, invokeMethod);
                                                         }
-                                                        dele = ((ILMethod)mi).DelegateAdapter;
+                                                        dele = ilMethod.DelegateAdapter;
                                                     }
                                                 }
                                                 else
@@ -2546,6 +2554,10 @@ namespace ILRuntime.Runtime.Intepreter
                                                     esp = redirect(this, esp, mStack, cm, true);
                                                 else
                                                 {
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+                                                    if (!allowUnboundCLRMethod)
+                                                        throw new NotSupportedException(cm.ToString() + " is not bound!");
+#endif
                                                     object result = cm.Invoke(this, esp, mStack, true);
                                                     int paramCount = cm.ParameterCount;
                                                     for (int i = 1; i <= paramCount; i++)
@@ -5319,6 +5331,11 @@ namespace ILRuntime.Runtime.Intepreter
             {
                 esp->ObjectType = ObjectTypes.Integer;
                 esp->Value = (sbyte)obj;
+            }
+            else if (obj is Enum)
+            {
+                esp->ObjectType = ObjectTypes.Integer;
+                esp->Value = Convert.ToInt32(obj);
             }
             else
                 throw new NotImplementedException();

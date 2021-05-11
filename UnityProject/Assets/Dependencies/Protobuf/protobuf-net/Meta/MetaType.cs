@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ProtoBuf.Serializers;
 
@@ -994,7 +995,14 @@ namespace ProtoBuf.Meta
 #if WINRT || PORTABLE || CF || FX11 || COREFX
                     fieldNumber = Convert.ToInt32(((FieldInfo)member).GetValue(null));
 #else
-                    fieldNumber = Convert.ToInt32(((FieldInfo)member).GetRawConstantValue());
+                    if (member.ReflectedType is ILRuntime.Reflection.ILRuntimeType)
+                    {
+                        fieldNumber = member.ReflectedType.GetFields().ToList().IndexOf((FieldInfo)member);
+                    }
+                    else
+                    {
+                        fieldNumber = Convert.ToInt32(((FieldInfo)member).GetRawConstantValue());
+                    }
 #endif
                     if (attrib != null)
                     {

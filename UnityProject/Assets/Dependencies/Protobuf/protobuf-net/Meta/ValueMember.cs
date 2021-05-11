@@ -232,7 +232,16 @@ namespace ProtoBuf.Meta
             if(convertType != null) return Convert.ChangeType(value, convertType, CultureInfo.InvariantCulture);
             throw new ArgumentException("Unable to process default value: " + value + ", " + type.FullName);
 #else
-            if (Helpers.IsEnum(type)) return Enum.ToObject(type, value);
+            if (Helpers.IsEnum(type))
+            {
+                if (value is ILRuntime.Mono.Cecil.CustomAttributeArgument)
+                {
+                    var v = (ILRuntime.Mono.Cecil.CustomAttributeArgument)value;
+                    return v.Value;
+                }
+                
+                return Enum.ToObject(type, value);
+            }
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 #endif
         }

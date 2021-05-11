@@ -24,30 +24,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace JEngine.Core
 {
-    [RequireComponent(typeof(UnityEngine.UI.Text))]
+    [RequireComponent(typeof(Text))]
     public class LocalizedText : MonoBehaviour
     {
         public string key;
 
-        [HideInInspector]public UnityEngine.UI.Text _text;
+        [FormerlySerializedAs("_text")] [HideInInspector]public Text text;
 
         private void Start()
         {
             Localization.AddText(this);
-            _text = this.gameObject.GetComponent<UnityEngine.UI.Text>();
+            text = gameObject.GetComponent<Text>();
             SetText();
         }
 
         public async void SetText()
         {
             await Task.Delay(100);
-            _text.text = Localization.GetString(key);
+            text.text = Localization.GetString(key);
         }
     }
 }

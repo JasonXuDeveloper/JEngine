@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using UnityEngine;
 
 namespace JEngine.Core
@@ -36,12 +37,12 @@ namespace JEngine.Core
 
         public static void PrintWarning(object message)
         {
-            Debug.LogWarning("[JEngine Warnning] " + message);
+            Debug.LogWarning("<color=#ffa673>[JEngine Warnning]</color> " + message);
         }
 
         public static void PrintError(object message)
         {
-            Debug.LogError("[JEngine Error] " + message);
+            Debug.LogError("<color=#db4259>[JEngine Error]</color> " + message);
         }
     }
 }

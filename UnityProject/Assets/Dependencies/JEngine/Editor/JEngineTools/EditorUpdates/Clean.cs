@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,23 +35,32 @@ using UnityEngine;
 
 namespace JEngine.Editor
 {
-    internal class Clean
+    internal static class Clean
          {
-             private static bool isDone = true;
+             public static bool hasAdded;
+             
+             private static bool _isDone = true;
      
-             private static DirectoryInfo library = new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
-             private static DirectoryInfo di = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
+             private static readonly string HotProjectName = "HotUpdateScripts";
+             
+             private static readonly DirectoryInfo LibraryDirectory = new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
+             private static readonly DirectoryInfo HiddenDirectory = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
+
+             private static readonly FileInfo HotFile =
+                 new FileInfo("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
              
              public static void Update()
              {
-                 if (!isDone || EditorApplication.isPlaying)
+                 hasAdded = true;
+                 
+                 if (!_isDone || EditorApplication.isPlaying)
                  {
                      return;
                  }
      
-                 if (!Directory.Exists("Assets/HotUpdateResources/Dll/Hidden~")) //DLL导入到隐藏文件夹，防止每次加载浪费时间
+                 if (!HiddenDirectory.Exists) //DLL导入到隐藏文件夹，防止每次加载浪费时间
                  {
-                     Directory.CreateDirectory("Assets/HotUpdateResources/Dll/Hidden~");
+                     HiddenDirectory.Create();
                  }
      
                  if (!File.Exists(DLLMgr.DllPath)) //没热更dll就返回
@@ -60,47 +70,43 @@ namespace JEngine.Editor
      
                  //有的话比较日期
                  DateTime lastModified = File.GetLastWriteTime(DLLMgr.DllPath);
-                 string lastModifiedStr = lastModified.ToString(Setting.GetString(Setting.DATE_FORMAT));
+                 string lastModifiedStr = lastModified.ToString(Setting.GetString(SettingString.DateFormat));
                  if (Setting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
                  {
-                     var files = di.GetFiles();
-                     var watch = new Stopwatch();
+                     var files = HiddenDirectory.GetFiles();
                      int counts = 0;
                      List<string> fileNames = Directory.GetFiles("Assets/",
                          "*.dll", SearchOption.AllDirectories).ToList();
                      
-                     DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-                     watch = new Stopwatch();
+                     var watch = new Stopwatch();
+                     watch.Start();
                      DLLMgr.MakeBytes();
                      watch.Stop();
                      if (watch.ElapsedMilliseconds > 0)
                      {
-                         Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
+                         Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
+                             watch.ElapsedMilliseconds));
                      }
      
                      AssetDatabase.Refresh();
      
                      Setting.LastDLLCleanUpTime = lastModifiedStr;
      
-                     isDone = false;
-                     fileNames = fileNames.FindAll((x) => !x.Contains("~"));
+                     _isDone = false;
+                     fileNames = fileNames.FindAll(x => !x.Contains("~"));
                      
                      watch.Start();
                      foreach (var file in files)
                      {
                          var name = file.Name;
-                         if (!File.Exists(library.FullName + "/" + name) && !name.Contains("netstandard") &&
-                             !name.Contains("HotUpdateScripts") && !name.Contains("Unity") && !name.Contains("System") &&
+                         var success = true;
+                         if (!File.Exists(LibraryDirectory.FullName + "/" + name) && !name.Contains("netstandard") &&
+                             !name.Contains(HotProjectName) && !name.Contains("Unity") && !name.Contains("System") &&
                              ((name.Contains(".pdb") || name.Contains(".dll"))))
                          {
                              if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
                              {
-                                 DLLMgr.Delete(file.FullName.Replace("Hidden~", "../Dll"));
-                                 File.Move(file.FullName, file.FullName.Replace("Hidden~", "../Dll"));
-                                 Log.Print(
-                                     $"Find new referenced dll `{name}`, note that your hot update code may not be able " +
-                                     $"to run without rebuild application\n" +
-                                     $"发现新的引用DLL`{name}`，请注意，游戏可能需要重新打包，否则热更代码无法将有可能运行");
+                                 success = false;
                              }
                              else //存在就删了
                              {
@@ -108,16 +114,34 @@ namespace JEngine.Editor
                                  counts++;
                              }
                          }
-                         else if (!name.Contains("HotUpdateScripts"))
+                         else if (!name.Contains(HotProjectName))
                          {
-                             DLLMgr.Delete(file.FullName);
-                             counts++;
-                         }
-                         else
-                         {
-                             if (!name.Contains("HotUpdateScripts"))
+                             try
                              {
-                                 Log.PrintError($"无法删除{file.FullName}，请手动删除");
+                                 DLLMgr.Delete(file.FullName);
+                                 counts++;
+                             }
+                             catch
+                             {
+                                 Log.Print(String.Format(
+                                     Setting.GetString(SettingString.DeleteErrorLog),
+                                     file.Name));
+                                 success = false;
+                             }
+                         }
+
+                         if (!success)
+                         {
+                             if (file.Directory != null)
+                             {
+                                 DirectoryInfo newPath = new DirectoryInfo(file.Directory.FullName)?.Parent?.Parent?.Parent;
+                                 if (newPath != null)
+                                 {
+                                     File.Move(file.FullName, newPath.FullName + "/" + file.Name);
+                                     Log.Print(String.Format(
+                                         Setting.GetString(SettingString.DLLNewReferenceLog),
+                                         newPath.FullName + "/" + file.Name));
+                                 }
                              }
                          }
                      }
@@ -125,21 +149,25 @@ namespace JEngine.Editor
                      watch.Stop();
                      if (counts > 0) //如果删除过东西，就代表DLL更新了，就需要生成文件
                      {
-                         Log.Print("Cleaned: " + counts + " files in: " + watch.ElapsedMilliseconds + " ms.");
+                         Log.Print(String.Format(Setting.GetString(SettingString.DLLCleanLog),
+                             counts,
+                             watch.ElapsedMilliseconds));
                      }
      
-                     isDone = true;
+                     _isDone = true;
                  }
      
-                 if (!File.Exists("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes"))
+                 if (!HotFile.Exists)
                  {
-                     isDone = false;
+                     _isDone = false;
                      var watch = new Stopwatch();
+                     watch.Start();
                      DLLMgr.MakeBytes();
                      watch.Stop();
-                     Log.Print("Convert DLL in: " + watch.ElapsedMilliseconds + " ms.");
+                     Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
+                         watch.ElapsedMilliseconds));
                      AssetDatabase.Refresh();
-                     isDone = true;
+                     _isDone = true;
                  }
              }
          }

@@ -1,6 +1,6 @@
+using ILRuntime.Runtime.Enviorment;
 using JEngine.Interface;
 using UnityEngine;
-using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Helper
 {

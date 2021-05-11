@@ -86,11 +86,16 @@ namespace JEngine.UI
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="val"></param>
+        /// <param name="onChange">非必填optional</param>
         /// <returns></returns>
         public JUI Bind<T>(BindableProperty<T> val)
         {
             _bind = true;
-            val.OnChange += () => Message();
+            _bindType = typeof(T);
+            val.OnChange += (T value) =>
+            {
+                Message(value);
+            };
             return this;
         }
 
@@ -98,6 +103,7 @@ namespace JEngine.UI
         /// Whether has bind or not
         /// </summary>
         private bool _bind;
+        private Type _bindType;
 
         /// <summary>
         /// Calls when UI has been inited
@@ -153,9 +159,22 @@ namespace JEngine.UI
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public JUI onMessage(Action<JUI> message)
+        public JUI onMessage<T>(Action<JUI,T> message)
         {
-            _message = message ?? new Action<JUI>(t => { });
+            if (!_bind)
+            {
+                Log.PrintError($"请先对JUI绑定数值（gameObject: {gameObject.name}）");
+                return this;
+            }
+            if (_bindType != typeof(T))
+            {
+                Log.PrintError($"JUI数值绑定的监听方法的泛型参数必须是{_bindType.FullName}类型，当前注册的是{typeof(T)}类型（gameObject: {gameObject.name}）");
+                return this;
+            }
+            _message = (jui,value) =>
+            {
+                message?.Invoke(jui,(T)value);
+            };
             return this;
         }
 
@@ -167,12 +186,6 @@ namespace JEngine.UI
         public new JUI Activate()
         {
             base.Activate();
-
-            if (_bind)//Call message() once to init UI
-            {
-                Message();
-            }
-
             return this;
         }
 
@@ -196,7 +209,7 @@ namespace JEngine.UI
             _run = new Action<JUI>(t => { });
             _loop = new Action<JUI>(t => { });
             _end = new Action<JUI>(t => { });
-            _message = new Action<JUI>(t => { });
+            _message = new Action<JUI, object>((j, o) => { });
         }
 
         #region OVERRIDE METHODS
@@ -230,11 +243,11 @@ namespace JEngine.UI
         }
         #endregion
 
-        private Action<JUI> _message;
-        private void Message()
+        private Action<JUI,object> _message;
+        private void Message<T>(T val)
         {
             if (!_bind) return;
-            _message?.Invoke(this);
+            _message?.Invoke(this,val);
         }
     }
 }

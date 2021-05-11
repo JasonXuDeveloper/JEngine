@@ -22,10 +22,10 @@ namespace ILRuntime.Runtime.Generated
             MethodBase method;
             Type[] args;
             Type type = typeof(JEngine.Core.ClassBind);
-            args = new Type[]{typeof(JEngine.Core._ClassBind)};
+            args = new Type[]{typeof(JEngine.Core.ClassData)};
             method = type.GetMethod("AddClass", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, AddClass_0);
-            args = new Type[]{typeof(JEngine.Core._ClassBind)};
+            args = new Type[]{typeof(JEngine.Core.ClassData)};
             method = type.GetMethod("Active", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Active_1);
 
@@ -40,14 +40,14 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            JEngine.Core._ClassBind @_class = (JEngine.Core._ClassBind)typeof(JEngine.Core._ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            JEngine.Core.ClassData @classData = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             JEngine.Core.ClassBind instance_of_this_method = (JEngine.Core.ClassBind)typeof(JEngine.Core.ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
-            var result_of_this_method = instance_of_this_method.AddClass(@_class);
+            var result_of_this_method = instance_of_this_method.AddClass(@classData);
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
@@ -59,14 +59,14 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            JEngine.Core._ClassBind @_class = (JEngine.Core._ClassBind)typeof(JEngine.Core._ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            JEngine.Core.ClassData @classData = (JEngine.Core.ClassData)typeof(JEngine.Core.ClassData).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             JEngine.Core.ClassBind instance_of_this_method = (JEngine.Core.ClassBind)typeof(JEngine.Core.ClassBind).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
-            instance_of_this_method.Active(@_class);
+            instance_of_this_method.Active(@classData);
 
             return __ret;
         }

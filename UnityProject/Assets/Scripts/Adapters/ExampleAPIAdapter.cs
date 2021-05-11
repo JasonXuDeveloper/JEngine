@@ -95,7 +95,7 @@ namespace ProjectAdapter
                                     await Task.Delay(20);
                                 }
                             }
-                            catch (MissingReferenceException e) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
                             {
                                 return;
                             }
@@ -105,14 +105,14 @@ namespace ProjectAdapter
                                 return;
                             }
 
-                            isAwaking = false;
                             appdomain.Invoke(mAwakeMethod, instance, param0);
+                            isAwaking = false;
                             awaked = true;
                             OnEnable();
                         }
                     }
                 }
-                catch (NullReferenceException e)
+                catch (NullReferenceException)
                 {
                     //如果出现了Null，那就重新Awake
                     Awake();
@@ -1224,19 +1224,29 @@ namespace ProjectAdapter
                 }
             }
             
-            #endregion
-
+            IMethod mToStringMethod;
+            bool mToStringMethodGot;
             public override string ToString()
             {
-                IMethod m = appdomain.ObjectType.GetMethod("ToString", 0);
-                m = instance.Type.GetVirtualMethod(m);
-                if (m == null || m is ILMethod)
+                if (instance != null)
                 {
-                    return instance.ToString();
+                    if (!mToStringMethodGot)
+                    {
+                        mToStringMethod =
+                            instance.Type.GetMethod("ToString", 0);
+                        mToStringMethodGot = true;
+                    }
+    
+                    if (mToStringMethod != null)
+                    {
+                        appdomain.Invoke(mToStringMethod, instance, param0);
+                    }
                 }
-                else
-                    return instance.Type.FullName;
+    
+                return instance?.Type?.FullName ?? base.ToString();
             }
+            
+            #endregion
         }
     }
 }

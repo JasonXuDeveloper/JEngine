@@ -26,8 +26,6 @@
  */
 #endregion
 
-using System;
-
 namespace WebSocketSharp
 {
   internal enum Rsv : byte

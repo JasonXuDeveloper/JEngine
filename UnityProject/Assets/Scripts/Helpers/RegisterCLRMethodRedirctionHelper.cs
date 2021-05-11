@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -14,9 +15,11 @@ using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
 using JEngine.Interface;
+using ProtoBuf;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Debug = UnityEngine.Debug;
+using Extensions = ILRuntime.CLR.Utils.Extensions;
 using Object = System.Object;
 
 namespace JEngine.Helper
@@ -177,15 +180,6 @@ namespace JEngine.Helper
             var printErrorMethod = printType.GetMethod("PrintError", new[] {typeof(object)});
             appdomain.RegisterCLRMethodRedirection(printErrorMethod, PrintError);
 
-            //注册Instantiate
-            Type unityObjectType = typeof(UnityEngine.Object);
-            var instantiateMethods = unityObjectType.GetMethods().ToList()
-                .FindAll(i => i.Name == "Instantiate");
-            foreach (var instantiateMethod in instantiateMethods)
-            {
-                appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate);
-            }
-
             //注册Invoke
             Type monoType = typeof(MonoBehaviour);
             args = new[] {typeof(String), typeof(Single)};
@@ -214,18 +208,30 @@ namespace JEngine.Helper
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_6);
             
             //注册pb反序列化
-            Type pbSerializeType = typeof(ProtoBuf.Serializer);
-            args = new Type[]{typeof(System.Type), typeof(System.IO.Stream)};
+            Type pbSerializeType = typeof(Serializer);
+            args = new[]{typeof(Type), typeof(Stream)};
             var pbDeserializeMethod = pbSerializeType.GetMethod("Deserialize", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(pbDeserializeMethod, Deserialize_1);
-            args = new Type[]{typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance)};
+            args = new[]{typeof(ILTypeInstance)};
             Dictionary<string, List<MethodInfo>> genericMethods = new Dictionary<string, List<MethodInfo>>();
             List<MethodInfo> lst = null;                 
+            foreach(var m in pbSerializeType.GetMethods())
+            {
+                if(m.IsGenericMethodDefinition)
+                {
+                    if (!genericMethods.TryGetValue(m.Name, out lst))
+                    {
+                        lst = new List<MethodInfo>();
+                        genericMethods[m.Name] = lst;
+                    }
+                    lst.Add(m);
+                }
+            }
             if (genericMethods.TryGetValue("Deserialize", out lst))
             {
                 foreach(var m in lst)
                 {
-                    if(m.MatchGenericParameters(args, typeof(ILRuntime.Runtime.Intepreter.ILTypeInstance), typeof(System.IO.Stream)))
+                    if(m.MatchGenericParameters(args, typeof(ILTypeInstance), typeof(Stream)))
                     {
                         var method = m.MakeGenericMethod(args);
                         appdomain.RegisterCLRMethodRedirection(method, Deserialize_2);
@@ -233,8 +239,492 @@ namespace JEngine.Helper
                     }
                 }
             }
+            
+            //注册Instantiate
+            var objectType = typeof(UnityEngine.Object);
+            var instantiateMethod = objectType.GetMethod("Instantiate", flag, null, args, null);
+            var allMethods = objectType.GetMethods().ToList().FindAll(f => f.Name == "Instantiate");
+            //GameObject的方便点，不需要再去Get类型
+            args = new Type[] {typeof(UnityEngine.GameObject)};
+            foreach (var m in allMethods)
+            {
+                if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_7);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_8);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Transform), typeof(System.Boolean)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_9);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_10);
+                }
+                else if (m.MatchGenericParameters(args, typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject),
+                    typeof(UnityEngine.Vector3), typeof(UnityEngine.Quaternion), typeof(UnityEngine.Transform)))
+                {
+                    instantiateMethod = m.MakeGenericMethod(args);
+                    appdomain.RegisterCLRMethodRedirection(instantiateMethod, Instantiate_11);
+                }
+            }
+            //其他的需要复杂一点的
+            foreach (var m in allMethods)
+            {
+                var allParams = m.GetParameters();
+                if (allParams.Length == 1)
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_12);
+                }
+                else if (allParams.Length == 2)
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_13);
+                }
+                else if (allParams.Length == 3 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Transform) &&
+                         allParams[2].ParameterType == typeof(System.Boolean))
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_14);
+                }
+                else if (allParams.Length == 3 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Vector3) &&
+                         allParams[2].ParameterType == typeof(UnityEngine.Quaternion))
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_15);
+                }
+                else if (allParams.Length == 4 &&
+                         allParams[1].ParameterType == typeof(UnityEngine.Vector3) &&
+                         allParams[2].ParameterType == typeof(UnityEngine.Quaternion) &&
+                         allParams[3].ParameterType == typeof(UnityEngine.Transform))
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_16);
+                }
+                else
+                {
+                    appdomain.RegisterCLRMethodRedirection(m, Instantiate_17);
+                }
+            }
         }
         
+        /// <summary>
+        /// 帮助Instantiate找到GameObject
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="ins"></param>
+        /// <param name="returnScipt"></param>
+        /// <param name="returnType"></param>
+        private static void SetGOForInstantiate(object instance, out GameObject ins, out ILType returnType)
+        {
+            returnType = null;
+            //判断类
+            if (instance is GameObject)
+            {
+                ins = instance as GameObject;
+            }
+            else if (instance is ILTypeInstance) //如果是热更类需要处理
+            {
+                returnType = (instance as ILTypeInstance).Type;
+                ins = FindGOFromHotClass((instance as ILTypeInstance));
+            }
+            else //如果本地类那简单
+            {
+                ins = (instance as Component).gameObject;
+            }
+        }
+
+       
+        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain __domain,IType type = null)
+        {
+            //没adapter不需要注意什么
+            if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
+            {
+                if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
+                {
+                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                }
+
+                return res;
+            }
+
+            bool needClassBind = false;
+            //如果同时有adaptor和classbind，肯定是复制的，要给删了
+            foreach (var t in res.GetComponentsInChildren<Transform>())
+            {
+                var go = t.gameObject;
+                var cb = go.GetComponent<ClassBind>();
+                if (cb != null && go.GetComponent<CrossBindingAdaptorType>() != null)
+                {
+                    UnityEngine.Object.DestroyImmediate(cb); //防止重复的ClassBind
+                }
+            }
+            //如果有适配器的话
+            //没适配器就只有ClassBind，那就复制后再去ClasBind
+            if (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
+            {
+                needClassBind = true;
+            }
+
+            //重新赋值instance的热更脚本
+            var clrInstances = res.GetComponentsInChildren<CrossBindingAdaptorType>(true); //clone的
+            var clrInstances4Ins = ins.GetComponentsInChildren<CrossBindingAdaptorType>(true); //原来的
+
+            ILTypeInstance result = null;
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                //获取对照适配器
+                var clrInstance = clrInstances[i];
+                var clrInstance4Ins = clrInstances4Ins[i];
+
+                ILTypeInstance ilInstance =
+                    clrInstance4Ins.ILInstance
+                        .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
+                
+                var t = clrInstance4Ins.GetType();
+                if (ilInstance.Type == type && result == null)
+                {
+                    result = ilInstance;
+                }
+
+                if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
+                {
+                    var adapter = ((MonoBehaviourAdapter.Adaptor) clrInstance4Ins);
+                    var self = ((MonoBehaviourAdapter.Adaptor) clrInstance);
+                    self.Reset(); //重置clone的
+                    
+                    var jBehaviourType = __domain.LoadedTypes["JEngine.Core.JBehaviour"];
+                    bool isJBehaviour = clrInstance4Ins.ILInstance.Type.ReflectionType.IsSubclassOf(jBehaviourType.ReflectionType);
+                    if (isJBehaviour)
+                    {
+                        self.isJBehaviour = true;
+                        var go = self.gameObject;
+                        jBehaviourType.ReflectionType.GetMethod("ResetJBehaviour",
+                            BindingFlags.Default | BindingFlags.NonPublic)?.Invoke(ilInstance, new object[] {go});
+                    }
+                    
+                    //重新搞ILInstance
+                    self.ILInstance = ilInstance;
+                    self.AppDomain = __domain;
+                }
+                else
+                {
+                    var ILInstance = t.GetField("instance",
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    var AppDomain = t.GetField("appdomain",
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    ILInstance.SetValue(clrInstance, ilInstance);
+                    AppDomain.SetValue(clrInstance, __domain);
+                }
+
+                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins) //clr指向
+                {
+                    ilInstance.CLRInstance = clrInstance;
+                }
+                else
+                {
+                    ilInstance.CLRInstance = ilInstance;
+                }
+
+                //补上Awake
+                //不管是啥类型，直接invoke这个awake方法
+                var awakeMethod = (clrInstance.GetType() != null ? clrInstance.GetType() : t).GetMethod("Awake",
+                    BindingFlags.Default | BindingFlags.Public
+                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                         BindingFlags.NonPublic | BindingFlags.Static);
+                if (awakeMethod != null)
+                {
+                    awakeMethod.Invoke(clrInstance, null);
+                }
+                else
+                {
+                    Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                }
+
+                if (needClassBind)
+                {
+                    ClassBindMgr.DoBind();
+                }
+                else
+                {
+                    //处理好了后，如果还有classbind就是prefab，需要重新bind
+                    if (res.GetComponentInChildren<ClassBind>(true))
+                    {
+                        ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                    }
+                }
+            }
+
+            if (type != null)
+            {
+                return result;
+            }
+            else
+            {
+                return res;
+            }
+        }
+        
+        private static unsafe StackObject* Instantiate_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original);
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
+        }
+
+        private static unsafe StackObject* Instantiate_8(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @parent);
+
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
+        }
+
+        private static unsafe StackObject* Instantiate_9(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @worldPositionStays = ptr_of_this_method->Value == 1;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @parent, @worldPositionStays);
+
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
+        }
+
+        private static unsafe StackObject* Instantiate_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @position, @rotation);
+
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
+        }
+
+        private static unsafe StackObject* Instantiate_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+
+            var result_of_this_method = UnityEngine.Object.Instantiate<UnityEngine.GameObject>(@original, @position, @rotation, @parent);
+            DoInstantiate(original, result_of_this_method, __domain);
+
+            return ILIntepreter.PushObject(__ret, __mStack, DoInstantiate(original, result_of_this_method, __domain));
+        }
+        
+        private static unsafe StackObject* Instantiate_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+
+            object @original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_13(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_14(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @worldPositionStays = ptr_of_this_method->Value == 1;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+            
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent, @worldPositionStays);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_15(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go, @position, @rotation);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+
+        private static unsafe StackObject* Instantiate_16(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 4);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Transform @parent = (UnityEngine.Transform)typeof(UnityEngine.Transform).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            UnityEngine.Quaternion @rotation = (UnityEngine.Quaternion)typeof(UnityEngine.Quaternion).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            UnityEngine.Vector3 @position = (UnityEngine.Vector3)typeof(UnityEngine.Vector3).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
+            UnityEngine.GameObject @original = (UnityEngine.GameObject)typeof(UnityEngine.GameObject).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            __intp.Free(ptr_of_this_method);
+
+            SetGOForInstantiate(original, out var go, out var type);
+            var result_of_this_method = UnityEngine.Object.Instantiate(go,  @position, @rotation, @parent);
+            object res = DoInstantiate(go, result_of_this_method, __domain,type);
+            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            {
+                res = ((GameObject) res).GetComponent(original.GetType());
+            }
+            
+            return ILIntepreter.PushObject(__ret, __mStack, res);
+        }
+        
+        private static unsafe StackObject* Instantiate_17(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            throw new NotSupportedException("JEngine不支持这种Instantiate");
+        }
+
         /// <summary>
         /// pb net 反序列化重定向
         /// </summary>
@@ -246,20 +736,20 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Stream source = (Stream)typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Type @type = (System.Type)typeof(System.Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Type type = (Type)typeof(Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
 
-            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@type, @source);
+            var result_of_this_method = Serializer.Deserialize(type, source);
 
             object obj_result_of_this_method = result_of_this_method;
             if(obj_result_of_this_method is CrossBindingAdaptorType)
@@ -280,18 +770,18 @@ namespace JEngine.Helper
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.IO.Stream @source = (System.IO.Stream)typeof(System.IO.Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Stream source = (Stream)typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
 
             var genericArgument = __method.GenericArguments;
             var type = genericArgument[0];
-            var @realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
-            var result_of_this_method = ProtoBuf.Serializer.Deserialize(@realType,@source);
+            var realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
+            var result_of_this_method = Serializer.Deserialize(realType,source);
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
@@ -1538,359 +2028,7 @@ namespace JEngine.Helper
 
             return __ret;
         }
-
-
-        /// <summary>
-        /// 帮助Instantiate找到GameObject
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="ins"></param>
-        /// <param name="returnScipt"></param>
-        /// <param name="returnType"></param>
-        private static void SetGOForInstantiate(object instance, out GameObject ins, out bool returnScipt,
-            out ILType returnType)
-        {
-            returnType = null;
-            returnScipt = false;
-
-            //判断类
-            if (instance is GameObject)
-            {
-                ins = instance as GameObject;
-            }
-            else if (instance is ILTypeInstance) //如果是热更类需要处理
-            {
-                returnScipt = true;
-                returnType = (instance as ILTypeInstance).Type;
-                ins = FindGOFromHotClass((instance as ILTypeInstance));
-            }
-            else //如果本地类那简单
-            {
-                returnScipt = true;
-                ins = (instance as Component).gameObject;
-            }
-        }
-
-        private static void CleanGoForInstantiate(ref GameObject res, GameObject ins, AppDomain __domain)
-        {
-            //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            if (res.GetComponent<ClassBind>() != null && res.GetComponent<CrossBindingAdaptorType>() != null)
-            {
-                UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
-            }
-
-            //重新赋值instance的热更脚本
-            var clrInstances = res.GetComponents<CrossBindingAdaptorType>(); //clone的
-            var clrInstances4Ins = ins.GetComponents<CrossBindingAdaptorType>(); //原来的
-            for (int i = 0; i < clrInstances.Length; i++)
-            {
-                //获取对照适配器
-                var clrInstance = clrInstances[i];
-                var clrInstance4Ins = clrInstances4Ins[i];
-
-                //重新搞ILInstance
-                ILTypeInstance
-                    ilInstance =
-                        clrInstance4Ins.ILInstance
-                            .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
-                var t = clrInstance4Ins.GetType();
-
-                if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
-                {
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).Reset(); //重置clone的
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).ILInstance = ilInstance;
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).AppDomain = __domain;
-                }
-                else
-                {
-                    var ILInstance = t.GetField("instance",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    var AppDomain = t.GetField("appdomain",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    ILInstance.SetValue(clrInstance, ilInstance);
-                    AppDomain.SetValue(clrInstance, __domain);
-                }
-
-                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins) //clr指向
-                {
-                    ilInstance.CLRInstance = clrInstance;
-                }
-                else
-                {
-                    ilInstance.CLRInstance = ilInstance;
-                }
-
-                //补上Awake
-                //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
-                    BindingFlags.Default | BindingFlags.Public
-                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                         BindingFlags.NonPublic | BindingFlags.Static);
-                if (awakeMethod != null)
-                {
-                    awakeMethod.Invoke(clrInstance, null);
-                }
-                else
-                {
-                    Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Instantiate 实现
-        /// </summary>
-        /// <param name="__intp"></param>
-        /// <param name="__esp"></param>
-        /// <param name="__mStack"></param>
-        /// <param name="__method"></param>
-        /// <param name="isNewObj"></param>
-        /// <returns></returns>
-        /// <exception cref="System.NullReferenceException"></exception>
-        unsafe static StackObject* Instantiate(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
-            CLRMethod __method, bool isNewObj)
-        {
-            //CLR重定向的说明请看相关文档和教程，这里不多做解释
-            AppDomain __domain = __intp.AppDomain;
-
-            var ptr = __esp - 1;
-            var instance = StackObject.ToObject(ptr, __domain, __mStack);
-            if (instance == null)
-                throw new NullReferenceException();
-            __intp.Free(ptr);
-
-            bool returnScipt = false;
-            ILType returnType = null;
-            object scriptResult = null;
-
-            GameObject ins = null;
-            Transform parent = null;
-            Vector3 position = Vector3.zero;
-            Quaternion rotation = Quaternion.identity;
-            bool gotRot = false;
-            bool instantiateInWorldSpace = false;
-            bool gotIWS = false;
-
-
-            //处理参数
-            if (instance is Transform) //gameobject, transform
-            {
-                parent = instance as Transform;
-                //获取真正的gameObject
-                var ptr2 = __esp - 2;
-                var param2 = StackObject.ToObject(ptr2, __domain, __mStack);
-                __intp.Free(ptr2);
-                if (param2 is GameObject)
-                {
-                    instance = param2;
-                }
-                else // gameobject, v3, quaternion, transform
-                {
-                    gotRot = true;
-                    rotation = (Quaternion) param2;
-                    var ptr3 = __esp - 3;
-                    position = (Vector3) StackObject.ToObject(ptr3, __domain, __mStack);
-                    __intp.Free(ptr3);
-                }
-            }
-
-            if (instance is Quaternion) //gameobject, v3, quaternion
-            {
-                gotRot = true;
-                rotation = (Quaternion) instance;
-                //获取v3
-                var ptr2 = __esp - 2;
-                var param2 = StackObject.ToObject(ptr2, __domain, __mStack);
-                position = (Vector3) param2;
-                __intp.Free(ptr2);
-                //获取真正的gameObject
-                var ptr3 = __esp - 3;
-                instance = StackObject.ToObject(ptr3, __domain, __mStack);
-                __intp.Free(ptr3);
-            }
-
-            if (instance is int) //gameobject, transform, bool，ILRuntime把热更的bool变int传了，1是true，0是false
-            {
-                instantiateInWorldSpace = instance.ToString() == "1";
-                // Debug.Log(instantiateInWorldSpace);
-                gotIWS = true;
-                //获取parent
-                var ptr2 = __esp - 2;
-                parent = StackObject.ToObject(ptr2, __domain, __mStack) as Transform;
-                __intp.Free(ptr2);
-                //获取真正的gameObject
-                var ptr3 = __esp - 3;
-                instance = StackObject.ToObject(ptr3, __domain, __mStack);
-                __intp.Free(ptr3);
-            }
-
-
-
-            //处理对象
-            SetGOForInstantiate(instance, out ins, out returnScipt, out returnType);
-
-            //处理clasBind
-            var cb = ins.GetComponentInChildren<ClassBind>(true);
-            if (cb != null)
-            {
-                //执行绑定
-                ClassBindMgr.DoBind();
-            }
-
-            //处理返回对象
-            GameObject res = null;
-            if (parent == null && !gotRot) //1参数
-            {
-                res = UnityEngine.Object.Instantiate(ins); //生成
-            }
-            else if (gotRot && parent == null)
-            {
-                res = UnityEngine.Object.Instantiate(ins, position, rotation); //生成
-            }
-            else if (gotRot && parent != null)
-            {
-                res = UnityEngine.Object.Instantiate(ins, position, rotation, parent); //生成
-            }
-            else if (gotIWS) //gameobject,transform,bool
-            {
-                res = UnityEngine.Object.Instantiate(ins, parent, instantiateInWorldSpace); //生成
-            }
-            else if (parent != null) //gameobject,transform
-            {
-                res = UnityEngine.Object.Instantiate(ins, parent); //生成
-            }
-
-            //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
-            {
-                if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
-                {
-                    ClassBindMgr.DoBind();
-                    
-                    if (returnScipt)
-                    {
-                        //如果返回本地类
-                        if (returnType == null)
-                        {
-                            scriptResult = res.GetComponent(instance.GetType());
-                        }
-
-                        return ILIntepreter.PushObject(ptr, __mStack, scriptResult);
-                    }
-
-                    return ILIntepreter.PushObject(ptr, __mStack, res);
-                }
-                else
-                {
-                    UnityEngine.Object.DestroyImmediate(res.GetComponent<ClassBind>()); //防止重复的ClassBind
-                }
-            }
-
-            //重新赋值instance的热更脚本
-            var clrInstances = res.GetComponents<CrossBindingAdaptorType>(); //clone的
-            var clrInstances4Ins = ins.GetComponents<CrossBindingAdaptorType>(); //原来的
-            for (int i = 0; i < clrInstances.Length; i++)
-            {
-                //获取对照适配器
-                var clrInstance = clrInstances[i];
-                var clrInstance4Ins = clrInstances4Ins[i];
-
-                ILTypeInstance
-                    ilInstance =
-                        clrInstance4Ins.ILInstance
-                            .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
-                var t = clrInstance4Ins.GetType();
-
-                if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
-                {
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).Reset(); //重置clone的
-                    //重新搞ILInstance
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).ILInstance = ilInstance;
-                    ((MonoBehaviourAdapter.Adaptor) clrInstance).AppDomain = __domain;
-                }
-                else
-                {
-                    var ILInstance = t.GetField("instance",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    var AppDomain = t.GetField("appdomain",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    ILInstance.SetValue(clrInstance, ilInstance);
-                    AppDomain.SetValue(clrInstance, __domain);
-                }
-
-                if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins) //clr指向
-                {
-                    ilInstance.CLRInstance = clrInstance;
-                }
-                else
-                {
-                    ilInstance.CLRInstance = ilInstance;
-                }
-
-                //补上Awake
-                //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = (clrInstance.GetType()!=null?clrInstance.GetType():t).GetMethod("Awake",
-                    BindingFlags.Default | BindingFlags.Public
-                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                         BindingFlags.NonPublic | BindingFlags.Static);
-                if (awakeMethod != null)
-                {
-                    awakeMethod.Invoke(clrInstance, null);
-                }
-                else
-                {
-                    Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-
-                }
-
-                if (ilInstance.Type == returnType && scriptResult == null)
-                {
-                    scriptResult = ilInstance;
-                }
-            }
-
-            //处理子物体
-            var go = res.GetComponentsInChildren<Transform>(true);
-            var go2 = ins.GetComponentsInChildren<Transform>(true);
-
-            if (go.Length != go2.Length)
-            {
-                Debug.LogError("[Instantiate 错误] 生成实例与原对象脚本数量不匹配");
-                return __esp;
-            }
-
-            for (int i = 0; i < go.Length; i++)
-            {
-                if (go[i] == res.transform)
-                {
-                    continue;
-                }
-
-                var subGo = go[i].gameObject;
-                CleanGoForInstantiate(ref subGo, go2[i].gameObject, __domain);
-            }
-
-            //处理好了后，如果还有classbind就是prefab，需要重新bind
-            if (res.GetComponentInChildren<ClassBind>(true))
-            {
-                ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
-            }
-
-            if (returnScipt)
-            {
-                //如果返回本地类
-                if (returnType == null)
-                {
-                    scriptResult = res.GetComponent(instance.GetType());
-                }
-
-                return ILIntepreter.PushObject(ptr, __mStack, scriptResult);
-            }
-
-            return ILIntepreter.PushObject(ptr, __mStack, res);
-        }
-
+        
         /// <summary>
         /// Log.PrintError 实现
         /// </summary>
@@ -2116,7 +2254,7 @@ namespace JEngine.Helper
 
                 res = ilInstance;
 
-                var m = type.GetConstructor(ILRuntime.CLR.Utils.Extensions.EmptyParamList);
+                var m = type.GetConstructor(Extensions.EmptyParamList);
                 if (m != null)
                 {
                     __domain.Invoke(m, res, null);
@@ -2150,7 +2288,7 @@ namespace JEngine.Helper
             
             //成员方法的第2个参数为Type
             var ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Type _type = (System.Type)typeof(System.Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            Type _type = (Type)typeof(Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             __intp.Free(ptr_of_this_method);
             if (_type == null)
                 throw new NullReferenceException();
@@ -2248,6 +2386,64 @@ namespace JEngine.Helper
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
+        private static object GetComp(IType type, GameObject instance)
+        {
+            object res = null;
+            //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
+            var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
+            for (int i = 0; i < clrInstances.Length; i++)
+            {
+                var clrInstance = clrInstances[i];
+                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                {
+                    if (clrInstance.ILInstance.Type == type ||
+                        clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
+                    {
+                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
+                        break;
+                    }
+                }
+            }
+
+            return res;
+        }
+            
+        private static object DoGetComponent(IType type, GameObject instance)
+        {
+            object res = null;
+            if (type is CLRType)
+            {
+                //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
+                res = instance.GetComponent(type.TypeForCLR);
+            }
+            else
+            {
+                res = GetComp(type,instance);
+
+                if (res == null)
+                {
+                    var cb = instance.GetComponent<ClassBind>();
+                    if (cb != null)
+                    {
+                        //执行绑定
+                        ClassBindMgr.DoBind(new List<ClassBind>() {cb});
+                    }
+                    //尝试10次
+                    for (int i = 0; i < 10; i++)
+                    {
+                        res = GetComp(type,instance);
+                        if (res != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        
         /// <summary>
         /// GetComponent 的实现
         /// </summary>
@@ -2298,57 +2494,7 @@ namespace JEngine.Helper
 
 
                 var type = genericArgument[0];
-                object res = null;
-                if (type is CLRType)
-                {
-                    //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
-                    res = instance.GetComponent(type.TypeForCLR);
-                }
-                else
-                {
-                    //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
-                    var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
-                    for (int i = 0; i < clrInstances.Length; i++)
-                    {
-                        var clrInstance = clrInstances[i];
-                        if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                        {
-                            if (clrInstance.ILInstance.Type == type ||
-                                clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
-                            {
-                                res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                                break;
-                            }
-                        }
-                    }
-
-                    if (res == null) //如果是null，但有classBind，就先绑定
-                    {
-                        var cb = instance.GetComponent<ClassBind>();
-                        if (cb != null)
-                        {
-                            //执行绑定
-                            ClassBindMgr.DoBind();
-
-                            //再次循环
-                            clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
-                            for (int i = 0; i < clrInstances.Length; i++)
-                            {
-                                var clrInstance = clrInstances[i];
-                                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                                {
-                                    if (clrInstance.ILInstance.Type == type)
-                                    {
-                                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-
+                object res = DoGetComponent(type, instance);
                 return ILIntepreter.PushObject(ptr, __mStack, res);
             }
 

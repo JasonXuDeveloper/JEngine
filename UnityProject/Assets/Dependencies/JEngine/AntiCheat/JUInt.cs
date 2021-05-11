@@ -23,6 +23,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using JEngine.Core;
+
 namespace JEngine.AntiCheat
 {
     public struct JUInt
@@ -49,7 +52,7 @@ namespace JEngine.AntiCheat
                 _originalValue = value;
                 unchecked
                 {
-                    _obscuredKey = (int) JRandom.RandomNum((int)(int.MaxValue - value));
+                    _obscuredKey = JRandom.RandomNum((int)(int.MaxValue - value));
                     _obscuredUInt = (uint) (value + _obscuredKey);
                 }
             }
@@ -67,7 +70,9 @@ namespace JEngine.AntiCheat
             _obscuredUInt = 0;
             _obscuredKey = 0;
             _originalValue = 0;
+#pragma warning disable 652
             Value = val > uint.MaxValue ? uint.MaxValue : (uint) val;
+#pragma warning restore 652
         }
         
         public JUInt(string val = "0")
@@ -78,7 +83,7 @@ namespace JEngine.AntiCheat
             var result = uint.TryParse(val,out var _value);
             if (!result)
             {
-                JEngine.Core.Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
+                Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
                 Value = 0;
             }
             else

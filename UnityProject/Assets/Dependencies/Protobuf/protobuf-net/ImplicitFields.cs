@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ProtoBuf
+﻿namespace ProtoBuf
 {
     /// <summary>
     /// Specifies the method used to infer field tags for members of the type
