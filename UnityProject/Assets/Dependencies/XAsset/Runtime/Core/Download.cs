@@ -107,7 +107,7 @@ namespace libx
             }
 
             _stream.Write(buffer, 0, dataLength);
-            // position += dataLength;
+            position += dataLength;
             return _running;
         }
 
