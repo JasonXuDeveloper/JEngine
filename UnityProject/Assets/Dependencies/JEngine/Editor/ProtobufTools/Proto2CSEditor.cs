@@ -176,6 +176,7 @@ namespace JEngine.Editor
 
 			foreach (var file in files)
 			{
+				CSharpCodeGenerator.ClearTypeNames();
 				var path = Path.Combine(outpath, file.Name);
 				File.WriteAllText(path, file.Text);
 
