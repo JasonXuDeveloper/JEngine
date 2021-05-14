@@ -1,4 +1,4 @@
-﻿//
+//
 // Localization.cs
 //
 // Author:
@@ -31,10 +31,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using libx;
 using UnityEngine;
-using Object = UnityEngine.Object;
-
+using Object = UnityEngine.Object;using VEngine;
 namespace JEngine.Core
 {
     public class Localization
@@ -56,16 +54,23 @@ namespace JEngine.Core
         
         private static void Init()
         {
-            if (!Object.FindObjectOfType<Assets>())
+            #if !XASSET_6
+if (!Object.FindObjectOfType<Assets>())
             {
                 Log.PrintError("请先初始化XAsset");
                 return;
             }
+#endif
             
             _phrases = new Dictionary<string, Dictionary<string, string>>(0);
             ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",CultureInfo.InstalledUICulture.Name));
             
             var req = Assets.LoadAsset(CsvLoc,typeof(TextAsset));
+            if (req == null)
+            {
+                Log.PrintError("Localization模块无效，因为没有获取到表格文件");
+                return;
+            }
             TextAsset file = (TextAsset)req.asset;
             
             //获取全部行
@@ -167,9 +172,13 @@ namespace JEngine.Core
             if (_phrases != null && !_phrases.TryGetValue(_language,out var dic))
             {
                 string newLang = _phrases.Keys.ToList().Find(k => k.Split('-')[0] == _language.Split('-')[0]);
-                if (newLang == null)
+                if (_language != "zh-cn" && newLang == null)
                 {
                     newLang = "zh-cn";
+                }
+                else
+                {
+                    return $"[invalid language: {_language}]";;
                 }
                 Log.PrintError($"不存在语言{_language}，自动替换为{newLang}");
                 ChangeLanguage(newLang);
