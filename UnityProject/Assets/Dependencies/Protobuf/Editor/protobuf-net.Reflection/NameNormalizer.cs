@@ -1,13 +1,12 @@
 ﻿using Google.Protobuf.Reflection;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+
 
 namespace ProtoBuf.Reflection
 {
-#pragma warning disable RCS1194 // Implement exception constructors.
+
     internal class ParserException : Exception
-#pragma warning restore RCS1194 // Implement exception constructors.
     {
         public int ColumnNumber { get; }
         public int LineNumber { get; }
@@ -15,8 +14,7 @@ namespace ProtoBuf.Reflection
         public string Text { get; }
         public string LineContents { get; }
         public bool IsError { get; }
-        internal ErrorCode ErrorCode { get; }
-        internal ParserException(Token token, string message, bool isError, ErrorCode errorCode)
+        internal ParserException(Token token, string message, bool isError)
             : base(message ?? "error")
         {
             ColumnNumber = token.ColumnNumber;
@@ -25,7 +23,6 @@ namespace ProtoBuf.Reflection
             LineContents = token.LineContents;
             Text = token.Value ?? "";
             IsError = isError;
-            ErrorCode = errorCode;
         }
     }
     /// <summary>
@@ -54,21 +51,22 @@ namespace ProtoBuf.Reflection
         /// </summary>
         protected static string AutoCapitalize(string identifier)
         {
-            if (string.IsNullOrEmpty(identifier)) return identifier;
-            // if all upper-case, make proper-case
-            if (Regex.IsMatch(identifier, "^[_A-Z0-9]*$"))
-            {
-                return Regex.Replace(identifier, "(^|_)([A-Z0-9])([A-Z0-9]*)",
-                    match => match.Groups[2].Value.ToUpperInvariant() + match.Groups[3].Value.ToLowerInvariant());
-            }
-            // if all lower-case, make proper case
-            if (Regex.IsMatch(identifier, "^[_a-z0-9]*$"))
-            {
-                return Regex.Replace(identifier, "(^|_)([a-z0-9])([a-z0-9]*)",
-                    match => match.Groups[2].Value.ToUpperInvariant() + match.Groups[3].Value.ToLowerInvariant());
-            }
-            // just remove underscores - leave their chosen casing alone
-            return identifier.Replace("_", "");
+            //if (string.IsNullOrEmpty(identifier)) return identifier;
+            //// if all upper-case, make proper-case
+            //if (Regex.IsMatch(identifier, @"^[_A-Z0-9]*$"))
+            //{
+            //    return Regex.Replace(identifier, @"(^|_)([A-Z0-9])([A-Z0-9]*)",
+            //        match => match.Groups[2].Value.ToUpperInvariant() + match.Groups[3].Value.ToLowerInvariant());
+            //}
+            //// if all lower-case, make proper case
+            //if (Regex.IsMatch(identifier, @"^[_a-z0-9]*$"))
+            //{
+            //    return Regex.Replace(identifier, @"(^|_)([a-z0-9])([a-z0-9]*)",
+            //        match => match.Groups[2].Value.ToUpperInvariant() + match.Groups[3].Value.ToLowerInvariant());
+            //}
+            //// just remove underscores - leave their chosen casing alone
+            //return identifier.Replace("_", "");
+            return identifier;
         }
         /// <summary>
         /// Suggest a name with idiomatic pluralization
@@ -77,37 +75,38 @@ namespace ProtoBuf.Reflection
         {
             // horribly Anglo-centric and only covers common cases; but: is swappable
 
-            if (string.IsNullOrEmpty(identifier) || identifier.Length == 1) return identifier;
+            //if (string.IsNullOrEmpty(identifier) || identifier.Length == 1) return identifier;
 
-            if (identifier.EndsWith("ss") || identifier.EndsWith("o")) return identifier + "es";
-            if (identifier.EndsWith("is") && identifier.Length > 2) return identifier.Substring(0, identifier.Length - 2) + "es";
+            //if (identifier.EndsWith("ss") || identifier.EndsWith("o")) return identifier + "es";
+            //if (identifier.EndsWith("is") && identifier.Length > 2) return identifier.Substring(0, identifier.Length - 2) + "es";
 
-            if (identifier.EndsWith("s")) return identifier; // misses some things (bus => buses), but: might already be pluralized
+            //if (identifier.EndsWith("s")) return identifier; // misses some things (bus => buses), but: might already be pluralized
 
-            if (identifier.EndsWith("y") && identifier.Length > 2)
-            {   // identity => identities etc
-                switch (identifier[identifier.Length - 2])
-                {
-                    case 'a':
-                    case 'e':
-                    case 'i':
-                    case 'o':
-                    case 'u':
-                        break; // only for consonant prefix
-                    default:
-                        return identifier.Substring(0, identifier.Length - 1) + "ies";
-                }
-            }
-            return identifier + "s";
+            //if (identifier.EndsWith("y") && identifier.Length > 2)
+            //{   // identity => identities etc
+            //    switch (identifier[identifier.Length - 2])
+            //    {
+            //        case 'a':
+            //        case 'e':
+            //        case 'i':
+            //        case 'o':
+            //        case 'u':
+            //            break; // only for consonant prefix
+            //        default:
+            //            return identifier.Substring(0, identifier.Length - 1) + "ies";
+            //    }
+            //}
+            //return identifier + "s";
+            return identifier;
         }
         /// <summary>
         /// Name normalizer with default protobuf-net behaviour, using .NET idioms
         /// </summary>
-        public static NameNormalizer Default => new DefaultNormalizer(); // intentionally not reused
+        public static NameNormalizer Default { get; } = new DefaultNormalizer();
         /// <summary>
         /// Name normalizer that passes through all identifiers without any changes
         /// </summary>
-        public static NameNormalizer Null => new NullNormalizer(); // intentionally not reused
+        public static NameNormalizer Null { get; } = new NullNormalizer();
         /// <summary>
         /// Suggest a normalized identifier
         /// </summary>
@@ -127,21 +126,8 @@ namespace ProtoBuf.Reflection
             ns = definition.Options?.CsharpNamespace;
             if (string.IsNullOrWhiteSpace(ns)) ns = GetName(definition.Package);
 
-            if (string.IsNullOrEmpty(ns)) ns = definition?.DefaultPackage;
-
             return string.IsNullOrWhiteSpace(ns) ? null : ns;
         }
-
-        /// <summary>
-        /// Suggest a normalized identifier
-        /// </summary>
-        public virtual string GetName(OneofDescriptorProto definition)
-        {
-            var name = definition?.Options?.GetOptions()?.Name;
-            if (!string.IsNullOrWhiteSpace(name)) return name;
-            return GetName(definition.Parent as DescriptorProto, GetName(definition.Name), definition.Name, false);
-        }
-
         /// <summary>
         /// Suggest a normalized identifier
         /// </summary>
@@ -183,16 +169,12 @@ namespace ProtoBuf.Reflection
             }
             return GetName(definition.Parent as DescriptorProto, preferred, definition.Name, true);
         }
-
-        internal bool IsCaseSensitive { get; set; }
-
         /// <summary>
         /// Obtain a set of all names defined for a message
         /// </summary>
         protected HashSet<string> BuildConflicts(DescriptorProto parent, bool includeDescendents)
         {
-            var conflicts = new HashSet<string>(
-                IsCaseSensitive ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            var conflicts = new HashSet<string>();
             if (parent != null)
             {
                 conflicts.Add(GetName(parent));
@@ -229,9 +211,10 @@ namespace ProtoBuf.Reflection
             int i = 1;
             while (true)
             {
-                attempt = preferred + (i++).ToString();
+                attempt = preferred + i.ToString();
                 if (!conflicts.Contains(attempt)) return attempt;
             }
         }
     }
+
 }

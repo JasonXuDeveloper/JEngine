@@ -2,7 +2,7 @@
 
 namespace ProtoBuf.Reflection
 {
-    public partial class CommonCodeGenerator
+    partial class CommonCodeGenerator
     {
         /// <summary>
         /// Represents the union summary of a one-of declaration
@@ -14,15 +14,9 @@ namespace ProtoBuf.Reflection
             /// </summary>
             public OneofDescriptorProto OneOf { get; }
 
-            /// <summary>
-            /// The effective index of this stub
-            /// </summary>
-            public int Index { get; }
-
-            internal OneOfStub(OneofDescriptorProto decl, int index)
+            internal OneOfStub(OneofDescriptorProto decl)
             {
                 OneOf = decl;
-                Index = index;
             }
             internal int Count32 { get; private set; }
             internal int Count64 { get; private set; }
@@ -114,15 +108,14 @@ namespace ProtoBuf.Reflection
                         return "Object";
                 }
             }
-            internal static OneOfStub[] Build(DescriptorProto message)
+            internal static OneOfStub[] Build(GeneratorContext context, DescriptorProto message)
             {
                 if (message.OneofDecls.Count == 0) return null;
                 var stubs = new OneOfStub[message.OneofDecls.Count];
                 int index = 0;
                 foreach (var decl in message.OneofDecls)
                 {
-                    stubs[index] = new OneOfStub(decl, index);
-                    index++;
+                    stubs[index++] = new OneOfStub(decl);
                 }
                 foreach (var field in message.Fields)
                 {
