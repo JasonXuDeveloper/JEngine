@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
+using libx;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,7 +32,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using Object = UnityEngine.Object;using VEngine;
+using Object = UnityEngine.Object;
+
 namespace JEngine.Core
 {
     public class Localization
@@ -54,14 +55,11 @@ namespace JEngine.Core
         
         private static void Init()
         {
-            #if !XASSET_6
-if (!Object.FindObjectOfType<Assets>())
+            if (!Object.FindObjectOfType<Assets>())
             {
                 Log.PrintError("请先初始化XAsset");
                 return;
             }
-#endif
-            
             _phrases = new Dictionary<string, Dictionary<string, string>>(0);
             ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",CultureInfo.InstalledUICulture.Name));
             
