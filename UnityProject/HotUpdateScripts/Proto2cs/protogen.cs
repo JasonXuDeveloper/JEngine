@@ -171,52 +171,52 @@ namespace ProtoBuf.Reflection
 
     public static class Extensions
     {
-        public static ProtogenFileOptions GetOptions(this global::Google.Protobuf.Reflection.FileOptions obj)
+        public static ProtogenFileOptions GetOptions(this .protobuf_net.ProtogenFileOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenFileOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.FileOptions obj, ProtogenFileOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenFileOptions obj, ProtogenFileOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenFileOptions>(obj, 1037, value);
 
-        public static ProtogenMessageOptions GetOptions(this global::Google.Protobuf.Reflection.MessageOptions obj)
+        public static ProtogenMessageOptions GetOptions(this .protobuf_net.ProtogenMessageOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenMessageOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.MessageOptions obj, ProtogenMessageOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenMessageOptions obj, ProtogenMessageOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenMessageOptions>(obj, 1037, value);
 
-        public static ProtogenFieldOptions GetOptions(this global::Google.Protobuf.Reflection.FieldOptions obj)
+        public static ProtogenFieldOptions GetOptions(this .protobuf_net.ProtogenFieldOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenFieldOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.FieldOptions obj, ProtogenFieldOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenFieldOptions obj, ProtogenFieldOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenFieldOptions>(obj, 1037, value);
 
-        public static ProtogenEnumOptions GetOptions(this global::Google.Protobuf.Reflection.EnumOptions obj)
+        public static ProtogenEnumOptions GetOptions(this .protobuf_net.ProtogenEnumOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenEnumOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.EnumOptions obj, ProtogenEnumOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenEnumOptions obj, ProtogenEnumOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenEnumOptions>(obj, 1037, value);
 
-        public static ProtogenEnumValueOptions GetOptions(this global::Google.Protobuf.Reflection.EnumValueOptions obj)
+        public static ProtogenEnumValueOptions GetOptions(this .protobuf_net.ProtogenEnumValueOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenEnumValueOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.EnumValueOptions obj, ProtogenEnumValueOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenEnumValueOptions obj, ProtogenEnumValueOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenEnumValueOptions>(obj, 1037, value);
 
-        public static ProtogenServiceOptions GetOptions(this global::Google.Protobuf.Reflection.ServiceOptions obj)
+        public static ProtogenServiceOptions GetOptions(this .protobuf_net.ProtogenServiceOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenServiceOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.ServiceOptions obj, ProtogenServiceOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenServiceOptions obj, ProtogenServiceOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenServiceOptions>(obj, 1037, value);
 
-        public static ProtogenMethodOptions GetOptions(this global::Google.Protobuf.Reflection.MethodOptions obj)
+        public static ProtogenMethodOptions GetOptions(this .protobuf_net.ProtogenMethodOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenMethodOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.MethodOptions obj, ProtogenMethodOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenMethodOptions obj, ProtogenMethodOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenMethodOptions>(obj, 1037, value);
 
-        public static ProtogenOneofOptions GetOptions(this global::Google.Protobuf.Reflection.OneofOptions obj)
+        public static ProtogenOneofOptions GetOptions(this .protobuf_net.ProtogenOneofOptions obj)
             => obj == null ? default : global::ProtoBuf.Extensible.GetValue<ProtogenOneofOptions>(obj, 1037);
 
-        public static void SetOptions(this global::Google.Protobuf.Reflection.OneofOptions obj, ProtogenOneofOptions value)
+        public static void SetOptions(this .protobuf_net.ProtogenOneofOptions obj, ProtogenOneofOptions value)
             => global::ProtoBuf.Extensible.AppendValue<ProtogenOneofOptions>(obj, 1037, value);
 
     }
