@@ -7,8 +7,7 @@ namespace ProtoBuf.Reflection
     {
         public override string ToString()
         {
-            T val;
-            return Peek(out val) ? (val?.ToString() ?? "(null)") : "(EOF)";
+            return Peek(out T val) ? (val?.ToString() ?? "(null)") : "(EOF)";
         }
         private readonly IEnumerator<T> _iter;
         private T _peek, _prev;
@@ -20,10 +19,9 @@ namespace ProtoBuf.Reflection
         public T Previous => _prev;
         public bool Consume()
         {
-            T val;
-            bool haveData = _havePeek || Peek(out val);
+            bool haveData = _havePeek || Peek(out T val);
             _prev = _peek;
-            _havePeek = false;            
+            _havePeek = false;
             return haveData;
         }
         public bool Peek(out T next)
@@ -44,7 +42,7 @@ namespace ProtoBuf.Reflection
             }
             if (_eof)
             {
-                next = default(T);
+                next = default;
                 return false;
             }
             next = _peek;
