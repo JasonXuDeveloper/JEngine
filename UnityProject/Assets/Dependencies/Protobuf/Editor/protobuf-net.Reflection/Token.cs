@@ -5,6 +5,7 @@ namespace ProtoBuf.Reflection
 {
     internal struct Token
     {
+
         public static bool operator ==(Token x, Token y)
         {
             return x.Offset == y.Offset && x.File == y.File;
@@ -14,7 +15,7 @@ namespace ProtoBuf.Reflection
             return x.Offset != y.Offset || x.File != y.File;
         }
         public override int GetHashCode() => Offset;
-        public override bool Equals(object obj) => obj is Token token && token.Offset == this.Offset;
+        public override bool Equals(object obj) => (obj is Token) && ((Token)obj).Offset == this.Offset;
         public bool Equals(Token token) => token.Offset == this.Offset;
         public int Offset { get; }
         public int LineNumber { get; }
@@ -35,8 +36,11 @@ namespace ProtoBuf.Reflection
         }
         public override string ToString() => $"({LineNumber},{ColumnNumber}) '{Value}'";
 
-        internal Exception Throw(ErrorCode errorCode, string error = null, bool isError = true) =>
-            throw new ParserException(this, string.IsNullOrWhiteSpace(error) ? $"syntax error: '{Value}'" : error, isError, errorCode);
+
+        internal Exception Throw(string error = null, bool isError = true)
+        {
+            throw new ParserException(this, string.IsNullOrWhiteSpace(error) ? $"syntax error: '{Value}'" : error, isError);
+        }
 
         internal void Assert(TokenType type, string value = null)
         {
@@ -44,14 +48,15 @@ namespace ProtoBuf.Reflection
             {
                 if (type != Type || value != Value)
                 {
-                    Throw(ErrorCode.ExpectedToken, $"expected {type} '{value}'");
+                    Throw($"expected {type} '{value}'");
                 }
+
             }
             else
             {
                 if (type != Type)
                 {
-                    Throw(ErrorCode.ExpectedToken, $"expected {type}");
+                    Throw($"expected {type}");
                 }
             }
         }
@@ -68,11 +73,11 @@ namespace ProtoBuf.Reflection
             if(ctx.Syntax != FileDescriptorProto.SyntaxProto2)
             {
                 var msg = "'" + Value + "' requires " + FileDescriptorProto.SyntaxProto2 + " syntax";
-                ctx.Errors.Error(this, msg, ErrorCode.ProtoSyntaxRequireProto2);
+                ctx.Errors.Error(this, msg);
             }
         }
 
         internal Error TypeNotFound(string typeName = null) => new Error(this,
-            $"type not found: '{(string.IsNullOrWhiteSpace(typeName) ? Value : typeName)}'", true, ErrorCode.TypeNotFound);
+            $"type not found: '{(string.IsNullOrWhiteSpace(typeName) ? Value : typeName)}'", true);
     }
 }

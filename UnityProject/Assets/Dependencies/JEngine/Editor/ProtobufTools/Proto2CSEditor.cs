@@ -171,10 +171,12 @@ namespace JEngine.Editor
 
 			set.Process();
 			var errors = set.GetErrors();
+			CSharpCodeGenerator.ClearTypeNames();
 			var files = CSharpCodeGenerator.Default.Generate(set);
 
 			foreach (var file in files)
 			{
+				CSharpCodeGenerator.ClearTypeNames();
 				var path = Path.Combine(outpath, file.Name);
 				File.WriteAllText(path, file.Text);
 
