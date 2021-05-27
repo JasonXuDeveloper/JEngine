@@ -78,6 +78,7 @@
     <Compile Include="JEngine\Examples\Core\ComplexLitJsonDemo.cs" />
     <Compile Include="JEngine\Examples\Data\HotData.cs" />
     <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
+    <Compile Include="Proto2cs\test.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

@@ -152,6 +152,7 @@ namespace libx
         {
             if (_running)
             {
+                position = (long) _request.downloadedBytes;
                 if (_request.isDone && _request.downloadedBytes < (ulong)len)
                 {
                     error = "unknown error: downloadedBytes < len";
