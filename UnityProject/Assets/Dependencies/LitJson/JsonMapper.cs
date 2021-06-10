@@ -487,7 +487,7 @@ namespace LitJson
                     instance = Activator.CreateInstance(value_type);
                 bool isIntKey = t_data.IsDictionary && value_type.GetGenericArguments()[0] == typeof(int);
 
-                var hotArguments = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments
+                var hotArguments = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments?
                     .Select(i => i.Value)
                     .ToList()
                     .FindAll(t => !(t is CLRType));
