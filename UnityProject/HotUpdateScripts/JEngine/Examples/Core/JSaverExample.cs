@@ -55,6 +55,27 @@ namespace JEngine.Examples
             SaveAsStrBtn.onClick.AddListener(SaveAsString);
             SaveAsJSONBtn.onClick.AddListener(SaveAsJSON);
             SaveAsProtobufBtn.onClick.AddListener(SaveAsProtobuf);
+
+            Log.Print("这里测试一个加密转JSON保存一个本地类型");
+            JSONTest test = new JSONTest
+            {
+                a = 10,
+                b = 1.2f,
+                c = 2.4d,
+                d = true,
+                e = "JEngine"
+            };
+            var json = JSaver.SaveAsJSON("testCase", test);
+            Log.Print($"转JSON结果：{LitJson.JsonMapper.ToJson(test)}");
+            Log.Print($"加密后将这个存本地了：{json}");
+            Log.Print("现在开始尝试解密获取");
+            var result = JSaver.GetObjectFromJSON<JSONTest>("testCase");
+            Log.Print("解密结果：");
+            Log.Print($"a: {result.a}");
+            Log.Print($"b: {result.b}");
+            Log.Print($"c: {result.c}");
+            Log.Print($"d: {result.d}");
+            Log.Print($"e: {result.e}");
         }
 
         /// <summary>

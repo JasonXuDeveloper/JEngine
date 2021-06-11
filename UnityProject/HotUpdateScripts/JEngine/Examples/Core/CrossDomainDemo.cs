@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using UnityEngine;
 using JEngine.Core;
 
 namespace JEngine.Examples
@@ -61,6 +62,14 @@ namespace JEngine.Examples
             Log.Print("调用override方法，跨域继承");
             ExampleMethod();
 
+            Log.Print("尝试跨域多层继承，热更的Base继承了MonoBehaviour，然后MultiInherit继承了Base，现在尝试AddComponent挂上去");
+            var m = new GameObject("MultiInheit").AddComponent<MultiInherit>();
+            Log.Print("现在开始测试他的方法能否正常调用");
+            m.Test();
+            Log.Print("现在尝试复制多层跨域继承的类");
+            var m2 = GameObject.Instantiate(m);
+            Log.Print($"m2.gameObject = {m2.gameObject}");
+
             Log.Print("尝试SendMessage方法，SendMessageUpward和BroadCast效果一样，就不测试了，可以自己写代码测试。CLR重定向后SendMessage等类似效果的代码已经可以使用，如果这里出现报错，请看控制台输出的Warning，里面有解释");
             SendMessage("MsgToSend", 200);
 
@@ -76,7 +85,6 @@ namespace JEngine.Examples
 
             //小彩蛋，试试更改TimeScale，看看会对Invoke出现什么影响
             //原生Unity的TimeScale就会影响Invoke，所以JEngine也对此作了处理，能保证百分百的原汁原味
-
         }
 
         public void MsgToSend(int code)
@@ -102,6 +110,24 @@ namespace JEngine.Examples
                 CancelInvoke();
                 CancelInvoke("Do");
             }
+        }
+    }
+
+    public class Base : MonoBehaviour
+    {
+
+    }
+
+    public class MultiInherit : Base
+    {
+        public void Awake()
+        {
+            Log.Print("Awake from Multi inherit");
+        }
+
+        public void Test()
+        {
+            Log.Print("Test from MultiInherit");
         }
     }
 
