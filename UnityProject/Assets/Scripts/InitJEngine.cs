@@ -3,11 +3,10 @@ using System.IO;
 using ILRuntime.Mono.Cecil.Pdb;
 using JEngine.Core;
 using JEngine.Helper;
-using libx;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
-
 public class InitJEngine : MonoBehaviour
 {
     public static InitJEngine Instance;
@@ -18,17 +17,19 @@ public class InitJEngine : MonoBehaviour
     public static long EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
     #endif
     
-    private const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
-    private const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
+    public const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
+    public const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 
     [FormerlySerializedAs("Key")] [SerializeField] public string key;
     [FormerlySerializedAs("UsePdb")] [SerializeField] public bool usePdb;
     [FormerlySerializedAs("Debug")] [SerializeField] public bool debug = true;
     
     private Stream _fs;
-    private Stream _pdb;
-    
+    public Stream pdb { get; set; }
+
     private readonly object[] _param0 = new object[0];
+
+    public static Func<InitJEngine, byte[]> CustomLoader;
 
     private void Awake()
     {
@@ -40,45 +41,27 @@ public class InitJEngine : MonoBehaviour
         Instance = this;
         GameStats.Debug = debug;
         GameStats.Initialize();
-        LoadHotFixAssembly();
+        LoadHotFixAssembly(); 
     }
 
     void LoadHotFixAssembly()
     {
         Appdomain = new AppDomain();
-        _pdb = null;
-
+        pdb = null;
         byte[] buffer;
-        
-        //开发模式
-        #if XASSET_PRO
-        if (Assets.development)
-        #else
-        if (!Assets.runtimeMode)
-        #endif
+        if (CustomLoader != null)
         {
-            if (File.Exists(DLLPath))//直接读DLL
+            buffer = CustomLoader(this);
+            if (buffer == null)
             {
-                buffer = DLLMgr.FileToByte(DLLPath);
-                
-                //模拟加密
-                buffer = CryptoHelper.AesEncrypt(buffer, key);
-            }
-            else
-            {
-                Log.PrintError("DLL文件不存在");
+                Log.PrintError("字节码加载失败！");
                 return;
             }
-                
-            //查看是否有PDB文件
-            if (File.Exists(PdbPath) && usePdb && (File.GetLastWriteTime(DLLPath)-File.GetLastWriteTime(PdbPath)).Seconds < 30)
-            {
-                _pdb = new MemoryStream(DLLMgr.FileToByte(PdbPath));
-            }
         }
-        else//真机模式解密加载
+        else
         {
-            var dllAsset = Assets.LoadAsset("HotUpdateScripts.bytes", typeof(TextAsset));
+            //真机模式解密加载
+            var dllAsset = Asset.Load("HotUpdateScripts.bytes", typeof(TextAsset));
             if (dllAsset.error != null)
             {
                 Log.PrintError(dllAsset.error);
@@ -88,7 +71,8 @@ public class InitJEngine : MonoBehaviour
             buffer = new byte[dll.bytes.Length];
             Array.Copy(dll.bytes, buffer, dll.bytes.Length);
             dllAsset.Release();//释放掉不需要再用的dll
-        }
+        } 
+        
         try
         {
             // var original = CryptoHelper.AesDecrypt(dll.bytes, Key);以前的用法，过时了
@@ -100,9 +84,8 @@ public class InitJEngine : MonoBehaviour
              * var original = CryptoHelper.AesDecrypt(dll.bytes, Key);
              * fs = new JStream(original, Key);
              * fs.Encrypted = false;
-             */
-            
-            Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
+             */ 
+            Appdomain.LoadAssembly(_fs, pdb, new PdbReaderProvider());
         }
         catch(Exception e)
         {
@@ -122,8 +105,8 @@ public class InitJEngine : MonoBehaviour
         
         Success = true;
         LoadILRuntime.InitializeILRuntime(Appdomain);
-    }
-    
+    } 
+
     public void OnHotFixLoaded()
     {
         Appdomain.Invoke("HotUpdateScripts.Program", "RunGame", _param0, _param0);
