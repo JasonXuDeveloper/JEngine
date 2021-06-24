@@ -521,119 +521,119 @@ namespace JEngine.Editor
 
 			#endregion
 
-			#region XAsset相关
-
-			//XAsset升级
-			GUILayout.Space(30);
-			MakeHorizontal(GetSpace(0.1f), () =>
-			{
-				textStyle = new GUIStyle
-				{
-					fontSize = 16, normal = {textColor = PurpleColor}, alignment = TextAnchor.MiddleCenter
-				};
-				GUILayout.Label(GetString(SettingString.XAssetTitle), textStyle);
-			});
-			GUILayout.Space(10);
-
-			//提示框
-			MakeHorizontal(GetSpace(0.1f),
-				() => { EditorGUILayout.HelpBox(GetString(SettingString.XAssetHelpBox), MessageType.Warning); });
-
-			//先登入，再出现按钮
-			if (!XAssetLoggedIn)
-			{
-				MakeHorizontal(GetSpace(0.2f),
-					() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetAccount)); });
-				MakeHorizontal(GetSpace(0.2f), () => { XAssetAccount = EditorGUILayout.TextField(XAssetAccount); });
-				MakeHorizontal(GetSpace(0.2f),
-					() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetPassword)); });
-				MakeHorizontal(GetSpace(0.2f),
-					() => { XAssetPassword = EditorGUILayout.PasswordField(XAssetPassword); });
-
-				GUILayout.Space(10);
-
-				MakeHorizontal(GetSpace(0.2f), () =>
-				{
-					if (GUILayout.Button(GetString(SettingString.SignUp), GUILayout.Height(30)))
-					{
-						XAssetHelper.SignUpXAsset();
-						GUIUtility.ExitGUI();
-					}
-
-					GUILayout.Space(50);
-
-					GUI.enabled = !XAssetHelper.loggingXAsset;
-
-					if (GUILayout.Button(GetString(SettingString.Login), GUILayout.Height(30)))
-					{
-						_ = XAssetHelper.LoginXAsset(true);
-						GUIUtility.ExitGUI();
-					}
-
-					GUI.enabled = true;
-				});
-			}
-			else
-			{
-				bool activated = XAssetRemainTime > 0;
-
-				GUILayout.Space(10);
-
-				//续费
-				MakeHorizontal(GetSpace(0.1f), () =>
-				{
-					var style = new GUIStyle
-					{
-						fontSize = GUI.skin.textField.fontSize,
-						normal = {textColor = RedColor},
-						alignment = TextAnchor.MiddleCenter,
-						fontStyle = FontStyle.Bold
-					};
-					EditorGUILayout.LabelField(
-						activated
-							? string.Format(GetString(SettingString.XAssetRemain), XAssetRemainTime)
-							: GetString(SettingString.XAssetChargeTxt), style);
-
-					GUILayout.Space(10);
-
-					if (GUILayout.Button(GetString(activated ? SettingString.Recharge : SettingString.Charge),
-						GUILayout.Height(20)))
-					{
-						XAssetHelper.RechargeXAsset();
-					}
-				});
-
-				GUILayout.Space(10);
-
-				if (activated)
-				{
-					//更新按钮
-					MakeHorizontal(GetSpace(0.1f), () =>
-					{
-						GUI.enabled = !XAssetHelper.installing;
-
-						if (GUILayout.Button(GetString(SettingString.XAssetButton), GUILayout.Height(30)))
-						{
-							XAssetHelper.GetXAssetPro();
-							GUIUtility.ExitGUI();
-						}
-
-						GUI.enabled = true;
-					});
-				}
-
-				//退出登入
-				MakeHorizontal(GetSpace(0.1f), () =>
-				{
-					if (GUILayout.Button(GetString(SettingString.LogOut), GUILayout.Height(30)))
-					{
-						XAssetHelper.LogOutXAsset();
-						GUIUtility.ExitGUI();
-					}
-				});
-			}
-
-			#endregion
+			// #region XAsset相关
+			//
+			// //XAsset升级
+			// GUILayout.Space(30);
+			// MakeHorizontal(GetSpace(0.1f), () =>
+			// {
+			// 	textStyle = new GUIStyle
+			// 	{
+			// 		fontSize = 16, normal = {textColor = PurpleColor}, alignment = TextAnchor.MiddleCenter
+			// 	};
+			// 	GUILayout.Label(GetString(SettingString.XAssetTitle), textStyle);
+			// });
+			// GUILayout.Space(10);
+			//
+			// //提示框
+			// MakeHorizontal(GetSpace(0.1f),
+			// 	() => { EditorGUILayout.HelpBox(GetString(SettingString.XAssetHelpBox), MessageType.Warning); });
+			//
+			// //先登入，再出现按钮
+			// if (!XAssetLoggedIn)
+			// {
+			// 	MakeHorizontal(GetSpace(0.2f),
+			// 		() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetAccount)); });
+			// 	MakeHorizontal(GetSpace(0.2f), () => { XAssetAccount = EditorGUILayout.TextField(XAssetAccount); });
+			// 	MakeHorizontal(GetSpace(0.2f),
+			// 		() => { EditorGUILayout.LabelField(GetString(SettingString.XAssetPassword)); });
+			// 	MakeHorizontal(GetSpace(0.2f),
+			// 		() => { XAssetPassword = EditorGUILayout.PasswordField(XAssetPassword); });
+			//
+			// 	GUILayout.Space(10);
+			//
+			// 	MakeHorizontal(GetSpace(0.2f), () =>
+			// 	{
+			// 		if (GUILayout.Button(GetString(SettingString.SignUp), GUILayout.Height(30)))
+			// 		{
+			// 			XAssetHelper.SignUpXAsset();
+			// 			GUIUtility.ExitGUI();
+			// 		}
+			//
+			// 		GUILayout.Space(50);
+			//
+			// 		GUI.enabled = !XAssetHelper.loggingXAsset;
+			//
+			// 		if (GUILayout.Button(GetString(SettingString.Login), GUILayout.Height(30)))
+			// 		{
+			// 			_ = XAssetHelper.LoginXAsset(true);
+			// 			GUIUtility.ExitGUI();
+			// 		}
+			//
+			// 		GUI.enabled = true;
+			// 	});
+			// }
+			// else
+			// {
+			// 	bool activated = XAssetRemainTime > 0;
+			//
+			// 	GUILayout.Space(10);
+			//
+			// 	//续费
+			// 	MakeHorizontal(GetSpace(0.1f), () =>
+			// 	{
+			// 		var style = new GUIStyle
+			// 		{
+			// 			fontSize = GUI.skin.textField.fontSize,
+			// 			normal = {textColor = RedColor},
+			// 			alignment = TextAnchor.MiddleCenter,
+			// 			fontStyle = FontStyle.Bold
+			// 		};
+			// 		EditorGUILayout.LabelField(
+			// 			activated
+			// 				? string.Format(GetString(SettingString.XAssetRemain), XAssetRemainTime)
+			// 				: GetString(SettingString.XAssetChargeTxt), style);
+			//
+			// 		GUILayout.Space(10);
+			//
+			// 		if (GUILayout.Button(GetString(activated ? SettingString.Recharge : SettingString.Charge),
+			// 			GUILayout.Height(20)))
+			// 		{
+			// 			XAssetHelper.RechargeXAsset();
+			// 		}
+			// 	});
+			//
+			// 	GUILayout.Space(10);
+			//
+			// 	if (activated)
+			// 	{
+			// 		//更新按钮
+			// 		MakeHorizontal(GetSpace(0.1f), () =>
+			// 		{
+			// 			GUI.enabled = !XAssetHelper.installing;
+			//
+			// 			if (GUILayout.Button(GetString(SettingString.XAssetButton), GUILayout.Height(30)))
+			// 			{
+			// 				XAssetHelper.GetXAssetPro();
+			// 				GUIUtility.ExitGUI();
+			// 			}
+			//
+			// 			GUI.enabled = true;
+			// 		});
+			// 	}
+			//
+			// 	//退出登入
+			// 	MakeHorizontal(GetSpace(0.1f), () =>
+			// 	{
+			// 		if (GUILayout.Button(GetString(SettingString.LogOut), GUILayout.Height(30)))
+			// 		{
+			// 			XAssetHelper.LogOutXAsset();
+			// 			GUIUtility.ExitGUI();
+			// 		}
+			// 	});
+			// }
+			//
+			// #endregion
 
 			#region 热更场景相关
 

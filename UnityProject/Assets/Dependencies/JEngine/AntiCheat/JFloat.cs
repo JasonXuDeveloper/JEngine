@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Globalization;
 using JEngine.Core;
 
 namespace JEngine.AntiCheat
@@ -39,7 +41,10 @@ namespace JEngine.AntiCheat
             get
             {
                 var result = _obscuredFloat-_obscuredKey;
-                if (!_originalValue.Equals(result))
+                var invalid = _originalValue > result
+                    ? _originalValue - result > float.Epsilon
+                    : result - _originalValue > float.Epsilon;
+                if (invalid)
                 {
                     AntiCheatHelper.OnDetected();
                 }
@@ -70,7 +75,7 @@ namespace JEngine.AntiCheat
             _obscuredFloat = 0;
             _obscuredKey = 0;
             _originalValue = 0;
-            var result = float.TryParse(val,out var _value);
+            var result = float.TryParse(val,out var value);
             if (!result)
             {
                 Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
@@ -78,14 +83,14 @@ namespace JEngine.AntiCheat
             }
             else
             {
-                Value = _value;
+                Value = value;
             }
         }
 
         public static implicit operator JFloat(float val) => new JFloat(val);
         public static implicit operator float(JFloat val) => val.Value;
-        public static bool operator ==(JFloat a, JFloat b) => a.Value == b.Value;
-        public static bool operator !=(JFloat a, JFloat b) => a.Value != b.Value;
+        public static bool operator ==(JFloat a, JFloat b) => Math.Abs(a.Value - b.Value) <= float.Epsilon;
+        public static bool operator !=(JFloat a, JFloat b) => Math.Abs(a.Value - b.Value) > float.Epsilon;
 
         public static JFloat operator ++(JFloat a)
         {
@@ -101,23 +106,28 @@ namespace JEngine.AntiCheat
         
         public static JFloat operator + (JFloat a, JFloat b) => new JFloat(a.Value + b.Value);
         public static JFloat operator + (JFloat a, float b) => new JFloat(a.Value + b);
+        public static JFloat operator + (JFloat a, int b) => new JFloat(a.Value + b);
         
         public static JFloat operator - (JFloat a, JFloat b) => new JFloat(a.Value - b.Value);
         public static JFloat operator - (JFloat a, float b) => new JFloat(a.Value - b);
+        public static JFloat operator - (JFloat a, int b) => new JFloat(a.Value - b);
 
         public static JFloat operator * (JFloat a, JFloat b) => new JFloat(a.Value * b.Value);
         public static JFloat operator * (JFloat a, float b) => new JFloat(a.Value * b);
+        public static JFloat operator * (JFloat a, int b) => new JFloat(a.Value * b);
 
         public static JFloat operator / (JFloat a, JFloat b) => new JFloat(a.Value / b.Value);
         public static JFloat operator / (JFloat a, float b) => new JFloat(a.Value / b);
+        public static JFloat operator / (JFloat a, int b) => new JFloat(a.Value / b);
         
         public static JFloat operator % (JFloat a, JFloat b) => new JFloat(a.Value % b.Value);
         public static JFloat operator % (JFloat a, float b) => new JFloat(a.Value % b);
+        public static JFloat operator %(JFloat a, int b) => new JFloat(a.Value % b);
 
-        public override string ToString() => Value.ToString();
+        public override string ToString() => Value.ToString(CultureInfo.CurrentCulture);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => Value.Equals((obj is JFloat ? (JFloat) obj : default).Value);
+        public override bool Equals(object obj) => Value.Equals((obj is JFloat jFloat ? jFloat : default).Value);
     }
 }

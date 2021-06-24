@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using System.Globalization;
 using JEngine.Core;
 
 namespace JEngine.AntiCheat
@@ -39,7 +41,10 @@ namespace JEngine.AntiCheat
             get
             {
                 var result =  _obscuredDouble-_obscuredKey;
-                if (!_originalValue.Equals(result))
+                var invalid = _originalValue > result
+                    ? _originalValue - result > double.Epsilon
+                    : result - _originalValue > double.Epsilon;
+                if (invalid)
                 {
                     AntiCheatHelper.OnDetected();
                 }
@@ -70,7 +75,7 @@ namespace JEngine.AntiCheat
             _obscuredDouble = 0;
             _obscuredKey = 0;
             _originalValue = 0;
-            var result = double.TryParse(val,out var _value);
+            var result = double.TryParse(val,out var value);
             if (!result)
             {
                 Log.PrintError($"无法将{val}变为{Value.GetType()},已改为0");
@@ -78,14 +83,14 @@ namespace JEngine.AntiCheat
             }
             else
             {
-                Value = _value;
+                Value = value;
             }
         }
 
         public static implicit operator JDouble(double val) => new JDouble(val);
         public static implicit operator double(JDouble val) => val.Value;
-        public static bool operator ==(JDouble a, JDouble b) => a.Value == b.Value;
-        public static bool operator !=(JDouble a, JDouble b) => a.Value != b.Value;
+        public static bool operator ==(JDouble a, JDouble b) => Math.Abs(a.Value - b.Value) <= Double.Epsilon;
+        public static bool operator !=(JDouble a, JDouble b) => Math.Abs(a.Value - b.Value) > Double.Epsilon;
 
         public static JDouble operator ++(JDouble a)
         {
@@ -101,20 +106,30 @@ namespace JEngine.AntiCheat
         
         public static JDouble operator + (JDouble a, JDouble b) => new JDouble(a.Value + b.Value);
         public static JDouble operator + (JDouble a, double b) => new JDouble(a.Value + b);
+        public static JDouble operator + (JDouble a, float b) => new JDouble(a.Value + b);
+        public static JDouble operator + (JDouble a, int b) => new JDouble(a.Value + b);
         
         public static JDouble operator - (JDouble a, JDouble b) => new JDouble(a.Value - b.Value);
         public static JDouble operator - (JDouble a, double b) => new JDouble(a.Value - b);
+        public static JDouble operator - (JDouble a, float b) => new JDouble(a.Value - b);
+        public static JDouble operator - (JDouble a, int b) => new JDouble(a.Value - b);
 
         public static JDouble operator * (JDouble a, JDouble b) => new JDouble(a.Value * b.Value);
         public static JDouble operator * (JDouble a, double b) => new JDouble(a.Value * b);
+        public static JDouble operator * (JDouble a, float b) => new JDouble(a.Value * b);
+        public static JDouble operator * (JDouble a, int b) => new JDouble(a.Value * b);
 
         public static JDouble operator / (JDouble a, JDouble b) => new JDouble(a.Value / b.Value);
         public static JDouble operator / (JDouble a, double b) => new JDouble(a.Value / b);
+        public static JDouble operator / (JDouble a, float b) => new JDouble(a.Value / b);
+        public static JDouble operator / (JDouble a, int b) => new JDouble(a.Value / b);
         
         public static JDouble operator % (JDouble a, JDouble b) => new JDouble(a.Value % b.Value);
         public static JDouble operator % (JDouble a, double b) => new JDouble(a.Value % b);
+        public static JDouble operator % (JDouble a, float b) => new JDouble(a.Value % b);
+        public static JDouble operator % (JDouble a, int b) => new JDouble(a.Value % b);
 
-        public override string ToString() => Value.ToString();
+        public override string ToString() => Value.ToString(CultureInfo.CurrentCulture);
 
         public override int GetHashCode() => Value.GetHashCode();
 
