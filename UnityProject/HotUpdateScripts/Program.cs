@@ -27,6 +27,7 @@ using JEngine.Core;
 using JEngine.AntiCheat;
 using JEngine.Examples;
 using JEngine.Net;
+using UnityEngine;
 
 namespace HotUpdateScripts
 {
@@ -34,7 +35,7 @@ namespace HotUpdateScripts
     {
         public void RunGame()
         {
-           
+
         }
     }
 }

@@ -182,6 +182,18 @@ namespace JEngine.Core
         }
 
         /// <summary>
+        /// Remove a JBehaviour
+        /// 销毁JBehaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="jBehaviour"></param>
+        /// <returns></returns>
+        public static void Remove(this JBehaviour jBehaviour)
+        {
+            JBehaviour.RemoveJBehaviour(jBehaviour);
+        }
+
+        /// <summary>
         /// Create JUI on a gameObject
         /// 在gameObject上创建JUI
         /// </summary>
@@ -214,6 +226,19 @@ namespace JEngine.Core
         public static JUI[] GetJUIs(this GameObject gameObject)
         {
             return JBehaviour.GetJBehaviours<JUI>(gameObject);
+        }
+
+
+        /// <summary>
+        /// Remove a JUI
+        /// 销毁JUI
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="jBehaviour"></param>
+        /// <returns></returns>
+        public static void Remove(this JUI jUI)
+        {
+            JBehaviour.RemoveJBehaviour(jUI);
         }
     }
 }

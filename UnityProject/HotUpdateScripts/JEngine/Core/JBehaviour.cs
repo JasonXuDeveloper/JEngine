@@ -119,11 +119,16 @@ namespace JEngine.Core
                 for (int i = 0; i < JBehaviours.Count; i++)
                 {
                     var jb = JBehaviours.ElementAt(i);
+                    if(jb.Value == null)
+                    {
+                        JBehaviours.Remove(jb.Key);
+                        continue;
+                    }
                     try
                     {
                         if (jb.Value._gameObject == null)
                         {
-                            jb.Value.LoopAwaitToken.Cancel();
+                            jb.Value.LoopAwaitToken?.Cancel();
                             JBehaviours[jb.Value._instanceID] = null;
                             JBehaviours.Remove(jb.Value._instanceID);
                             i--;
@@ -131,7 +136,7 @@ namespace JEngine.Core
                     }
                     catch (MissingReferenceException)
                     {
-                        jb.Value.LoopAwaitToken.Cancel();
+                        jb.Value.LoopAwaitToken?.Cancel();
                         JBehaviours[jb.Value._instanceID] = null;
                         JBehaviours.Remove(jb.Value._instanceID);
                         i--;
@@ -243,24 +248,9 @@ namespace JEngine.Core
         {
             if (Application.isEditor)
             {
-                UnityEngine.Object.Destroy(GetJBehaviourInEditor(jBehaviour));
+                Tools.DestroyHotComponent(jBehaviour.gameObject, jBehaviour);
             }
             jBehaviour.Destroy();
-        }
-
-        /// <summary>
-        /// Get a JBehaviour in Editor
-        /// </summary>
-        /// <param name="jBehaviour"></param>
-        /// <returns></returns>
-        private static MonoBehaviourAdapter.Adaptor GetJBehaviourInEditor(JBehaviour jBehaviour)
-        {
-            var f = typeof(JBehaviour).GetField("_instanceID", BindingFlags.NonPublic);
-            return jBehaviour._gameObject.GetComponents<MonoBehaviourAdapter.Adaptor>()
-                .ToList()
-                .Find(a =>
-                a.isJBehaviour &&
-                f?.GetValue(a.ILInstance).ToString() == jBehaviour._instanceID);
         }
 
         #endregion
