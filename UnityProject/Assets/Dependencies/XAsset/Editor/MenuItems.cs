@@ -75,6 +75,7 @@ namespace libx
         private static void CopyAssetBundles()
         {
             BuildScript.CopyAssetBundlesTo(Application.streamingAssetsPath);
+            Log.Print("Successfully copied asset bundles into streaming assets");
         }
 
         #region Tools 

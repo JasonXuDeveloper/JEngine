@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using ILRuntime.Runtime.Enviorment;
 using UnityEngine;
+using Object = System.Object;
 
 namespace JEngine.Core
 {
@@ -58,6 +59,18 @@ namespace JEngine.Core
                 .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.FullName == typeName)
                 .Select(a => a.ILInstance).ToArray();
         }
+        
+        public static void DestroyHotComponent(GameObject gameObject,object hotObject)
+        {
+            var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
+            var objs = clrInstances.ToList()
+                .FindAll(a => a.ILInstance != null && a.ILInstance == hotObject);
+            foreach (var obj in objs)
+            {
+                UnityEngine.Object.Destroy(obj as MonoBehaviour);
+            }
+        }
+
         
         public static object GetHotComponentInChildren(GameObject gameObject,string typeName)
         {

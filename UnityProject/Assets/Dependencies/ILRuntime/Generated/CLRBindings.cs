@@ -52,6 +52,8 @@ namespace ILRuntime.Runtime.Generated
             System_Int32_Binding.Register(app);
             UnityEngine_UI_Button_Binding.Register(app);
             UnityEngine_Events_UnityEvent_Binding.Register(app);
+            JSONTest_Binding.Register(app);
+            LitJson_JsonMapper_Binding.Register(app);
             UnityEngine_PlayerPrefs_Binding.Register(app);
             JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
             JEngine_AntiCheat_JFloat_Binding.Register(app);
@@ -72,7 +74,6 @@ namespace ILRuntime.Runtime.Generated
             UnityEngine_EventSystems_PointerEventData_Binding.Register(app);
             UnityEngine_Vector2_Binding.Register(app);
             GTest_1_ILTypeInstance_Binding.Register(app);
-            LitJson_JsonMapper_Binding.Register(app);
             JEngine_Net_SocketIOComponent_Binding.Register(app);
             JEngine_Net_JSocketConfig_Binding.Register(app);
             WebSocketSharp_WebSocket_Binding.Register(app);
@@ -146,12 +147,10 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_List_1_GameObject_Binding.Register(app);
             JEngine_Core_ClassData_Binding.Register(app);
             JEngine_Core_ClassBind_Binding.Register(app);
-            System_Collections_Generic_List_1_MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
+            JEngine_Core_Tools_Binding.Register(app);
             System_Threading_CancellationTokenSource_Binding.Register(app);
             System_Guid_Binding.Register(app);
             System_NotSupportedException_Binding.Register(app);
-            MonoBehaviourAdapter_Binding_Adaptor_Binding.Register(app);
-            System_Reflection_FieldInfo_Binding.Register(app);
             JEngine_Core_GameStats_Binding.Register(app);
             System_Collections_Generic_List_1_Action_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Single_Binding.Register(app);
