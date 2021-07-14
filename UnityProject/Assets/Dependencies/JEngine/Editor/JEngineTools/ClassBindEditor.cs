@@ -23,7 +23,9 @@ namespace JEngine.Editor
         {
             _classBinds = new ReorderableList(serializedObject.FindProperty("scriptsToBind"))
             {
-                elementNameProperty = "Class"
+                elementNameProperty = "Class",
+                sortable = true,
+                multipleSelection = true,
             };
         }
 
@@ -53,11 +55,85 @@ namespace JEngine.Editor
                 }
             });
 
+            GUILayout.Space(5);
+
+            Setting.MakeHorizontal(50, () =>
+            {
+                if (GUILayout.Button(Setting.GetString(SettingString.ClassBindRearrangeTitle), GUILayout.Height(30)))
+                {
+                    CleanFields(target as ClassBind);
+                }
+            });
+
 
             GUILayout.Space(15);
         }
 
-        public static async void DoFieldType(ClassBind instance,bool toast = true)
+        public static async void CleanFields(ClassBind instance, bool toast = true)
+        {
+            int affectCounts = 0;
+            foreach (var data in instance.scriptsToBind) //遍历
+            {
+                string className = $"{data.classNamespace}.{data.className}";
+                Assembly hotCode = Assembly
+                    .LoadFile(_dllPath);
+                Type t = hotCode.GetType(className); //加载热更类
+
+                if (t == null)
+                {
+                    EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindErrorTitle),
+                        String.Format(Setting.GetString(SettingString.ClassBindErrorContent),
+                            className), "OK");
+                    return;
+                }
+
+                for (int i = 0; i < data.fields.Count; i++)
+                {
+                    var field = data.fields[i];
+                    var fieldType = t.GetField(field.fieldName,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                        BindingFlags.Static)?.FieldType ?? t.GetProperty(field.fieldName,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                        BindingFlags.Static)?.PropertyType;
+
+                    if (fieldType == null)
+                    {
+                        Log.PrintError(String.Format(Setting.GetString(SettingString.ClassBindInvalidFieldDeleted),
+                            className, field.fieldName));
+                        data.fields.RemoveAt(i);
+                        continue;
+                    }
+
+                    affectCounts++;
+
+                    EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
+                        String.Format(Setting.GetString(SettingString.ClassBindRearrange),
+                            field.fieldName, data.fields.IndexOf(field), data.fields.Length),
+                        data.fields.IndexOf(field) / (float) data.fields.Length);
+
+                    await Task.Delay(50); //延迟一下，动画更丝滑
+                }
+
+                var f = data.fields.OrderBy(s => s.fieldName);
+                FieldList newF = new FieldList();
+                foreach (var cf in f)
+                {
+                    newF.Add(cf);
+                }
+
+                data.fields = newF;
+
+
+            }
+
+            EditorUtility.ClearProgressBar();
+
+            TrySave(instance, toast, String.Format(Setting.GetString(SettingString.ClassBindRearrangeResult),
+                    affectCounts, instance.name), Setting.GetString(SettingString.ClassBindResultTitle),
+                Setting.GetString(SettingString.Done));
+        }
+
+        public static async void DoFieldType(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
@@ -104,49 +180,12 @@ namespace JEngine.Editor
 
             EditorUtility.ClearProgressBar();
 
-            //转换后保存场景
-            try
-            {
-                PrefabUtility.SavePrefabAsset(instance.gameObject, out _);
-            }
-            catch
-            {
-                try
-                {
-                    EditorSceneManager.SaveOpenScenes();
-                }
-                catch
-                {
-                    try
-                    {
-                        var scene = SceneManager.GetActiveScene();
-                        EditorSceneManager.SaveScene(scene, scene.path);
-                    }
-                    catch
-                    {
-                        //ignored
-                    }
-                }
-            }
-
-            AssetDatabase.SaveAssets();
-            EditorUtility.ClearProgressBar();
-
-            if (toast)
-            {
-                EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindResultTitle),
-                    String.Format(Setting.GetString(SettingString.ClassBindResultContentForGetType),
-                        affectCounts, instance.name),
-                    Setting.GetString(SettingString.Done));
-            }
-            else
-            {
-                Log.Print(String.Format(Setting.GetString(SettingString.ClassBindResultContentForGetType),
-                        affectCounts, instance.name));
-            }
+            TrySave(instance, toast, String.Format(Setting.GetString(SettingString.ClassBindResultContentForGetType),
+                    affectCounts, instance.name), Setting.GetString(SettingString.ClassBindResultTitle),
+                Setting.GetString(SettingString.Done));
         }
 
-        public static async void DoConvert(ClassBind instance,bool toast = true)
+        public static async void DoConvert(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
@@ -180,7 +219,7 @@ namespace JEngine.Editor
                     members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
                                                  BindingFlags.Public));
                     members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                 BindingFlags.Public));
+                                                     BindingFlags.Public));
                 }
                 else
                 {
@@ -201,7 +240,7 @@ namespace JEngine.Editor
                             continue;
                         }
                     }
-                    
+
                     //遍历字段
                     EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
                         String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetType),
@@ -218,9 +257,9 @@ namespace JEngine.Editor
                         Type fieldType = (field is PropertyInfo)
                             ? ((PropertyInfo) field).PropertyType
                             : ((FieldInfo) field).FieldType;
-                        
+
                         SetType(cf, fieldType, hotCode);
-                        SetVal(ref cf, field, hotCode, hotInstance,instance.gameObject);
+                        SetVal(ref cf, field, hotCode, hotInstance, instance.gameObject);
 
                         data.fields.Add(cf);
                         affectCounts++;
@@ -234,6 +273,13 @@ namespace JEngine.Editor
 
             EditorUtility.ClearProgressBar();
 
+            TrySave(instance, toast, String.Format(Setting.GetString(SettingString.ClassBindResultContentForSetField),
+                    affectCounts, instance.name), Setting.GetString(SettingString.ClassBindResultTitle),
+                Setting.GetString(SettingString.Done));
+        }
+
+        private static void TrySave(ClassBind instance, bool toast, string text, string title = "", string ok = "")
+        {
             //转换后保存场景
             try
             {
@@ -261,21 +307,16 @@ namespace JEngine.Editor
 
             AssetDatabase.SaveAssets();
             EditorUtility.ClearProgressBar();
-            
+
             if (toast)
             {
-                EditorUtility.DisplayDialog(Setting.GetString(SettingString.ClassBindResultTitle),
-                    String.Format(Setting.GetString(SettingString.ClassBindResultContentForSetField),
-                        affectCounts, instance.name),
-                    Setting.GetString(SettingString.Done));
+                EditorUtility.DisplayDialog(title, text, ok);
             }
             else
             {
-                Log.Print(String.Format(Setting.GetString(SettingString.ClassBindResultContentForSetField),
-                    affectCounts, instance.name));
+                Log.Print(text);
             }
         }
-
 
         private static void SetType(ClassField cf, Type type, Assembly hotCode)
         {
@@ -290,7 +331,15 @@ namespace JEngine.Editor
             }
             else if (type.IsSubclassOf(typeof(Object)))
             {
-                cf.fieldType = ClassField.FieldType.HotUpdateResource;
+                if (type == typeof(AudioClip) || type == typeof(Sprite) || type == typeof(TextAsset) ||
+                    type == typeof(Material))
+                {
+                    cf.fieldType = ClassField.FieldType.HotUpdateResource;
+                }
+                else
+                {
+                    cf.fieldType = ClassField.FieldType.UnityComponent;
+                }
             }
             else
             {
@@ -319,7 +368,8 @@ namespace JEngine.Editor
             }
         }
 
-        private static void SetVal(ref ClassField cf, MemberInfo field, Assembly hotCode, object hotInstance,GameObject instance)
+        private static void SetVal(ref ClassField cf, MemberInfo field, Assembly hotCode, object hotInstance,
+            GameObject instance)
         {
             object value;
             var type = (field is PropertyInfo)
@@ -333,18 +383,18 @@ namespace JEngine.Editor
             {
                 if (field is PropertyInfo)
                 {
-                    value = ((PropertyInfo)field).GetValue(hotInstance);
+                    value = ((PropertyInfo) field).GetValue(hotInstance);
                 }
                 else
                 {
-                    value = ((FieldInfo)field).GetValue(hotInstance);
+                    value = ((FieldInfo) field).GetValue(hotInstance);
                 }
             }
 
-            SetVal(ref cf, type, hotCode, value,instance);
+            SetVal(ref cf, type, hotCode, value, instance);
         }
 
-        private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value,GameObject instance)
+        private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value, GameObject instance)
         {
             if (type != typeof(Object) ||
                 !type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
@@ -355,6 +405,7 @@ namespace JEngine.Editor
                     {
                         value = "";
                     }
+
                     cf.value = value.ToString();
                 }
                 catch

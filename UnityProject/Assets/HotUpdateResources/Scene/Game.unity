@@ -6553,14 +6553,14 @@ MonoBehaviour:
         fieldName: txtFile
         value: Localization.csv
         gameObject: {fileID: 0}
-      - fieldType: 0
-        fieldName: floatField
-        value: 10
-        gameObject: {fileID: 0}
       - fieldType: 4
         fieldName: a1
         value: 
         gameObject: {fileID: 1925922024}
+      - fieldType: 0
+        fieldName: floatField
+        value: 10
+        gameObject: {fileID: 0}
 --- !u!4 &1925922026
 Transform:
   m_ObjectHideFlags: 0
