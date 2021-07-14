@@ -20,6 +20,21 @@ namespace JEngine.Core
     {
         [FormerlySerializedAs("ScriptsToBind")] public ClassData[] scriptsToBind = new ClassData[1];
 
+        private static IType jBehaviourType
+        {
+            get
+            {
+                if (_jBehaviourType == null)
+                {
+                    _jBehaviourType =  InitJEngine.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
+                }
+
+                return _jBehaviourType;
+            }
+        }
+
+        private static IType _jBehaviourType = null;
+        
         /// <summary>
         /// Set value
         /// </summary>
@@ -384,20 +399,24 @@ namespace JEngine.Core
         public string AddClass(ClassData classData)
         {
             //添加脚本
-            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
-            if (!InitJEngine.Appdomain.LoadedTypes.ContainsKey(classType))
+            string classType =
+                $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+            if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType,out var type))
             {
                 Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
                 return null;
             }
 
-            IType type = InitJEngine.Appdomain.LoadedTypes[classType];
             Type t = type.ReflectionType; //获取实际属性
 
             //JBehaviour需自动赋值一个值
-            var jBehaviourType = InitJEngine.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
-            bool isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
             bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
+            bool isJBehaviour = false;
+            
+            if (!isMono)//不是mono才有可能继承JBehaviour
+            { 
+                isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
+            }
 
             bool needAdapter = t.BaseType != null &&
                                t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
@@ -428,18 +447,19 @@ namespace JEngine.Core
                 }
 
                 //直接反射赋值一波了
-                var clrInstance = gameObject.AddComponent(adapterType);
+                var clrInstance = gameObject.AddComponent(adapterType) as MonoBehaviour;
 
-                var clrEnabled = t.GetProperty("enabled",
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                 var clrILInstance = t.GetField("instance",
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
                 var clrAppDomain = t.GetField("appdomain",
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                clrEnabled?.SetValue(clrInstance, false);
-                clrILInstance?.SetValue(clrInstance, instance);
-                clrAppDomain?.SetValue(clrInstance, InitJEngine.Appdomain);
-                instance.CLRInstance = clrInstance;
+                if (!(clrInstance is null))
+                {
+                    clrInstance.enabled = false;
+                    clrILInstance?.SetValue(clrInstance, instance);
+                    clrAppDomain?.SetValue(clrInstance, InitJEngine.Appdomain);
+                    instance.CLRInstance = clrInstance;
+                }
             }
             //直接继承Mono的，非继承mono的，或不需要继承的，用这个
             else

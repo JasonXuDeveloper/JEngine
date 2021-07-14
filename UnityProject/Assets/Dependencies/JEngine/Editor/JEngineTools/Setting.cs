@@ -96,6 +96,10 @@ namespace JEngine.Editor
 		MemberVariables,
 		ClassBindIgnorePrivate,
 		ClassBindIgnoreHideInInspector,
+		ClassBindInvalidFieldDeleted,
+		ClassBindRearrange,
+		ClassBindRearrangeResult,
+		ClassBindRearrangeTitle,
 	}
 
 	internal class Setting : EditorWindow
@@ -223,7 +227,10 @@ namespace JEngine.Editor
 			new[] {"{0}的成员变量", "{0} variables"},
 			new[] {"不匹配Private成员变量", "Banned getting private fields"},
 			new[] {"不匹配带有标签\n[HideInInspector]的变量", "Banned getting fields with\n attribute [HideInInspector]"},
-
+			new[] {"{0}不存在{1}，已删除该字段", "{0} does not contain field: {1}, deleted this field"},
+			new[] {"正在重新排序字段", "Automatically rearranging fields"},
+			new[] {"<{1}>:ClassBind中{0}个fields已重新排序", "Rearranged {0} fieldTypes from ClassBind: {1}"},
+			new[] {"重新排序全部fields", "Rearrange all fields for ClassBind"},
 		};
 
 		/// <summary>
@@ -770,6 +777,19 @@ namespace JEngine.Editor
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
 						ClassBindEditor.DoFieldType(cb, false);
+					}
+
+					GUIUtility.ExitGUI();
+				}
+			});
+			
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				if (GUILayout.Button(GetString(SettingString.ClassBindRearrangeTitle),GUILayout.Height(30)))
+				{
+					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
+					{
+						ClassBindEditor.CleanFields(cb, false);
 					}
 
 					GUIUtility.ExitGUI();
