@@ -39,22 +39,7 @@
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIUtility.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\APanelBase.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIMgr.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\AItemBase.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIManager\UIPanel\UIReleaseControl.cs" />
-    <Compile Include="JEngine\UI\ResKit\LoadResMgr.cs" />
-    <Compile Include="JEngine\UI\ResKit\AResRefer.cs" />
-    <Compile Include="JEngine\UI\ResKit\GameResMgr.cs" />
-    <Compile Include="JEngine\UI\ResKit\ReferInfo.cs" />
-    <Compile Include="JEngine\UI\ResKit\AssetTaskNode.cs" />
-    <Compile Include="JEngine\UI\ResKit\ResPath.cs" />
-    <Compile Include="JEngine\UI\ResKit\UIResRefer.cs" />
-    <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Core\Singleton.cs" />
-    <Compile Include="JEngine\UI\UIKit\UIExpand\UIGroup.cs" />
-    <Compile Include="JEngine\UI\UIRootView.cs" />
     <Compile Include="JEngine\Event\JEvent.cs" />
     <Compile Include="JEngine\Event\EventEnum.cs" />
     <Compile Include="JEngine\Event\EventAttributes.cs" />
@@ -71,14 +56,11 @@
     <Compile Include="JEngine\Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Examples\Net\JWebSocketDemo.cs" />
     <Compile Include="JEngine\Examples\UI\JUIExample.cs" />
-    <Compile Include="JEngine\Examples\UI\JumpToUIDemo.cs" />
-    <Compile Include="JEngine\Examples\UI\View\JBtnView.cs" />
-    <Compile Include="JEngine\Examples\UI\View\JTestItem.cs" />
-    <Compile Include="JEngine\Examples\UI\View\JTestView.cs" />
     <Compile Include="JEngine\Examples\Core\ComplexLitJsonDemo.cs" />
     <Compile Include="JEngine\Examples\Data\HotData.cs" />
     <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
     <Compile Include="Proto2cs\test.cs" />
+    <Compile Include="JEngine\UI\JUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
