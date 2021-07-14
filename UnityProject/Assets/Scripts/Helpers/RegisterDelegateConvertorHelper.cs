@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.UI;
 using LitJson;
 using UnityEngine;
 using UnityEngine.Events;
@@ -150,13 +149,6 @@ namespace JEngine.Helper
                 return new ElapsedEventHandler((sender, e) =>
                 {
                     ((Action<Object, ElapsedEventArgs>)act)(sender, e);
-                });
-            });
-            appdomain.DelegateManager.RegisterDelegateConvertor<UIEventHandle<PointerEventData>>(act =>
-            {
-                return new UIEventHandle<PointerEventData>((go, eventData) =>
-                {
-                    ((Action<GameObject, PointerEventData>)act)(go, eventData);
                 });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<KeyValuePair<String, ILTypeInstance>>>(act =>

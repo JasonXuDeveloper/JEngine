@@ -22,9 +22,6 @@ namespace ILRuntime.Runtime.Generated
             MethodBase method;
             Type[] args;
             Type type = typeof(UnityEngine.Quaternion);
-            args = new Type[]{};
-            method = type.GetMethod("get_identity", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, get_identity_0);
 
             app.RegisterCLRCreateDefaultInstance(type, () => new UnityEngine.Quaternion());
 
@@ -78,17 +75,6 @@ namespace ILRuntime.Runtime.Generated
                     }
                     break;
             }
-        }
-
-        static StackObject* get_identity_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
-
-
-            var result_of_this_method = UnityEngine.Quaternion.identity;
-
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
 
