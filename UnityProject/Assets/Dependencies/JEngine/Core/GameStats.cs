@@ -4,11 +4,12 @@ namespace JEngine.Core
 {
     public class GameStats : MonoBehaviour
     {
-        public static float FPS => _frames;
+        public static float FPS => _backupFrames;
         public static bool Debug;
         public static long TotalFrames => _totalFrames;
 
         private static int _frames;
+        private static int _backupFrames;
         private static float _timer = 1;
         private static long _totalFrames;
         private static long _encryptedCounts;
@@ -43,6 +44,7 @@ namespace JEngine.Core
         {
             //增加帧率
             ++_frames;
+            ++_backupFrames;
             ++_totalFrames;
             
             //计时器刷新
@@ -50,6 +52,7 @@ namespace JEngine.Core
             
             //如果计时器时间到了，就更新
             if (!(_timer <= 0)) return;
+            _backupFrames = _frames;
             _frames = 0;
             _timer = 1;
         }

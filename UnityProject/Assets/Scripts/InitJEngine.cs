@@ -33,6 +33,7 @@ public class InitJEngine : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        GameStats.Initialize();
     }
 
     public void Load()
