@@ -574,19 +574,23 @@ namespace LitJson
                             }
                         }
                         
-                        
-                        if (t_data.IsDictionary)
+                        var elem_type = t_data.ElementType;
+
+                        if (inst_type is ILRuntimeWrapperType)//ilrt的字典就获取它第二个泛型参数
+                        {
+                            elem_type = (inst_type as ILRuntimeWrapperType)?.CLRType.GenericArguments[1].Value.ReflectionType;
+                        }
+                        else
                         {
                             var dicTypes = instance.GetType().GetGenericArguments();
                             var converter = System.ComponentModel.TypeDescriptor.GetConverter(dicTypes[0]);
                             if (converter != null)
                             {
-                                t_data.ElementType = dicTypes[1];
+                                elem_type = dicTypes[1];
                             }
                         }
-
+                        
                         var dict = ((IDictionary) instance);
-                        var elem_type = t_data.ElementType;
                         object readValue = ReadValue(elem_type, reader);
                         var rt = t_data.ElementType is ILRuntime.Reflection.ILRuntimeWrapperType
                             ? ((ILRuntime.Reflection.ILRuntimeWrapperType) t_data.ElementType).RealType
