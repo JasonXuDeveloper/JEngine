@@ -573,6 +573,17 @@ namespace LitJson
                                 continue;
                             }
                         }
+                        
+                        
+                        if (t_data.IsDictionary)
+                        {
+                            var dicTypes = instance.GetType().GetGenericArguments();
+                            var converter = System.ComponentModel.TypeDescriptor.GetConverter(dicTypes[0]);
+                            if (converter != null)
+                            {
+                                t_data.ElementType = dicTypes[1];
+                            }
+                        }
 
                         var dict = ((IDictionary) instance);
                         var elem_type = t_data.ElementType;
