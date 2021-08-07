@@ -86,7 +86,7 @@ namespace libx
             _lastTime = 0;
             _started = true;
             _downloadIndex = _finishedIndex;
-            var max = Math.Min(_downloads.Count, maxDownloads);
+            var max = Math.Min(_downloads.Count, _downloadIndex + maxDownloads);
             for (var i = _finishedIndex; i < max; i++)
             {
                 var item = _downloads[i];
