@@ -20,21 +20,6 @@ namespace JEngine.Core
     {
         [FormerlySerializedAs("ScriptsToBind")] public ClassData[] scriptsToBind = new ClassData[1];
 
-        private static IType jBehaviourType
-        {
-            get
-            {
-                if (_jBehaviourType == null)
-                {
-                    _jBehaviourType =  InitJEngine.Appdomain.LoadedTypes["JEngine.Core.JBehaviour"];
-                }
-
-                return _jBehaviourType;
-            }
-        }
-
-        private static IType _jBehaviourType = null;
-        
         /// <summary>
         /// Set value
         /// </summary>
@@ -46,7 +31,7 @@ namespace JEngine.Core
             Type t = type?.ReflectionType;//获取实际属性
             //这里获取适配器类型接口，不直接获取Mono适配器了，因为不同的类型适配器不一样
             var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
-                .Last(clr => clr.ILInstance.Type == type as ILType);
+                .First(clr => clr.ILInstance.Type == type as ILType && clr.ILInstance != null);
             //绑定数据
             if (classData.requireBindFields)
             {
@@ -334,7 +319,7 @@ namespace JEngine.Core
             Type t = type.ReflectionType; //获取实际属性
             //这边获取clrInstance的基类，这样可以获取不同适配器
             var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
-                .Last(clr => clr.ILInstance.Type == type as ILType);
+                .First(clr => clr.ILInstance.Type == type as ILType && clr.ILInstance != null);
             //是否激活
             if (classData.activeAfter)
             {
@@ -396,7 +381,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="classData"></param>
         /// <returns></returns>
-        public string AddClass(ClassData classData)
+        public object AddClass(ClassData classData)
         {
             //添加脚本
             string classType =
@@ -411,13 +396,6 @@ namespace JEngine.Core
 
             //JBehaviour需自动赋值一个值
             bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
-            bool isJBehaviour = false;
-            
-            if (!isMono)//不是mono才有可能继承JBehaviour
-            { 
-                isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
-            }
-
             bool needAdapter = t.BaseType != null &&
                                t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
 
@@ -437,7 +415,7 @@ namespace JEngine.Core
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
             //总之JEngine牛逼
             //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono && t.BaseType?.FullName != typeof(MonoBehaviourAdapter.Adaptor).FullName && Type.GetType(t.BaseType?.FullName ?? string.Empty)!=null)
+            if (needAdapter && isMono &&  t.BaseType != null && t.BaseType != typeof(MonoBehaviourAdapter.Adaptor) && Type.GetType(t.BaseType?.FullName ?? string.Empty)!=null)
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
                 if (adapterType == null)
@@ -482,23 +460,8 @@ namespace JEngine.Core
                 classData.Added = true;
 
                 //JBehaviour额外处理
-                if (isJBehaviour)
-                {
-                    clrInstance.isJBehaviour = true;
-                    var go = t.GetField("_gameObject", BindingFlags.Public);
-                    if (!(go is null)) go.SetValue(clrInstance.ILInstance, gameObject);
-                }
-
-                //JBehaviour返回实例ID
-                if (isJBehaviour)
-                {
-                    var f = t.GetField("_instanceID", BindingFlags.NonPublic);
-                    if (!(f is null))
-                    {
-                        var id = f.GetValue(clrInstance.ILInstance).ToString();
-                        return id;
-                    }
-                }
+                var go = t.GetField("_gameObject", BindingFlags.Public);
+                go?.SetValue(clrInstance.ILInstance, gameObject);
             }
             
             if (classData.useConstructor && isMono)
@@ -510,7 +473,7 @@ namespace JEngine.Core
                 }
             }
 
-            return null;
+            return instance;
         }
 
 

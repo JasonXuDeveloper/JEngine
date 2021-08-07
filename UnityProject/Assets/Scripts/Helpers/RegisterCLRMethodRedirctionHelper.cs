@@ -474,16 +474,16 @@ namespace JEngine.Helper
                     var self = ((MonoBehaviourAdapter.Adaptor) clrInstance);
                     self.Reset(); //重置clone的
                     
-                    var jBehaviourType = __domain.LoadedTypes["JEngine.Core.JBehaviour"];
-                    bool isJBehaviour = clrInstance4Ins.ILInstance.Type.ReflectionType.IsSubclassOf(jBehaviourType.ReflectionType);
-                    if (isJBehaviour)
+                    if (InitJEngine.Appdomain.LoadedTypes.TryGetValue("JEngine.Core.JBehaviour", out var jBehaviourType))
                     {
-                        self.isJBehaviour = true;
-                        var go = self.gameObject;
-                        jBehaviourType.ReflectionType.GetMethod("ResetJBehaviour",
-                            BindingFlags.Default | BindingFlags.NonPublic)?.Invoke(ilInstance, new object[] {go});
+                        bool isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
+                        if (isJBehaviour)
+                        {
+                            var go = self.gameObject;
+                            jBehaviourType.ReflectionType.GetMethod("ResetJBehaviour",
+                                BindingFlags.Default | BindingFlags.NonPublic)?.Invoke(ilInstance, new object[] {go});
+                        }
                     }
-                    
                     //重新搞ILInstance
                     self.ILInstance = ilInstance;
                     self.AppDomain = __domain;
