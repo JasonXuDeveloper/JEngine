@@ -29,7 +29,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         ILTypeInstance instance;
         AppDomain appdomain;
 
-        public bool isJBehaviour;
         public bool isMonoBehaviour = true;
 
         public Adaptor()
@@ -186,7 +185,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         async void Start()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance == null)
             {
@@ -210,7 +209,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void Update()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mUpdateMethodGot)
             {
@@ -230,7 +229,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void FixedUpdate()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mFixedUpdateMethodGot)
             {
@@ -249,7 +248,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void LateUpdate()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mLateUpdateMethodGot)
             {
@@ -268,7 +267,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnEnable()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -290,7 +289,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnDisable()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -314,7 +313,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         {
             destoryed = true;
 
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mDestroyMethodGot)
             {
@@ -333,7 +332,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerEnter(Collider other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnTriggerEnterMethodGot)
             {
@@ -352,7 +351,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerStay(Collider other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnTriggerStayMethodGot)
             {
@@ -371,7 +370,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerExit(Collider other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnTriggerExitMethodGot)
             {
@@ -390,7 +389,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionEnter(Collision other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionEnterMethodGot)
             {
@@ -409,7 +408,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionStay(Collision other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionStayMethodGot)
             {
@@ -428,7 +427,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionExit(Collision other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionExitMethodGot)
             {
@@ -448,7 +447,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnValidate()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -470,7 +469,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnAnimatorMove()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -492,7 +491,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnApplicationFocus(bool hasFocus)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -514,7 +513,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnApplicationPause(bool pauseStatus)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -536,7 +535,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnApplicationQuit()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -558,7 +557,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnBecameInvisible()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -580,7 +579,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnBecameVisible()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -602,7 +601,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnDrawGizmos()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -624,7 +623,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnJointBreak(float breakForce)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -646,7 +645,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseDown()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -668,7 +667,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseDrag()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -690,7 +689,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseEnter()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -712,7 +711,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseExit()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -734,7 +733,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseOver()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -756,7 +755,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseUp()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -778,7 +777,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnParticleCollision(GameObject other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -800,7 +799,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnParticleTrigger()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -822,7 +821,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnPostRender()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -844,7 +843,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnPreCull()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -866,7 +865,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnPreRender()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -888,7 +887,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnRenderImage(RenderTexture src, RenderTexture dest)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -910,7 +909,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnRenderObject()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -932,7 +931,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnServerInitialized()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -954,7 +953,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnAnimatorIK(int layerIndex)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -976,7 +975,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnAudioFilterRead(float[] data, int channels)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -999,7 +998,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCanvasGroupChanged()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1021,7 +1020,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCanvasHierarchyChanged()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1043,7 +1042,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionEnter2D(Collision2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionEnter2DMethodGot)
             {
@@ -1062,7 +1061,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionExit2D(Collision2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionExit2DMethodGot)
             {
@@ -1081,7 +1080,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnCollisionStay2D(Collision2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (!mOnCollisionStay2DMethodGot)
             {
@@ -1100,7 +1099,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnConnectedToServer()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1122,7 +1121,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1144,7 +1143,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnDrawGizmosSelected()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1166,7 +1165,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnGUI()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1188,7 +1187,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnJointBreak2D(Joint2D brokenJoint)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1210,7 +1209,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnParticleSystemStopped()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1232,7 +1231,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTransformChildrenChanged()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1254,7 +1253,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTransformParentChanged()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1276,7 +1275,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1298,7 +1297,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerExit2D(Collider2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1320,7 +1319,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnTriggerStay2D(Collider2D other)
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1342,7 +1341,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnWillRenderObject()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1364,7 +1363,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnBeforeTransformParentChanged()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1387,7 +1386,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnDidApplyAnimationProperties()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1409,7 +1408,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnMouseUpAsButton()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1431,7 +1430,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnParticleUpdateJobScheduled()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
@@ -1453,7 +1452,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         void OnRectTransformDimensionsChange()
         {
-            if (isJBehaviour || !isMonoBehaviour) return;
+            if (!isMonoBehaviour) return;
 
             if (instance != null)
             {
