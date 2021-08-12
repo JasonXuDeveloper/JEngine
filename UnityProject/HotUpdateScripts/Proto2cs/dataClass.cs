@@ -6,7 +6,7 @@
 
 namespace JEngine.Examples
 {
-
+    [System.Serializable]
     [global::ProtoBuf.ProtoContract()]
     public partial class DataClass
     {

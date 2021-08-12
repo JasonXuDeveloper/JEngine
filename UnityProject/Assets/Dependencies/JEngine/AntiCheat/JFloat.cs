@@ -42,8 +42,8 @@ namespace JEngine.AntiCheat
             {
                 var result = _obscuredFloat-_obscuredKey;
                 var invalid = _originalValue > result
-                    ? _originalValue - result > float.Epsilon
-                    : result - _originalValue > float.Epsilon;
+                    ? _originalValue - result > 0.0001
+                    : result - _originalValue > 0.0001;
                 if (invalid)
                 {
                     AntiCheatHelper.OnDetected();

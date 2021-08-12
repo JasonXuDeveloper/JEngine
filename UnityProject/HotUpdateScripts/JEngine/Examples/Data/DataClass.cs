@@ -26,7 +26,6 @@
 using JEngine.Core;
 namespace JEngine.Examples
 {
-    [System.Serializable]
     public partial class DataClass
     {
         /// <summary>
