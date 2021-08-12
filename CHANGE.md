@@ -1,5 +1,11 @@
 ## All Versions
 
+### v0.6.3 (preview)
+
+- **Implement** ```[System.Serializable]``` when generating **c# from proto**
+- **Changed** ClassBind default to **active after**
+- **Enhanced** the precision for **JFloat**
+
 
 
 ### v0.6.2 (April 30 2021)

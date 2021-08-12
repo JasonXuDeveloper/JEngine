@@ -324,7 +324,8 @@ namespace JEngine.Core
             //是否激活
             if (classData.activeAfter)
             {
-                if (classData.BoundData == false && classData.requireBindFields && classData.fields.Count > 0)
+                if (classData.BoundData == false && classData.requireBindFields && classData.fields != null &&
+                    classData.fields.Count > 0)
                 {
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
@@ -595,7 +596,7 @@ namespace JEngine.Core
     {
         [FormerlySerializedAs("Namespace")] public string classNamespace = "HotUpdateScripts";
         [FormerlySerializedAs("Class")] public string className = "";
-        [FormerlySerializedAs("ActiveAfter")] public bool activeAfter;
+        [FormerlySerializedAs("ActiveAfter")] public bool activeAfter = true;
         [FormerlySerializedAs("RequireBindFields")] public bool requireBindFields;
 
         [FormerlySerializedAs("UseConstructor")] [Tooltip("是否使用构造函数")]

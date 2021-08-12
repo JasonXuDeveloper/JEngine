@@ -134,7 +134,7 @@ namespace ProtoBuf.Reflection
             {
                 state = @namespace;
                 ctx.WriteLine($"namespace {@namespace}");
-                ctx.WriteLine("{").Indent().WriteLine();
+                ctx.WriteLine("{").Indent();
             }
 
         }
@@ -175,6 +175,7 @@ namespace ProtoBuf.Reflection
         protected override void WriteEnumHeader(GeneratorContext ctx, EnumDescriptorProto obj, ref object state)
         {
             var name = ctx.NameNormalizer.GetName(obj);
+            ctx.WriteLine("[System.Serializable]");
             var tw = ctx.Write($@"[global::ProtoBuf.ProtoContract(");
             if (name != obj.Name) tw.Write($@"Name = @""{obj.Name}""");
             tw.WriteLine(")]");
@@ -220,6 +221,7 @@ namespace ProtoBuf.Reflection
         {
             var name = ctx.NameNormalizer.GetName(obj);
             GetTypeName2(obj.FullyQualifiedName);
+            ctx.WriteLine("[System.Serializable]");
             var tw = ctx.Write($@"[global::ProtoBuf.ProtoContract(");
             if (name != obj.Name) tw.Write($@"Name = @""{obj.Name}""");
             tw.WriteLine(")]");
