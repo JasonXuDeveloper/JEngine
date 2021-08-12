@@ -145,7 +145,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         mAwakeMethodGot = true;
                     }
 
-                    if (mAwakeMethod != null && !isAwaking)
+                    if (!isAwaking)
                     {
                         isAwaking = true;
                         //没激活就别awake
@@ -166,7 +166,11 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                             return;
                         }
 
-                        appdomain.Invoke(mAwakeMethod, instance, param0);
+                        if (mAwakeMethod != null) 
+                        {
+                            appdomain.Invoke(mAwakeMethod, instance, param0);
+                        }
+                        
                         isAwaking = false;
                         awaked = true;
                         OnEnable();
