@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
+using ILRuntime.Reflection;
 using ILRuntime.Runtime;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -458,6 +459,8 @@ namespace JEngine.Helper
                 var clrInstance = clrInstances[i];
                 var clrInstance4Ins = clrInstances4Ins[i];
 
+                Core.Log.PrintWarning(
+                    "因为复制了一个MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
                 ILTypeInstance ilInstance =
                     clrInstance4Ins.ILInstance
                         .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
@@ -2327,10 +2330,19 @@ namespace JEngine.Helper
 
                 res = ilInstance;
 
-                var m = type.GetConstructor(Extensions.EmptyParamList);
-                if (m != null)
+                if (type.BaseType.ReflectionType is ILRuntimeType)
                 {
-                    __domain.Invoke(m, res, null);
+                    Core.Log.PrintWarning(
+                        "因为有跨域多层继承MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
+                    type.ReflectionType.GetConstructor(new Type[] { })?.Invoke(res, new object[] { });
+                }
+                else
+                {
+                    var m = type.GetConstructor(Extensions.EmptyParamList);
+                    if (m != null)
+                    {
+                        InitJEngine.Appdomain.Invoke(m, res, null);
+                    }
                 }
             }
             return res;

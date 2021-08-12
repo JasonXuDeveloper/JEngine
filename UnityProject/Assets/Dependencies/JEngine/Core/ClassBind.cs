@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Reflection;
 using ILRuntime.CLR.Utils;
 using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Reflection;
 using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -386,7 +387,7 @@ namespace JEngine.Core
             //添加脚本
             string classType =
                 $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
-            if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType,out var type))
+            if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type))
             {
                 Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
                 return null;
@@ -402,20 +403,23 @@ namespace JEngine.Core
             ILTypeInstance instance;
             if (classData.useConstructor)
             {
-                instance = isMono ? new ILTypeInstance(type as ILType,false) : InitJEngine.Appdomain.Instantiate(classType);
+                instance = isMono
+                    ? new ILTypeInstance(type as ILType, false)
+                    : InitJEngine.Appdomain.Instantiate(classType);
             }
             else
             {
                 instance = new ILTypeInstance(type as ILType, !isMono);
             }
-            
+
             instance.CLRInstance = instance;
-            
+
             //这里是ClassBind的灵魂，我都佩服我自己这么写，所以别乱改这块
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
             //总之JEngine牛逼
             //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono &&  t.BaseType != null && t.BaseType != typeof(MonoBehaviourAdapter.Adaptor) && Type.GetType(t.BaseType?.FullName ?? string.Empty)!=null)
+            if (needAdapter && isMono && t.BaseType != null && t.BaseType != typeof(MonoBehaviourAdapter.Adaptor) &&
+                Type.GetType(t.BaseType?.FullName ?? string.Empty) != null)
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
                 if (adapterType == null)
@@ -456,20 +460,29 @@ namespace JEngine.Core
 
                 //判断类型
                 clrInstance.isMonoBehaviour = isMono;
-                
+
                 classData.Added = true;
 
                 //JBehaviour额外处理
                 var go = t.GetField("_gameObject", BindingFlags.Public);
                 go?.SetValue(clrInstance.ILInstance, gameObject);
             }
-            
+
             if (classData.useConstructor && isMono)
             {
-                var m = type.GetConstructor(Extensions.EmptyParamList);
-                if (m != null)
+                if (type.BaseType.ReflectionType is ILRuntimeType)
                 {
-                    InitJEngine.Appdomain.Invoke(m, instance, null);
+                    Log.PrintWarning(
+                        "因为有跨域多层继承MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
+                    type.ReflectionType.GetConstructor(new Type[] { })?.Invoke(instance, new object[] { });
+                }
+                else
+                {
+                    var m = type.GetConstructor(Extensions.EmptyParamList);
+                    if (m != null)
+                    {
+                        InitJEngine.Appdomain.Invoke(m, instance, null);
+                    }
                 }
             }
 
