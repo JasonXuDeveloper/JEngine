@@ -1,4 +1,4 @@
-# JENGINE v0.6.2
+# JENGINE v0.6.3
 
 JEngine is a **streamlined** and **easy-to-use** framework designed for **Unity Programmers** which contains **powerful features**, beginners can **start up quickly and making hot update-able games easily**
 
@@ -65,23 +65,13 @@ At the same time, if you **have an old project which wants to hot update using J
 
 
 
-## v0.6.2 Latest Features
+## v0.6.3 Latest Features
 
-- **Fixed** plenty of bugs
-- **Support** XAsset 6.1 (Regards to branch xasset6.1)
-- **Optimize** JAction
-- **Optimize** Downloader
-- **Optimize** ClassBind **performance**
-- **Optimize** localization solution
-- **Optimize** hot object inspector **serialization**
-- **Optimize** ILRuntime **Cross domain adapter generator**
-- **Optimize** ```GameObject.Instantiate``` CLR Redirection
-- **Upgrade** JEngine**Panel**
-- **Upgrade** JUI's **Bindable Property** feature
-- **Upgrade** ILRuntime to  **v1.6.7**
-- **Add** ClassBind support **filters** on automatically fetching fields
-- **Add** hot **source code supports memory encryption** and does not effect performence
-- **Add** JEngine **Demos** （Instantiate, Generic Cross Domain Adaptor, etc）
+- **Implemented** ```[System.Serializable]``` when generating **c# from proto**
+- **Changed** ClassBind default to **active after**
+- **Enhanced** the precision for **JFloat**
+- **Enhanced** unity project which no longer depends JBehaviour from HotUpdate Solution
+- **NEW** JEvent + Event Demo
 
 
 

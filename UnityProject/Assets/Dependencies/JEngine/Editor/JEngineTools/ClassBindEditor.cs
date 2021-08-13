@@ -205,9 +205,14 @@ namespace JEngine.Editor
 
                 //热更实例
                 object hotInstance = null;
-                if (!t.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")) &&
-                    !t.IsSubclassOf(typeof(MonoBehaviour))) //JBehaviour/MonoBehaviour派生类不构造对象，不进行赋值
+                if (!t.IsSubclassOf(typeof(MonoBehaviour))) //JBehaviour/MonoBehaviour派生类不构造对象，不进行赋值
                 {
+                    if (hotCode.GetType("JEngine.Core.JBehaviour") != null &&
+                        !t.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+                    {
+                        break;
+                    }
+
                     hotInstance = Activator.CreateInstance(t);
                 }
 
@@ -360,6 +365,10 @@ namespace JEngine.Editor
                 else if (type == typeof(bool))
                 {
                     cf.fieldType = ClassField.FieldType.Bool;
+                }
+                else if (hotCode.GetTypes().Contains(type))
+                {
+                    cf.fieldType = ClassField.FieldType.UnityComponent;
                 }
                 else
                 {

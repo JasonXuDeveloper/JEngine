@@ -1,10 +1,12 @@
 ## All Versions
 
-### v0.6.3 (preview)
+### v0.6.3 (August 13 2021)
 
-- **Implement** ```[System.Serializable]``` when generating **c# from proto**
+- **Implemented** ```[System.Serializable]``` when generating **c# from proto**
 - **Changed** ClassBind default to **active after**
 - **Enhanced** the precision for **JFloat**
+- **Enhanced** unity project which no longer depends JBehaviour from HotUpdate Solution
+- **NEW** JEvent + Event Demo
 
 
 

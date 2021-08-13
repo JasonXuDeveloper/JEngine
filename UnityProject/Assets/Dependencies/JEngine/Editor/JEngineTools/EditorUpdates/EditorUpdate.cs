@@ -15,11 +15,6 @@ namespace JEngine.Editor
                 EditorApplication.update += Clean.Update; //处理DLL
             }
 
-            if (!XAsset.hasAdded)
-            {
-                EditorApplication.update += XAsset.Update; //验证XAsset
-            }
-
             if (!AllowUnsafe.hasAdded)
             {
                 EditorApplication.update += AllowUnsafe.Update; //允许Unsafe code

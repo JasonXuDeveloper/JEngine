@@ -24,132 +24,162 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Threading.Tasks;
 using JEngine.Core;
 using JEngine.Event;
-using System.Diagnostics;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace JEngine.Examples
 {
     public class EventDemo : JBehaviour
     {
-        public override void Init()
+        public UIManager UIManager;
+
+        public override async void Init()
         {
-            Stopwatch sw = new Stopwatch();
+            var ExtensionManager = new ExtensionManager();
+            var GMToolsManager = new GMToolsManager();
 
             //JEvent.ShowLog = true;//是否显示一些log
 
-            
-            //广播空参数方法
-            sw.Start();
-            JEvent.defaultEvent.Post();
-            sw.Stop();
-            Log.Print("<color=#db4259>[JEvent] 注册前，执行无参数方法的事件（共0个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
-            sw.Reset();
+            JEvent.defaultEvent.Register(UIManager);
+            JEvent.defaultEvent.Register(ExtensionManager);
+            JEvent.defaultEvent.Register(GMToolsManager);
 
-            JEvent.defaultEvent.Register(typeof(EventClass));//注册方法1
-            JEvent.defaultEvent.Register(new EventClass2());//注册方法2
+            //先搞一个登录失败数据
+            LoginErrorData d = new LoginErrorData
+            {
+                username = "test",
+                errorMsg = "故意让它错误的",
+            };
 
-            //广播空参数方法
-            sw.Start();
-            JEvent.defaultEvent.Post();
-            sw.Stop();
-            Log.Print("<color=#db4259>[JEvent] 注册后，执行无参数方法的事件（demo里有5个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
-            sw.Reset();
+            //广播错误数据
+            JEvent.defaultEvent.Post(d);
 
-            Log.Print("<color=#db4259>[JEvent] 现在取消注册EventClass，任何里面的方法都无法被广播到，我们来试试</color>");
-            JEvent.defaultEvent.Unregister(typeof(EventClass));//取消一个类的监听
+            //取消注册ExtensionManager，这样下次不会post到这个实例内的方法
+            JEvent.defaultEvent.Unregister(ExtensionManager);
 
-            //广播空参数方法
-            sw.Start();
-            JEvent.defaultEvent.Post();
-            sw.Stop();
-            Log.Print("<color=#db4259>[JEvent] 取消注册EventClass后，执行无参数方法的事件（共0个）通知耗时" + sw.ElapsedMilliseconds + "ms</color>");
-            sw.Reset();
+            await Task.Delay(3000);
 
-
-            Log.Print("<color=#db4259>[JEvent] EventClass里的方法没被触发，现在我们重新注册，然后Post</color>");
-            JEvent.defaultEvent.Register(typeof(EventClass));//重新注册
-
-            //广播666，全部void xxx(int)的都会被广播到
-            JEvent.defaultEvent.Post(666);
-
-            //广播DataClass，全部void xxx(DataClass)的都会被广播到
-            JEvent.defaultEvent.Post(new DataClass() { Money = 123456,name="JEnvent测试"});
-        }
-
-        public override void Run()
-        {
             //创建独立的JEvent
             JEvent e = new JEvent();
+
+            //登录成功数据
+            LoginSuccessData dt = new LoginSuccessData
+            {
+                username = "杰哥",
+                money = 10000
+            };
+
             //给独立的JEvent注册方法
-            e.Register(this.GetType());
+            e.Register(UIManager);
+            e.Register(GMToolsManager);
             //广播
-            e.Post();
-        }
-
-        [Subscriber]
-        private void TestMethod()
-        {
-            Log.Print("独立的JEvent的Test哦~");
+            e.Post(dt);
         }
     }
 
-    //继承了也能被监听
+    public class LoginSuccessData
+    {
+        public string username;
+        public int money;
+    }
+
+    public class LoginErrorData
+    {
+        public string username;
+        public string errorMsg;
+    }
+
+    //监听整个类里面的方法，主线程执行，unity方法必须主线程执行，除了Debug.Log外
     [Subscriber(ThreadMode.Main)]
-    public class InheritTest
+    public class UIManager
     {
-        public void Test()
+        /*
+         * 只要UIManager的实例还在，这些字段就可以用
+         */
+
+        public GameObject SuccessPanel;
+        public GameObject ErrorPanel;
+        public GameObject GamePanel;
+        public Text UsernameText;
+        public Text MoneyText;
+        public Text ErrorMsgText;
+
+        /// <summary>
+        /// 登录成功的时候的UI界面更新
+        /// </summary>
+        /// <param name="data"></param>
+        public void OnSuccess(LoginSuccessData data)
         {
-            Log.Print("InheritTest: Test运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            SuccessPanel.SetActive(true);
+            new JAction().Delay(3).Do(() =>
+            {
+                SuccessPanel.SetActive(false);
+                UsernameText.text = data.username;
+                //因为在GMTools那边更新了money数据，所以用那边的静态实例数据
+                //自己写的时候也要注意，每个方法的data参数哪怕进行了更改也不会影响其他方法内的data
+                //必须自己把它单独保存到一个其他方法也能读到的地方，才能在其他方法里同步对数据的修改
+                //同时多线程处理数据请自行考虑线程安全，脏数据就得自己处理了
+                MoneyText.text = $"￥{GMToolsManager.successData.money}";
+                GamePanel.SetActive(true);
+            })
+            .Delay(3)
+            .Do(() =>
+            {
+                GamePanel.transform.parent.gameObject.SetActive(false);
+            }).Execute(true);
+        }
+
+        /// <summary>
+        /// 登录失败的时候的UI界面更新
+        /// </summary>
+        /// <param name="data"></param>
+        public void OnError(LoginErrorData data)
+        {
+            ErrorMsgText.text = $"账号：{data.username}登录失败，{data.errorMsg}";
+            ErrorPanel.SetActive(true);
         }
     }
 
-    //整个类的所有方法都被监听
+    //监听整个类里面的方法，子线程执行，不调用unity本身的东西就可以在子线程执行
     [Subscriber(ThreadMode.Other)]
-    public class EventClass: InheritTest
+    public class ExtensionManager
     {
-
-        public void MethodA()
+        /// <summary>
+        /// Log错误信息
+        /// </summary>
+        /// <param name="data"></param>
+        public void ProcessErrorMsg(LoginErrorData data)
         {
-            Log.Print("Class1: MethodA运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            Log.PrintError("登录失败：" + data.errorMsg);
         }
 
-        public void MethodB(int val)
+        /// <summary>
+        /// logcat测试的时候log一下登录成功的账号
+        /// </summary>
+        /// <param name="data"></param>
+        public void LogcatSuccessData(LoginSuccessData data)
         {
-            Log.Print("Class1: MethodB：int数字是" + val);
-        }
-
-        public void MethodC(DataClass d)
-        {
-            Log.Print("Class1: MethodC：dataClass的Json字符串是：" + StringifyHelper.JSONSerliaze(d));
+            Log.Print($"{data.username}登录成功");
         }
     }
 
     //个别方法被监听
-    public class EventClass2
+    public class GMToolsManager
     {
+        public static LoginSuccessData successData;
+
+        /// <summary>
+        /// 让钱翻一百倍
+        /// </summary>
+        /// <param name="data"></param>
         [Subscriber(ThreadMode.Main)]//跑主线程
-        public void MethodA()
+        public void GetMoreMoney(LoginSuccessData data)
         {
-            Log.Print("Class2: MethodA运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
-        }
-
-        //不打标签不会被通知
-        public void MethodB(int val)
-        {
-            Log.Print("Class2: MethodB：" + val);
-        }
-
-        [Subscriber]//默认就是跑主线程
-        public void MethodC()
-        {
-            Log.Print("Class2: MethodC运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
-        }
-
-        [Subscriber(ThreadMode.Other)]
-        public void MethodD()
-        {
-            Log.Print("Class2: MethodD运行在线程：" + System.Threading.Thread.CurrentThread.ManagedThreadId);
+            successData = data;
+            successData.money *= 100;
         }
     }
 }
