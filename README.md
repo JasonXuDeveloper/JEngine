@@ -1,4 +1,4 @@
-# JENGINE v0.6.2
+# JENGINE v0.6.3
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -70,23 +70,13 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   
 
-## v0.6.2 最新功能
+## v0.6.3 最新功能
 
-- **修复**很多可能出现的问题
-- **支持**XAsset 6.1（参考xasset6.1分支）
-- **优化**JAction
-- **优化**下载器
-- **优化**ClassBind**性能**
-- **优化**多语言解决方案
-- **优化**热更代码面板**序列化**
-- **优化**ILRuntime **跨域适配器自动生成**
-- **优化**```GameObject.Instantiate```重定向
-- **升级**JEngine**面板**
-- **升级**JUI的**数值绑定**功能
-- **升级**ILRuntime到 **v1.6.7**
-- **新增**ClassBind自动匹配**支持筛选**
-- **新增**热更**代码内存级别加密**且不影响性能
-- **新增** JEngine **Demos** （Instantiate、泛型适配器等）
+- **实现** 自动在proto转c#的时候打 ```[System.Serializable]``` 标签
+- **修改** ClassBind 默认 **active after**
+- **优化**  **JFloat** 的精度
+- **优化** 主工程 不再依赖热更工程的JBehaviour
+- **全新** JEvent + Event Demo
 
 [点击此处查看历史版本功能（英文）](CHANGE.md)
 
