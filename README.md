@@ -53,6 +53,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
   ## 近期star趋势
 
   [![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_shield)
 
   ## 为什么选择使用JEngine？
 
@@ -114,3 +115,6 @@ JEngine专业版现已推出，大幅度提高开发效率和底层性能，可�
 - [XAsset](https://github.com/xasset/xasset) - 精简高效的资源热更框架
 - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
 - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_large)
