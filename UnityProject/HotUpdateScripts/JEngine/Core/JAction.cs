@@ -38,36 +38,7 @@ namespace JEngine.Core
         {
             Reset();
             JActions.Add(this);
-        }
-
-        /// <summary>
-        /// Manager for Action
-        /// </summary>
-        private class JActionMgr : MonoBehaviour
-        {
-            /// <summary>
-            /// JBehaviour管理实例
-            /// </summary>
-            public static JActionMgr Instance
-            {
-                get
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new GameObject("JActionMgr").AddComponent<JActionMgr>();
-                    }
-                    return _instance;
-                }
-            }
-            private static JActionMgr _instance;
-
-            private void OnDestroy()
-            {
-                foreach(var action in JAction.JActions)
-                {
-                    action.Cancel();
-                }
-            }
+            Loom.Initialize();
         }
 
         private int _index;
