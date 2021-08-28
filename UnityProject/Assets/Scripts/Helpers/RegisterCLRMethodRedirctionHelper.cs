@@ -332,7 +332,6 @@ namespace JEngine.Helper
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
-            // bool? instance_of_this_method = (bool?)typeof(bool?)?.CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
             bool? instance_of_this_method = Convert.ToBoolean(typeof(bool?).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack))); ;
             var result_of_this_method = instance_of_this_method.GetValueOrDefault();
 
@@ -416,8 +415,8 @@ namespace JEngine.Helper
             }
         }
 
-       
-        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain __domain,IType type = null)
+
+        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain __domain, IType type = null)
         {
             //没adapter不需要注意什么
             if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
@@ -441,6 +440,7 @@ namespace JEngine.Helper
                     UnityEngine.Object.DestroyImmediate(cb); //防止重复的ClassBind
                 }
             }
+
             //如果有适配器的话
             //没适配器就只有ClassBind，那就复制后再去ClasBind
             if (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
@@ -464,7 +464,7 @@ namespace JEngine.Helper
                 ILTypeInstance ilInstance =
                     clrInstance4Ins.ILInstance
                         .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
-                
+
                 var t = clrInstance4Ins.GetType();
                 if (ilInstance.Type == type && result == null)
                 {
@@ -473,11 +473,11 @@ namespace JEngine.Helper
 
                 if (clrInstance4Ins is MonoBehaviourAdapter.Adaptor)
                 {
-                    var adapter = ((MonoBehaviourAdapter.Adaptor) clrInstance4Ins);
                     var self = ((MonoBehaviourAdapter.Adaptor) clrInstance);
                     self.Reset(); //重置clone的
-                    
-                    if (InitJEngine.Appdomain.LoadedTypes.TryGetValue("JEngine.Core.JBehaviour", out var jBehaviourType))
+
+                    if (InitJEngine.Appdomain.LoadedTypes.TryGetValue("JEngine.Core.JBehaviour",
+                        out var jBehaviourType))
                     {
                         bool isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
                         if (isJBehaviour)
@@ -487,6 +487,7 @@ namespace JEngine.Helper
                                 BindingFlags.Default | BindingFlags.NonPublic)?.Invoke(ilInstance, new object[] {go});
                         }
                     }
+
                     //重新搞ILInstance
                     self.ILInstance = ilInstance;
                     self.AppDomain = __domain;
@@ -543,12 +544,11 @@ namespace JEngine.Helper
             {
                 return result;
             }
-            else
-            {
-                return res;
-            }
+
+            return res;
+
         }
-        
+
         private static unsafe StackObject* Instantiate_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
@@ -1311,10 +1311,6 @@ namespace JEngine.Helper
                 return pi.GetValue(instance.CLRInstance) as GameObject;
             }
 
-            // foreach (var p in returnType.ReflectionType.GetProperties())
-            // {
-            //     Debug.Log(p.Name);
-            // }
             return null;
         }
 
@@ -1335,26 +1331,23 @@ namespace JEngine.Helper
 
             bool invoked = false;
             var clrInstances = go.GetComponents<CrossBindingAdaptorType>();
-            for (int i = 0; i < clrInstances.Length; i++)
+            foreach (var clrInstance in clrInstances)
             {
-                var clrInstance = clrInstances[i];
-                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
+                if (clrInstance.ILInstance == null) continue;
+                IType t = clrInstance.ILInstance.Type;
+                if (value != null)//有参数就匹配去调用
                 {
-                    IType t = clrInstance.ILInstance.Type;
-                    if (value != null)//有参数就匹配去调用
+                    IMethod m = t.GetMethod(methodName, 1);
+                    if (m != null)
                     {
-                        IMethod m = t.GetMethod(methodName, 1);
-                        if (m != null)
-                        {
-                            __domain.Invoke(m, clrInstance.ILInstance, value);
-                        }
+                        __domain.Invoke(m, clrInstance.ILInstance, value);
                     }
-                    //有参数无匹配，或无参数，都会invoke
-                    IMethod method = t.GetMethod(methodName, 0);
-                    if (method != null)
-                    {
-                        __domain.Invoke(method, clrInstance.ILInstance, null);
-                    }
+                }
+                //有参数无匹配，或无参数，都会invoke
+                IMethod method = t.GetMethod(methodName, 0);
+                if (method != null)
+                {
+                    __domain.Invoke(method, clrInstance.ILInstance, null);
                 }
             }
         }
@@ -1916,17 +1909,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = FindGOFromHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
-            }
-            else if (instance is Component)
-            {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1972,13 +1961,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance ilTypeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = FindGOFromHotClass(ilTypeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
