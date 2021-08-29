@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
+using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 
 namespace JEngine.Core
@@ -27,122 +28,112 @@ namespace JEngine.Core
         /// <param name="classData"></param>
         public void SetVal(ClassData classData)
         {
-            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
-            InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType,out var type);
-            Type t = type?.ReflectionType;//获取实际属性
+            string classType =
+                $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
+            InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type);
+            Type t = type?.ReflectionType; //获取实际属性
             //这里获取适配器类型接口，不直接获取Mono适配器了，因为不同的类型适配器不一样
             var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
                 .First(clr => clr.ILInstance.Type == type as ILType && clr.ILInstance != null);
             //绑定数据
-            if (classData.requireBindFields)
+            classData.BoundData = false;
+            var fields = classData.fields.ToArray();
+
+            foreach (ClassField field in fields)
             {
-                classData.BoundData = false;
-                var fields = classData.fields.ToArray();
+                if (field.fieldType == ClassField.FieldType.NotSupported) continue;
 
-                foreach (ClassField field in fields)
+                object obj = null;
+                try
                 {
-                    if (field.fieldType == ClassField.FieldType.NotSupported) continue;
-
-                    object obj = null;
-                    try
+                    if (field.fieldType == ClassField.FieldType.Number)
                     {
-                        if (field.fieldType == ClassField.FieldType.Number)
-                        {
-                            var fieldType = t.GetField(field.fieldName,
-                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                BindingFlags.Static).FieldType ?? t.GetProperty(field.fieldName,
-                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                BindingFlags.Static).PropertyType;
+                        var fieldType = t.GetField(field.fieldName,
+                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                            BindingFlags.Static).FieldType ?? t.GetProperty(field.fieldName,
+                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                            BindingFlags.Static).PropertyType;
 
-                            if (fieldType.FullName == typeof(SByte).FullName)
-                            {
-                                obj = SByte.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Byte).FullName)
-                            {
-                                obj = Byte.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Int16).FullName)
-                            {
-                                obj = Int16.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(UInt16).FullName)
-                            {
-                                obj = UInt16.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Int32).FullName)
-                            {
-                                obj = Int32.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(UInt32).FullName)
-                            {
-                                obj = UInt32.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Int64).FullName)
-                            {
-                                obj = Int64.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(UInt64).FullName)
-                            {
-                                obj = UInt64.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Single).FullName)
-                            {
-                                obj = Single.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Decimal).FullName)
-                            {
-                                obj = Decimal.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                            else if (fieldType.FullName == typeof(Double).FullName)
-                            {
-                                obj = Double.Parse(field.value);
-                                classData.BoundData = true;
-                            }
-                        }
-
-                        else if (field.fieldType == ClassField.FieldType.String)
+                        if (fieldType.FullName == typeof(SByte).FullName)
                         {
-                            obj = field.value;
+                            obj = SByte.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (field.fieldType == ClassField.FieldType.Bool)
+                        else if (fieldType.FullName == typeof(Byte).FullName)
                         {
-                            field.value = field.value.ToLower();
-                            obj = field.value == "true";
+                            obj = Byte.Parse(field.value);
                             classData.BoundData = true;
                         }
-
-                        if (field.fieldType == ClassField.FieldType.GameObject)
+                        else if (fieldType.FullName == typeof(Int16).FullName)
                         {
-                            GameObject go = field.gameObject;
-                            if (go == null)
+                            obj = Int16.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(UInt16).FullName)
+                        {
+                            obj = UInt16.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(Int32).FullName)
+                        {
+                            obj = Int32.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(UInt32).FullName)
+                        {
+                            obj = UInt32.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(Int64).FullName)
+                        {
+                            obj = Int64.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(UInt64).FullName)
+                        {
+                            obj = UInt64.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(Single).FullName)
+                        {
+                            obj = Single.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(Decimal).FullName)
+                        {
+                            obj = Decimal.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                        else if (fieldType.FullName == typeof(Double).FullName)
+                        {
+                            obj = Double.Parse(field.value);
+                            classData.BoundData = true;
+                        }
+                    }
+
+                    else if (field.fieldType == ClassField.FieldType.String)
+                    {
+                        obj = field.value;
+                        classData.BoundData = true;
+                    }
+                    else if (field.fieldType == ClassField.FieldType.Bool)
+                    {
+                        field.value = field.value.ToLower();
+                        obj = field.value == "true";
+                        classData.BoundData = true;
+                    }
+
+                    if (field.fieldType == ClassField.FieldType.GameObject)
+                    {
+                        GameObject go = field.gameObject;
+                        if (go == null)
+                        {
+                            try
                             {
-                                try
-                                {
-                                    go = field.value == "${this}"
-                                        ? gameObject
-                                        : GameObject.Find(field.value);
-                                    if (go == null) //找父物体
-                                    {
-                                        go = FindSubGameObject(field);
-                                        if (go == null) //如果父物体还不存在
-                                        {
-                                            continue;
-                                        }
-                                    }
-                                }
-                                catch (Exception) //找父物体（如果抛出空异常）
+                                go = field.value == "${this}"
+                                    ? gameObject
+                                    : GameObject.Find(field.value);
+                                if (go == null) //找父物体
                                 {
                                     go = FindSubGameObject(field);
                                     if (go == null) //如果父物体还不存在
@@ -151,36 +142,36 @@ namespace JEngine.Core
                                     }
                                 }
                             }
-
-                            obj = go;
-                            classData.BoundData = true;
-                        }
-                        else if (field.fieldType == ClassField.FieldType.UnityComponent)
-                        {
-                            GameObject go = field.gameObject;
-                            if (go == null)
+                            catch (Exception) //找父物体（如果抛出空异常）
                             {
-                                try
+                                go = FindSubGameObject(field);
+                                if (go == null) //如果父物体还不存在
                                 {
-                                    if (field.value.Contains("."))
-                                    {
-                                        field.value =
-                                            field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
-                                    }
-
-                                    go = field.value == "${this}"
-                                        ? gameObject
-                                        : GameObject.Find(field.value);
-                                    if (go == null) //找父物体
-                                    {
-                                        go = FindSubGameObject(field);
-                                        if (go == null) //如果父物体还不存在
-                                        {
-                                            continue;
-                                        }
-                                    }
+                                    continue;
                                 }
-                                catch (Exception) //找父物体（如果抛出空异常）
+                            }
+                        }
+
+                        obj = go;
+                        classData.BoundData = true;
+                    }
+                    else if (field.fieldType == ClassField.FieldType.UnityComponent)
+                    {
+                        GameObject go = field.gameObject;
+                        if (go == null)
+                        {
+                            try
+                            {
+                                if (field.value.Contains("."))
+                                {
+                                    field.value =
+                                        field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
+                                }
+
+                                go = field.value == "${this}"
+                                    ? gameObject
+                                    : GameObject.Find(field.value);
+                                if (go == null) //找父物体
                                 {
                                     go = FindSubGameObject(field);
                                     if (go == null) //如果父物体还不存在
@@ -189,14 +180,55 @@ namespace JEngine.Core
                                     }
                                 }
                             }
+                            catch (Exception) //找父物体（如果抛出空异常）
+                            {
+                                go = FindSubGameObject(field);
+                                if (go == null) //如果父物体还不存在
+                                {
+                                    continue;
+                                }
+                            }
+                        }
 
-                            var tp = t.GetField(field.fieldName,
+                        var tp = t.GetField(field.fieldName,
+                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                            BindingFlags.Static);
+                        if (tp != null)
+                        {
+                            string tName = tp.FieldType.Name;
+                            if (tp.FieldType is ILRuntimeType) //如果在热更中
+                            {
+                                var components = go.GetComponents<CrossBindingAdaptorType>();
+                                foreach (var c in components)
+                                {
+                                    if (c.ILInstance.Type.Name == tName)
+                                    {
+                                        obj = c.ILInstance;
+                                        classData.BoundData = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var component = go.GetComponents<Component>().ToList()
+                                    .Find(c => c.GetType().ToString().Contains(tName));
+                                if (component != null)
+                                {
+                                    obj = component;
+                                    classData.BoundData = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var pi = t.GetProperty(field.fieldName,
                                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                                 BindingFlags.Static);
-                            if (tp != null)
+                            if (pi != null)
                             {
-                                string tName = tp.FieldType.Name;
-                                if (tp.FieldType is ILRuntimeType) //如果在热更中
+                                string tName = pi.PropertyType.Name;
+                                if (pi.PropertyType is ILRuntimeType) //如果在热更中
                                 {
                                     var components = go.GetComponents<CrossBindingAdaptorType>();
                                     foreach (var c in components)
@@ -222,88 +254,56 @@ namespace JEngine.Core
                             }
                             else
                             {
-                                var pi = t.GetProperty(field.fieldName,
-                                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                    BindingFlags.Static);
-                                if (pi != null)
-                                {
-                                    string tName = pi.PropertyType.Name;
-                                    if (pi.PropertyType is ILRuntimeType) //如果在热更中
-                                    {
-                                        var components = go.GetComponents<CrossBindingAdaptorType>();
-                                        foreach (var c in components)
-                                        {
-                                            if (c.ILInstance.Type.Name == tName)
-                                            {
-                                                obj = c.ILInstance;
-                                                classData.BoundData = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var component = go.GetComponents<Component>().ToList()
-                                            .Find(c => c.GetType().ToString().Contains(tName));
-                                        if (component != null)
-                                        {
-                                            obj = component;
-                                            classData.BoundData = true;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    Log.PrintError(
-                                        $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{field.fieldName}不存在");
-                                }
+                                Log.PrintError(
+                                    $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{field.fieldName}不存在");
                             }
                         }
-                        else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
+                    }
+                    else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
+                    {
+                        obj = Assets.LoadAsset(field.value, typeof(Object)).asset;
+                        classData.BoundData = true;
+                    }
+                }
+                catch (Exception except)
+                {
+                    Log.PrintError(
+                        $"自动绑定{name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
+                }
+
+                //如果有数据再绑定
+                if (classData.BoundData)
+                {
+                    var fi = t.GetField(field.fieldName,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                        BindingFlags.Static);
+                    if (fi != null)
+                    {
+                        try
                         {
-                            obj = Assets.LoadAsset(field.value, typeof(Object)).asset;
-                            classData.BoundData = true;
+                            fi.SetValue(clrInstance.ILInstance, obj);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.PrintError(
+                                $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
                         }
                     }
-                    catch (Exception except)
+                    else
                     {
-                        Log.PrintError(
-                            $"自动绑定{name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
-                    }
-
-                    //如果有数据再绑定
-                    if (classData.BoundData)
-                    {
-                        var fi = t.GetField(field.fieldName,
+                        //没FieldInfo尝试PropertyInfo
+                        var pi = t.GetProperty(field.fieldName,
                             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                             BindingFlags.Static);
-                        if (fi != null)
+                        if (pi != null)
                         {
-                            try
-                            {
-                                fi.SetValue(clrInstance.ILInstance, obj);
-                            }
-                            catch (Exception e)
-                            {
-                                Log.PrintError(
-                                    $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
-                            }
+                            pi.SetValue(clrInstance.ILInstance, obj);
                         }
                         else
                         {
-                            //没FieldInfo尝试PropertyInfo
-                            var pi = t.GetProperty(field.fieldName,
-                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                BindingFlags.Static);
-                            if (pi != null)
-                            {
-                                pi.SetValue(clrInstance.ILInstance, obj);
-                            }
-                            else
-                            {
-                                Log.PrintError($"自动绑定{name}出错：{classType}不存在{field.fieldName}，已跳过");
-                            }
+                            Log.PrintError($"自动绑定{name}出错：{classType}不存在{field.fieldName}，已跳过");
                         }
+
                     }
                 }
             }
@@ -324,7 +324,7 @@ namespace JEngine.Core
             //是否激活
             if (classData.activeAfter)
             {
-                if (classData.BoundData == false && classData.requireBindFields && classData.fields != null &&
+                if (classData.BoundData == false  && classData.fields != null &&
                     classData.fields.Count > 0)
                 {
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
@@ -432,10 +432,12 @@ namespace JEngine.Core
                 //直接反射赋值一波了
                 var clrInstance = gameObject.AddComponent(adapterType) as MonoBehaviour;
 
-                var clrILInstance = t.GetField("instance",
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                var clrAppDomain = t.GetField("appdomain",
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                var clrILInstance = t.GetFields(
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                    .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
+                var clrAppDomain = t.GetFields(
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                    .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
                 if (!(clrInstance is null))
                 {
                     clrInstance.enabled = false;
@@ -597,7 +599,6 @@ namespace JEngine.Core
         [FormerlySerializedAs("Namespace")] public string classNamespace = "HotUpdateScripts";
         [FormerlySerializedAs("Class")] public string className = "";
         [FormerlySerializedAs("ActiveAfter")] public bool activeAfter = true;
-        [FormerlySerializedAs("RequireBindFields")] public bool requireBindFields;
 
         [FormerlySerializedAs("UseConstructor")] [Tooltip("是否使用构造函数")]
         public bool useConstructor = true;

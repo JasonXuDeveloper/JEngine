@@ -2270,10 +2270,12 @@ namespace JEngine.Helper
 
                     //直接反射赋值一波了
                     var clrInstance = instance.AddComponent(adapterType);
-                    var ILInstance = t.GetField("instance",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    var AppDomain = t.GetField("appdomain",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    var ILInstance = t.GetFields(
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                        .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
+                    var AppDomain = t.GetFields(
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                        .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
                     ILInstance.SetValue(clrInstance, ilInstance);
                     AppDomain.SetValue(clrInstance, __domain);
                     ilInstance.CLRInstance = clrInstance;
