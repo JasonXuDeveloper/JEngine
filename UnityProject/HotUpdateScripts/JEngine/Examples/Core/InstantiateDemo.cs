@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using UnityEngine;
 using JEngine.Core;
+using System.Linq;
 
 namespace JEngine.Examples
 {
@@ -75,7 +76,8 @@ namespace JEngine.Examples
                      Log.Print("t2.name = " + t2);
 
                      Log.Print("现在测试赋值热更工程的脚本，复制的物体为g4，命名为g6");
-                     var g6 = Object.Instantiate(g4.GetComponent<InstantiateDemo>());
+                     var i = g4.GetComponents<InstantiateDemo>()[0];
+                     var g6 = Object.Instantiate(i);
                      g6.gameObject.name = "g6";
                      Log.Print("g6.name = " + g6.name + $"({this.GetType().FullName})");
 
@@ -84,6 +86,9 @@ namespace JEngine.Examples
                          "This is not allowed.  MonoBehaviours can only be added using AddComponent(). " +
                          "Alternatively, your script can inherit from ScriptableObject or no base class at all，" +
                          "这个暂时没办法解决，忽略即可，无影响");
+
+                     Log.Print($"本场景共{FindObjectsOfType<InstantiateDemo>().Length}个InstantiateDemo，");
+                     Log.Print($"分别是：'{string.Join(",", FindObjectsOfType<InstantiateDemo>().ToList().Select(x => x.name).ToArray())}'");
                  });
                 return;
             }

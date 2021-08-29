@@ -401,17 +401,9 @@ namespace JEngine.Core
             bool needAdapter = t.BaseType != null &&
                                t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
 
-            ILTypeInstance instance;
-            if (classData.useConstructor)
-            {
-                instance = isMono
-                    ? new ILTypeInstance(type as ILType, false)
-                    : InitJEngine.Appdomain.Instantiate(classType);
-            }
-            else
-            {
-                instance = new ILTypeInstance(type as ILType, !isMono);
-            }
+            ILTypeInstance instance = isMono
+                ? new ILTypeInstance(type as ILType, false)
+                : InitJEngine.Appdomain.Instantiate(classType);
 
             instance.CLRInstance = instance;
 
@@ -441,8 +433,8 @@ namespace JEngine.Core
                 if (!(clrInstance is null))
                 {
                     clrInstance.enabled = false;
-                    clrILInstance?.SetValue(clrInstance, instance);
-                    clrAppDomain?.SetValue(clrInstance, InitJEngine.Appdomain);
+                    clrILInstance.SetValue(clrInstance, instance);
+                    clrAppDomain.SetValue(clrInstance, InitJEngine.Appdomain);
                     instance.CLRInstance = clrInstance;
                 }
             }
@@ -471,7 +463,7 @@ namespace JEngine.Core
                 go?.SetValue(clrInstance.ILInstance, gameObject);
             }
 
-            if (classData.useConstructor && isMono)
+            if (isMono)
             {
                 if (type.BaseType.ReflectionType is ILRuntimeType)
                 {
@@ -599,9 +591,6 @@ namespace JEngine.Core
         [FormerlySerializedAs("Namespace")] public string classNamespace = "HotUpdateScripts";
         [FormerlySerializedAs("Class")] public string className = "";
         [FormerlySerializedAs("ActiveAfter")] public bool activeAfter = true;
-
-        [FormerlySerializedAs("UseConstructor")] [Tooltip("是否使用构造函数")]
-        public bool useConstructor = true;
 
         [FormerlySerializedAs("Fields")] [Reorderable(elementNameProperty = "fieldName")]
         public FieldList fields;

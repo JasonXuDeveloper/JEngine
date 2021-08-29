@@ -25,9 +25,12 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.Action<System.Object>), typeof(System.Object)};
             method = type.GetMethod("QueueOnMainThread", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, QueueOnMainThread_0);
+            args = new Type[]{};
+            method = type.GetMethod("Initialize", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Initialize_1);
             args = new Type[]{typeof(System.Action<System.Object>), typeof(System.Object)};
             method = type.GetMethod("QueueOnOtherThread", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, QueueOnOtherThread_1);
+            app.RegisterCLRMethodRedirection(method, QueueOnOtherThread_2);
 
 
         }
@@ -53,7 +56,18 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* QueueOnOtherThread_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* Initialize_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
+
+
+            JEngine.Core.Loom.Initialize();
+
+            return __ret;
+        }
+
+        static StackObject* QueueOnOtherThread_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

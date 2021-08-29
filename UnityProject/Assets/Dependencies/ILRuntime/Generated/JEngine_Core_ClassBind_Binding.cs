@@ -49,7 +49,12 @@ namespace ILRuntime.Runtime.Generated
 
             var result_of_this_method = instance_of_this_method.AddClass(@classData);
 
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+            object obj_result_of_this_method = result_of_this_method;
+            if(obj_result_of_this_method is CrossBindingAdaptorType)
+            {    
+                return ILIntepreter.PushObject(__ret, __mStack, ((CrossBindingAdaptorType)obj_result_of_this_method).ILInstance, true);
+            }
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method, true);
         }
 
         static StackObject* Active_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)

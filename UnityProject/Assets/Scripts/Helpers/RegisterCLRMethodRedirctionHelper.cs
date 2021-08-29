@@ -63,6 +63,12 @@ namespace JEngine.Helper
             var getComponentMethod2 = componentType.GetMethods().ToList()
                 .Find(i => i.Name == "GetComponent" && i.GetGenericArguments().Length == 1);
             appdomain.RegisterCLRMethodRedirection(getComponentMethod2, GetComponent);
+            var getComponentsMethod = gameObjectType.GetMethods().ToList()
+                .Find(i => i.Name == "GetComponents" && i.GetGenericArguments().Length == 1);
+            appdomain.RegisterCLRMethodRedirection(getComponentsMethod, GetComponents_7);
+            var getComponentsMethod2 = componentType.GetMethods().ToList()
+                .Find(i => i.Name == "GetComponents" && i.GetGenericArguments().Length == 1);
+            appdomain.RegisterCLRMethodRedirection(getComponentsMethod2, GetComponents_7);
             
             //get还能是字符串。
             args = new[]{typeof(String)};
@@ -241,8 +247,14 @@ namespace JEngine.Helper
                 }
             }
             
-            //注册Instantiate
+            //注册Instantiate和其他的
             var objectType = typeof(UnityEngine.Object);
+            
+            var findObjectsOfTypeMethod = objectType.GetMethods().ToList().FindAll(f => f.Name == "FindObjectsOfType");
+            foreach (var methodInfo in findObjectsOfTypeMethod)
+            {
+                appdomain.RegisterCLRMethodRedirection(methodInfo, FindObjectsOfType_10);
+            }            
             var instantiateMethod = objectType.GetMethod("Instantiate", flag, null, args, null);
             var allMethods = objectType.GetMethods().ToList().FindAll(f => f.Name == "Instantiate");
             //GameObject的方便点，不需要再去Get类型
@@ -356,9 +368,9 @@ namespace JEngine.Helper
                 case ObjectTypes.FieldReference:
                     {
                         var ___obj = __mStack[ptr_of_this_method->Value];
-                        if(___obj is ILTypeInstance)
+                        if(___obj is ILTypeInstance instance)
                         {
-                            ((ILTypeInstance)___obj)[ptr_of_this_method->ValueLow] = instance_of_this_method;
+                            instance[ptr_of_this_method->ValueLow] = instance_of_this_method;
                         }
                         else
                         {
@@ -370,9 +382,9 @@ namespace JEngine.Helper
                 case ObjectTypes.StaticFieldReference:
                     {
                         var t = __domain.GetType(ptr_of_this_method->Value);
-                        if(t is ILType)
+                        if(t is ILType type)
                         {
-                            ((ILType)t).StaticInstance[ptr_of_this_method->ValueLow] = instance_of_this_method;
+                            type.StaticInstance[ptr_of_this_method->ValueLow] = instance_of_this_method;
                         }
                         else
                         {
@@ -388,7 +400,7 @@ namespace JEngine.Helper
                     break;
             }
         }
-        
+
         /// <summary>
         /// 帮助Instantiate找到GameObject
         /// </summary>
@@ -400,23 +412,23 @@ namespace JEngine.Helper
         {
             returnType = null;
             //判断类
-            if (instance is GameObject)
+            if (instance is GameObject gameObject)
             {
-                ins = instance as GameObject;
+                ins = gameObject;
             }
-            else if (instance is ILTypeInstance) //如果是热更类需要处理
+            else if (instance is ILTypeInstance typeInstance) //如果是热更类需要处理
             {
-                returnType = (instance as ILTypeInstance).Type;
-                ins = FindGOFromHotClass((instance as ILTypeInstance));
+                returnType = typeInstance.Type;
+                ins = Tools.FindGOForHotClass(typeInstance);
             }
             else //如果本地类那简单
             {
-                ins = (instance as Component).gameObject;
+                ins = (instance as Component)?.gameObject;
             }
         }
 
 
-        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain __domain, IType type = null)
+        private static object DoInstantiate(GameObject ins, GameObject res, AppDomain domain, IType type = null)
         {
             //没adapter不需要注意什么
             if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
@@ -429,9 +441,8 @@ namespace JEngine.Helper
                 return res;
             }
 
-            bool needClassBind = false;
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            foreach (var t in res.GetComponentsInChildren<Transform>())
+            foreach (var t in res.GetComponentsInChildren<Transform>(true))
             {
                 var go = t.gameObject;
                 var cb = go.GetComponent<ClassBind>();
@@ -441,17 +452,9 @@ namespace JEngine.Helper
                 }
             }
 
-            //如果有适配器的话
-            //没适配器就只有ClassBind，那就复制后再去ClasBind
-            if (ins.GetComponentsInChildren<ClassBind>(true).Length > 0)
-            {
-                needClassBind = true;
-            }
-
             //重新赋值instance的热更脚本
             var clrInstances = res.GetComponentsInChildren<CrossBindingAdaptorType>(true); //clone的
             var clrInstances4Ins = ins.GetComponentsInChildren<CrossBindingAdaptorType>(true); //原来的
-
             ILTypeInstance result = null;
             for (int i = 0; i < clrInstances.Length; i++)
             {
@@ -464,7 +467,6 @@ namespace JEngine.Helper
                 ILTypeInstance ilInstance =
                     clrInstance4Ins.ILInstance
                         .Clone(); //这里会有个问题，因为是复制的，有的地方可能指向的this，这时复制过去的是老的this，也就是原来的对象的this的东西
-
                 var t = clrInstance4Ins.GetType();
                 if (ilInstance.Type == type && result == null)
                 {
@@ -476,7 +478,7 @@ namespace JEngine.Helper
                     var self = ((MonoBehaviourAdapter.Adaptor) clrInstance);
                     self.Reset(); //重置clone的
 
-                    if (InitJEngine.Appdomain.LoadedTypes.TryGetValue("JEngine.Core.JBehaviour",
+                    if (domain.LoadedTypes.TryGetValue("JEngine.Core.JBehaviour",
                         out var jBehaviourType))
                     {
                         bool isJBehaviour = t.IsSubclassOf(jBehaviourType.ReflectionType);
@@ -490,16 +492,21 @@ namespace JEngine.Helper
 
                     //重新搞ILInstance
                     self.ILInstance = ilInstance;
-                    self.AppDomain = __domain;
+                    self.AppDomain = domain;
                 }
                 else
                 {
-                    var ILInstance = t.GetField("instance",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    var AppDomain = t.GetField("appdomain",
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                    ILInstance.SetValue(clrInstance, ilInstance);
-                    AppDomain.SetValue(clrInstance, __domain);
+                    var clrILInstance = t.GetFields(
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                        .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
+                    var clrAppDomain = t.GetFields(
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                        .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
+                    if (!(clrInstance is null))
+                    {
+                        clrILInstance.SetValue(clrInstance, ilInstance);
+                        clrAppDomain.SetValue(clrInstance, domain);
+                    }
                 }
 
                 if (clrInstance4Ins.ILInstance.CLRInstance == clrInstance4Ins) //clr指向
@@ -513,7 +520,10 @@ namespace JEngine.Helper
 
                 //补上Awake
                 //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = (clrInstance.GetType() != null ? clrInstance.GetType() : t).GetMethod("Awake",
+                var awakeMethod = clrInstance?.GetType().GetMethod("Awake",
+                    BindingFlags.Default | BindingFlags.Public
+                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                         BindingFlags.NonPublic | BindingFlags.Static) ?? t.GetMethod("Awake",
                     BindingFlags.Default | BindingFlags.Public
                                          | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
                                          BindingFlags.NonPublic | BindingFlags.Static);
@@ -524,19 +534,6 @@ namespace JEngine.Helper
                 else
                 {
                     Debug.LogError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-                }
-
-                if (needClassBind)
-                {
-                    ClassBindMgr.DoBind();
-                }
-                else
-                {
-                    //处理好了后，如果还有classbind就是prefab，需要重新bind
-                    if (res.GetComponentInChildren<ClassBind>(true))
-                    {
-                        ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
-                    }
                 }
             }
 
@@ -673,9 +670,9 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
-            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
             {
-                res = ((GameObject) res).GetComponent(original.GetType());
+                res = gameObject.GetComponent(original.GetType());
             }
             
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -698,9 +695,9 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
-            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
             {
-                res = ((GameObject) res).GetComponent(original.GetType());
+                res = gameObject.GetComponent(original.GetType());
             }
             
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -726,9 +723,9 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @parent, @worldPositionStays);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
-            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
             {
-                res = ((GameObject) res).GetComponent(original.GetType());
+                res = gameObject.GetComponent(original.GetType());
             }
             
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -755,9 +752,9 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, @position, @rotation);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
-            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
             {
-                res = ((GameObject) res).GetComponent(original.GetType());
+                res = gameObject.GetComponent(original.GetType());
             }
             
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -788,9 +785,9 @@ namespace JEngine.Helper
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go,  @position, @rotation, @parent);
             object res = DoInstantiate(go, result_of_this_method, __domain,type);
-            if (type == null && res is GameObject && res.GetType() != original.GetType())
+            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
             {
-                res = ((GameObject) res).GetComponent(original.GetType());
+                res = gameObject.GetComponent(original.GetType());
             }
             
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -828,9 +825,9 @@ namespace JEngine.Helper
             var result_of_this_method = Serializer.Deserialize(type, source);
 
             object obj_result_of_this_method = result_of_this_method;
-            if(obj_result_of_this_method is CrossBindingAdaptorType)
+            if(obj_result_of_this_method is CrossBindingAdaptorType adaptorType)
             {    
-                return ILIntepreter.PushObject(__ret, __mStack, ((CrossBindingAdaptorType)obj_result_of_this_method).ILInstance, true);
+                return ILIntepreter.PushObject(__ret, __mStack, adaptorType.ILInstance, true);
             }
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method, true);
         }
@@ -1291,28 +1288,6 @@ namespace JEngine.Helper
             sw.Stop();
         }
 
-        /// <summary>
-        /// 找到热更对象的gameObject
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        private static GameObject FindGOFromHotClass(ILTypeInstance instance)
-        {
-            var returnType = instance.Type;
-            if (returnType.ReflectionType == typeof(MonoBehaviour))
-            {
-                var pi = returnType.ReflectionType.GetProperty("gameObject");
-                return pi.GetValue(instance.CLRInstance) as GameObject;
-            }
-
-            if (returnType.ReflectionType.IsSubclassOf(typeof(MonoBehaviour)))
-            {
-                var pi = returnType.ReflectionType.BaseType.GetProperty("gameObject");
-                return pi.GetValue(instance.CLRInstance) as GameObject;
-            }
-
-            return null;
-        }
 
 
         /// <summary>
@@ -1352,7 +1327,7 @@ namespace JEngine.Helper
             }
         }
 
-        unsafe static StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1375,13 +1350,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1412,7 +1387,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1441,13 +1416,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1478,7 +1453,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1507,13 +1482,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1544,7 +1519,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1579,13 +1554,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1616,7 +1591,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1639,13 +1614,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1678,7 +1653,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1707,13 +1682,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1745,7 +1720,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1774,13 +1749,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1813,7 +1788,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1848,13 +1823,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -1886,7 +1861,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1911,7 +1886,7 @@ namespace JEngine.Helper
             }
             else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass(typeInstance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
             else if (instance is Component component)
             {
@@ -1932,7 +1907,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1963,7 +1938,7 @@ namespace JEngine.Helper
             }
             else if (instance is ILTypeInstance ilTypeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass(ilTypeInstance);
+                instance_of_this_method = Tools.FindGOForHotClass(ilTypeInstance);
             }
             else if (instance is Component component)
             {
@@ -1984,7 +1959,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2013,13 +1988,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -2036,7 +2011,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        unsafe static StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2071,13 +2046,13 @@ namespace JEngine.Helper
                 instance_of_this_method =
                     (GameObject) typeof(GameObject).CheckCLRTypes(instance);
             }
-            else if (instance is ILTypeInstance)
+            else if (instance is ILTypeInstance typeInstance)
             {
-                instance_of_this_method = FindGOFromHotClass((ILTypeInstance) instance);
+                instance_of_this_method = Tools.FindGOForHotClass(typeInstance);
             }
-            else if (instance is Component)
+            else if (instance is Component component)
             {
-                instance_of_this_method = ((Component) instance).gameObject;
+                instance_of_this_method = component.gameObject;
             }
             else
             {
@@ -2103,7 +2078,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* PrintError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* PrintError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2128,7 +2103,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* PrintWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* PrintWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2153,7 +2128,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* Print(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* Print(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2178,7 +2153,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* LogError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* LogError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2203,7 +2178,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* LogWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* LogWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2228,7 +2203,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        unsafe static StackObject* Log(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* Log(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2244,7 +2219,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        private static object DoAddComponent(IType type, GameObject instance,AppDomain __domain)
+        private static object DoAddComponent(IType type, GameObject instance,AppDomain domain)
         {
             object res;
             if (type is CLRType)
@@ -2259,9 +2234,9 @@ namespace JEngine.Helper
                 Type t = type.ReflectionType;
                 bool isMonoAdapter = t.BaseType?.FullName == typeof(MonoBehaviourAdapter.Adaptor).FullName;
 
-                if (!isMonoAdapter && Type.GetType(t.BaseType.FullName) != null)
+                if (!isMonoAdapter && Type.GetType(t.BaseType?.FullName ?? string.Empty) != null)
                 {
-                    Type adapterType = Type.GetType(t.BaseType?.FullName);
+                    Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
                     if (adapterType == null)
                     {
                         Core.Log.PrintError($"{t.FullName}, need to generate adapter");
@@ -2277,7 +2252,7 @@ namespace JEngine.Helper
                             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
                         .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
                     ILInstance.SetValue(clrInstance, ilInstance);
-                    AppDomain.SetValue(clrInstance, __domain);
+                    AppDomain.SetValue(clrInstance, domain);
                     ilInstance.CLRInstance = clrInstance;
                     bool activated = false;
                     //不管是啥类型，直接invoke这个awake方法
@@ -2313,7 +2288,7 @@ namespace JEngine.Helper
                     var clrInstance = instance.AddComponent<MonoBehaviourAdapter.Adaptor>();
                     //unity创建的实例并没有热更DLL里面的实例，所以需要手动赋值
                     clrInstance.ILInstance = ilInstance;
-                    clrInstance.AppDomain = __domain;
+                    clrInstance.AppDomain = domain;
                     //这个实例默认创建的CLRInstance不是通过AddComponent出来的有效实例，所以得手动替换
                     ilInstance.CLRInstance = clrInstance;
                     clrInstance.Awake(); //因为Unity调用这个方法时还没准备好所以这里补调一次
@@ -2332,7 +2307,7 @@ namespace JEngine.Helper
                     var m = type.GetConstructor(Extensions.EmptyParamList);
                     if (m != null)
                     {
-                        InitJEngine.Appdomain.Invoke(m, res, null);
+                        domain.Invoke(m, res, null);
                     }
                 }
             }
@@ -2349,7 +2324,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        unsafe static StackObject* AddComponent2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* AddComponent2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             //CLR重定向的说明请看相关文档和教程，这里不多做解释
@@ -2385,7 +2360,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        unsafe static StackObject* AddComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* AddComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             //CLR重定向的说明请看相关文档和教程，这里不多做解释
@@ -2442,83 +2417,13 @@ namespace JEngine.Helper
                 var typeName = __domain.LoadedTypes.Keys.ToList().Find(k => k.EndsWith(type));
                 if (typeName != null)//如果有这个热更类型
                 {
-                    //适配器全查找出来，匹配ILTypeInstance的真实类型的FullName
-                    var clrInstances = instance_of_this_method.GetComponents<CrossBindingAdaptorType>();
-                    for (int i = 0; i < clrInstances.Length; i++)
-                    {
-                        var clrInstance = clrInstances[i];
-                        if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                        {
-                            if (clrInstance.ILInstance.Type.ReflectionType.FullName == typeName)
-                            {
-                                result_of_this_method = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                                break;
-                            }
-                        }
-                    }
+                    result_of_this_method = ((ILTypeInstance[])Tools.GetHotComponent(instance_of_this_method, type))[0];
                 }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
-
-        private static object GetComp(IType type, GameObject instance)
-        {
-            object res = null;
-            //因为所有DLL里面的MonoBehaviour实际都是这个Component，所以我们只能全取出来遍历查找
-            var clrInstances = instance.GetComponents<CrossBindingAdaptorType>();
-            for (int i = 0; i < clrInstances.Length; i++)
-            {
-                var clrInstance = clrInstances[i];
-                if (clrInstance.ILInstance != null) //ILInstance为null, 表示是无效的MonoBehaviour，要略过
-                {
-                    if (clrInstance.ILInstance.Type == type ||
-                        clrInstance.ILInstance.Type.ReflectionType.IsSubclassOf(type.ReflectionType))
-                    {
-                        res = clrInstance.ILInstance; //交给ILRuntime的实例应该为ILInstance
-                        break;
-                    }
-                }
-            }
-
-            return res;
-        }
-            
-        private static object DoGetComponent(IType type, GameObject instance)
-        {
-            object res = null;
-            if (type is CLRType)
-            {
-                //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
-                res = instance.GetComponent(type.TypeForCLR);
-            }
-            else
-            {
-                res = GetComp(type,instance);
-
-                if (res == null)
-                {
-                    var cb = instance.GetComponent<ClassBind>();
-                    if (cb != null)
-                    {
-                        //执行绑定
-                        ClassBindMgr.DoBind(new List<ClassBind>() {cb});
-                    }
-                    //尝试10次
-                    for (int i = 0; i < 10; i++)
-                    {
-                        res = GetComp(type,instance);
-                        if (res != null)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return res;
-        }
-
+        
         
         /// <summary>
         /// GetComponent 的实现
@@ -2530,7 +2435,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        unsafe static StackObject* GetComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* GetComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             //CLR重定向的说明请看相关文档和教程，这里不多做解释
@@ -2544,37 +2449,94 @@ namespace JEngine.Helper
             __intp.Free(ptr);
 
             var genericArgument = __method.GenericArguments;
-            //AddComponent应该有且只有1个泛型参数
+            //GetComponent应该有且只有1个泛型参数
             if (genericArgument != null && genericArgument.Length == 1)
             {
-                GameObject instance;
-
-                if (ins is GameObject)
+                var type = genericArgument[0];
+                object res;
+                if (type is CLRType)
                 {
-                    instance = ins as GameObject;
-                }
-                else if (ins is Component)
-                {
-                    instance = ((Component) ins).gameObject;
-                }
-                else if (ins is ILTypeInstance)
-                {
-                    instance = FindGOFromHotClass(((ILTypeInstance) ins));
+                    //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
+                    res = (ins as Component)?.GetComponent(type.TypeForCLR);
                 }
                 else
                 {
-                    Debug.LogError($"[GetComponent错误] 不支持的参数类型：{ins.GetType().FullName}，" +
-                                   "请传参GameObject或继承MonoBehaviour的对象");
-                    return __esp;
+                    GameObject instance = ins is GameObject ? ins as GameObject : Tools.FindGOForHotClass((ILTypeInstance) ins);
+                    res = ((ILTypeInstance[])Tools.GetHotComponent(instance, type as ILType))[0];
                 }
-
-
-                var type = genericArgument[0];
-                object res = DoGetComponent(type, instance);
+                
                 return ILIntepreter.PushObject(ptr, __mStack, res);
             }
 
             return __esp;
+        }
+        
+        
+        static unsafe StackObject* GetComponents_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            var ins = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            if (ins == null)
+                throw new NullReferenceException();
+            __intp.Free(ptr_of_this_method);
+            
+            var genericArgument = __method.GenericArguments;
+            //AddComponent应该有且只有1个泛型参数
+            if (genericArgument != null && genericArgument.Length == 1)
+            {
+                var type = genericArgument[0];
+                object res;
+                if (type is CLRType)
+                {
+                    //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
+                    res = (ins as Component)?.GetComponents(type.TypeForCLR);
+                }
+                else
+                {
+                    GameObject instance = ins is GameObject ? ins as GameObject : Tools.FindGOForHotClass((ILTypeInstance) ins);
+                    res = Tools.GetHotComponent(instance, type as ILType);
+                }
+                
+                return ILIntepreter.PushObject(ptr_of_this_method, __mStack, res);
+            }
+
+            return __esp;
+        }
+        
+        static unsafe StackObject* FindObjectsOfType_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
+
+            var genericArgument = __method.GenericArguments;
+            //AddComponent应该有且只有1个泛型参数
+            if (genericArgument != null && genericArgument.Length == 1)
+            {
+                var type = genericArgument[0];
+                object res;
+                if (type is CLRType)
+                {
+                    res = UnityEngine.Object.FindObjectsOfType<global::MonoBehaviourAdapter.Adaptor>();
+                }
+                else
+                {
+                    var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
+                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType)).Select(i=>i.CLRInstance).ToArray();
+                    int n = ilInstances.Length;
+                    res = Array.CreateInstance(type.TypeForCLR, n);
+                    for (int i = 0; i < n; i++)
+                        ((Array) res).SetValue(ilInstances[i], i);
+                }
+                
+                return ILIntepreter.PushObject(__ret, __mStack, res);
+            }
+
+            return __esp;
+
         }
     }
 }

@@ -36,10 +36,6 @@ namespace ILRuntime.Runtime.Generated
             app.RegisterCLRFieldGetter(field, get_activeAfter_2);
             app.RegisterCLRFieldSetter(field, set_activeAfter_2);
             app.RegisterCLRFieldBinding(field, CopyToStack_activeAfter_2, AssignFromStack_activeAfter_2);
-            field = type.GetField("useConstructor", flag);
-            app.RegisterCLRFieldGetter(field, get_useConstructor_3);
-            app.RegisterCLRFieldSetter(field, set_useConstructor_3);
-            app.RegisterCLRFieldBinding(field, CopyToStack_useConstructor_3, AssignFromStack_useConstructor_3);
 
             args = new Type[]{};
             method = type.GetConstructor(flag, null, args, null);
@@ -120,32 +116,6 @@ namespace ILRuntime.Runtime.Generated
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             System.Boolean @activeAfter = ptr_of_this_method->Value == 1;
             ((JEngine.Core.ClassData)o).activeAfter = @activeAfter;
-            return ptr_of_this_method;
-        }
-
-        static object get_useConstructor_3(ref object o)
-        {
-            return ((JEngine.Core.ClassData)o).useConstructor;
-        }
-
-        static StackObject* CopyToStack_useConstructor_3(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
-        {
-            var result_of_this_method = ((JEngine.Core.ClassData)o).useConstructor;
-            __ret->ObjectType = ObjectTypes.Integer;
-            __ret->Value = result_of_this_method ? 1 : 0;
-            return __ret + 1;
-        }
-
-        static void set_useConstructor_3(ref object o, object v)
-        {
-            ((JEngine.Core.ClassData)o).useConstructor = (System.Boolean)v;
-        }
-
-        static StackObject* AssignFromStack_useConstructor_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.Boolean @useConstructor = ptr_of_this_method->Value == 1;
-            ((JEngine.Core.ClassData)o).useConstructor = @useConstructor;
             return ptr_of_this_method;
         }
 

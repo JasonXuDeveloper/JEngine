@@ -196,7 +196,6 @@ namespace JEngine.Core
                 classNamespace = "",
                 className = jBehaviour.FullName,
                 activeAfter = activeAfter,
-                useConstructor = true
             };
             var id = (cb.AddClass(_cb) as JBehaviour)._instanceID;
             cb.Active(_cb);
