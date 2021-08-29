@@ -14,30 +14,27 @@ using ILRuntime.CLR.Utils;
 
 namespace ILRuntime.Runtime.Generated
 {
-    unsafe class System_Nullable_1_UInt64_Binding
+    unsafe class System_Collections_Generic_KeyValuePair_2_Object_List_1_ValueTuple_2_String_ILTypeInstance_Binding
     {
         public static void Register(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
             BindingFlags flag = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
             MethodBase method;
             Type[] args;
-            Type type = typeof(System.Nullable<System.UInt64>);
+            Type type = typeof(System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>);
             args = new Type[]{};
-            method = type.GetMethod("GetValueOrDefault", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, GetValueOrDefault_0);
+            method = type.GetMethod("get_Key", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, get_Key_0);
             args = new Type[]{};
-            method = type.GetMethod("get_HasValue", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, get_HasValue_1);
+            method = type.GetMethod("get_Value", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, get_Value_1);
 
-            app.RegisterCLRCreateDefaultInstance(type, () => new System.Nullable<System.UInt64>());
+            app.RegisterCLRCreateDefaultInstance(type, () => new System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>());
 
-            args = new Type[]{typeof(System.UInt64)};
-            method = type.GetConstructor(flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Ctor_0);
 
         }
 
-        static void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, IList<object> __mStack, ref System.Nullable<System.UInt64> instance_of_this_method)
+        static void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, IList<object> __mStack, ref System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>> instance_of_this_method)
         {
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
             switch(ptr_of_this_method->ObjectType)
@@ -76,14 +73,14 @@ namespace ILRuntime.Runtime.Generated
                     break;
                  case ObjectTypes.ArrayReference:
                     {
-                        var instance_of_arrayReference = __mStack[ptr_of_this_method->Value] as System.Nullable<System.UInt64>[];
+                        var instance_of_arrayReference = __mStack[ptr_of_this_method->Value] as System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>[];
                         instance_of_arrayReference[ptr_of_this_method->ValueLow] = instance_of_this_method;
                     }
                     break;
             }
         }
 
-        static StackObject* GetValueOrDefault_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* get_Key_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -91,61 +88,41 @@ namespace ILRuntime.Runtime.Generated
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
-            System.Nullable<System.UInt64> instance_of_this_method = (System.Nullable<System.UInt64>)typeof(System.Nullable<System.UInt64>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>> instance_of_this_method = (System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>)typeof(System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
 
-            var result_of_this_method = instance_of_this_method.GetValueOrDefault();
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            WriteBackInstance(__domain, ptr_of_this_method, __mStack, ref instance_of_this_method);
-
-            __intp.Free(ptr_of_this_method);
-            __ret->ObjectType = ObjectTypes.Long;
-            *(ulong*)&__ret->Value = result_of_this_method;
-            return __ret + 1;
-        }
-
-        static StackObject* get_HasValue_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
-            System.Nullable<System.UInt64> instance_of_this_method = (System.Nullable<System.UInt64>)typeof(System.Nullable<System.UInt64>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-
-            var result_of_this_method = instance_of_this_method.HasValue;
+            var result_of_this_method = instance_of_this_method.Key;
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             WriteBackInstance(__domain, ptr_of_this_method, __mStack, ref instance_of_this_method);
 
             __intp.Free(ptr_of_this_method);
-            __ret->ObjectType = ObjectTypes.Integer;
-            __ret->Value = result_of_this_method ? 1 : 0;
-            return __ret + 1;
-        }
-
-
-        static StackObject* Ctor_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.UInt64 @value = *(ulong*)&ptr_of_this_method->Value;
-
-
-            var result_of_this_method = new System.Nullable<System.UInt64>(@value);
-
-            if(!isNewObj)
-            {
-                __ret--;
-                WriteBackInstance(__domain, __ret, __mStack, ref result_of_this_method);
-                return __ret;
+            object obj_result_of_this_method = result_of_this_method;
+            if(obj_result_of_this_method is CrossBindingAdaptorType)
+            {    
+                return ILIntepreter.PushObject(__ret, __mStack, ((CrossBindingAdaptorType)obj_result_of_this_method).ILInstance, true);
             }
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method, true);
+        }
 
+        static StackObject* get_Value_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
+            System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>> instance_of_this_method = (System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>)typeof(System.Collections.Generic.KeyValuePair<System.Object, System.Collections.Generic.List<System.ValueTuple<System.String, ILRuntime.Runtime.Intepreter.ILTypeInstance>>>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+
+            var result_of_this_method = instance_of_this_method.Value;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            WriteBackInstance(__domain, ptr_of_this_method, __mStack, ref instance_of_this_method);
+
+            __intp.Free(ptr_of_this_method);
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
+
 
 
     }

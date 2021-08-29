@@ -143,15 +143,29 @@ namespace ILRuntime.Runtime.Generated
                     }
                 }
             }
+            args = new Type[]{typeof(global::MonoBehaviourAdapter.Adaptor)};
+            if (genericMethods.TryGetValue("FindObjectsOfType", out lst))
+            {
+                foreach(var m in lst)
+                {
+                    if(m.MatchGenericParameters(args, typeof(global::MonoBehaviourAdapter.Adaptor[])))
+                    {
+                        method = m.MakeGenericMethod(args);
+                        app.RegisterCLRMethodRedirection(method, FindObjectsOfType_10);
+
+                        break;
+                    }
+                }
+            }
             args = new Type[]{typeof(UnityEngine.Object)};
             method = type.GetMethod("DontDestroyOnLoad", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, DontDestroyOnLoad_10);
+            app.RegisterCLRMethodRedirection(method, DontDestroyOnLoad_11);
             args = new Type[]{typeof(UnityEngine.Object)};
             method = type.GetMethod("Destroy", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Destroy_11);
+            app.RegisterCLRMethodRedirection(method, Destroy_12);
             args = new Type[]{typeof(UnityEngine.Object), typeof(UnityEngine.Object)};
             method = type.GetMethod("op_Inequality", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, op_Inequality_12);
+            app.RegisterCLRMethodRedirection(method, op_Inequality_13);
 
 
         }
@@ -361,7 +375,18 @@ namespace ILRuntime.Runtime.Generated
             return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
         }
 
-        static StackObject* DontDestroyOnLoad_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* FindObjectsOfType_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
+
+
+            var result_of_this_method = UnityEngine.Object.FindObjectsOfType<global::MonoBehaviourAdapter.Adaptor>();
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        static StackObject* DontDestroyOnLoad_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -377,7 +402,7 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* Destroy_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* Destroy_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -393,7 +418,7 @@ namespace ILRuntime.Runtime.Generated
             return __ret;
         }
 
-        static StackObject* op_Inequality_12(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* op_Inequality_13(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
