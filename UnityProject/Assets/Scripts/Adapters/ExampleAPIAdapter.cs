@@ -358,6 +358,7 @@ namespace ProjectAdapter
             
             IMethod mOnAnimatorMoveMethod;
             bool mOnAnimatorMoveMethodGot;
+
             void OnAnimatorMove()
             {
                 if (instance != null)
@@ -367,14 +368,22 @@ namespace ProjectAdapter
                         mOnAnimatorMoveMethod = instance.Type.GetMethod("OnAnimatorMove", 0);
                         mOnAnimatorMoveMethodGot = true;
                     }
-            
+
                     if (mOnAnimatorMoveMethod != null)
                     {
                         appdomain.Invoke(mOnAnimatorMoveMethod, instance, param0);
                     }
+                    else
+                    {
+                        var animator = gameObject.GetComponent<Animator>();
+                        if (animator != null)
+                        {
+                            animator.ApplyBuiltinRootMotion();
+                        }
+                    }
                 }
             }
-            
+
             IMethod mOnApplicationFocusMethod;
             bool mOnApplicationFocusMethodGot;
             void OnApplicationFocus(bool hasFocus)
