@@ -2457,7 +2457,9 @@ namespace JEngine.Helper
                 if (type is CLRType)
                 {
                     //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
-                    res = (ins as Component)?.GetComponent(type.TypeForCLR);
+                    res = ins is GameObject gameObject
+                        ? gameObject.GetComponent(type.TypeForCLR)
+                        : (ins as Component)?.GetComponent(type.TypeForCLR);
                 }
                 else
                 {
@@ -2493,7 +2495,9 @@ namespace JEngine.Helper
                 if (type is CLRType)
                 {
                     //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
-                    res = (ins as Component)?.GetComponents(type.TypeForCLR);
+                    res = ins is GameObject gameObject
+                        ? gameObject.GetComponents(type.TypeForCLR)
+                        : (ins as Component)?.GetComponents(type.TypeForCLR);
                 }
                 else
                 {
