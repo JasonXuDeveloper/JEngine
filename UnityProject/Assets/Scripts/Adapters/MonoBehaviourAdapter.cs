@@ -487,6 +487,14 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 {
                     appdomain.Invoke(mOnAnimatorMoveMethod, instance, param0);
                 }
+                else
+                {
+                    var animator = gameObject.GetComponent<Animator>();
+                    if (animator != null)
+                    {
+                        animator.ApplyBuiltinRootMotion();
+                    }
+                }
             }
         }
 
