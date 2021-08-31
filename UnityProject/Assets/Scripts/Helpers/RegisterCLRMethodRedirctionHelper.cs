@@ -2524,7 +2524,7 @@ namespace JEngine.Helper
                 object res;
                 if (type is CLRType)
                 {
-                    res = UnityEngine.Object.FindObjectsOfType<global::MonoBehaviourAdapter.Adaptor>();
+                    res = UnityEngine.Object.FindObjectsOfType(type.TypeForCLR);
                 }
                 else
                 {
