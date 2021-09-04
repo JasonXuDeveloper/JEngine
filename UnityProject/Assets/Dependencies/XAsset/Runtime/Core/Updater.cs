@@ -271,6 +271,7 @@ namespace libx
             if (_checking != null)
             {
                 StopCoroutine(_checking);
+                return;
             }
 
             _checking = Checking();
