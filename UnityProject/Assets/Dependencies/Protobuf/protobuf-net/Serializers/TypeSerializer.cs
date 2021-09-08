@@ -10,6 +10,9 @@ using Type = IKVM.Reflection.Type;
 using IKVM.Reflection;
 #else
 using System.Reflection;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Reflection;
+
 #endif
 
 namespace ProtoBuf.Serializers
@@ -155,7 +158,7 @@ namespace ProtoBuf.Serializers
                     return ser;
                 }
             }
-            if (actualType == constructType) return null; // needs to be last in case the default concrete type is also a known sub-type
+            if (actualType.Equals(constructType)) return null; // needs to be last in case the default concrete type is also a known sub-type
             TypeModel.ThrowUnexpectedSubtype(forType, actualType); // might throw (if not a proxy)
             return null;
         }
