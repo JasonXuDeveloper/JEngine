@@ -10,8 +10,6 @@ using Type = IKVM.Reflection.Type;
 using IKVM.Reflection;
 #else
 using System.Reflection;
-using ILRuntime.CLR.TypeSystem;
-using ILRuntime.Reflection;
 
 #endif
 
