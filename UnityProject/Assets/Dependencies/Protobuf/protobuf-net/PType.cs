@@ -87,6 +87,7 @@ namespace ProtoBuf{
 			RegisterFunctionGetRealType(o =>
 			{
 				Type type;
+				if (o is ILTypeInstance ins)
 				{
 					type = ins.Type.ReflectionType;
 					RegisterType(type.FullName, type); //自动注册一下
