@@ -45,7 +45,6 @@ namespace JEngine.Core
             {
                 using (var stream = new System.IO.MemoryStream())
                 {
-                    ProtoTypeRegister.Register<T>();
                     ProtoBuf.Serializer.Serialize(stream, obj);
                     return stream.ToArray();
                 }
@@ -68,7 +67,6 @@ namespace JEngine.Core
         {
             try
             {
-                ProtoTypeRegister.Register<T>();
                 var res = Assets.LoadAsset(path, typeof(TextAsset));
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(res.bytes)) as T;
             }
@@ -90,7 +88,6 @@ namespace JEngine.Core
         {
             try
             {
-                ProtoTypeRegister.Register<T>();
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(msg)) as T;
             }
             catch (IOException ex)

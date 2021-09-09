@@ -74,9 +74,6 @@ namespace JEngine.Examples
                 },
                 label = PBTest.Label.LABEL_OPTIONAL
             };
-            Log.Print("需要注意的是，得注册你pb序列化的Type，一次即可，用StringifyHelper.ProtoSerialize会自动注册，但是注册的类型内的List<T>的T需要自己手动注册");
-            Log.Print("比如这里，PBTest内有个List<HotData>，就需要注册HotData，用JEngine.Core.ProtoTypeRegister.Register<HotData>();即可");
-            JEngine.Core.ProtoTypeRegister.Register<HotData>();
             var bytes = StringifyHelper.ProtoSerialize(pbtest);
             Log.Print($"序列化后的byte[]长度：{bytes.Length}");
             Log.Print("开始反序列化");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ILRuntime.Runtime.Intepreter;
 
 namespace ProtoBuf{
 	public class PType
@@ -85,11 +86,15 @@ namespace ProtoBuf{
 			RegisterFunctionCreateInstance(typeName => appdomain.Instantiate(typeName));
 			RegisterFunctionGetRealType(o =>
 			{
-				var type = o.GetType();
-				if (type.FullName == "ILRuntime.Runtime.Intepreter.ILTypeInstance")
+				Type type;
+				if (o is ILTypeInstance ins)
 				{
-					var ilo = o as ILRuntime.Runtime.Intepreter.ILTypeInstance;
-					type = ProtoBuf.PType.FindType(ilo.Type.FullName);
+					type = ins.Type.ReflectionType;
+					RegisterType(type.FullName, type); //自动注册一下
+				}
+				else
+				{
+					type = o.GetType();
 				}
 
 				return type;

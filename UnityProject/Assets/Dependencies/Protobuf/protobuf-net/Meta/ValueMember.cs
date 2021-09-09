@@ -123,7 +123,9 @@ namespace ProtoBuf.Meta
             if (memberType == null) throw new ArgumentNullException("memberType");
             if (model == null) throw new ArgumentNullException("model");
             this.fieldNumber = fieldNumber;
-            this.memberType = memberType;
+            this.memberType = memberType is ILRuntime.Reflection.ILRuntimeWrapperType
+                ? ((ILRuntime.Reflection.ILRuntimeWrapperType) memberType).RealType
+                : memberType;
             this.itemType = itemType;
             this.defaultType = defaultType;
 
