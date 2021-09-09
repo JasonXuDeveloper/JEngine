@@ -30,13 +30,14 @@ namespace JEngine.Examples
 {
     public class AntiCheatDemo
     {
+        JInt i;
         public void Awake()
         {
             Log.Print("========== AntiCheat Test ==========");
 
             Log.Print(">> JInt Test Starts");
             Log.Print("用抓内存的工具来看i在内存中的值就能知道效果了（安卓真机可以用GameGuardian，即GG修改器测试）");
-            JInt i = new JInt(0);
+            i = new JInt(0);
             i = new JInt("0");
             i = 0;
             for(int x = 0; x < 10; x++)

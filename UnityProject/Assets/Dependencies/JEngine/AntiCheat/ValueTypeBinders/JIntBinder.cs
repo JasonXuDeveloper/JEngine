@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ILRuntime.CLR.Method;
 using ILRuntime.CLR.TypeSystem;
@@ -40,12 +41,19 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             MethodBase method;
             Type[] args;
             Type type = typeof(JInt);
+            MethodInfo[] methods = type.GetMethods(flag).Where(t => !t.IsGenericMethod).ToArray();
+            
             args = new[]{typeof(Int32)};
             method = type.GetConstructor(flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(method, NewJInt);
+            
             args = new[]{typeof(String)};
             method = type.GetConstructor(flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(method, NewJInt2);
+            
+            args = new[]{typeof(Int32)};
+            method = methods.Single(t => t.Name.Equals("op_Implicit") && t.ReturnType == typeof(JInt) && t.CheckMethodParams(args));
+            appdomain.RegisterCLRMethodRedirection(method, JInt_Implicit);
             
             args = new[] { typeof(JInt), typeof(JInt) };
             method = type.GetMethod("op_Addition", flag, null, args, null);
@@ -56,6 +64,20 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             appdomain.RegisterCLRMethodRedirection(method, JInt_Add2);
         }
         
+        StackObject* JInt_Implicit(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        {
+            StackObject* ptr;
+            StackObject* ret = ILIntepreter.Minus(esp, 1);
+
+            ptr = ILIntepreter.Minus(esp, 1);
+            Int32 val = ptr->Value;
+
+
+            var resultOfThisMethod = (JInt)val;
+
+            return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
+        }
+
         StackObject* JInt_Add(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
         {
             var ret = ILIntepreter.Minus(esp, 2);
@@ -142,15 +164,15 @@ namespace JEngine.AntiCheat.ValueTypeBinders
                     break;
                 case ObjectTypes.FieldReference:
                     {
-                        var ___obj = mStack[ptr->Value];
-                        if(___obj is ILTypeInstance)
+                        var obj = mStack[ptr->Value];
+                        if(obj is ILTypeInstance)
                         {
-                            ((ILTypeInstance)___obj)[ptr->ValueLow] = instanceOfThisMethod;
+                            ((ILTypeInstance)obj)[ptr->ValueLow] = instanceOfThisMethod;
                         }
                         else
                         {
-                            var t = domain.GetType(___obj.GetType()) as CLRType;
-                            t.SetFieldValue(ptr->ValueLow, ref ___obj, instanceOfThisMethod);
+                            var t = domain.GetType(obj.GetType()) as CLRType;
+                            if (t != null) t.SetFieldValue(ptr->ValueLow, ref obj, instanceOfThisMethod);
                         }
                     }
                     break;
