@@ -22,6 +22,11 @@ namespace JEngine.Core
     {
         [FormerlySerializedAs("ScriptsToBind")] public ClassData[] scriptsToBind = new ClassData[1];
 
+        private void Start()
+        {
+            ClassBindMgr.DoBind(this);
+        }
+
         /// <summary>
         /// Set value
         /// </summary>
