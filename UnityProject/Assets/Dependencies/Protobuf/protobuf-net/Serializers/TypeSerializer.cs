@@ -156,7 +156,7 @@ namespace ProtoBuf.Serializers
                     return ser;
                 }
             }
-            if (actualType.Equals(constructType)) return null; // needs to be last in case the default concrete type is also a known sub-type
+            if (actualType == constructType) return null; // needs to be last in case the default concrete type is also a known sub-type
             TypeModel.ThrowUnexpectedSubtype(forType, actualType); // might throw (if not a proxy)
             return null;
         }
