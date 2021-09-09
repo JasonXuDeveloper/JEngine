@@ -1115,7 +1115,7 @@ namespace JEngine.Helper
                 |BindingFlags.FlattenHierarchy
                 );
 
-            if (mi == null)
+            if (mi == null || mi.GetParameters().Length != 0)
             {
                 adapter.InvokeRepeating(methodName, time, repeatRate);
                 return __ret;
@@ -1212,10 +1212,10 @@ namespace JEngine.Helper
                 | BindingFlags.Instance
                 |BindingFlags.FlattenHierarchy
                 );
-            
-            if (mi == null)
+
+            if (mi == null || mi.GetParameters().Length != 0)
             {
-                adapter.Invoke(methodName,time);
+                adapter.Invoke(methodName, time);
                 return __ret;
             }
 
