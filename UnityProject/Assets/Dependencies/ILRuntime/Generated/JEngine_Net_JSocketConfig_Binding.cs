@@ -68,7 +68,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_eventOpenName_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @eventOpenName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @eventOpenName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             ((JEngine.Net.JSocketConfig)o).eventOpenName = @eventOpenName;
             return ptr_of_this_method;
         }
@@ -92,7 +92,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_eventConnectName_1(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @eventConnectName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @eventConnectName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             ((JEngine.Net.JSocketConfig)o).eventConnectName = @eventConnectName;
             return ptr_of_this_method;
         }
@@ -116,7 +116,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_eventDisconnectName_2(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @eventDisconnectName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @eventDisconnectName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             ((JEngine.Net.JSocketConfig)o).eventDisconnectName = @eventDisconnectName;
             return ptr_of_this_method;
         }
@@ -140,7 +140,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_eventCloseName_3(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @eventCloseName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @eventCloseName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             ((JEngine.Net.JSocketConfig)o).eventCloseName = @eventCloseName;
             return ptr_of_this_method;
         }
@@ -164,7 +164,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_eventErrorName_4(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.String @eventErrorName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @eventErrorName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             ((JEngine.Net.JSocketConfig)o).eventErrorName = @eventErrorName;
             return ptr_of_this_method;
         }

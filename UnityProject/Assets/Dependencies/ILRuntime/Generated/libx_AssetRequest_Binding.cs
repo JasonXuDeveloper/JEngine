@@ -55,7 +55,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = instance_of_this_method.progress;
@@ -72,7 +72,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = instance_of_this_method.isDone;
@@ -89,7 +89,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = instance_of_this_method.loadState;
@@ -104,7 +104,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = instance_of_this_method.asset;
@@ -119,7 +119,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            libx.AssetRequest instance_of_this_method = (libx.AssetRequest)typeof(libx.AssetRequest).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             var result_of_this_method = instance_of_this_method.error;
@@ -147,7 +147,7 @@ namespace ILRuntime.Runtime.Generated
         static StackObject* AssignFromStack_completed_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            System.Action<libx.AssetRequest> @completed = (System.Action<libx.AssetRequest>)typeof(System.Action<libx.AssetRequest>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.Action<libx.AssetRequest> @completed = (System.Action<libx.AssetRequest>)typeof(System.Action<libx.AssetRequest>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             ((libx.AssetRequest)o).completed = @completed;
             return ptr_of_this_method;
         }

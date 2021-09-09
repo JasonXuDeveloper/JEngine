@@ -37,14 +37,14 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 3);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            global::CoroutineAdapter.Adaptor @arg2 = (global::CoroutineAdapter.Adaptor)typeof(global::CoroutineAdapter.Adaptor).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            global::CoroutineAdapter.Adaptor @arg2 = (global::CoroutineAdapter.Adaptor)typeof(global::CoroutineAdapter.Adaptor).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
             System.Boolean @arg1 = ptr_of_this_method->Value == 1;
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            System.Action<System.Boolean, global::CoroutineAdapter.Adaptor> instance_of_this_method = (System.Action<System.Boolean, global::CoroutineAdapter.Adaptor>)typeof(System.Action<System.Boolean, global::CoroutineAdapter.Adaptor>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.Action<System.Boolean, global::CoroutineAdapter.Adaptor> instance_of_this_method = (System.Action<System.Boolean, global::CoroutineAdapter.Adaptor>)typeof(System.Action<System.Boolean, global::CoroutineAdapter.Adaptor>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
             __intp.Free(ptr_of_this_method);
 
             instance_of_this_method.Invoke(@arg1, @arg2);

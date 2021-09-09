@@ -85,7 +85,7 @@ namespace ILRuntime.Runtime.Generated
             System.Int16 @result = (System.Int16)__intp.RetriveInt32(ptr_of_this_method, __mStack);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @s = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @s = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
 
 
             var result_of_this_method = System.Int16.TryParse(@s, out @result);

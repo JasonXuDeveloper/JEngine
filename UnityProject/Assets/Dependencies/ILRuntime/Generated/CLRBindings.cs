@@ -69,6 +69,7 @@ namespace ILRuntime.Runtime.Generated
             System_Runtime_CompilerServices_TaskAwaiter_1_Boolean_Binding.Register(app);
             UnityEngine_Random_Binding.Register(app);
             GTest_1_ILTypeInstance_Binding.Register(app);
+            JEngine_AntiCheat_JInt_Binding.Register(app);
             JEngine_Net_SocketIOComponent_Binding.Register(app);
             JEngine_Net_JSocketConfig_Binding.Register(app);
             WebSocketSharp_WebSocket_Binding.Register(app);
@@ -85,7 +86,6 @@ namespace ILRuntime.Runtime.Generated
             System_IDisposable_Binding.Register(app);
             System_Reflection_MemberInfo_Binding.Register(app);
             System_Reflection_MethodBase_Binding.Register(app);
-            System_Collections_Generic_List_1_Type_Binding.Register(app);
             System_Char_Binding.Register(app);
             System_Collections_Generic_List_1_String_Binding.Register(app);
             System_Text_StringBuilder_Binding.Register(app);

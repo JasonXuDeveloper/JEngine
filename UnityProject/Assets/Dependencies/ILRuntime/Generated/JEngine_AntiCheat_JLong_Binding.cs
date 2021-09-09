@@ -88,7 +88,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            JEngine.AntiCheat.JLong @val = (JEngine.AntiCheat.JLong)typeof(JEngine.AntiCheat.JLong).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            JEngine.AntiCheat.JLong @val = (JEngine.AntiCheat.JLong)typeof(JEngine.AntiCheat.JLong).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)16);
             __intp.Free(ptr_of_this_method);
 
 
