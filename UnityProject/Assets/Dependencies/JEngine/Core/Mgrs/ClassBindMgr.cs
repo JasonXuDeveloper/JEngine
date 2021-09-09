@@ -109,6 +109,13 @@ namespace JEngine.Core
                 }
             }
         }
+        
+        public static void DoBind(ClassBind cb)
+        {
+            if (_cbs.Contains(cb)) return;
+            DoBind(new List<ClassBind>{cb});
+        }
+        
         public static void DoBind()
         {
             _cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
