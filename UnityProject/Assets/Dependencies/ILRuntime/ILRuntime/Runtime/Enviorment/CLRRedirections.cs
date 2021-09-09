@@ -31,10 +31,24 @@ namespace ILRuntime.Runtime.Enviorment
                 var t = genericArguments[0];
                 if (t is ILType)
                 {
-                    return ILIntepreter.PushObject(esp, mStack, ((ILType)t).Instantiate());
+                    if (t.IsValueType && !t.IsEnum)
+                    {
+                        intp.AllocValueType(esp++, t);
+                        return esp;
+                    }
+                    else
+                        return ILIntepreter.PushObject(esp, mStack, ((ILType)t).Instantiate());
                 }
                 else
-                    return ILIntepreter.PushObject(esp, mStack, ((CLRType)t).CreateDefaultInstance());
+                {
+                    if (intp.AppDomain.ValueTypeBinders.ContainsKey(t.TypeForCLR))
+                    {
+                        intp.AllocValueType(esp++, t);
+                        return esp;
+                    }
+                    else
+                        return ILIntepreter.PushObject(esp, mStack, ((CLRType)t).CreateDefaultInstance());
+                }
             }
             else
                 throw new EntryPointNotFoundException();
@@ -837,16 +851,23 @@ namespace ILRuntime.Runtime.Enviorment
                 else
                     esp = ret;
                 var ilmethod = ((ILRuntimeMethodInfo)instance).ILMethod;
+                bool useRegister = ilmethod.ShouldUseRegisterVM;
                 if (p != null)
                 {
                     object[] arr = (object[])p;
                     for (int i = 0; i < ilmethod.ParameterCount; i++)
                     {
-                        esp = ILIntepreter.PushObject(esp, mStack, CheckCrossBindingAdapter(arr[i]));
+                        var res = ILIntepreter.PushObject(esp, mStack, CheckCrossBindingAdapter(arr[i]));
+                        if (esp->ObjectType < ObjectTypes.Object && useRegister)
+                            mStack.Add(null);
+                        esp = res;
                     }
                 }
                 bool unhandled;
-                ret = intp.Execute(ilmethod, esp, out unhandled);
+                if (useRegister)
+                    ret = intp.ExecuteR(ilmethod, esp, out unhandled);
+                else
+                    ret = intp.Execute(ilmethod, esp, out unhandled);
                 ILRuntimeMethodInfo imi = (ILRuntimeMethodInfo)instance;
                 var rt = imi.ILMethod.ReturnType;
                 if (rt != domain.VoidType)

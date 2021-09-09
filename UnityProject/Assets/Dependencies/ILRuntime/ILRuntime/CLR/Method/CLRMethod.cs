@@ -51,17 +51,23 @@ namespace ILRuntime.CLR.Method
                 return isConstructor ? !cDef.IsStatic : !def.IsStatic;
             }
         }
+
+        int _genericParameterCount = -1;
         public int GenericParameterCount
         {
             get
             {
-                if (def.ContainsGenericParameters && def.IsGenericMethodDefinition)
+                if (_genericParameterCount == -1)
                 {
-                    return def.GetGenericArguments().Length;
+                    if (def.ContainsGenericParameters && def.IsGenericMethodDefinition)
+                        _genericParameterCount = def.GetGenericArguments().Length;
+                    else
+                        _genericParameterCount = 0;
                 }
-                return 0;
+                return _genericParameterCount;
             }
         }
+
         public bool IsGenericInstance
         {
             get
@@ -278,6 +284,7 @@ namespace ILRuntime.CLR.Method
                         if (instance is CrossBindingAdaptorType && paramCount == 0)//It makes no sense to call the Adaptor's default constructor
                             return null;
                         cDef.Invoke(instance, param);
+                        Array.Clear(invocationParam, 0, invocationParam.Length);
                         return null;
                     }
                     else
@@ -288,8 +295,8 @@ namespace ILRuntime.CLR.Method
                 else
                 {
                     var res = cDef.Invoke(param);
-
                     FixReference(paramCount, esp, param, mStack, null, false);
+                    Array.Clear(invocationParam, 0, invocationParam.Length);
                     return res;
                 }
 
@@ -303,8 +310,8 @@ namespace ILRuntime.CLR.Method
                     instance = StackObject.ToObject((Minus(esp, paramCount + 1)), appdomain, mStack);
                     if (!(instance is Reflection.ILRuntimeWrapperType))
                         instance = declaringType.TypeForCLR.CheckCLRTypes(instance);
-                    //if (declaringType.IsValueType)
-                    //    instance = ILIntepreter.CheckAndCloneValueType(instance, appdomain);
+                    if (declaringType.IsValueType)
+                        instance = ILIntepreter.CheckAndCloneValueType(instance, appdomain);
                     if (instance == null)
                         throw new NullReferenceException();
                 }
@@ -317,6 +324,7 @@ namespace ILRuntime.CLR.Method
                 }
 
                 FixReference(paramCount, esp, param, mStack, instance, !def.IsStatic);
+                Array.Clear(invocationParam, 0, invocationParam.Length);
                 return res;
             }
         }

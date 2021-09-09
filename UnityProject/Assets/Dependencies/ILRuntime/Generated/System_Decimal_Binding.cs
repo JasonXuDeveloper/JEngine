@@ -84,10 +84,10 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 2);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            System.Decimal @result = (System.Decimal)typeof(System.Decimal).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack));
+            System.Decimal @result = (System.Decimal)typeof(System.Decimal).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (CLR.Utils.Extensions.TypeFlags)16);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.String @s = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            System.String @s = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
 
 
             var result_of_this_method = System.Decimal.TryParse(@s, out @result);

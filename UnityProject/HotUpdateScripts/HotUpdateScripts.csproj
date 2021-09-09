@@ -60,6 +60,7 @@
     <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="Proto2cs\dataClass.cs" />
+    <Compile Include="JEngine\Examples\Core\AntiCheatDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

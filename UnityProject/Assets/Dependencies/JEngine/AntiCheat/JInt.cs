@@ -30,16 +30,16 @@ namespace JEngine.AntiCheat
 {
     public struct JInt
     {
-        private int _obscuredInt;
-        private int _obscuredKey;
-        private int _originalValue;
+        internal int ObscuredInt;
+        internal int ObscuredKey;
+        internal int OriginalValue;
 
         private int Value
         {
             get
             {
-                var result = _obscuredInt - _obscuredKey;
-                if (!_originalValue.Equals(result))
+                var result = ObscuredInt - ObscuredKey;
+                if (!OriginalValue.Equals(result))
                 {
                     AntiCheatHelper.OnDetected();
                 }
@@ -48,28 +48,28 @@ namespace JEngine.AntiCheat
             
             set
             {
-                _originalValue = value;
+                OriginalValue = value;
                 unchecked
                 {
-                    _obscuredKey = JRandom.RandomNum(int.MaxValue - value);
-                    _obscuredInt = value + _obscuredKey;
+                    ObscuredKey = JRandom.RandomNum(int.MaxValue - value);
+                    ObscuredInt = value + ObscuredKey;
                 }
             }
         }
 
         public JInt(int val = 0)
         {
-            _obscuredInt = 0;
-            _obscuredKey = 0;
-            _originalValue = 0;
+            ObscuredInt = 0;
+            ObscuredKey = 0;
+            OriginalValue = 0;
             Value = val;
         }
         
         public JInt(string val = "0")
         {
-            _obscuredInt = 0;
-            _obscuredKey = 0;
-            _originalValue = 0;
+            ObscuredInt = 0;
+            ObscuredKey = 0;
+            OriginalValue = 0;
             var result = int.TryParse(val,out var _value);
             if (!result)
             {

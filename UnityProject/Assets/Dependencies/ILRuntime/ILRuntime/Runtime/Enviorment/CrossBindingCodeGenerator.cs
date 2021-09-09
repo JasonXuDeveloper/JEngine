@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using ILRuntime.CLR.Method;
@@ -8,7 +7,6 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Runtime.Intepreter;
 using System.Reflection;
 using System.Threading;
-using UnityEngine;
 
 namespace ILRuntime.Runtime.Enviorment
 {
@@ -36,8 +34,6 @@ namespace ILRuntime.Runtime.Enviorment
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using UnityEngine;
-using System.Threading.Tasks;
 
 namespace ");
             sb.AppendLine(nameSpace);
@@ -91,33 +87,17 @@ namespace ");
             public ILTypeInstance ILInstance { get { return instance; } }
 ");
             GenerateCrossBindingMethodBody(sb, virtMethods);
-            
-            bool isMono = baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
-            //mono脚本
-            if (isMono)
-            {
-                var lines = File.ReadAllLines("Assets/Dependencies/JEngine/Templates/MonoAdapter.txt");
-                foreach (var line in lines)
-                {
-                    sb.AppendLine(line);
-                }
-            }
-            else
-            {
-                sb.Append(@"            public override string ToString()
+            sb.Append(@"            public override string ToString()
             {
                 IMethod m = appdomain.ObjectType.GetMethod("); sb.AppendLine("\"ToString\", 0);");
-                sb.AppendLine(@"                m = instance.Type.GetVirtualMethod(m);
+            sb.AppendLine(@"                m = instance.Type.GetVirtualMethod(m);
                 if (m == null || m is ILMethod)
                 {
                     return instance.ToString();
                 }
                 else
                     return instance.Type.FullName;");
-                sb.AppendLine("            }");
-            }
-            
-            
+            sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -493,7 +473,7 @@ namespace ");
             {
                 if (p.ParameterType.IsByRef)
                 {
-                    sb.AppendLine(GetPushString(p.ParameterType, p.Name));
+                    sb.AppendLine(GetPushString(p.ParameterType.GetElementType(), p.Name));
                     refIndex[p] = idx++;
                 }
             }
@@ -518,7 +498,7 @@ namespace ");
                 {
                     p.ParameterType.GetClassName(out clsName, out realClsName, out isByRef, true);
 
-                    sb.AppendLine(GetReadString(p.ParameterType, realClsName, refIndex[p].ToString(), p.Name));
+                    sb.AppendLine(GetReadString(p.ParameterType.GetElementType(), realClsName, refIndex[p].ToString(), p.Name));
                 }
             }
             sb.AppendLine("                        }");
@@ -634,7 +614,7 @@ namespace ");
                 }
                 else if (type == typeof(float))
                 {
-                    return string.Format("                            ctx.PushInteger({0});", argName);
+                    return string.Format("                            ctx.PushFloat({0});", argName);
                 }
                 else if (type == typeof(double))
                 {

@@ -37,7 +37,7 @@ namespace ILRuntime.Runtime.Generated
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter> instance_of_this_method = (global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter>)typeof(global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter> instance_of_this_method = (global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter>)typeof(global::GenericExample<ProjectAdapter.GenericExampleAdapter2.Adapter>).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
             __intp.Free(ptr_of_this_method);
 
             instance_of_this_method.LogTest();
