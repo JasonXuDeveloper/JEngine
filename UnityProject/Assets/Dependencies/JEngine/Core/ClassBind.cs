@@ -22,7 +22,7 @@ namespace JEngine.Core
     {
         [FormerlySerializedAs("ScriptsToBind")] public ClassData[] scriptsToBind = new ClassData[1];
 
-        private void Start()
+        public void BindSelf()
         {
             ClassBindMgr.DoBind(this);
         }
@@ -400,11 +400,13 @@ namespace JEngine.Core
             }
 
             Type t = type.ReflectionType; //获取实际属性
-
+            Type baseType = t.BaseType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : t.BaseType;
+            Type monoType = typeof(MonoBehaviour);
+            
             //JBehaviour需自动赋值一个值
-            bool isMono = t.IsSubclassOf(typeof(MonoBehaviour));
-            bool needAdapter = t.BaseType != null &&
-                               t.BaseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
+            bool isMono = t.IsSubclassOf(monoType) || (baseType != null && baseType.IsSubclassOf(monoType));
+            bool needAdapter = baseType != null &&
+                               baseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
 
             ILTypeInstance instance = isMono
                 ? new ILTypeInstance(type as ILType, false)
@@ -416,7 +418,7 @@ namespace JEngine.Core
             //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
             //总之JEngine牛逼
             //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono && t.BaseType != null && t.BaseType != typeof(MonoBehaviourAdapter.Adaptor) &&
+            if (needAdapter && isMono && baseType!= typeof(MonoBehaviourAdapter.Adaptor) &&
                 Type.GetType(t.BaseType?.FullName ?? string.Empty) != null)
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
@@ -453,7 +455,7 @@ namespace JEngine.Core
                 clrInstance.AppDomain = InitJEngine.Appdomain;
 
                 //是MonoBehaviour继承，需要指定CLRInstance
-                if (isMono && needAdapter)
+                if (isMono)
                 {
                     instance.CLRInstance = clrInstance;
                 }

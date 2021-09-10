@@ -112,7 +112,7 @@ namespace JEngine.Core
         
         public static void DoBind(ClassBind cb)
         {
-            if (_cbs.Contains(cb)) return;
+            if (_cbs != null && _cbs.Contains(cb)) return;
             DoBind(new List<ClassBind>{cb});
         }
         
