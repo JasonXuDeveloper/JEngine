@@ -400,9 +400,12 @@ namespace JEngine.Core
             }
 
             Type t = type.ReflectionType; //获取实际属性
-            Type baseType = t.BaseType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : t.BaseType;
+            Type baseType =
+                t.BaseType is ILRuntimeWrapperType wrapperType
+                    ? wrapperType.RealType
+                    : t.BaseType; //这个地方太坑了 你一旦热更工程代码写的骚 就会导致ILWrapperType这个问题出现 一般人还真不容易发现这个坑
             Type monoType = typeof(MonoBehaviour);
-            
+
             //JBehaviour需自动赋值一个值
             bool isMono = t.IsSubclassOf(monoType) || (baseType != null && baseType.IsSubclassOf(monoType));
             bool needAdapter = baseType != null &&
@@ -414,11 +417,14 @@ namespace JEngine.Core
 
             instance.CLRInstance = instance;
 
-            //这里是ClassBind的灵魂，我都佩服我自己这么写，所以别乱改这块
-            //非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
-            //总之JEngine牛逼
-            //是继承Mono封装的基类，用自动生成的
-            if (needAdapter && isMono && baseType!= typeof(MonoBehaviourAdapter.Adaptor) &&
+            /*
+             * 这里是ClassBind的灵魂，我都佩服我自己这么写，所以别乱改这块
+             * 非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
+             * 总之JEngine牛逼
+             * ClassBind只支持挂以下2种热更类型：纯热更类型，继承了Mono的类型（无论是主工程多重继承后跨域还是跨域后热更工程多重继承都可以）
+             */
+            //主工程多重继承后跨域继承的生成适配器后用这个
+            if (needAdapter && isMono && baseType != typeof(MonoBehaviourAdapter.Adaptor) &&
                 Type.GetType(t.BaseType?.FullName ?? string.Empty) != null)
             {
                 Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
@@ -445,7 +451,7 @@ namespace JEngine.Core
                     instance.CLRInstance = clrInstance;
                 }
             }
-            //直接继承Mono的，非继承mono的，或不需要继承的，用这个
+            //直接继承Mono的，热更工程多层继承mono的，非继承mono的，或不需要继承的，用这个
             else
             {
                 //挂个适配器到编辑器（直接继承mono，非继承mono，无需继承，都可以用这个）
