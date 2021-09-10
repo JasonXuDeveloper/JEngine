@@ -20,12 +20,136 @@ namespace JEngine.Core
     [HelpURL("https://xgamedev.uoyou.com/classbind-v0-6.html")]
     public class ClassBind : MonoBehaviour
     {
-        [FormerlySerializedAs("ScriptsToBind")] public ClassData[] scriptsToBind = new ClassData[1];
+        [FormerlySerializedAs("ScriptsToBind")]
+        public ClassData[] scriptsToBind = new ClassData[1];
 
+        /// <summary>
+        /// Bind itself, call it after when instantiating a prefab with ClassBind in main solution
+        /// 激活ClassBind，在主工程Instantiate带有ClassBind的prefab后调用
+        /// </summary>
         public void BindSelf()
         {
             ClassBindMgr.DoBind(this);
         }
+
+        /// <summary>
+        /// Add class
+        /// </summary>
+        /// <param name="classData"></param>
+        /// <returns></returns>
+        public object AddClass(ClassData classData)
+        {
+            //添加脚本
+            string classType =
+                $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+            if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type))
+            {
+                Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
+                return null;
+            }
+
+            Type t = type.ReflectionType; //获取实际属性
+            classData.ClassType = t;
+            Type baseType =
+                t.BaseType is ILRuntimeWrapperType wrapperType
+                    ? wrapperType.RealType
+                    : t.BaseType; //这个地方太坑了 你一旦热更工程代码写的骚 就会导致ILWrapperType这个问题出现 一般人还真不容易发现这个坑
+            Type monoType = typeof(MonoBehaviour);
+
+            //JBehaviour需自动赋值一个值
+            bool isMono = t.IsSubclassOf(monoType) || (baseType != null && baseType.IsSubclassOf(monoType));
+            bool needAdapter = baseType != null &&
+                               baseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
+
+            ILTypeInstance instance = isMono
+                ? new ILTypeInstance(type as ILType, false)
+                : InitJEngine.Appdomain.Instantiate(classType);
+
+            instance.CLRInstance = instance;
+
+            /*
+             * 这里是ClassBind的灵魂，我都佩服我自己这么写，所以别乱改这块
+             * 非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
+             * 总之JEngine牛逼
+             * ClassBind只支持挂以下2种热更类型：纯热更类型，继承了Mono的类型（无论是主工程多重继承后跨域还是跨域后热更工程多重继承都可以）
+             * 主工程多重继承后再跨域多重继承的应该还不支持
+             */
+            //主工程多重继承后跨域继承的生成适配器后用这个
+            if (needAdapter && isMono && baseType != typeof(MonoBehaviourAdapter.Adaptor))
+            {
+                Type adapterType = Type.GetType(baseType.FullName ?? string.Empty);
+                if (adapterType == null)
+                {
+                    Log.PrintError($"{t.FullName}, need to generate adapter");
+                    return null;
+                }
+
+                //直接反射赋值一波了
+                var clrInstance = gameObject.AddComponent(adapterType) as MonoBehaviour;
+
+                var clrILInstance = t.GetFields(
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                    .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
+                var clrAppDomain = t.GetFields(
+                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                    .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
+                if (!(clrInstance is null))
+                {
+                    clrInstance.enabled = false;
+                    clrILInstance.SetValue(clrInstance, instance);
+                    clrAppDomain.SetValue(clrInstance, InitJEngine.Appdomain);
+                    instance.CLRInstance = clrInstance;
+                    classData.ClrInstance = (CrossBindingAdaptorType) clrInstance;
+                }
+            }
+            //直接继承Mono的，热更工程多层继承mono的，非继承mono的，或不需要继承的，用这个
+            else
+            {
+                //挂个适配器到编辑器（直接继承mono，非继承mono，无需继承，都可以用这个）
+                var clrInstance = gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+                clrInstance.enabled = false;
+                clrInstance.ILInstance = instance;
+                clrInstance.AppDomain = InitJEngine.Appdomain;
+                classData.ClrInstance = clrInstance;
+
+
+                //是MonoBehaviour继承，需要指定CLRInstance
+                if (isMono)
+                {
+                    instance.CLRInstance = clrInstance;
+                }
+
+                //判断类型
+                clrInstance.isMonoBehaviour = isMono;
+
+                classData.Added = true;
+
+                //JBehaviour额外处理
+                var go = t.GetField("_gameObject", BindingFlags.Public);
+                go?.SetValue(clrInstance.ILInstance, gameObject);
+            }
+
+            if (isMono)
+            {
+                if (type.BaseType.ReflectionType is ILRuntimeType)
+                {
+                    Log.PrintWarning(
+                        "因为有跨域多层继承MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
+                    type.ReflectionType.GetConstructor(new Type[] { })?.Invoke(instance, new object[] { });
+                }
+                else
+                {
+                    var m = type.GetConstructor(Extensions.EmptyParamList);
+                    if (m != null)
+                    {
+                        InitJEngine.Appdomain.Invoke(m, instance, null);
+                    }
+                }
+            }
+
+            return instance;
+        }
+
 
         /// <summary>
         /// Set value
@@ -35,11 +159,8 @@ namespace JEngine.Core
         {
             string classType =
                 $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
-            InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type);
-            Type t = type?.ReflectionType; //获取实际属性
-            //这里获取适配器类型接口，不直接获取Mono适配器了，因为不同的类型适配器不一样
-            var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
-                .First(clr => clr.ILInstance.Type == type as ILType && clr.ILInstance != null);
+            Type t = classData.ClassType; //获取实际属性
+            var clrInstance = classData.ClrInstance;
             //绑定数据
             classData.BoundData = false;
             var fields = classData.fields.ToArray();
@@ -58,58 +179,59 @@ namespace JEngine.Core
                             BindingFlags.Static).FieldType ?? t.GetProperty(field.fieldName,
                             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                             BindingFlags.Static).PropertyType;
+                        fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
-                        if (fieldType.FullName == typeof(SByte).FullName)
+                        if (fieldType == typeof(SByte))
                         {
                             obj = SByte.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Byte).FullName)
+                        else if (fieldType == typeof(Byte))
                         {
                             obj = Byte.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Int16).FullName)
+                        else if (fieldType == typeof(Int16))
                         {
                             obj = Int16.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(UInt16).FullName)
+                        else if (fieldType == typeof(UInt16))
                         {
                             obj = UInt16.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Int32).FullName)
+                        else if (fieldType == typeof(Int32))
                         {
                             obj = Int32.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(UInt32).FullName)
+                        else if (fieldType == typeof(UInt32))
                         {
                             obj = UInt32.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Int64).FullName)
+                        else if (fieldType == typeof(Int64))
                         {
                             obj = Int64.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(UInt64).FullName)
+                        else if (fieldType == typeof(UInt64))
                         {
                             obj = UInt64.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Single).FullName)
+                        else if (fieldType == typeof(Single))
                         {
                             obj = Single.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Decimal).FullName)
+                        else if (fieldType == typeof(Decimal))
                         {
                             obj = Decimal.Parse(field.value);
                             classData.BoundData = true;
                         }
-                        else if (fieldType.FullName == typeof(Double).FullName)
+                        else if (fieldType == typeof(Double))
                         {
                             obj = Double.Parse(field.value);
                             classData.BoundData = true;
@@ -198,15 +320,18 @@ namespace JEngine.Core
                         var tp = t.GetField(field.fieldName,
                             BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
                             BindingFlags.Static);
+
                         if (tp != null)
                         {
-                            string tName = tp.FieldType.Name;
-                            if (tp.FieldType is ILRuntimeType) //如果在热更中
+                            var fieldType = tp.FieldType;
+                            fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
+
+                            if (fieldType is ILRuntimeType) //如果在热更中
                             {
                                 var components = go.GetComponents<CrossBindingAdaptorType>();
                                 foreach (var c in components)
                                 {
-                                    if (c.ILInstance.Type.Name == tName)
+                                    if (c.ILInstance.Type.ReflectionType == fieldType)
                                     {
                                         obj = c.ILInstance;
                                         classData.BoundData = true;
@@ -216,8 +341,7 @@ namespace JEngine.Core
                             }
                             else
                             {
-                                var component = go.GetComponents<Component>().ToList()
-                                    .Find(c => c.GetType().ToString().Contains(tName));
+                                var component = go.GetComponent(fieldType);
                                 if (component != null)
                                 {
                                     obj = component;
@@ -232,13 +356,15 @@ namespace JEngine.Core
                                 BindingFlags.Static);
                             if (pi != null)
                             {
-                                string tName = pi.PropertyType.Name;
-                                if (pi.PropertyType is ILRuntimeType) //如果在热更中
+                                var fieldType = pi.PropertyType;
+                                fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
+
+                                if (fieldType is ILRuntimeType) //如果在热更中
                                 {
                                     var components = go.GetComponents<CrossBindingAdaptorType>();
                                     foreach (var c in components)
                                     {
-                                        if (c.ILInstance.Type.Name == tName)
+                                        if (c.ILInstance.Type.ReflectionType == fieldType)
                                         {
                                             obj = c.ILInstance;
                                             classData.BoundData = true;
@@ -248,8 +374,7 @@ namespace JEngine.Core
                                 }
                                 else
                                 {
-                                    var component = go.GetComponents<Component>().ToList()
-                                        .Find(c => c.GetType().ToString().Contains(tName));
+                                    var component = go.GetComponent(fieldType);
                                     if (component != null)
                                     {
                                         obj = component;
@@ -320,16 +445,14 @@ namespace JEngine.Core
         /// <param name="classData"></param>
         public void Active(ClassData classData)
         {
-            string classType = $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
-            IType type = InitJEngine.Appdomain.LoadedTypes[classType];
-            Type t = type.ReflectionType; //获取实际属性
-            //这边获取clrInstance的基类，这样可以获取不同适配器
-            var clrInstance = gameObject.GetComponents<CrossBindingAdaptorType>()
-                .First(clr => clr.ILInstance.Type == type as ILType && clr.ILInstance != null);
+            string classType =
+                $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
+            Type t = classData.ClassType; //获取实际属性
+            var clrInstance = classData.ClrInstance;
             //是否激活
             if (classData.activeAfter)
             {
-                if (classData.BoundData == false  && classData.fields != null &&
+                if (classData.BoundData == false && classData.fields != null &&
                     classData.fields.Count > 0)
                 {
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
@@ -340,7 +463,7 @@ namespace JEngine.Core
                 {
                     ((MonoBehaviour) clrInstance).enabled = true;
                 }
-                
+
                 //不管是啥类型，直接invoke这个awake方法
                 var awakeMethod = clrInstance.GetType().GetMethod("Awake",
                     BindingFlags.Default | BindingFlags.Public
@@ -383,120 +506,6 @@ namespace JEngine.Core
             Destroy(this);
         }
 
-        /// <summary>
-        /// Add class
-        /// </summary>
-        /// <param name="classData"></param>
-        /// <returns></returns>
-        public object AddClass(ClassData classData)
-        {
-            //添加脚本
-            string classType =
-                $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
-            if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type))
-            {
-                Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
-                return null;
-            }
-
-            Type t = type.ReflectionType; //获取实际属性
-            Type baseType =
-                t.BaseType is ILRuntimeWrapperType wrapperType
-                    ? wrapperType.RealType
-                    : t.BaseType; //这个地方太坑了 你一旦热更工程代码写的骚 就会导致ILWrapperType这个问题出现 一般人还真不容易发现这个坑
-            Type monoType = typeof(MonoBehaviour);
-
-            //JBehaviour需自动赋值一个值
-            bool isMono = t.IsSubclassOf(monoType) || (baseType != null && baseType.IsSubclassOf(monoType));
-            bool needAdapter = baseType != null &&
-                               baseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
-
-            ILTypeInstance instance = isMono
-                ? new ILTypeInstance(type as ILType, false)
-                : InitJEngine.Appdomain.Instantiate(classType);
-
-            instance.CLRInstance = instance;
-
-            /*
-             * 这里是ClassBind的灵魂，我都佩服我自己这么写，所以别乱改这块
-             * 非mono的跨域继承用特殊的，就是用JEngine提供的一个mono脚本，来显示字段，里面存ILTypeInstance
-             * 总之JEngine牛逼
-             * ClassBind只支持挂以下2种热更类型：纯热更类型，继承了Mono的类型（无论是主工程多重继承后跨域还是跨域后热更工程多重继承都可以）
-             */
-            //主工程多重继承后跨域继承的生成适配器后用这个
-            if (needAdapter && isMono && baseType != typeof(MonoBehaviourAdapter.Adaptor) &&
-                Type.GetType(t.BaseType?.FullName ?? string.Empty) != null)
-            {
-                Type adapterType = Type.GetType(t.BaseType?.FullName ?? string.Empty);
-                if (adapterType == null)
-                {
-                    Log.PrintError($"{t.FullName}, need to generate adapter");
-                    return null;
-                }
-
-                //直接反射赋值一波了
-                var clrInstance = gameObject.AddComponent(adapterType) as MonoBehaviour;
-
-                var clrILInstance = t.GetFields(
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                    .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
-                var clrAppDomain = t.GetFields(
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                    .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
-                if (!(clrInstance is null))
-                {
-                    clrInstance.enabled = false;
-                    clrILInstance.SetValue(clrInstance, instance);
-                    clrAppDomain.SetValue(clrInstance, InitJEngine.Appdomain);
-                    instance.CLRInstance = clrInstance;
-                }
-            }
-            //直接继承Mono的，热更工程多层继承mono的，非继承mono的，或不需要继承的，用这个
-            else
-            {
-                //挂个适配器到编辑器（直接继承mono，非继承mono，无需继承，都可以用这个）
-                var clrInstance = gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
-                clrInstance.enabled = false;
-                clrInstance.ILInstance = instance;
-                clrInstance.AppDomain = InitJEngine.Appdomain;
-
-                //是MonoBehaviour继承，需要指定CLRInstance
-                if (isMono)
-                {
-                    instance.CLRInstance = clrInstance;
-                }
-
-                //判断类型
-                clrInstance.isMonoBehaviour = isMono;
-
-                classData.Added = true;
-
-                //JBehaviour额外处理
-                var go = t.GetField("_gameObject", BindingFlags.Public);
-                go?.SetValue(clrInstance.ILInstance, gameObject);
-            }
-
-            if (isMono)
-            {
-                if (type.BaseType.ReflectionType is ILRuntimeType)
-                {
-                    Log.PrintWarning(
-                        "因为有跨域多层继承MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
-                    type.ReflectionType.GetConstructor(new Type[] { })?.Invoke(instance, new object[] { });
-                }
-                else
-                {
-                    var m = type.GetConstructor(Extensions.EmptyParamList);
-                    if (m != null)
-                    {
-                        InitJEngine.Appdomain.Invoke(m, instance, null);
-                    }
-                }
-            }
-
-            return instance;
-        }
-
 
         private GameObject FindSubGameObject(ClassField field)
         {
@@ -525,7 +534,7 @@ namespace JEngine.Core
             return null;
         }
 
-        
+
 #if UNITY_EDITOR
         [ContextMenu("Convert Path to GameObject")]
         private void Convert()
@@ -538,7 +547,7 @@ namespace JEngine.Core
                 foreach (ClassField field in fields)
                 {
                     if (field.fieldType == ClassField.FieldType.NotSupported) continue;
-                    
+
                     if (field.fieldType == ClassField.FieldType.GameObject ||
                         field.fieldType == ClassField.FieldType.UnityComponent)
                     {
@@ -566,7 +575,7 @@ namespace JEngine.Core
                                 catch (Exception) //找父物体（如果抛出空异常）
                                 {
                                     go = FindSubGameObject(field);
-                                }   
+                                }
                             }
 
                             if (go != null)
@@ -591,8 +600,8 @@ namespace JEngine.Core
 
             //转换后保存场景
             var scene = SceneManager.GetActiveScene();
-            bool saveResult = UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene,scene.path);
-            Debug.Log("Saved Scene " + scene.path + " " +(saveResult ? "Success" : "Failed!"));
+            bool saveResult = UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, scene.path);
+            Debug.Log("Saved Scene " + scene.path + " " + (saveResult ? "Success" : "Failed!"));
         }
 #endif
     }
@@ -611,6 +620,9 @@ namespace JEngine.Core
         public bool BoundData { get; set; }
         public bool Added { get; set; }
         public bool Activated { get; set; }
+
+        public CrossBindingAdaptorType ClrInstance { get; set; }
+        public Type ClassType { get; set; }
     }
 
     [Serializable]
