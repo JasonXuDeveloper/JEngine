@@ -204,10 +204,10 @@ namespace JEngine.Editor
                         adaptor.ILInstance.Equals(instance[i.Value]));
                 if (clrInstance != null)
                 {
-                    GUI.enabled = true;
+                    GUI.enabled = false;
                     EditorGUILayout.ObjectField(objName, clrInstance, typeof(MonoBehaviourAdapter.Adaptor),
                         true);
-                    GUI.enabled = false;
+                    GUI.enabled = true;
                 }
                 else
                 {
@@ -236,9 +236,9 @@ namespace JEngine.Editor
                         adaptor.ILInstance.Equals(instance[i.Value]));
                 if (clrInstance != null)
                 {
-                    GUI.enabled = true;
-                    EditorGUILayout.ObjectField(objName, clrInstance.gameObject, typeof(GameObject), true);
                     GUI.enabled = false;
+                    EditorGUILayout.ObjectField(objName, clrInstance.gameObject, typeof(GameObject), true);
+                    GUI.enabled = true;
                 }
 
                 return true;
@@ -308,19 +308,21 @@ namespace JEngine.Editor
                         var clrInstance = (MonoBehaviour) Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>()
                             .Find(adaptor =>
                                 Equals(adaptor.ILInstance, instance[objValue]));
-                        GUI.enabled = true;
-                        instance[i.Value] = EditorGUILayout.ObjectField(name, clrInstance, cType, true);
                         GUI.enabled = false;
+                        EditorGUILayout.ObjectField(name, clrInstance, cType, true);
+                        GUI.enabled = true;
                     }
                     catch
                     {
                         EditorGUILayout.LabelField(name, "未赋值的热更类");
                     }
                 }
-
-                //处理Unity类型
-                var res = EditorGUILayout.ObjectField(name, obj as Object, cType, true);
-                instance[i.Value] = res;
+                else
+                {
+                    //处理Unity类型
+                    var res = EditorGUILayout.ObjectField(name, obj as Object, cType, true);
+                    instance[i.Value] = res;
+                }
 
                 return true;
             }
