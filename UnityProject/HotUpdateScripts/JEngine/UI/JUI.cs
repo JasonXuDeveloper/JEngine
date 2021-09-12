@@ -1,4 +1,4 @@
-﻿//
+//
 // JUI.cs
 //
 // Author:
@@ -92,6 +92,7 @@ namespace JEngine.UI
         {
             _bind = true;
             _bindType = typeof(T);
+            _initalVal = val.Value;
             val.OnChange += (T value) =>
             {
                 Message(value);
@@ -104,6 +105,7 @@ namespace JEngine.UI
         /// </summary>
         private bool _bind;
         private Type _bindType;
+        private object _initalVal;
 
         /// <summary>
         /// Calls when UI has been inited
@@ -185,7 +187,14 @@ namespace JEngine.UI
         /// <returns></returns>
         public new JUI Activate()
         {
-            base.Activate();
+            if (_bind)
+            {
+                _message?.Invoke(this, _initalVal);
+            }
+            else
+            {
+                base.Activate();
+            }
             return this;
         }
 
