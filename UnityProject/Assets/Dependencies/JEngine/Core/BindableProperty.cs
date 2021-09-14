@@ -31,9 +31,9 @@ namespace JEngine.Core
     public class BindableProperty<T>
     {
         public delegate void onChange(T val);
-        public delegate void onChange_withOld(T oldVal, T newVal);
+        public delegate void onChangeWithOldVal(T oldVal, T newVal);
         public onChange OnChange;
-        public onChange_withOld OnChange_withOld;
+        public onChangeWithOld OnChangeWithOld;
 
         private T _value;
         public T Value
@@ -49,7 +49,7 @@ namespace JEngine.Core
                     T oldValue = _value;
                     _value = value;
                     OnChange?.Invoke(_value);
-                    OnChange_withOld?.Invoke(oldValue, _value);
+                    OnChangeWithOld?.Invoke(oldValue, _value);
                 }
             }
         }
