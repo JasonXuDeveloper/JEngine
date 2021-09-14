@@ -45,6 +45,22 @@ namespace JEngine.Helper
                 });
             });
 
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal>((act) =>
+            {
+                return new JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal((oldVal, newVal) =>
+                {
+                    ((Action<System.Int64, System.Int64>)act)(oldVal, newVal);
+                });
+            });
+
+
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Object>.onChangeWithOldVal>((act) =>
+            {
+                return new JEngine.Core.BindableProperty<System.Object>.onChangeWithOldVal((oldVal, newVal) =>
+                {
+                    ((Action<System.Object, System.Object>)act)(oldVal, newVal);
+                });
+            });
 
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<String>>(act =>
             {
@@ -71,70 +87,70 @@ namespace JEngine.Helper
             {
                 return new UnityAction<String>(arg0 =>
                 {
-                    ((Action<String>) act)(arg0);
+                    ((Action<String>)act)(arg0);
                 });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Boolean>>(act =>
             {
                 return new UnityAction<Boolean>(arg0 =>
                 {
-                    ((Action<Boolean>) act)(arg0);
+                    ((Action<Boolean>)act)(arg0);
                 });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<WaitCallback>(act =>
             {
-                return new WaitCallback(state => { ((Action<Object>) act)(state); });
+                return new WaitCallback(state => { ((Action<Object>)act)(state); });
             });
 
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
             {
-                return new UnityAction(() => { ((Action) act)(); });
+                return new UnityAction(() => { ((Action)act)(); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Single>>(act =>
             {
-                return new UnityAction<Single>(arg0 => { ((Action<Single>) act)(arg0); });
+                return new UnityAction<Single>(arg0 => { ((Action<Single>)act)(arg0); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnhandledExceptionEventHandler>(act =>
             {
                 return new UnhandledExceptionEventHandler((sender, e) =>
                 {
-                    ((Action<Object, UnhandledExceptionEventArgs>) act)(sender, e);
+                    ((Action<Object, UnhandledExceptionEventArgs>)act)(sender, e);
                 });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<UnityEngine.Object>>(act =>
             {
-                return new Predicate<UnityEngine.Object>(obj => { return ((Func<UnityEngine.Object, Boolean>) act)(obj); });
+                return new Predicate<UnityEngine.Object>(obj => { return ((Func<UnityEngine.Object, Boolean>)act)(obj); });
             });
             appdomain.DelegateManager
                 .RegisterDelegateConvertor<Predicate<ILTypeInstance>>(act =>
                 {
                     return new Predicate<ILTypeInstance>(obj =>
                     {
-                        return ((Func<ILTypeInstance, Boolean>) act)(obj);
+                        return ((Func<ILTypeInstance, Boolean>)act)(obj);
                     });
                 });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Int32>>(act =>
             {
-                return new UnityAction<Int32>(arg0 => { ((Action<Int32>) act)(arg0); });
+                return new UnityAction<Int32>(arg0 => { ((Action<Int32>)act)(arg0); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
             {
-                return new Action<JsonData>(a => { ((Action<JsonData>) action)(a); });
+                return new Action<JsonData>(a => { ((Action<JsonData>)action)(a); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
             {
-                return new UnityAction(async () => { ((Action) act)(); });
+                return new UnityAction(async () => { ((Action)act)(); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<ThreadStart>(act =>
             {
-                return new ThreadStart(() => { ((Action) act)(); });
+                return new ThreadStart(() => { ((Action)act)(); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<CoroutineAdapter.Adaptor>>(
                 act =>
                 {
                     return new Predicate<CoroutineAdapter.Adaptor>(obj =>
                     {
-                        return ((Func<CoroutineAdapter.Adaptor, Boolean>) act)(obj);
+                        return ((Func<CoroutineAdapter.Adaptor, Boolean>)act)(obj);
                     });
                 });
             appdomain.DelegateManager.RegisterDelegateConvertor<Predicate<MonoBehaviourAdapter.Adaptor>>(act =>
@@ -158,7 +174,7 @@ namespace JEngine.Helper
                     return ((Func<KeyValuePair<String, ILTypeInstance>, Boolean>)act)(obj);
                 });
             });
-            
+
         }
     }
 }
