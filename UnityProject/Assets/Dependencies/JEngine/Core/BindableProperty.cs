@@ -33,7 +33,7 @@ namespace JEngine.Core
         public delegate void onChange(T val);
         public delegate void onChangeWithOldVal(T oldVal, T newVal);
         public onChange OnChange;
-        public onChangeWithOld OnChangeWithOld;
+        public onChangeWithOldVal OnChangeWithOldVal;
 
         private T _value;
         public T Value
@@ -49,7 +49,7 @@ namespace JEngine.Core
                     T oldValue = _value;
                     _value = value;
                     OnChange?.Invoke(_value);
-                    OnChangeWithOld?.Invoke(oldValue, _value);
+                    OnChangeWithOldVal?.Invoke(oldValue, _value);
                 }
             }
         }

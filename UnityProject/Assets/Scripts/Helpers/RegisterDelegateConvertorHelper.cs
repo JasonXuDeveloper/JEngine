@@ -45,18 +45,18 @@ namespace JEngine.Helper
                 });
             });
 
-            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Int64>.onChangeWithOld>((act) =>
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal>((act) =>
             {
-                return new JEngine.Core.BindableProperty<System.Int64>.onChangeWithOld((oldVal, newVal) =>
+                return new JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal((oldVal, newVal) =>
                 {
                     ((Action<System.Int64, System.Int64>)act)(oldVal, newVal);
                 });
             });
 
 
-            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Object>.onChangeWithOld>((act) =>
+            appdomain.DelegateManager.RegisterDelegateConvertor<JEngine.Core.BindableProperty<System.Object>.onChangeWithOldVal>((act) =>
             {
-                return new JEngine.Core.BindableProperty<System.Object>.onChangeWithOld((oldVal, newVal) =>
+                return new JEngine.Core.BindableProperty<System.Object>.onChangeWithOldVal((oldVal, newVal) =>
                 {
                     ((Action<System.Object, System.Object>)act)(oldVal, newVal);
                 });

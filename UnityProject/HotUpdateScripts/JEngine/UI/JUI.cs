@@ -89,9 +89,9 @@ namespace JEngine.UI
         /// <returns></returns>
         public JUI Bind<T>(BindableProperty<T> val)
         {
-            if(_bind)
+            if (_bind)
             {
-                 Log.PrintWarning($"已经绑定了一个BindableProperty<{_bindType}>，该可绑定值的绑定事件不会被取消，意味着多个可绑定值的变更都会调用到onMessage里的内容");
+                Log.PrintWarning($"已经绑定了一个BindableProperty<{_bindType}>，该可绑定值的绑定事件不会被取消，意味着多个可绑定值的变更都会调用到onMessage里的内容");
             }
             _bind = true;
             _bindType = typeof(T);
