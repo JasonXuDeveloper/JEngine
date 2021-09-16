@@ -11,11 +11,11 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
-![size](https://img.shields.io/github/languages/code-size/JasonXuDeveloper/JEngine)
 ![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
 ![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
 ![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_shield)
+[![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine)
 
 
 
@@ -39,19 +39,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | 项目原地址                           | [GitHub地址](https://github.com/JasonXuDeveloper/JEngine) |
 | 国内快速下载地址                     | [Gitee跳转](https://gitee.com/JasonXuDeveloper/JEngine)   |
 | QQ群                                 | [点击加入](https://jq.qq.com/?_wv=1027&k=cF4hODjW)        |
-
-  ## 框架实战
-| 主题                                                         | 地址                                                      |
-| ------------------------------------------------------------ | --------------------------------------------------------- |
-| 【Unity x JEngine 开发可热更爆款小游戏】第一集（系列介绍及游戏策划） | [点击跳转](https://www.bilibili.com/video/BV1sV41117ka/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第二集（构建项目及界面设计） | [点击跳转](https://www.bilibili.com/video/BV1m54y117vz/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第三集（场景界面设计） | [点击跳转](https://www.bilibili.com/video/BV1sk4y1C7b5/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第四集（界面设计及代码开发） | [点击跳转](https://www.bilibili.com/video/BV1hv411y7iC/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第五集（首页UI代码开发） | [点击跳转](https://www.bilibili.com/video/BV1ZT4y1c7t7/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第六集（Bug修复+代码开发+音乐配置） | [点击跳转](https://www.bilibili.com/video/BV1bi4y1E7e7/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第七集（关卡设计+编辑器开发+数据生成） | [点击跳转](https://www.bilibili.com/video/BV1sv411y7gF/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第八集（关卡读取+界面生成） | [点击跳转](https://www.bilibili.com/video/BV15f4y1B7oQ/)  |
-| 【Unity x JEngine 开发可热更爆款小游戏】第九集（关卡生成+按钮事件+游戏管理类） | [点击跳转 ](https://www.bilibili.com/video/BV1zp4y1Y7cF/) |
 
   ## 近期star趋势
 
@@ -89,6 +76,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 JEngine专业版现已推出，大幅度提高开发效率和底层性能，可以根据需求进群联系作者进行购买，可以补差价升级
 
+（满1K star之后会进行直播讲解专业版，同时会降价到39/299/799，维持一个月，之后变为99/599/999）
+
 （开源版功能对于小项目开发和正常使用足矣，可以自行魔改来实现更完善的功能，或购买体验版进行尝试，好用再升级一年或永久版！提倡先用开源版开发，觉得好用再升级专业版，请理性消费！）
 
 |                                           | 99元（体验版） | 399元（一年版） | 899元（永久版） |
@@ -96,11 +85,12 @@ JEngine专业版现已推出，大幅度提高开发效率和底层性能，可�
 | 有效时长                                  | 永久           | 一年            | 永久            |
 | 是否包含后续更新                          | 否             | 是              | 是              |
 | 是否包含Bug修复                           | 否             | 是              | 是              |
-| 是否包含框架问题咨询                      | 否             | 是              | 是              |
-| 远程框架问题解决次数                      | 0次            | 1次             | 3次             |
+| 是否包含专业版框架问题咨询                      | 否             | 是              | 是              |
+| 免费远程框架问题解决次数                      | 0次            | 1次             | 3次             |
+| 热重载                                    | 支持           | 支持            | 支持            |
 | ClassBind对数组赋值                       | 支持           | 支持            | 支持            |
 | 运行时Inspector支持显示数组               | 支持           | 支持            | 支持            |
-| 热重载                                    | 支持           | 支持            | 支持            |
+| ClassBind可视化管理面板                     | 不支持           | 支持            | 支持            |
 | ClassBind支持根据字段名自动匹配gameObject | 不支持         | 支持            | 支持            |
 | 自定义ClassBind自动匹配正则               | 不支持         | 支持            | 支持            |
 | 自行扩展Inspector运行时序列化             | 不支持         | 支持            | 支持            |
