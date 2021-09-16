@@ -31,7 +31,9 @@ namespace JEngine.Core
     public class BindableProperty<T>
     {
         public delegate void onChange(T val);
+        public delegate void onChangeWithOldVal(T oldVal, T newVal);
         public onChange OnChange;
+        public onChangeWithOldVal OnChangeWithOldVal;
 
         private T _value;
         public T Value
@@ -44,8 +46,10 @@ namespace JEngine.Core
             {
                 if (!Equals(_value, value))
                 {
+                    T oldValue = _value;
                     _value = value;
                     OnChange?.Invoke(_value);
+                    OnChangeWithOldVal?.Invoke(oldValue, _value);
                 }
             }
         }
@@ -57,7 +61,7 @@ namespace JEngine.Core
 
         public override string ToString()
         {
-            return (Value != null ? Convert.ToString(Value): "null");
+            return (Value != null ? Convert.ToString(Value) : "null");
         }
 
         public void Clear()
