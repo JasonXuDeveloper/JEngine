@@ -24,10 +24,11 @@ namespace ILRuntime.Runtime.Generated
         {
             System_Type_Binding.Register(app);
             ProtoBuf_PType_Binding.Register(app);
-            JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
-            UnityEngine_Object_Binding.Register(app);
             System_String_Binding.Register(app);
             JEngine_Core_Log_Binding.Register(app);
+            JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
+            UnityEngine_Object_Binding.Register(app);
+            System_Action_3_ILTypeInstance_Object_Object_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
             UnityEngine_TextAsset_Binding.Register(app);
