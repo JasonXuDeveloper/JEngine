@@ -10,6 +10,7 @@ using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+using Component = UnityEngine.Component;
 using Object = System.Object;
 
 namespace JEngine.Core
@@ -55,6 +56,33 @@ namespace JEngine.Core
             }
 
             return returnValue;
+        }
+
+        public static GameObject GetGameObject(object ins)
+        {
+            GameObject instance;
+            if (ins is GameObject g)
+            {
+                instance = g;
+            }
+            else if (ins is ILTypeInstance ilt)
+            {
+                instance = FindGOForHotClass(ilt);
+            }
+            else if(ins is Transform t)
+            {
+                instance = t.gameObject;
+            }
+            else if (ins is Component c)
+            {
+                instance = c.gameObject;
+            }
+            else
+            {
+                instance = null;
+            }
+
+            return instance;
         }
 
 
