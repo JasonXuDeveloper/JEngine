@@ -207,13 +207,18 @@ namespace JEngine.Editor
                 object hotInstance = null;
                 if (!t.IsSubclassOf(typeof(MonoBehaviour))) //JBehaviour/MonoBehaviour派生类不构造对象，不进行赋值
                 {
-                    if (hotCode.GetType("JEngine.Core.JBehaviour") != null &&
-                        !t.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+                    Type tBase = t.BaseType;
+                    while (tBase != null)
                     {
-                        break;
+                        if (tBase.BaseType != typeof(System.Object))
+                            tBase = tBase.BaseType;
+                        else
+                            break;
                     }
-
-                    hotInstance = Activator.CreateInstance(t);
+                    if (tBase?.FullName != "JEngine.Core.JBehaviour")
+                    {
+                        hotInstance = Activator.CreateInstance(t);
+                    }
                 }
 
 
