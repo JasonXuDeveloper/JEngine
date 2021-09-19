@@ -134,6 +134,10 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         public async void Awake()
         {
+            if (awaked)
+            {
+                return;
+            }
             try
             {
                 //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
