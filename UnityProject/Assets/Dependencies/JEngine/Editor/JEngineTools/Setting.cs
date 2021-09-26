@@ -100,6 +100,11 @@ namespace JEngine.Editor
 		ClassBindRearrange,
 		ClassBindRearrangeResult,
 		ClassBindRearrangeTitle,
+		EncryptDLLPassword,
+		ShortCuts,
+		BuildBundles,
+		GenerateClrBind,
+		OpenJEngineSetting
 	}
 
 	internal class Setting : EditorWindow
@@ -231,6 +236,11 @@ namespace JEngine.Editor
 			new[] {"正在重新排序字段", "Automatically rearranging fields"},
 			new[] {"<{1}>:ClassBind中{0}个fields已重新排序", "Rearranged {0} fieldTypes from ClassBind: {1}"},
 			new[] {"重新排序全部fields", "Rearrange all fields for ClassBind"},
+			new[] {"加密DLL秘钥", "Encrypt dll password"},
+			new[] {"快捷键", "Shortcuts"},
+			new[] {"生成热更Bundles", "Build Bundles"},
+			new[] {"生成CLR绑定", "Generate CLR Binding"},
+			new[] {"打开JEngine面板", "Open JEngine Setting"},
 		};
 
 		/// <summary>
@@ -240,6 +250,15 @@ namespace JEngine.Editor
 		{
 			get => (JEngineLanguage) (int.Parse(PlayerPrefs.GetString($"{_prefix}.PanelLanguage", "0")));
 			set => PlayerPrefs.SetString($"{_prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");
+		}
+		
+		/// <summary>
+		/// 加密秘钥
+		/// </summary>
+		public static string EncryptPassword
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.EncryptPassword", "");
+			set => PlayerPrefs.SetString($"{_prefix}.EncryptPassword", value);
 		}
 
 		/// <summary>
@@ -394,7 +413,7 @@ namespace JEngine.Editor
 		private void OnGUI()
 		{
 			SetPrefix();
-			
+
 			if (_instance == null)
 			{
 				_instance = this;
@@ -429,6 +448,15 @@ namespace JEngine.Editor
 					Language);
 				titleContent.text = GetString(SettingString.JEngineSetting);
 			});
+
+			//加密密钥
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EncryptPassword =
+						EditorGUILayout.TextField(GetString(SettingString.EncryptDLLPassword), EncryptPassword);
+				});
+
 
 			//选择场景
 			MakeHorizontal(GetSpace(0.1f), () =>
@@ -527,6 +555,7 @@ namespace JEngine.Editor
 			});
 
 			#endregion
+
 			#region 热更场景相关
 
 #if !XASSET_PRO
@@ -629,8 +658,9 @@ namespace JEngine.Editor
 			MakeHorizontal(GetSpace(0.1f),
 				() =>
 				{
-					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnorePrivate), GUILayout.MinHeight(20));
-					ClassBindIgnorePrivate = EditorGUILayout.Toggle(ClassBindIgnorePrivate,GUILayout.MinHeight(20));
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindIgnorePrivate),
+						GUILayout.MinHeight(20));
+					ClassBindIgnorePrivate = EditorGUILayout.Toggle(ClassBindIgnorePrivate, GUILayout.MinHeight(20));
 				});
 			//是否跳过标签
 			MakeHorizontal(GetSpace(0.1f),
@@ -644,7 +674,7 @@ namespace JEngine.Editor
 			GUILayout.Space(10);
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllField),GUILayout.Height(30)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllField), GUILayout.Height(30)))
 				{
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
@@ -657,7 +687,7 @@ namespace JEngine.Editor
 
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllType),GUILayout.Height(30)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindGetAllType), GUILayout.Height(30)))
 				{
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
@@ -667,10 +697,10 @@ namespace JEngine.Editor
 					GUIUtility.ExitGUI();
 				}
 			});
-			
+
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				if (GUILayout.Button(GetString(SettingString.ClassBindRearrangeTitle),GUILayout.Height(30)))
+				if (GUILayout.Button(GetString(SettingString.ClassBindRearrangeTitle), GUILayout.Height(30)))
 				{
 					foreach (var cb in Tools.FindObjectsOfTypeAll<ClassBind>())
 					{
@@ -710,6 +740,35 @@ namespace JEngine.Editor
 				}
 			});
 			GUILayout.Space(10);
+
+			#endregion
+
+			#region 快捷键
+
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = {textColor = PurpleColor}, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ShortCuts), textStyle);
+			});
+			GUILayout.Space(10);
+			textStyle = new GUIStyle(EditorStyles.textField.name) {alignment = TextAnchor.MiddleCenter};
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.BuildBundles), "Command/Control Shift Alt B",
+						textStyle);
+				});
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.GenerateClrBind), "Shift B", textStyle); });
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.OpenJEngineSetting), "Alt Shift J", textStyle);
+				});
+
 			#endregion
 
 			try

@@ -1,6 +1,9 @@
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using JEngine.Core;
 using libx;
+using UnityEditor;
 
 namespace JEngine.Editor
 {
@@ -13,9 +16,7 @@ namespace JEngine.Editor
             // DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Rules.asset");
             // DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Manifest.asset");
 
-
-            CryptoWindow.ShowWindow();
-            CryptoWindow.Build= s =>
+            Action<string> buildAct = async s =>
             {
                 var watch = new Stopwatch();
                 watch.Start();
@@ -26,8 +27,14 @@ namespace JEngine.Editor
                 if (!result)
                 {
                     Log.PrintError("DLL转Byte[]出错！");
+                    return;
                 }
             
+                Setting.EncryptPassword = s;
+
+                await Task.Delay(3);
+                AssetDatabase.Refresh();
+
                 watch = new Stopwatch();
                 watch.Start();
                 BuildScript.ApplyBuildRules();
@@ -40,6 +47,16 @@ namespace JEngine.Editor
                 watch.Stop();
                 Log.Print("BuildAssetBundles in: " + watch.ElapsedMilliseconds + " ms."); 
             };
+            
+            if (string.IsNullOrEmpty(Setting.EncryptPassword))
+            {
+                CryptoWindow.ShowWindow();
+                CryptoWindow.Build = buildAct;
+            }
+            else
+            {
+                buildAct.Invoke(Setting.EncryptPassword);
+            }
         }
     }
 }
