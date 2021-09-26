@@ -58,20 +58,4 @@ namespace JEngine.Examples
 
 }
 
-public class ILRuntime_dataClass
-{
-    static ILRuntime_dataClass()
-    {
-
-        //Initlize();
-
-    }
-    public static void Initlize()
-    {
-
-        ProtoBuf.PType.RegisterType("JEngine.Examples.DataClass", typeof(JEngine.Examples.DataClass));
-
-    }
-}
-
 #pragma warning restore CS1591, CS0612, CS3021
