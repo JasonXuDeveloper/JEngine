@@ -290,6 +290,7 @@ namespace JEngine.Editor
 
         private static void TrySave(ClassBind instance, bool toast, string text, string title = "", string ok = "")
         {
+            EditorUtility.SetDirty(instance);
             //转换后保存场景
             try
             {
