@@ -9,7 +9,7 @@ using UnityEditor;
 [Obfuscation(Exclude = true)]
 public class ILRuntimeCLRBinding
 {
-    [MenuItem("JEngine/ILRuntime/Generate/CLR Binding",priority = 1002)]
+    [MenuItem("JEngine/ILRuntime/Generate/CLR Binding #B",priority = 1002)]
     static void GenerateCLRBindingByAnalysis()
     {
         //用新的分析热更dll调用引用来生成绑定代码
