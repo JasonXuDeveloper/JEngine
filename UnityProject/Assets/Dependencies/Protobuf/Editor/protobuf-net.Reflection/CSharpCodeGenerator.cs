@@ -149,24 +149,6 @@ namespace ProtoBuf.Reflection
                 ctx.Outdent().WriteLine("}").WriteLine();
             }
             var @filename = file.Name.Substring(0, file.Name.IndexOf("."));
-            ctx.WriteLine($"public class ILRuntime_{@filename}");
-            ctx.WriteLine("{").Indent();
-            ctx.WriteLine($"static ILRuntime_{@filename}()");
-            ctx.WriteLine("{");
-            ctx.WriteLine().Indent();
-            ctx.WriteLine($"//Initlize();");
-            ctx.WriteLine().Outdent();
-            ctx.WriteLine("}");
-            ctx.WriteLine($"public static void Initlize()");
-            ctx.WriteLine("{");
-            ctx.WriteLine().Indent();
-            foreach(var T in TypeNames2)
-            {
-                ctx.WriteLine($@"ProtoBuf.PType.RegisterType(""{T}"", typeof({T}));");
-            }
-            ctx.WriteLine().Outdent();
-            ctx.WriteLine("}").Outdent();
-            ctx.WriteLine("}").WriteLine();
             ctx.WriteLine("#pragma warning restore CS1591, CS0612, CS3021");
         }
         /// <summary>

@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,27 @@ namespace JEngine.Editor
                     .Replace(".unity", "");
 
                 SceneManager.LoadScene(name);
+            }
+            var key = Object.FindObjectOfType<InitJEngine>().key;
+            var k = PlayerPrefs.GetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", "");
+            if (string.IsNullOrEmpty(k))
+            {
+                PlayerPrefs.SetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", key);
+            }
+            else
+            {
+                if (key != k)
+                {
+                    var res = EditorUtility.DisplayDialog("DLL解密秘钥异常",
+                                    $"面板里配置的加密密码是：{k}\n" +
+                                    $"游戏场景里配置的解密密码是：{key}\n" +
+                                    $"点击确定使用面板配置的密码，点击忽略则继续使用当前密码'{key}'"
+                                    , "确定","忽略");
+                    if (res)
+                    {
+                        Object.FindObjectOfType<InitJEngine>().key = k;
+                    }
+                }
             }
         }
     }

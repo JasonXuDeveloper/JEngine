@@ -132,7 +132,6 @@ namespace ILRuntime.Runtime.Generated
             ProtoBuf_Serializer_Binding.Register(app);
             libx_Reference_Binding.Register(app);
             System_Action_2_Boolean_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
-            System_Nullable_1_UInt32_Binding.Register(app);
         }
 
         /// <summary>
