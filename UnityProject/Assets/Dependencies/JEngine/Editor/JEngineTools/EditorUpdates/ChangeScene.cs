@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +11,7 @@ namespace JEngine.Editor
     internal static class ChangeScene
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
-        private static void DoChange()
+        private static async void DoChange()
         {
             var prefix = $"JEngine.Editor.Setting.{Application.productName}";
             var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
@@ -23,6 +24,11 @@ namespace JEngine.Editor
                     .Replace(".unity", "");
 
                 SceneManager.LoadScene(name);
+                while (SceneManager.GetActiveScene().name != name)
+                {
+                    if (!Application.isPlaying) return;
+                    await Task.Delay(10);
+                }
             }
             var key = Object.FindObjectOfType<InitJEngine>().key;
             var k = PlayerPrefs.GetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", "");
