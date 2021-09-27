@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03142c330ced64e0ab46cddcd0484ab7, type: 3}
   m_Name: Rules
   m_EditorClassIdentifier: 
-  version: 1
+  version: 2
   scenesInBuild: []
   rules:
   - searchPath: Assets/HotUpdateResources/Controller
@@ -54,20 +54,12 @@ MonoBehaviour:
   ruleAssets:
   - bundle: f1e9148d33abaae32bb165f217c22e91.unity3d
     path: Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
-  - bundle: 7ae9434ac9f3a81a85e0b96cd43abc66.unity3d
-    path: Assets/HotUpdateResources/Other/.DS_Store
   - bundle: f027f62d736f2b9930b079d86f3b90c2.unity3d
     path: Assets/HotUpdateResources/Other/impact.ttf
-  - bundle: 569657f6619057b5506ced6e775264fa.unity3d
-    path: Assets/HotUpdateResources/Prefab/UI Root.prefab
-  - bundle: 2cc9d2d03b72c42674e4411525c24790.unity3d
-    path: Assets/HotUpdateResources/Prefab/uiview_btnview.prefab
-  - bundle: aee39d30087b1a649001923b1e92a9ed.unity3d
-    path: Assets/HotUpdateResources/Prefab/uiview_testView.prefab
+  - bundle: 953a764401fc4bf6d04c1c23d45b2e43.unity3d
+    path: Assets/HotUpdateResources/Prefab/InstantiateDemo.prefab
   - bundle: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
     path: Assets/HotUpdateResources/Scene/Game.unity
-  - bundle: 2f0b45fb2f64cd4503a4b7b2fc975a94.unity3d
-    path: Assets/HotUpdateResources/Scene/UIDemo.unity
   - bundle: 6409362d6eb671d168aa187271cd33a8.unity3d
     path: Assets/HotUpdateResources/TextAsset/Localization.csv
   - bundle: 458d7bb25a97c536fb41988a2192cb89.unity3d
@@ -106,27 +98,15 @@ MonoBehaviour:
   - name: f1e9148d33abaae32bb165f217c22e91.unity3d
     assets:
     - Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes
-  - name: 7ae9434ac9f3a81a85e0b96cd43abc66.unity3d
-    assets:
-    - Assets/HotUpdateResources/Other/.DS_Store
   - name: f027f62d736f2b9930b079d86f3b90c2.unity3d
     assets:
     - Assets/HotUpdateResources/Other/impact.ttf
-  - name: 569657f6619057b5506ced6e775264fa.unity3d
+  - name: 953a764401fc4bf6d04c1c23d45b2e43.unity3d
     assets:
-    - Assets/HotUpdateResources/Prefab/UI Root.prefab
-  - name: 2cc9d2d03b72c42674e4411525c24790.unity3d
-    assets:
-    - Assets/HotUpdateResources/Prefab/uiview_btnview.prefab
-  - name: aee39d30087b1a649001923b1e92a9ed.unity3d
-    assets:
-    - Assets/HotUpdateResources/Prefab/uiview_testView.prefab
+    - Assets/HotUpdateResources/Prefab/InstantiateDemo.prefab
   - name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
     assets:
     - Assets/HotUpdateResources/Scene/Game.unity
-  - name: 2f0b45fb2f64cd4503a4b7b2fc975a94.unity3d
-    assets:
-    - Assets/HotUpdateResources/Scene/UIDemo.unity
   - name: 6409362d6eb671d168aa187271cd33a8.unity3d
     assets:
     - Assets/HotUpdateResources/TextAsset/Localization.csv
@@ -148,9 +128,3 @@ MonoBehaviour:
     - Assets/HotUpdateResources/UI/bg_Title1.png
     - Assets/HotUpdateResources/UI/bg_Title2 .png
     - Assets/HotUpdateResources/UI/small title02_bg.png
-  - name: c16c507490c5d89484a9d8ccf0110d93.unity3d
-    assets:
-    - Assets/Resources/Animations/TOUCHTOSTART.anim
-  - name: 2d1102018db1719d419f03859106f3f0.unity3d
-    assets:
-    - Assets/Resources/Animations/START.controller

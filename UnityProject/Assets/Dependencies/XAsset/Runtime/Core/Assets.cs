@@ -41,12 +41,14 @@ namespace libx
         public static readonly string Extension = ".unity3d";
 
         public static bool runtimeMode = true;
+        public static bool loggable = true;
         public static Func<string, Type, Object> loadDelegate = null;
         private const string TAG = "[Assets]";
 
-        [Conditional("LOG_ENABLE")]
+        
         private static void Log(string s)
         {
+            if (!loggable) return;
             Debug.Log(string.Format("{0}{1}", TAG, s));
         }
 
