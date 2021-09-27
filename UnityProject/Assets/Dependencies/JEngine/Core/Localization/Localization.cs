@@ -53,23 +53,17 @@ namespace JEngine.Core
             }
         }
         
-        private static void Init()
+        private static async void Init()
         {
-            if (!Object.FindObjectOfType<Assets>())
-            {
-                Log.PrintError("请先初始化XAsset");
-                return;
-            }
             _phrases = new Dictionary<string, Dictionary<string, string>>(0);
             ChangeLanguage(PlayerPrefs.GetString("JEngine.Core.Localization.language",CultureInfo.InstalledUICulture.Name));
-            
-            var req = Assets.LoadAsset(CsvLoc,typeof(TextAsset));
-            if (req == null)
+
+            var file = (TextAsset) await AssetMgr.LoadAsync(CsvLoc, typeof(TextAsset));
+            if (file == null)
             {
                 Log.PrintError("Localization模块无效，因为没有获取到表格文件");
                 return;
             }
-            TextAsset file = (TextAsset)req.asset;
             
             //获取全部行
             List<string> allRows = new List<string>(0);

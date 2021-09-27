@@ -91,17 +91,15 @@ public class InitJEngine : MonoBehaviour
         else //真机模式解密加载
 #endif
         {
-            var dllAsset = Assets.LoadAsset(DllName, typeof(TextAsset));
-            if (dllAsset.error != null)
+            var dll = (TextAsset) AssetMgr.Load(DllName, typeof(TextAsset));
+            if (dll == null)
             {
-                Log.PrintError(dllAsset.error);
                 return;
             }
 
-            var dll = (TextAsset) dllAsset.asset;
             buffer = new byte[dll.bytes.Length];
             Array.Copy(dll.bytes, buffer, dll.bytes.Length);
-            dllAsset.Release(); //释放掉不需要再用的dll
+            AssetMgr.Unload(DllName);
         }
 
         try

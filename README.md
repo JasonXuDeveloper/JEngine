@@ -22,6 +22,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 >
 > 已有项目使用JEngine热更新，并成功上架iOS
+>
+> 本框架目前使用的资源管理模块是魔改后的XAsset4.0，基本解决了原插件中概率性出现的bug，如要接入XAsset 7.0或XAsset Pro请自行解决！！！
 
 [English Document](README_en-us.md)
 

@@ -22,10 +22,9 @@ namespace ILRuntime.Runtime.Generated
         /// </summary>
         public static void Initialize(ILRuntime.Runtime.Enviorment.AppDomain app)
         {
-            System_Type_Binding.Register(app);
-            ProtoBuf_PType_Binding.Register(app);
             System_String_Binding.Register(app);
             JEngine_Core_Log_Binding.Register(app);
+            System_Type_Binding.Register(app);
             JEngine_Core_BindableProperty_1_Int64_Binding.Register(app);
             UnityEngine_Object_Binding.Register(app);
             System_Action_3_ILTypeInstance_Object_Object_Binding.Register(app);
@@ -114,8 +113,7 @@ namespace ILRuntime.Runtime.Generated
             System_NotSupportedException_Binding.Register(app);
             System_Diagnostics_Stopwatch_Binding.Register(app);
             JEngine_Core_GameStats_Binding.Register(app);
-            libx_Assets_Binding.Register(app);
-            libx_AssetRequest_Binding.Register(app);
+            JEngine_Core_AssetMgr_Binding.Register(app);
             System_Collections_Generic_List_1_Action_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Single_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Int32_Binding.Register(app);
@@ -130,7 +128,9 @@ namespace ILRuntime.Runtime.Generated
             System_TimeoutException_Binding.Register(app);
             System_IO_MemoryStream_Binding.Register(app);
             ProtoBuf_Serializer_Binding.Register(app);
+            libx_AssetRequest_Binding.Register(app);
             libx_Reference_Binding.Register(app);
+            libx_Assets_Binding.Register(app);
             System_Action_2_Boolean_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
         }
 
