@@ -62,12 +62,12 @@ namespace libx
             Download,
         }
 
-        [SerializeField] private Step _step;
+        private Step _step;
 
         [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
         [SerializeField] private string gameScene = "Game.unity";
         [SerializeField] private bool development;
-        private bool enableVFS = true;
+        [SerializeField] private bool enableVFS = true;
 
         public IUpdater listener { get; set; }
 
@@ -372,10 +372,6 @@ namespace libx
 
             if (_step == Step.Wait)
             {
-                enableVFS = true;
-#if UNITY_IPHONE
-                enableVFS = false;
-#endif
                 _step = Step.Copy;
             }
 

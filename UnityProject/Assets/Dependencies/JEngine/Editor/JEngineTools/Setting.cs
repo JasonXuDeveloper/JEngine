@@ -61,18 +61,6 @@ namespace JEngine.Editor
 		ChooseBtn,
 		UpdateJEngine,
 		UpdateHelpBox,
-		XAssetTitle,
-		XAssetHelpBox,
-		XAssetButton,
-		XAssetAccount,
-		XAssetPassword,
-		Login,
-		SignUp,
-		LogOut,
-		XAssetRemain,
-		Recharge,
-		Charge,
-		XAssetChargeTxt,
 		DLLConvertLog,
 		DLLCleanLog,
 		DLLNewReferenceLog,
@@ -163,44 +151,6 @@ namespace JEngine.Editor
 				"Update JEngine will delete JEngine's source code in hot update solution, " +
 				"please make sure you did a back up before upgrading JEngine."
 			},
-			new[] {"XAsset Pro", "XAsset Pro"},
-			new[]
-			{
-				"\nXAsset Pro升级需要以下步骤：\n" +
-				"1）注册登入XAsset账号\n" +
-				"2）确保已经在官网订阅过XAsset Pro\n" +
-				"3）点击\"下载XAsset Pro\"按钮\n" +
-				"4）删除本地Dependencies/XAsset文件夹\n" +
-				"5）导入xasset-pro.unitypackage\n" +
-				"6）将Init场景的相关脚本替换（Updater换为Initializer，UpgradeScene可能需要重新拖拽）\n" +
-				"7）请熟悉XAsset Pro的规则配置，因为XAsset Pro的AB包规则需自定义，JEngine不再做特殊处理\n" +
-				"8）理论上XAsset Pro支持热更启动场景，所以建议重构Init场景\n" +
-				"9）Unity，ProjectSetting，Player内，在Scripting Define Symbols里面添加`XASSET_PRO`\n\n" +
-				"请在升级XAsset Pro之前务必读一遍其文档\n",
-
-				"\nUpgrade to XAsset Pro requires the following steps:\n" +
-				"1）Register or Login to XAsset account\n" +
-				"2）Make sure that you had subscribed XAsset Pro on the website\n" +
-				"3）Click on \"Download XAsset Pro\" button\n" +
-				"4）Delete Dependencies/XAsset directory\n" +
-				"5）Import xasset-pro.unitypackage\n" +
-				"6）Replace related scripts in Init scene (Updater becomes Initializer, UpgradeScene might need to redo)\n" +
-				"7）Please be familiar with setting up XAsset Pro's build rules, " +
-				"because XAsset Pro's build rules needs to be customize by you and JEngine can't do it for you this time\n" +
-				"8）Theoretically XAsset Pro supports hot upgrade the init scene, so it is recommended to redesign your init scene\n" +
-				"9）In Unity, ProjectSetting, Player, add `XASSET_PRO` into Scripting Define Symbols\n\n" +
-				"Please get to read the documentation for XAsset Pro before you start upgrade\n"
-			},
-			new[] {"下载XAsset Pro", "Download XAsset Pro"},
-			new[] {"XAsset账号", "XAsset Account"},
-			new[] {"XAsset密码", "XAsset Password"},
-			new[] {"登入", "Login"},
-			new[] {"注册", "Sign Up"},
-			new[] {"退出登入", "Log Out"},
-			new[] {"Pro订阅剩余时间：{0}天", "Pro subscription remain: {0}days"},
-			new[] {"续费", "Recharge"},
-			new[] {"购买", "Buy"},
-			new[] {"当前还没购买XAsset Pro", "Hasn't bought XAsset Pro yet"},
 			new[] {"转换热更DLL耗时{0}ms", "Convert DLL in: {0} ms"},
 			new[] {"清理热更工程编译的{0}个文件耗时{1}ms", "Cleaned: {0} files in: {1} ms"},
 			new[]
@@ -560,7 +510,6 @@ namespace JEngine.Editor
 
 			#region 热更场景相关
 
-#if !XASSET_PRO
 			//直接进热更场景
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
@@ -639,7 +588,6 @@ namespace JEngine.Editor
 					});
 				}
 			}
-#endif
 
 			#endregion
 

@@ -47,6 +47,7 @@ public class InitJEngine : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         GameStats.Initialize();
+        Assets.loggable = debug;
     }
 
     public void Load()
@@ -63,12 +64,9 @@ public class InitJEngine : MonoBehaviour
 
         byte[] buffer;
 
+#if UNITY_EDITOR
         //开发模式
-#if XASSET_PRO
-        if (Assets.development)
-#else
         if (!Assets.runtimeMode)
-#endif
         {
             if (File.Exists(DLLPath)) //直接读DLL
             {
@@ -91,6 +89,7 @@ public class InitJEngine : MonoBehaviour
             }
         }
         else //真机模式解密加载
+#endif
         {
             var dllAsset = Assets.LoadAsset(DllName, typeof(TextAsset));
             if (dllAsset.error != null)
@@ -145,7 +144,7 @@ public class InitJEngine : MonoBehaviour
 
     public void OnHotFixLoaded()
     {
-        Appdomain.Invoke(HotMainMethod, HotMainMethod, Tools.Param0, Tools.Param0);
+        Appdomain.Invoke(HotMainType, HotMainMethod, Tools.Param0, Tools.Param0);
         HotFixLoadedHelper.Init(Appdomain);
     }
 }

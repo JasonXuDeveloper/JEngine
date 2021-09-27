@@ -14,133 +14,99 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeVariants: []
   assets:
-  - bundle: 10
+  - bundle: 5
     dir: 0
     name: HotUpdateScripts.bytes
-  - bundle: 9
+  - bundle: 4
     dir: 1
     name: impact.ttf
-  - bundle: 4
+  - bundle: 2
     dir: 2
-    name: UI Root.prefab
-  - bundle: 0
-    dir: 2
-    name: uiview_btnview.prefab
-  - bundle: 6
-    dir: 2
-    name: uiview_testView.prefab
-  - bundle: 8
+    name: InstantiateDemo.prefab
+  - bundle: 3
     dir: 3
     name: Game.unity
-  - bundle: 2
-    dir: 3
-    name: UIDemo.unity
-  - bundle: 5
+  - bundle: 1
     dir: 4
     name: Localization.csv
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Btn_Back_h.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Btn_Buy1_n.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Btn_Buy1_p.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Btn_MainMenu_n.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Btn_Title_p.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Icon_Back1.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: Title2_bg.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: background1.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: background4.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: background4_v2.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: background5_v2.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: bg_GoodsTitle.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: bg_Input0_n.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: bg_Title1.png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: bg_Title2 .png
-  - bundle: 3
+  - bundle: 0
     dir: 5
     name: small title02_bg.png
   bundles:
-  - deps: 0300000009000000
-    hash: 268b7995dff378ed7fad8aa26dfe2cc7
+  - deps: 
+    hash: 92ad076dd7b0474de1aed16e7a9362e1
     id: 0
-    len: 6962
-    name: 2cc9d2d03b72c42674e4411525c24790.unity3d
-  - deps: 07000000
-    hash: ce367c8e395bfaea3491fc66e51827fd
-    id: 1
-    len: 4699
-    name: 2d1102018db1719d419f03859106f3f0.unity3d
-  - deps: 
-    hash: 57af103f54d760f876aa8814305c296e
-    id: 2
-    len: 4386
-    name: 2f0b45fb2f64cd4503a4b7b2fc975a94.unity3d
-  - deps: 
-    hash: 55760bfbe0377d8e071a961ff82f7c1d
-    id: 3
-    len: 1249347
+    len: 1866246
     name: 458d7bb25a97c536fb41988a2192cb89.unity3d
   - deps: 
-    hash: 31ddc577d519639aade5faac4f53aaa2
-    id: 4
-    len: 5108
-    name: 569657f6619057b5506ced6e775264fa.unity3d
-  - deps: 
-    hash: 761a5588959be25907dbf93b25a35338
-    id: 5
-    len: 1265
+    hash: 1ffc811f001d796d5db474d1c30b9f79
+    id: 1
+    len: 1267
     name: 6409362d6eb671d168aa187271cd33a8.unity3d
-  - deps: 010000000300000007000000
-    hash: 6ac25e88143e3429ce2564368da4640e
-    id: 6
-    len: 6961
-    name: aee39d30087b1a649001923b1e92a9ed.unity3d
   - deps: 
-    hash: ce2c1a74fddd63347703fcb10e19ff86
-    id: 7
-    len: 6578
-    name: c16c507490c5d89484a9d8ccf0110d93.unity3d
-  - deps: 01000000030000000700000009000000
-    hash: 3c09c19e64955e5acf76feb4a2090278
-    id: 8
-    len: 26426
+    hash: 10537f971ad1e883810ea174d26a7bf7
+    id: 2
+    len: 2739
+    name: 953a764401fc4bf6d04c1c23d45b2e43.unity3d
+  - deps: 0000000004000000
+    hash: 93ed0e147384734078713956e7ae323b
+    id: 3
+    len: 35276
     name: ceddc0c9b3c8bf92a5649c7282074eed.unity3d
   - deps: 
-    hash: e5244ae6d9a956d008b228bc8b81e25b
-    id: 9
-    len: 129517
+    hash: f1aeaf929b9c954796e1ef07659d60c6
+    id: 4
+    len: 129519
     name: f027f62d736f2b9930b079d86f3b90c2.unity3d
   - deps: 
-    hash: e060b00e9d507538100db7179d25dbbb
-    id: 10
-    len: 105701
+    hash: b52652126b939004d007b1146fb74c04
+    id: 5
+    len: 77322
     name: f1e9148d33abaae32bb165f217c22e91.unity3d
   dirs:
   - Assets/HotUpdateResources/Dll
