@@ -1,5 +1,6 @@
 .DS_Store
 .idea/*
+UnityProject/DLC/*
 UnityProject/Assets/Dependencies/JEngine/Core/.idea/*
 UnityProject/.idea/*
 UnityProject/HotUpdateScripts/.vs/*
