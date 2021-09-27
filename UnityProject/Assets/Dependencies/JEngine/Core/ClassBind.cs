@@ -391,7 +391,7 @@ namespace JEngine.Core
                     }
                     else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
                     {
-                        obj = Assets.LoadAsset(field.value, typeof(Object)).asset;
+                        obj = AssetMgr.Load(field.value);
                         classData.BoundData = true;
                     }
                 }

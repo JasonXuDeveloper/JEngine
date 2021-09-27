@@ -24,7 +24,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using libx;
 
 namespace JEngine.Core
 {
@@ -40,8 +39,19 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T LoadRes<T>(string path, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
         {
-            var res = Assets.LoadAsset(ResPath(path, mode), typeof(T));
-            return res.asset as T;
+            return AssetMgr.Load(ResPath(path, mode), typeof(T)) as T;
+        }
+
+        /// <summary>
+        /// 卸载热更资源
+        /// Load hot update resource
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public static void UnloadRes(string path, MatchMode mode = MatchMode.AutoMatch)
+        {
+            AssetMgr.Unload(ResPath(path, mode));
         }
 
         /// <summary>
@@ -52,12 +62,10 @@ namespace JEngine.Core
         /// <param name="path"></param>
         /// <param name="callback"></param>
         /// <param name="mode"></param>
-        public static void LoadResAsync<T>(string path, Action<T> callback, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
+        public static async void LoadResAsync<T>(string path, Action<T> callback, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
         {
-            var res = Assets.LoadAssetAsync(ResPath(path, mode), typeof(T)).completed += delegate (AssetRequest resource)
-            {
-                callback?.Invoke(resource.asset as T);
-            };
+            var asset = await AssetMgr.LoadAsync(path, typeof(T));
+            callback?.Invoke(asset as T);
         }
 
         /// <summary>
@@ -73,19 +81,16 @@ namespace JEngine.Core
         /// <param name="path"></param>
         /// <param name="callback"></param>
         /// <param name="additive"></param>
-        public static async void LoadSceneAsync(string path, Action callback = null, bool additive = false)
+        public static void LoadSceneAsync(string path, Action callback = null, bool additive = false)
         {
-            var req = Assets.LoadSceneAsync(path, additive);
-            req.completed += delegate
+            AssetMgr.LoadSceneAsync(path, additive, (p) =>
+            {
+                LoadSceneProgress = p;
+            }, (b) =>
             {
                 callback?.Invoke();
                 LoadSceneProgress = 1;
-            };
-            while (!req.isDone)
-            {
-                LoadSceneProgress = req.progress;
-                await System.Threading.Tasks.Task.Delay(1);
-            }
+            });
         }
 
 
