@@ -104,6 +104,7 @@ namespace JEngine.Editor
 		ShortCuts,
 		BuildBundles,
 		GenerateClrBind,
+		GenerateCrossDomainAdapter,
 		OpenJEngineSetting
 	}
 
@@ -240,6 +241,7 @@ namespace JEngine.Editor
 			new[] {"快捷键", "Shortcuts"},
 			new[] {"生成热更Bundles", "Build Bundles"},
 			new[] {"生成CLR绑定", "Generate CLR Binding"},
+			new[] {"生成跨域适配器", "Generate Cross Domain Adapter"},
 			new[] {"打开JEngine面板", "Open JEngine Setting"},
 		};
 
@@ -767,6 +769,11 @@ namespace JEngine.Editor
 				() =>
 				{
 					EditorGUILayout.LabelField(GetString(SettingString.OpenJEngineSetting), "Alt Shift J", textStyle);
+				});
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.GenerateCrossDomainAdapter), "Command/Control Shift G", textStyle);
 				});
 
 			#endregion

@@ -44,7 +44,7 @@ namespace JEngine.Editor
         private static ILRuntimeCrossBindingAdapterGenerator window;
         private const string OUTPUT_PATH = "Assets/Scripts/Adapters";
 
-        [MenuItem("JEngine/ILRuntime/Generate/Cross bind Adapter", priority = 1001)]
+        [MenuItem("JEngine/ILRuntime/Generate/Cross bind Adapter %#G", priority = 1001)]
         public static void ShowWindow()
         {
             window = GetWindow<ILRuntimeCrossBindingAdapterGenerator>();
@@ -161,6 +161,21 @@ namespace JEngine.Editor
 
                 AssetDatabase.Refresh();
             }
+            
+            if (!Directory.Exists(OUTPUT_PATH + "/MonoMethods"))
+            {
+                Directory.CreateDirectory(OUTPUT_PATH + "/MonoMethods");
+            }
+            if (File.Exists($"{OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs"))
+            {
+                File.Delete($"{OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs");
+                if (File.Exists($"{OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs.meta"))
+                {
+                    File.Delete($"{OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs.meta");
+                }
+
+                AssetDatabase.Refresh();
+            }
 
             if (!Directory.Exists(OUTPUT_PATH + "/Editor"))
             {
@@ -191,6 +206,17 @@ namespace JEngine.Editor
             Log.Print($"Generated {OUTPUT_PATH}/{_class}Adapter.cs in: " +
                       watch.ElapsedMilliseconds + " ms.");
             sw.Dispose();
+            
+            stream = new FileStream($"{OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs", FileMode.Append, FileAccess.Write);
+            sw = new StreamWriter(stream);
+            watch = new Stopwatch();
+            sw.WriteLine(
+                GenerateCrossBindingAdapterMonoMethods(t,
+                    _namespace));
+            watch.Stop();
+            Log.Print($"Generated {OUTPUT_PATH}/MonoMethods/{_class}Adapter.MonoMethods.cs in: " +
+                      watch.ElapsedMilliseconds + " ms.");
+            sw.Dispose();
 
             //生成编辑器
             string editorText = GenerateCrossBindingAdapterEditorCode(t,_namespace);
@@ -212,9 +238,19 @@ namespace JEngine.Editor
             AssetDatabase.Refresh();
         }
 
-        public static string GenerateCrossBindingAdapterEditorCode(Type baseType,string nameSpace)
+        private static bool IsMono(Type baseType)
         {
+            return baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
+        }
+
+        private static string GenerateCrossBindingAdapterMonoMethods(Type baseType, string nameSpace)
+        {
+            if (!IsMono(baseType))
+            {
+                return null;
+            }
             StringBuilder sb = new StringBuilder();
+
             List<MethodInfo> methods = baseType
                 .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).ToList();
             List<MethodInfo> virtMethods = new List<MethodInfo>();
@@ -223,13 +259,50 @@ namespace JEngine.Editor
                 if (i.IsVirtual || i.IsAbstract || baseType.IsInterface)
                     virtMethods.Add(i);
             }
+            string clsName, realClsName;
+            bool isByRef;
+            baseType.GetClassName(out clsName, out realClsName, out isByRef, true);
+            sb.Append(
+                @"/*
+ * JEngine自动生成的Mono方法脚本，作者已经代替你掉了头发，帮你写出了这个Mono适配器脚本，让你能够直接调用全部Mono类
+ */
+using System;
+using UnityEngine;
+using JEngine.Core;
+using ILRuntime.CLR.Method;
+using System.Threading.Tasks;
 
-            bool isMono = baseType == typeof(MonoBehaviour) || baseType.IsSubclassOf(typeof(MonoBehaviour));
+namespace " + nameSpace + @"
+{");
+            sb.Append(@"
+    public partial class ");
+            sb.Append(clsName);
+            sb.Append(@"Adapter
+    {
+        public partial class Adapter
+        {
+");
+            var lines = File.ReadAllLines("Assets/Dependencies/JEngine/Templates/MonoAdapter.txt");
+            foreach (var line in lines)
+            {
+                sb.AppendLine(line);
+            }
 
-            if (!isMono)
+            sb.Append(@"        }");
+            sb.Append(@"
+    }
+}");
+            return sb.ToString();
+        }
+
+        private static string GenerateCrossBindingAdapterEditorCode(Type baseType,string nameSpace)
+        {
+            if (!IsMono(baseType))
             {
                 return null;
             }
+            StringBuilder sb = new StringBuilder();
+
             string clsName, realClsName;
             bool isByRef;
             baseType.GetClassName(out clsName, out realClsName, out isByRef, true);

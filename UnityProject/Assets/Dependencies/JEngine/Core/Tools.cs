@@ -1,22 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using UnityEngine;
 using System.Linq;
 using System.Reflection;
+using System.ComponentModel;
 using ILRuntime.CLR.TypeSystem;
-using ILRuntime.CLR.Utils;
-using ILRuntime.Reflection;
+using System.Collections.Generic;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using UnityEngine;
-using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Component = UnityEngine.Component;
-using Object = System.Object;
 
 namespace JEngine.Core
 {
     public class Tools
     {
+        public static readonly object[] Param0 = new object[0];
+        
         public static object ConvertSimpleType(object value, Type destinationType)
         {
             object returnValue;

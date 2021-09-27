@@ -1,3 +1,18 @@
+/*
+ * JEngine自动生成的Mono方法脚本，作者已经代替你掉了头发，帮你写出了这个Mono适配器脚本，让你能够直接调用全部Mono类
+ */
+using System;
+using UnityEngine;
+using JEngine.Core;
+using ILRuntime.CLR.Method;
+using System.Threading.Tasks;
+
+namespace ProjectAdapter
+{
+    public partial class ExampleAPIAdapter
+    {
+        public partial class Adapter
+        {
             #region Generate For Mono Events from template
 
             /*
@@ -1236,3 +1251,6 @@
                 }
             }
             #endregion
+        }
+    }
+}
