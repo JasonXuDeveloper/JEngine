@@ -7,10 +7,18 @@ using Object = UnityEngine.Object;
 
 namespace JEngine.Core
 {
-    public class AssetMgr
+    public static class AssetMgr
     {
-        private static Dictionary<string, AssetRequest> _assetCache = new Dictionary<string, AssetRequest>();
-        private static Dictionary<string, BundleRequest> _bundleCache = new Dictionary<string, BundleRequest>();
+        private static readonly Dictionary<string, AssetRequest> AssetCache = new Dictionary<string, AssetRequest>();
+        private static readonly Dictionary<string, BundleRequest> BundleCache = new Dictionary<string, BundleRequest>();
+
+        public static bool RuntimeMode => Assets.runtimeMode;
+
+        public static bool Loggable
+        {
+            get => Assets.loggable;
+            set => Assets.loggable = value;
+        }
         
         public static Object Load(string path,Type type = null)
         {
@@ -22,7 +30,7 @@ namespace JEngine.Core
             type = CheckType(type);
             var req = Assets.LoadAsset(path, type);
             CheckError(path, req);
-            _assetCache[path] = req;
+            AssetCache[path] = req;
             return req.asset;
         }
         
@@ -40,7 +48,7 @@ namespace JEngine.Core
             req.completed += ar =>
             {
                 CheckError(path, req);
-                _assetCache[path] = ar;
+                AssetCache[path] = ar;
                 tcs.SetResult(ar.asset);
             };
             return tcs.Task;
@@ -48,7 +56,7 @@ namespace JEngine.Core
 
         public static void Unload(string path, bool ignore = false)
         {
-            if (_assetCache.TryGetValue(path, out var req))
+            if (AssetCache.TryGetValue(path, out var req))
             {
                 ReleaseAsset(req);
             }
@@ -80,7 +88,7 @@ namespace JEngine.Core
             }
             var req = Assets.LoadBundle(path);
             CheckError(path, req);
-            _bundleCache[path] = req;
+            BundleCache[path] = req;
             return req.assetBundle;
         }
         
@@ -97,7 +105,7 @@ namespace JEngine.Core
             req.completed += ar =>
             {
                 CheckError(path, req);
-                _assetCache[path] = ar;
+                AssetCache[path] = ar;
                 tcs.SetResult(((BundleRequest) ar).assetBundle);
             };
             return tcs.Task;
@@ -105,7 +113,7 @@ namespace JEngine.Core
 
         public static void UnloadBundle(string path, bool ignore = false)
         {
-            if (_bundleCache.TryGetValue(path, out var req))
+            if (BundleCache.TryGetValue(path, out var req))
             {
                 ReleaseAsset(req);
             }
@@ -122,7 +130,7 @@ namespace JEngine.Core
         
         private static Object GetAssetFromCache(string path)
         {
-            if (_assetCache.TryGetValue(path, out var v))
+            if (AssetCache.TryGetValue(path, out var v))
             {
                 return v.asset;
             }
@@ -132,7 +140,7 @@ namespace JEngine.Core
 
         private static AssetBundle GetBundleFromCache(string path)
         {
-            if (_bundleCache.TryGetValue(path, out var v))
+            if (BundleCache.TryGetValue(path, out var v))
             {
                 return v.assetBundle;
             }

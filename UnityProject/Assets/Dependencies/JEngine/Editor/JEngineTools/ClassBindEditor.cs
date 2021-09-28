@@ -16,7 +16,6 @@ namespace JEngine.Editor
     [CustomEditor(typeof(ClassBind))]
     internal class ClassBindEditor : UnityEditor.Editor
     {
-        private static string _dllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
         private ReorderableList _classBinds;
 
         void OnEnable()
@@ -69,15 +68,23 @@ namespace JEngine.Editor
             GUILayout.Space(15);
         }
 
+        private static Assembly HotAssembly
+        {
+            get
+            {
+                //每次都要读一遍dll，不能缓存，以确保用的是最新的
+                var dll = DLLMgr.FileToByte(DLLMgr.DllPath);
+                return Assembly.Load(dll);
+            }
+        }
+        
         public static async void CleanFields(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
             {
                 string className = $"{data.classNamespace}.{data.className}";
-                Assembly hotCode = Assembly
-                    .LoadFile(_dllPath);
-                Type t = hotCode.GetType(className); //加载热更类
+                Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -122,9 +129,8 @@ namespace JEngine.Editor
                 }
 
                 data.fields = newF;
-
-
             }
+            
 
             EditorUtility.ClearProgressBar();
 
@@ -139,9 +145,7 @@ namespace JEngine.Editor
             foreach (var data in instance.scriptsToBind) //遍历
             {
                 string className = $"{data.classNamespace}.{data.className}";
-                Assembly hotCode = Assembly
-                    .LoadFile(_dllPath);
-                Type t = hotCode.GetType(className); //加载热更类
+                Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -165,7 +169,7 @@ namespace JEngine.Editor
                             className, field.fieldName));
                     }
 
-                    SetType(field, fieldType, hotCode);
+                    SetType(field, fieldType, HotAssembly);
                     affectCounts++;
 
                     EditorUtility.DisplayProgressBar(Setting.GetString(SettingString.ClassBindProgress),
@@ -191,9 +195,7 @@ namespace JEngine.Editor
             foreach (var data in instance.scriptsToBind) //遍历
             {
                 string className = $"{data.classNamespace}.{data.className}";
-                Assembly hotCode = Assembly
-                    .LoadFile(_dllPath);
-                Type t = hotCode.GetType(className); //加载热更类
+                Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -268,8 +270,8 @@ namespace JEngine.Editor
                             ? ((PropertyInfo) field).PropertyType
                             : ((FieldInfo) field).FieldType;
 
-                        SetType(cf, fieldType, hotCode);
-                        SetVal(ref cf, field, hotCode, hotInstance, instance.gameObject);
+                        SetType(cf, fieldType, HotAssembly);
+                        SetVal(ref cf, field, HotAssembly, hotInstance, instance.gameObject);
 
                         data.fields.Add(cf);
                         affectCounts++;

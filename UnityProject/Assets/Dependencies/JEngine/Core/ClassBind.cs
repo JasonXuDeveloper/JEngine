@@ -1,5 +1,4 @@
-﻿using libx;
-using System;
+﻿using System;
 using Malee.List;
 using System.Linq;
 using UnityEngine;
@@ -9,7 +8,6 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Reflection;
 using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;

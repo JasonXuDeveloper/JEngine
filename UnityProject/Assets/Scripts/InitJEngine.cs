@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using ILRuntime.Mono.Cecil.Pdb;
+using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
-using libx;
-using UnityEngine;
+using ILRuntime.Mono.Cecil.Pdb;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -47,7 +46,7 @@ public class InitJEngine : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         GameStats.Initialize();
-        Assets.loggable = debug;
+        AssetMgr.Loggable = debug;
     }
 
     public void Load()
@@ -62,18 +61,18 @@ public class InitJEngine : MonoBehaviour
         Appdomain = new AppDomain();
         _pdb = null;
 
-        byte[] buffer;
+        byte[] dll;
 
 #if UNITY_EDITOR
         //开发模式
-        if (!Assets.runtimeMode)
+        if (!AssetMgr.RuntimeMode)
         {
             if (File.Exists(DLLPath)) //直接读DLL
             {
-                buffer = DLLMgr.FileToByte(DLLPath);
+                dll = DLLMgr.FileToByte(DLLPath);
 
                 //模拟加密
-                buffer = CryptoHelper.AesEncrypt(buffer, key);
+                dll = CryptoHelper.AesEncrypt(dll, key);
             }
             else
             {
@@ -91,21 +90,22 @@ public class InitJEngine : MonoBehaviour
         else //真机模式解密加载
 #endif
         {
-            var dll = (TextAsset) AssetMgr.Load(DllName, typeof(TextAsset));
-            if (dll == null)
+            var dllFile = (TextAsset) AssetMgr.Load(DllName, typeof(TextAsset));
+            if (dllFile == null)
             {
                 return;
             }
 
-            buffer = new byte[dll.bytes.Length];
-            Array.Copy(dll.bytes, buffer, dll.bytes.Length);
-            AssetMgr.Unload(DllName);
+            dll = dllFile.bytes;
         }
+        
+        var buffer = new byte[dll.Length];
+        Array.Copy(dll, buffer, dll.Length);
+        AssetMgr.Unload(DllName, true);
 
         try
         {
-            // var original = CryptoHelper.AesDecrypt(dll.bytes, Key);以前的用法，过时了
-
+            //这里默认用分块解密，JStream
             _fs = new JStream(buffer, key);
 
             /*
