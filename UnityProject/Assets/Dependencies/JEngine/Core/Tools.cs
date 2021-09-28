@@ -11,7 +11,7 @@ using Component = UnityEngine.Component;
 
 namespace JEngine.Core
 {
-    public class Tools
+    public static class Tools
     {
         public static readonly object[] Param0 = new object[0];
         

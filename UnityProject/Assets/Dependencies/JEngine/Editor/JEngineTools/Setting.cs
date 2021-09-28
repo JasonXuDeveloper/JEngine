@@ -259,43 +259,6 @@ namespace JEngine.Editor
 				_dataPath.Parent?.FullName + "/HotUpdateScripts/JEngine");
 			private set => PlayerPrefs.SetString($"{_prefix}.HotPath", value);
 		}
-
-		/// <summary>
-		/// 是否已登入XAsset
-		/// </summary>
-		public static bool XAssetLoggedIn
-		{
-			get => PlayerPrefs.GetString($"{_prefix}.XAssetLoggedIn", "0") == "1";
-			set => PlayerPrefs.SetString($"{_prefix}.XAssetLoggedIn", value ? "1" : "0");
-		}
-
-		/// <summary>
-		/// XAsset账号
-		/// </summary>
-		public static string XAssetAccount
-		{
-			get => PlayerPrefs.GetString($"{_prefix}.XAssetAccount", "");
-			private set => PlayerPrefs.SetString($"{_prefix}.XAssetAccount", value);
-		}
-
-
-		/// <summary>
-		/// XAsset密码
-		/// </summary>
-		public static string XAssetPassword
-		{
-			get => PlayerPrefs.GetString($"{_prefix}.XAssetPassword", "");
-			private set => PlayerPrefs.SetString($"{_prefix}.XAssetPassword", value);
-		}
-
-		/// <summary>
-		/// XAsset剩余时间
-		/// </summary>
-		public static int XAssetRemainTime
-		{
-			get => PlayerPrefs.GetInt($"{_prefix}.XAssetRemain", 0);
-			set => PlayerPrefs.SetInt($"{_prefix}.XAssetRemain", value);
-		}
 		
 		/// <summary>
 		/// ClassBind不获取private
