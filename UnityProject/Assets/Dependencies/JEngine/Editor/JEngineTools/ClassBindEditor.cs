@@ -77,6 +77,16 @@ namespace JEngine.Editor
                 return Assembly.Load(dll);
             }
         }
+
+        private static bool IsJBehaviourType(Type type)
+        {
+            Type jType = HotAssembly.GetType("JEngine.Core.JBehaviour");
+            if (jType == null)
+            {
+                return false;
+            }
+            return type.IsSubclassOf(jType);
+        }
         
         public static async void CleanFields(ClassBind instance, bool toast = true)
         {
@@ -338,7 +348,7 @@ namespace JEngine.Editor
                 cf.fieldType = ClassField.FieldType.GameObject;
             }
             else if (type == typeof(Component) || type.IsSubclassOf(typeof(MonoBehaviour)) ||
-                     type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+                     IsJBehaviourType(type))
             {
                 cf.fieldType = ClassField.FieldType.UnityComponent;
             }
@@ -414,7 +424,7 @@ namespace JEngine.Editor
         private static void SetVal(ref ClassField cf, Type type, Assembly hotCode, object value, GameObject instance)
         {
             if (type != typeof(Object) ||
-                !type.IsSubclassOf(hotCode.GetType("JEngine.Core.JBehaviour")))
+                !IsJBehaviourType(type))
             {
                 try
                 {
