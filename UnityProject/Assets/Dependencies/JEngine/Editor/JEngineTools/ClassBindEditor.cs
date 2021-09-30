@@ -93,7 +93,7 @@ namespace JEngine.Editor
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+                string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
                 Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
@@ -154,7 +154,7 @@ namespace JEngine.Editor
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+                string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
                 Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
@@ -204,7 +204,7 @@ namespace JEngine.Editor
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+                string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
                 Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
