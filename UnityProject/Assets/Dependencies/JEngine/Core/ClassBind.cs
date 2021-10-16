@@ -162,6 +162,8 @@ namespace JEngine.Core
             //绑定数据
             classData.BoundData = false;
             var fields = classData.fields.ToArray();
+            var bindingAttr = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                              BindingFlags.Static;
 
             foreach (ClassField field in fields)
             {
@@ -172,11 +174,10 @@ namespace JEngine.Core
                 {
                     if (field.fieldType == ClassField.FieldType.Number)
                     {
-                        var fieldType = t.GetField(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static).FieldType ?? t.GetProperty(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static).PropertyType;
+                        var fieldType = t.GetField(field.fieldName, bindingAttr).FieldType ??
+                                        (t.BaseType.GetField(field.fieldName, bindingAttr).FieldType ??
+                                         (t.GetProperty(field.fieldName, bindingAttr).PropertyType ??
+                                          t.BaseType.GetProperty(field.fieldName, bindingAttr).PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
                         if (fieldType == typeof(SByte))
@@ -315,10 +316,8 @@ namespace JEngine.Core
                             }
                         }
 
-                        var tp = t.GetField(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static);
-
+                        var tp = t.GetField(field.fieldName,bindingAttr);
+                        if (tp == null) tp = t.BaseType?.GetField(field.fieldName, bindingAttr);
                         if (tp != null)
                         {
                             var fieldType = tp.FieldType;
@@ -349,9 +348,8 @@ namespace JEngine.Core
                         }
                         else
                         {
-                            var pi = t.GetProperty(field.fieldName,
-                                BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                                BindingFlags.Static);
+                            var pi = t.GetProperty(field.fieldName,bindingAttr);
+                            if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
                             if (pi != null)
                             {
                                 var fieldType = pi.PropertyType;
@@ -402,14 +400,21 @@ namespace JEngine.Core
                 //如果有数据再绑定
                 if (classData.BoundData)
                 {
-                    var fi = t.GetField(field.fieldName,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static);
-                    if (fi != null)
+                    void _setVal(MemberInfo mi)
                     {
                         try
                         {
-                            fi.SetValue(clrInstance.ILInstance, obj);
+                            switch (mi)
+                            {
+                                case null:
+                                    throw new NullReferenceException();
+                                case FieldInfo info:
+                                    info.SetValue(clrInstance.ILInstance, obj);
+                                    break;
+                                case PropertyInfo inf:
+                                    inf.SetValue(clrInstance.ILInstance, obj);
+                                    break;
+                            }
                         }
                         catch (Exception e)
                         {
@@ -417,21 +422,17 @@ namespace JEngine.Core
                                 $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
                         }
                     }
+                    var fi = t.GetField(field.fieldName,bindingAttr);
+                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, bindingAttr);
+                    if (fi != null)
+                    {
+                        _setVal(fi);
+                    }
                     else
                     {
-                        //没FieldInfo尝试PropertyInfo
-                        var pi = t.GetProperty(field.fieldName,
-                            BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                            BindingFlags.Static);
-                        if (pi != null)
-                        {
-                            pi.SetValue(clrInstance.ILInstance, obj);
-                        }
-                        else
-                        {
-                            Log.PrintError($"自动绑定{name}出错：{classType}不存在{field.fieldName}，已跳过");
-                        }
-
+                        var pi = t.GetProperty(field.fieldName,bindingAttr);
+                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
+                        _setVal(pi);
                     }
                 }
             }
