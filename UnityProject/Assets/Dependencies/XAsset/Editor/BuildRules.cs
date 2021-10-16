@@ -409,11 +409,14 @@ namespace libx
                     {
                         var dir = Path.GetDirectoryName(asset);
                         if (!string.IsNullOrEmpty(dir))
+                        {
+                            dir = dir.Replace("\\", "/");
                             if (!dir.Equals(rule.searchPath))
                             {
                                 var pos = dir.IndexOf("/", startIndex + 1, StringComparison.Ordinal);
                                 if (pos != -1) dir = dir.Substring(0, pos);
                             }
+                        }
 
                         _asset2Bundles[asset] = RuledAssetBundleName(dir);
                     }

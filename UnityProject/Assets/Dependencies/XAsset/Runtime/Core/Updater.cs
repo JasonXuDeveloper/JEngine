@@ -67,7 +67,9 @@ namespace libx
         [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
         [SerializeField] private string gameScene = "Game.unity";
         [SerializeField] private bool development;
-        [SerializeField] private bool enableVFS = true;
+        [SerializeField] public bool enableVFS = true;
+        
+        public static Action<string,Action<float>> OnAssetsInitialized;
 
         public IUpdater listener { get; set; }
 
@@ -77,31 +79,6 @@ namespace libx
         private string _savePath;
         private List<VFile> _versions = new List<VFile>();
 
-
-        public void OnMessage(string msg)
-        {
-            if (listener != null)
-            {
-                listener.OnMessage(msg);
-            }
-        }
-
-        public void OnProgress(float progress)
-        {
-            if (listener != null)
-            {
-                listener.OnProgress(progress);
-            }
-        }
-
-        public void OnVersion(string ver)
-        {
-            if (listener != null)
-            {
-                listener.OnVersion(ver);
-            }
-        }
-        
         private void Start()
         {
             baseURL = baseURL.EndsWith("/") ? baseURL : baseURL + "/";
@@ -119,6 +96,73 @@ namespace libx
             _step = Step.Wait;
 
             Assets.updatePath = _savePath;
+        }
+        
+        public void StartUpdate()
+        {
+#if UNITY_EDITOR
+            if (development)
+            {
+                Assets.runtimeMode = false;
+                StartCoroutine(LoadGameScene());
+                return;
+            }
+#endif
+            OnStart();
+
+            if (_checking != null)
+            {
+                StopCoroutine(_checking);
+                return;
+            }
+
+            _checking = Checking();
+
+            StartCoroutine(_checking);
+        }
+        
+        public void OnStart()
+        {
+            if (listener != null)
+            {
+                listener.OnStart();
+            }
+        }
+        
+        private IEnumerator LoadGameScene()
+        {
+            OnMessage("正在初始化");
+            Assets.runtimeMode = !development;
+            var init = Assets.Initialize();
+            yield return init;
+            if (string.IsNullOrEmpty(init.error))
+            {
+                OnProgress(0);
+                OnMessage("加载游戏场景");
+                init.Release();
+                OnAssetsInitialized?.Invoke(gameScene, OnProgress);
+            }
+            else
+            {
+                init.Release();
+                var mb = MessageBox.Show("提示", "初始化异常错误：" + init.error + "请联系技术支持");
+                yield return mb;
+                Quit();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            MessageBox.Dispose();
+        }
+
+        private void Quit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
 
         private void OnApplicationFocus(bool hasFocus)
@@ -202,7 +246,32 @@ namespace libx
                 MessageBox.CloseAll();
             }
         }
+        
+        public void OnMessage(string msg)
+        {
+            if (listener != null)
+            {
+                listener.OnMessage(msg);
+            }
+        }
 
+        public void OnProgress(float progress)
+        {
+            if (listener != null)
+            {
+                listener.OnProgress(progress);
+            }
+        }
+
+        public void OnVersion(string ver)
+        {
+            if (listener != null)
+            {
+                listener.OnVersion(ver);
+            }
+        }
+
+        
         private void OnUpdate(long progress, long size, float speed)
         {
             OnMessage(string.Format("下载中...{0}/{1}, 速度：{2}",
@@ -245,39 +314,7 @@ namespace libx
             }
         }
 
-        public void OnStart()
-        {
-            if (listener != null)
-            {
-                listener.OnStart();
-            }
-        }
-
         private IEnumerator _checking;
-
-        public void StartUpdate()
-        {
-            // Debug.Log("StartUpdate.Development:" + development);
-#if UNITY_EDITOR
-            if (development)
-            {
-                Assets.runtimeMode = false;
-                StartCoroutine(LoadGameScene());
-                return;
-            }
-#endif
-            OnStart();
-
-            if (_checking != null)
-            {
-                StopCoroutine(_checking);
-                return;
-            }
-
-            _checking = Checking();
-
-            StartCoroutine(_checking);
-        }
 
         private void AddDownload(VFile item)
         {
@@ -606,60 +643,6 @@ namespace libx
             }
 
             StartCoroutine(LoadGameScene());
-        }
-
-
-        private IEnumerator LoadGameScene()
-        {
-            OnMessage("正在初始化");
-            Assets.runtimeMode = !development;
-            var init = Assets.Initialize();
-            yield return init;
-            if (string.IsNullOrEmpty(init.error))
-            {
-                Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
-                Assets.AddSearchPath("Assets/HotUpdateResources/Dll");
-                Assets.AddSearchPath("Assets/HotUpdateResources/Material");
-                Assets.AddSearchPath("Assets/HotUpdateResources/Other");
-                Assets.AddSearchPath("Assets/HotUpdateResources/Prefab");
-                Assets.AddSearchPath("Assets/HotUpdateResources/Scene");
-                Assets.AddSearchPath("Assets/HotUpdateResources/ScriptableObject");
-                Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
-                Assets.AddSearchPath("Assets/HotUpdateResources/UI");
-                init.Release();
-
-                OnProgress(0);
-                OnMessage("加载游戏场景");
-
-                AssetMgr.LoadSceneAsync(gameScene, false,OnProgress, (b) =>
-                {
-                    if (!b) return;
-                    InitJEngine.Instance.Load();
-                    ClassBindMgr.Instantiate();
-                    InitJEngine.Instance.OnHotFixLoaded();
-                });
-            }
-            else
-            {
-                init.Release();
-                var mb = MessageBox.Show("提示", "初始化异常错误：" + init.error + "请联系技术支持");
-                yield return mb;
-                Quit();
-            }
-        }
-
-        private void OnDestroy()
-        {
-            MessageBox.Dispose();
-        }
-
-        private void Quit()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
         }
     }
 }
