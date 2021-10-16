@@ -67,7 +67,7 @@ namespace libx
         [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
         [SerializeField] private string gameScene = "Game.unity";
         [SerializeField] private bool development;
-        [SerializeField] private bool enableVFS = true;
+        [SerializeField] public bool enableVFS = true;
 
         public IUpdater listener { get; set; }
 

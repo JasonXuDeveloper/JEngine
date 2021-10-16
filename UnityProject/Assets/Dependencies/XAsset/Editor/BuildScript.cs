@@ -27,9 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using JEngine.Core;
+using JEngine.Editor;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace libx
 {
@@ -80,11 +85,31 @@ namespace libx
             return rule;
         }
 
-        public static void CopyAssetBundlesTo (string path, bool vfs = true)
+        public static async void CopyAssetBundlesTo (string path)
         {
-#if UNITY_IPHONE
-                vfs = false;
-#endif
+            var prefix = $"JEngine.Editor.Setting.{Application.productName}";
+            var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
+            var scene = SceneManager.GetActiveScene();
+            if (scene.path != Setting.StartUpScenePath)
+            {
+                if (!jump)
+                {
+                    Debug.LogError("请前往启动场景进行该操作，或在JEngine面板配置启动场景");
+                    return;
+                }
+                string name = Setting.StartUpScenePath
+                    .Substring(Setting.StartUpScenePath.LastIndexOf('/') + 1)
+                    .Replace(".unity", "");
+
+                SceneManager.LoadScene(name);
+                while (SceneManager.GetActiveScene().name != name)
+                {
+                    if (!Application.isPlaying) return;
+                    await Task.Delay(10);
+                }
+            }
+
+            bool vfs = Object.FindObjectOfType<Updater>().enableVFS;
             
             if (!Directory.Exists (path)) {
                 Directory.CreateDirectory (path);
