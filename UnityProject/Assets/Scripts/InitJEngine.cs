@@ -4,6 +4,7 @@ using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
 using ILRuntime.Mono.Cecil.Pdb;
+using libx;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -47,6 +48,26 @@ public class InitJEngine : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         GameStats.Initialize();
         AssetMgr.Loggable = debug;
+        Updater.OnAssetsInitialized = (gameScene,onProgress) =>
+        {
+            Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
+            Assets.AddSearchPath("Assets/HotUpdateResources/Dll");
+            Assets.AddSearchPath("Assets/HotUpdateResources/Material");
+            Assets.AddSearchPath("Assets/HotUpdateResources/Other");
+            Assets.AddSearchPath("Assets/HotUpdateResources/Prefab");
+            Assets.AddSearchPath("Assets/HotUpdateResources/Scene");
+            Assets.AddSearchPath("Assets/HotUpdateResources/ScriptableObject");
+            Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
+            Assets.AddSearchPath("Assets/HotUpdateResources/UI");
+
+            AssetMgr.LoadSceneAsync(gameScene, false, onProgress, (b) =>
+            {
+                if (!b) return;
+                Instance.Load();
+                ClassBindMgr.Instantiate();
+                Instance.OnHotFixLoaded();
+            });
+        };
     }
 
     public void Load()
