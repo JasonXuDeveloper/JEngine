@@ -102,7 +102,7 @@ namespace JEngine.Editor
                          var success = true;
                          if (!File.Exists(LibraryDirectory.FullName + "/" + name) && !name.Contains("netstandard") &&
                              !name.Contains(HotProjectName) && !name.Contains("Unity") && !name.Contains("System") &&
-                             ((name.Contains(".pdb") || name.Contains(".dll"))))
+                             (name.EndsWith(".pdb") || name.EndsWith(".dll")))
                          {
                              if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
                              {
