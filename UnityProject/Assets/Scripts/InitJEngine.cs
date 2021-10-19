@@ -46,8 +46,11 @@ public class InitJEngine : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
         GameStats.Initialize();
+        GameStats.Debug = debug;
         AssetMgr.Loggable = debug;
+
         Updater.OnAssetsInitialized = (gameScene,onProgress) =>
         {
             Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
@@ -72,8 +75,6 @@ public class InitJEngine : MonoBehaviour
 
     public void Load()
     {
-        GameStats.Debug = debug;
-        GameStats.Initialize();
         LoadHotFixAssembly();
     }
 
