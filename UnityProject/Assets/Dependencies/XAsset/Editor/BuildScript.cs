@@ -97,19 +97,18 @@ namespace libx
                     Debug.LogError("请前往启动场景进行该操作，或在JEngine面板配置启动场景");
                     return;
                 }
-                string name = Setting.StartUpScenePath
-                    .Substring(Setting.StartUpScenePath.LastIndexOf('/') + 1)
-                    .Replace(".unity", "");
 
-                SceneManager.LoadScene(name);
-                while (SceneManager.GetActiveScene().name != name)
+                string name = Setting.StartUpScenePath;
+
+                scene = EditorSceneManager.OpenScene(name, OpenSceneMode.Additive);
+                while (!scene.isLoaded)
                 {
-                    if (!Application.isPlaying) return;
                     await Task.Delay(10);
                 }
             }
 
             bool vfs = Object.FindObjectOfType<Updater>().enableVFS;
+            EditorSceneManager.CloseScene(scene, true);
             
             if (!Directory.Exists (path)) {
                 Directory.CreateDirectory (path);

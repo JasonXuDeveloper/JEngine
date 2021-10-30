@@ -546,13 +546,13 @@ namespace libx
 
         private IEnumerator RequestCopy()
         {
-            var v1 = Versions.LoadVersion(_savePath + Versions.Filename);
+            var v1 = Versions.LoadVersion(_savePath + Versions.Filename);//这个是服务器版本
             var basePath = GetBasePath();
             var request = UnityWebRequest.Get(Path.Combine(basePath, Versions.Filename));
             var path = _savePath + Versions.Filename + ".tmp";
             request.downloadHandler = new DownloadHandlerFile(path);
             yield return request.SendWebRequest();
-            var v2 = -1;
+            var v2 = -1;//这个是本地版本
             var hasFile = string.IsNullOrEmpty(request.error);
             if (hasFile) { v2 = Versions.LoadVersion(path); }
             var steamFileThenSave = v2 >= v1;
@@ -567,7 +567,13 @@ namespace libx
             if (version.name.Equals(Versions.Dataname))
             {
                 var request = UnityWebRequest.Get(Path.Combine(basePath, version.name));
-                request.downloadHandler = new DownloadHandlerFile(_savePath + version.name);
+                var path = _savePath + version.name;
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+
+                request.downloadHandler = new DownloadHandlerFile(path);
                 var req = request.SendWebRequest();
                 while (!req.isDone)
                 {
@@ -584,7 +590,13 @@ namespace libx
                 {
                     var item = versions[index];
                     var request = UnityWebRequest.Get(Path.Combine(basePath, item.name));
-                    request.downloadHandler = new DownloadHandlerFile(_savePath + item.name);
+                    var path = _savePath + item.name;
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+
+                    request.downloadHandler = new DownloadHandlerFile(path);
                     yield return request.SendWebRequest();
                     request.Dispose();
                     OnMessage(string.Format("正在复制文件：{0}/{1}", index, versions.Count));
