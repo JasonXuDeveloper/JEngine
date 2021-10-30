@@ -4,11 +4,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 ```mater```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大；
 
-```0.5.x```分支有部分商业项目正在使用；
+```0.5.x```分支有部分商业项目正在使用，<u>不会在进行更新</u>；
 
 ```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
-
-
 
 ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
 ![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
@@ -30,7 +28,49 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 ![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
 
 
+
+## 安装方式
+
+### 推荐方式
+
+进入master分支，选择clone，然后打开框架即可，移植时把老游戏项目的内容复制到框架工程（温馨提示，记得备份）
+
+### 其他方式
+
+npm下载方式：```npm i com.jasonxudeveloper.jengine```
+
+upm下载方式：
+
+1. 自动安装：```openupm add com.jasonxudeveloper.jengine```
+
+2. 手动安装：
+
+   1. 打开[Packages/manifest.json](https://docs.unity3d.com/Manual/upm-manifestPrj.html)
+
+   2. 写入：
+
+      ```json
+      {
+          "scopedRegistries": [
+              {
+                  "name": "package.openupm.com",
+                  "url": "https://package.openupm.com",
+                  "scopes": [
+                      "com.jasonxudeveloper.jengine",
+                      "com.ourpalm.ilruntime"
+                  ]
+              }
+          ],
+          "dependencies": {
+              "com.jasonxudeveloper.jengine": "0.6.3"
+          }
+      }
+      ```
+
+      
+
   ## 框架相关
+
 | 主题                                 | 地址                                                      |
 | ------------------------------------ | --------------------------------------------------------- |
 | JEngine v0.6直播回放                 | [点击跳转](https://www.bilibili.com/video/BV1My4y1B7FL/)  |
