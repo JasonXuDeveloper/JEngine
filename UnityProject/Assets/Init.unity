@@ -373,6 +373,7 @@ MonoBehaviour:
   gameScene: Game.unity
   development: 1
   enableVFS: 1
+  offline: 0
 --- !u!4 &964396227
 Transform:
   m_ObjectHideFlags: 0

@@ -10,3 +10,4 @@ UnityProject/obj/*
 UnityProject/*.csproj
 UnityProject/UnityProject.sln
 UnityProject/HotUpdateScripts/obj/*
+UnityProject/ProjectSettings/*
