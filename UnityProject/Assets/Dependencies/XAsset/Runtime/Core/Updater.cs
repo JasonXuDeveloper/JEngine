@@ -109,16 +109,7 @@ namespace libx
             }
 #endif
             OnStart();
-
-            if (_checking != null)
-            {
-                StopCoroutine(_checking);
-                return;
-            }
-
-            _checking = Checking();
-
-            StartCoroutine(_checking);
+            StartCoroutine(Checking());
         }
         
         public void OnStart()
@@ -313,8 +304,6 @@ namespace libx
                 Directory.Delete(_savePath, true);
             }
         }
-
-        private IEnumerator _checking;
 
         private void AddDownload(VFile item)
         {
