@@ -68,6 +68,7 @@ namespace libx
         [SerializeField] private string gameScene = "Game.unity";
         [SerializeField] private bool development;
         [SerializeField] public bool enableVFS = true;
+        [Tooltip("离线模式")] [SerializeField] public bool offline;
         
         public static Action<string,Action<float>> OnAssetsInitialized;
 
@@ -448,6 +449,11 @@ namespace libx
 
         private IEnumerator RequestVersions()
         {
+            if (offline)
+            {
+                OnComplete();
+                yield break;
+            }
             OnMessage("正在获取版本信息...");
             if (Application.internetReachability == NetworkReachability.NotReachable)
             {
@@ -546,7 +552,7 @@ namespace libx
 
         private IEnumerator RequestCopy()
         {
-            var v1 = Versions.LoadVersion(_savePath + Versions.Filename);//这个是服务器版本
+            var v1 = offline? -1 : Versions.LoadVersion(_savePath + Versions.Filename);//这个是服务器版本
             var basePath = GetBasePath();
             var request = UnityWebRequest.Get(Path.Combine(basePath, Versions.Filename));
             var path = _savePath + Versions.Filename + ".tmp";
@@ -556,8 +562,15 @@ namespace libx
             var hasFile = string.IsNullOrEmpty(request.error);
             if (hasFile) { v2 = Versions.LoadVersion(path); }
             var steamFileThenSave = v2 >= v1;
-            if (steamFileThenSave) { Debug.LogWarning("本地流目录版本高于或等于网络目录版本"); }
+            if (steamFileThenSave) { Debug.LogWarning(offline?"离线模式直接解压本地资源":"本地流目录版本高于或等于网络目录版本"); }
             _step = hasFile && steamFileThenSave ? Step.Coping : Step.Versions;
+            if (!hasFile && offline)
+            {
+                var mb = MessageBox.Show("提示", "离线模式需要将资源拷贝到本地，目前检测不到，因此游戏无法正常运行");
+                yield return mb;
+                Quit();
+            }
+
             request.Dispose();
         }
 
