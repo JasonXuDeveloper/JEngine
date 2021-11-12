@@ -1,72 +1,72 @@
-- # JENGINE v0.6.3
+# JENGINE v0.6.3
 
-  JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
+JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
-  ```mater```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大；
+```mater```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大；
 
-  ```0.5.x```分支有部分商业项目正在使用，<u>不会再进行更新</u>；
+```0.5.x```分支有部分商业项目正在使用，<u>不会再进行更新</u>；
 
-  ```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
+```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
 
-  ![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
-  ![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
-  ![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
-  ![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
-  [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_shield)
-  [![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine)
+![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
+![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
+![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
+![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_shield)
+[![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine)
 
-  
 
-  > QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
-  >
-  > 已有项目使用JEngine热更新，并成功上架iOS
-  >
-  > 本框架目前使用的资源管理模块是魔改后的XAsset4.0，基本解决了原插件中概率性出现的bug，如要接入XAsset 7.0或XAsset Pro请自行解决！！！
 
-  [English Document](README_en-us.md)
+> QQ群: [921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
+>
+> 已有项目使用JEngine热更新，并成功上架iOS
+>
+> 本框架目前使用的资源管理模块是魔改后的XAsset4.0，基本解决了原插件中概率性出现的bug，如要接入XAsset 7.0或XAsset Pro请自行解决！！！
 
-  ![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
+[English Document](README_en-us.md)
 
-  
+![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
 
-  ## 安装方式
 
-  ### 推荐方式
 
-  进入master分支，选择clone，然后打开框架即可，移植时把老游戏项目的内容复制到框架工程（温馨提示，记得备份）
+## 安装方式
 
-  ### 其他方式
+### 推荐方式
 
-    - npm下载方式：```npm i com.jasonxudeveloper.jengine```
+进入master分支，选择clone，然后打开框架即可，移植时把老游戏项目的内容复制到框架工程（温馨提示，记得备份）
 
-    - upm下载方式：
+### 其他方式
 
-      - 自动安装：```openupm add com.jasonxudeveloper.jengine```
+  - npm下载方式：```npm i com.jasonxudeveloper.jengine```
 
-      - 手动安装：
+  - upm下载方式：
 
-        1. 打开[Packages/manifest.json](https://docs.unity3d.com/Manual/upm-manifestPrj.html)
-        2. 写入：
+    - 自动安装：```openupm add com.jasonxudeveloper.jengine```
 
-        ```json
-        {
-            "scopedRegistries": [
-                {
-                    "name": "package.openupm.com",
-                    "url": "https://package.openupm.com",
-                    "scopes": [
-                        "com.jasonxudeveloper.jengine",
-                        "com.ourpalm.ilruntime"
-                    ]
-                }
-            ],
-            "dependencies": {
-                "com.jasonxudeveloper.jengine": "0.6.3"
-            }
-        }
-        ```
+    - 手动安装：
 
-  
+      1. 打开[Packages/manifest.json](https://docs.unity3d.com/Manual/upm-manifestPrj.html)
+      2. 写入：
+
+      ```json
+      {
+          "scopedRegistries": [
+              {
+                  "name": "package.openupm.com",
+                  "url": "https://package.openupm.com",
+                  "scopes": [
+                      "com.jasonxudeveloper.jengine",
+                      "com.ourpalm.ilruntime"
+                  ]
+              }
+          ],
+          "dependencies": {
+              "com.jasonxudeveloper.jengine": "0.6.3"
+          }
+      }
+      ```
+
+
 
 
     ## 框架相关
@@ -96,9 +96,9 @@
   </p>
 
     ## 近期star趋势
-
+    
     [![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
-
+    
     ## 为什么选择使用JEngine？
 
    JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**代码**功能，并且使游戏开发者**更加轻松的制作游戏**
@@ -113,7 +113,7 @@
 
    **如果你觉得JEngine对你有帮助，请给该框架一个Star！**
 
-    
+​    
 
   ## v0.6.3 最新功能
 
