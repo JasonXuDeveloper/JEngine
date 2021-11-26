@@ -1,0 +1,3 @@
+[submodule "UnityProject/Assets/Dependencies/JAsset"]
+	path = UnityProject/Assets/Dependencies/JAsset
+	url = https://github.com/JasonXuDeveloper/JAsset.git
