@@ -1,3 +1,6 @@
 [submodule "UnityProject/Assets/Dependencies/JAsset"]
 	path = UnityProject/Assets/Dependencies/JAsset
 	url = https://github.com/JasonXuDeveloper/JAsset.git
+[submodule "UnityProject/Assets/Dependencies/protobuf-net-v2-for-ILRuntime"]
+	path = UnityProject/Assets/Dependencies/protobuf-net-v2-for-ILRuntime
+	url = git@github.com:JasonXuDeveloper/protobuf-net-v2-for-ILRuntime.git
