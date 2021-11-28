@@ -350,21 +350,12 @@ namespace libx
                 case BuildTarget.StandaloneWindows:
                 case BuildTarget.StandaloneWindows64:
                     return "Windows";
-#if UNITY_2017_3_OR_NEWER
                 case BuildTarget.StandaloneOSX:
                     return "OSX";
-#else
-                case BuildTarget.StandaloneOSXIntel:
-                case BuildTarget.StandaloneOSXIntel64:
-                case BuildTarget.StandaloneOSXUniversal:
-                    return "OSX";
-#endif
                 default:
                     return null;
             }
-            return null;
 #endif
-
             switch (target)
             {
                 case RuntimePlatform.Android:

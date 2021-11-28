@@ -1,10 +1,12 @@
-# JENGINE v0.6.3
+# JENGINE v0.7.0 preview
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
 ```mater```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大；
 
-```0.5.x```分支有部分商业项目正在使用，<u>不会再进行更新</u>；
+```0.6.x```分支目前大部分商业项目正在使用，<u>内容完善，文档视频充足，不会再进行任何更新或维护</u>；
+
+```0.5.x```分支有部分商业项目正在使用，<u>不会再进行更新或维护</u>；
 
 ```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
 
@@ -21,7 +23,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 >
 > 已有项目使用JEngine热更新，并成功上架iOS
 >
-> 本框架目前使用的资源管理模块是魔改后的XAsset4.0，基本解决了原插件中概率性出现的bug，如要接入XAsset 7.0或XAsset Pro请自行解决！！！
 
 [English Document](README_en-us.md)
 
@@ -29,42 +30,40 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 
 
-## 安装方式
+## 下载方式（非常重要）
 
-### 推荐方式
+> 因为JEngine使用了Git的Submodule模块来安装子模块，下载本框架源码不能直接从网站下载zip，需要以下两种方式：
 
-进入master分支，选择clone，然后打开框架即可，移植时把老游戏项目的内容复制到框架工程（温馨提示，记得备份）
+1. 方法一，先git clone再安装子模块
 
-### 其他方式
+   ```bash
+   git clone git@github.com:JasonXuDeveloper/JEngine.git
+   git submodule init
+   git submodule update
+   ```
 
-  - npm下载方式：```npm i com.jasonxudeveloper.jengine```
+2. 方法二，git clone的时候顺带安装子模块
 
-  - upm下载方式：
+   ```bash
+   git clone git@github.com:JasonXuDeveloper/JEngine.git --recursive
+   ```
 
-    - 自动安装：```openupm add com.jasonxudeveloper.jengine```
+> 注，这里的github地址可以换为gitee地址
 
-    - 手动安装：
 
-      1. 打开[Packages/manifest.json](https://docs.unity3d.com/Manual/upm-manifestPrj.html)
-      2. 写入：
 
-      ```json
-      {
-          "scopedRegistries": [
-              {
-                  "name": "package.openupm.com",
-                  "url": "https://package.openupm.com",
-                  "scopes": [
-                      "com.jasonxudeveloper.jengine",
-                      "com.ourpalm.ilruntime"
-                  ]
-              }
-          ],
-          "dependencies": {
-              "com.jasonxudeveloper.jengine": "0.6.3"
-          }
-      }
-      ```
+## 子模块说明
+
+> 大部分子模块都在```JEngine/UnityProject/Assets/Dependencies/```目录下
+>
+> 下面提到的submodule指的是GitHub内依赖的子模块
+
+- ILRuntime - C#代码热更必备，由于特殊原因无法将其改为submodule
+- JEngine - 框架源码，不是submodule
+- Unity-Reorderable-List - 框架依赖的一个编辑器Inspector序列化插件，是submodule
+- JAsset - 资源热更新管理插件，是submodule
+- Protobuf-net-v2-for-ILRuntime - 针对ILRuntime设计的protobuf序列化插件，是submodule
+- Litjson - 针对ILRuntime设计的json序列化插件，暂时还不是submodule
 
 
 
@@ -113,13 +112,18 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
 ​    
 
-  ## v0.6.3 最新功能
+  ## v0.7.0 最新功能
 
-  - **实现** 自动在proto转c#的时候打 ```[System.Serializable]``` 标签
-  - **修改** ClassBind 默认 **active after**
-  - **优化**  **JFloat** 的精度
-  - **优化** 主工程 不再依赖热更工程的JBehaviour
-  - **全新** JEvent + Event Demo
+  - 依赖代码**模块化**（更规范）
+  - 支持**分包**（主包必带热更代码，分包带特定资源）
+  - 支持**离线模式**（无需架设服务器即可打游戏包测试）
+  - 改善**开发流程**（一系列的开发时的体验优化）
+  - 框架**代码解耦**（更轻量，开箱即用）
+  - 框架**底层优化**（更卓越的性能）
+  - LitJson及Protobuf**优化及维护**（更稳定的序列化插件）
+  - 修复0.6.3出现的**全部Issue**（更少bug，更强大）
+  - 更多**Demo**（更完善，使用起来更容易驾驭）
+  - 新增**可扩展验证器**（新功能）
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
@@ -159,6 +163,5 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
 
   ## 推荐项目
 
-  - [XAsset](https://github.com/xasset/xasset) - 精简高效的资源热更框架
   - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
   - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
