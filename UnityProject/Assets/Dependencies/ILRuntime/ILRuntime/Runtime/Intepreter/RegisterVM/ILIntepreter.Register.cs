@@ -2753,7 +2753,7 @@ namespace ILRuntime.Runtime.Intepreter
 
                                         int addr = (int)(ip - ptr);
                                         var sql = from e in ehs
-                                                  where addr >= e.TryStart && addr <=e.TryEnd && e.HandlerType == ExceptionHandlerType.Finally || e.HandlerType == ExceptionHandlerType.Fault
+                                                  where addr >= e.TryStart && addr <= e.TryEnd && (ip->Operand < e.TryStart || ip->Operand > e.TryEnd) && e.HandlerType == ExceptionHandlerType.Finally
                                                   select e;
                                         eh = sql.FirstOrDefault();
                                         if (eh != null)
@@ -2769,11 +2769,19 @@ namespace ILRuntime.Runtime.Intepreter
 
                             case OpCodeREnum.Endfinally:
                                 {
-                                    ip = ptr + finallyEndAddress;
-                                    finallyEndAddress = 0;
-                                    continue;
+                                    if (finallyEndAddress < 0)
+                                    {
+                                        unhandledException = true;
+                                        finallyEndAddress = 0;
+                                        throw lastCaughtEx;
+                                    }
+                                    else
+                                    {
+                                        ip = ptr + finallyEndAddress;
+                                        finallyEndAddress = 0;
+                                        continue;
+                                    }
                                 }
-                                break;
                             case OpCodeREnum.Call:
                             case OpCodeREnum.Callvirt:
                                 {
@@ -3255,6 +3263,10 @@ namespace ILRuntime.Runtime.Intepreter
                                                     if (dele == null)
                                                     {
                                                         var invokeMethod = type.GetMethod("Invoke", mi.ParameterCount);
+                                                        if (invokeMethod == null && ilMethod.IsExtend)
+                                                        {
+                                                            invokeMethod = type.GetMethod("Invoke", mi.ParameterCount - 1);
+                                                        }
                                                         dele = domain.DelegateManager.FindDelegateAdapter(
                                                             (ILTypeInstance)ins, ilMethod, invokeMethod);
                                                     }
@@ -3360,27 +3372,7 @@ namespace ILRuntime.Runtime.Intepreter
                                                 var ilMethod = mi as ILMethod;
                                                 if (ilMethod != null)
                                                 {
-                                                    if (ins != null)
-                                                    {
-                                                        dele = ((ILTypeInstance)ins).GetDelegateAdapter(ilMethod);
-                                                        if (dele == null)
-                                                        {
-                                                            var invokeMethod =
-                                                                cm.DeclearingType.GetMethod("Invoke",
-                                                                    mi.ParameterCount);
-                                                            dele = domain.DelegateManager.FindDelegateAdapter(
-                                                                (ILTypeInstance)ins, ilMethod, invokeMethod);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if (ilMethod.DelegateAdapter == null)
-                                                        {
-                                                            var invokeMethod = cm.DeclearingType.GetMethod("Invoke", mi.ParameterCount);
-                                                            ilMethod.DelegateAdapter = domain.DelegateManager.FindDelegateAdapter(null, ilMethod, invokeMethod);
-                                                        }
-                                                        dele = ilMethod.DelegateAdapter;
-                                                    }
+                                                    dele = domain.DelegateManager.FindDelegateAdapter((CLRType)cm.DeclearingType, (ILTypeInstance)ins, ilMethod);
                                                 }
                                                 else
                                                 {
@@ -5116,6 +5108,28 @@ namespace ILRuntime.Runtime.Intepreter
                                 short exReg = (short)(paramCnt + locCnt);
                                 AssignToRegister(ref info, exReg, ex);
                                 unhandledException = false;
+                                var sql = from e in ehs
+                                          where addr >= e.TryStart && addr <= e.TryEnd && (eh.HandlerStart < e.TryStart || eh.HandlerStart > e.TryEnd) && e.HandlerType == ExceptionHandlerType.Finally
+                                          select e;
+                                var eh2 = sql.FirstOrDefault();
+                                if (eh2 != null)
+                                {
+                                    finallyEndAddress = eh.HandlerStart;
+                                    ip = ptr + eh2.HandlerStart;
+                                    continue;
+                                }
+                                ip = ptr + eh.HandlerStart;
+                                continue;
+                            }
+
+                            eh = GetCorrespondingExceptionHandler(ehs, null, addr, ExceptionHandlerType.Fault, false);
+                            if (eh == null)
+                                eh = GetCorrespondingExceptionHandler(ehs, null, addr, ExceptionHandlerType.Finally, false);
+                            if (eh != null)
+                            {
+                                unhandledException = false;
+                                finallyEndAddress = -1;
+                                lastCaughtEx = ex is ILRuntimeException ? ex : new ILRuntimeException(ex.Message, this, method, ex);
                                 ip = ptr + eh.HandlerStart;
                                 continue;
                             }

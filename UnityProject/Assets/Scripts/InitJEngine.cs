@@ -4,6 +4,7 @@ using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
 using ILRuntime.Mono.Cecil.Pdb;
+using ILRuntime.Runtime;
 using libx;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -15,7 +16,7 @@ public class InitJEngine : MonoBehaviour
     public static bool Success;
 
 #if UNITY_EDITOR
-    public static long EncryptedCounts => ((JStream) (Instance._fs)).EncryptedCounts;
+    public static long EncryptedCounts => ((JStream)(Instance._fs)).EncryptedCounts;
     private const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
     private const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
 #endif
@@ -26,6 +27,8 @@ public class InitJEngine : MonoBehaviour
 
     [FormerlySerializedAs("Key")] [SerializeField]
     public string key;
+
+    [SerializeField] private ILRuntimeJITFlag useJIT = ILRuntimeJITFlag.JITOnDemand;
 
     [FormerlySerializedAs("UsePdb")] [SerializeField]
     public bool usePdb;
@@ -51,7 +54,7 @@ public class InitJEngine : MonoBehaviour
         GameStats.Debug = debug;
         AssetMgr.Loggable = debug;
 
-        Updater.OnAssetsInitialized = (gameScene,onProgress) =>
+        Updater.OnAssetsInitialized = (gameScene, onProgress) =>
         {
             Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
             Assets.AddSearchPath("Assets/HotUpdateResources/Dll");
@@ -80,7 +83,7 @@ public class InitJEngine : MonoBehaviour
 
     void LoadHotFixAssembly()
     {
-        Appdomain = new AppDomain();
+        Appdomain = new AppDomain((int)useJIT);
         _pdb = null;
 
         byte[] dll;
@@ -112,7 +115,7 @@ public class InitJEngine : MonoBehaviour
         else //真机模式解密加载
 #endif
         {
-            var dllFile = (TextAsset) AssetMgr.Load(DllName, typeof(TextAsset));
+            var dllFile = (TextAsset)AssetMgr.Load(DllName, typeof(TextAsset));
             if (dllFile == null)
             {
                 return;
@@ -120,7 +123,7 @@ public class InitJEngine : MonoBehaviour
 
             dll = dllFile.bytes;
         }
-        
+
         var buffer = new byte[dll.Length];
         Array.Copy(dll, buffer, dll.Length);
         AssetMgr.Unload(DllName, true);
@@ -166,5 +169,31 @@ public class InitJEngine : MonoBehaviour
     {
         Appdomain.Invoke(HotMainType, HotMainMethod, Tools.Param0, Tools.Param0);
         HotFixLoadedHelper.Init(Appdomain);
+    }
+
+    [Serializable]
+    private enum ILRuntimeJITFlag
+    {
+        None = 0,
+
+        /// <summary>
+        /// Method will be JIT when method is called multiple time
+        /// </summary>
+        JITOnDemand = 1,
+
+        /// <summary>
+        /// Method will be JIT immediately when called, instead of progressively warm up
+        /// </summary>
+        JITImmediately = 2,
+
+        /// <summary>
+        /// Method will not be JIT when called
+        /// </summary>
+        NoJIT = 4,
+
+        /// <summary>
+        /// Method will always be inlined when called
+        /// </summary>
+        ForceInline = 8
     }
 }
