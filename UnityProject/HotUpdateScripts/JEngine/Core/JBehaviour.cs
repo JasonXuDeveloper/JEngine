@@ -191,14 +191,14 @@ namespace JEngine.Core
 
             var jBehaviour = type;
             var cb = gameObject.AddComponent<ClassBind>();
-            var _cb = new ClassData()
+            var cd = new ClassData()
             {
                 classNamespace = "",
                 className = jBehaviour.FullName,
                 activeAfter = activeAfter,
             };
-            var id = (cb.AddClass(_cb) as JBehaviour)._instanceID;
-            cb.Active(_cb);
+            var id = (cb.AddClass(cd) as JBehaviour)._instanceID;
+            cb.Active(cd);
             UnityEngine.Object.Destroy(cb);
             return id;
         }

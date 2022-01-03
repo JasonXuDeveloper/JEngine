@@ -661,6 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: developmentMode.
+  useJIT: 1
   usePdb: 1
   debug: 1
 --- !u!1 &1079429683

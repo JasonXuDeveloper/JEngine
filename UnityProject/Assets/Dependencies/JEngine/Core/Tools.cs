@@ -120,10 +120,8 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && (a.ILInstance.Type.ReflectionType.FullName == typeName ||
-                                                       a.ILInstance.Type.ReflectionType.Name == typeName ||
-                                                       a.ILInstance.Type.BaseType.FullName == typeName ||
-                                                       a.ILInstance.Type.BaseType.ReflectionType.FullName == typeName))
+                .FindAll(a =>
+                    a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(InitJEngine.Appdomain.GetType(typeName).ReflectionType))
                 .Select(a => a.ILInstance).ToArray();
         }
 
@@ -131,21 +129,21 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && (a.ILInstance.Type == type || a.ILInstance.Type.BaseType == type))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
                 .Select(a => a.ILInstance).ToArray();
         }
         
         public static object GetHotComponent(CrossBindingAdaptorType[] adapters, ILType type)
         {
             return adapters.ToList()
-                .FindAll(a => a.ILInstance != null && (a.ILInstance.Type == type || a.ILInstance.Type.BaseType == type))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
                 .Select(a => a.ILInstance).ToArray();
         }
         
         public static object GetHotComponent(List<CrossBindingAdaptorType> adapters, ILType type)
         {
             return adapters
-                .FindAll(a => a.ILInstance != null && (a.ILInstance.Type == type || a.ILInstance.Type.BaseType == type))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
                 .Select(a => a.ILInstance).ToArray();
         }
 
@@ -164,10 +162,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>(true);
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && (a.ILInstance.Type.ReflectionType.FullName == typeName ||
-                                                       a.ILInstance.Type.ReflectionType.Name == typeName ||
-                                                       a.ILInstance.Type.BaseType.FullName == typeName ||
-                                                       a.ILInstance.Type.BaseType.ReflectionType.FullName == typeName))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(InitJEngine.Appdomain.GetType(typeName).ReflectionType))
                 .Select(a => a.ILInstance).ToArray();
         }
     }

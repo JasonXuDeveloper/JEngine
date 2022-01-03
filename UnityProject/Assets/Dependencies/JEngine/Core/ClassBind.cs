@@ -7,7 +7,6 @@ using ILRuntime.CLR.Utils;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Reflection;
 using UnityEngine.Serialization;
-using UnityEngine.SceneManagement;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -129,19 +128,10 @@ namespace JEngine.Core
 
             if (isMono)
             {
-                if (type.BaseType.ReflectionType is ILRuntimeType)
+                var m = type.GetConstructor(Extensions.EmptyParamList);
+                if (m != null)
                 {
-                    Log.PrintWarning(
-                        "因为有跨域多层继承MonoBehaviour，会有一个可以忽略的警告：You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent(). Alternatively, your script can inherit from ScriptableObject or no base class at all");
-                    type.ReflectionType.GetConstructor(new Type[] { })?.Invoke(instance, new object[] { });
-                }
-                else
-                {
-                    var m = type.GetConstructor(Extensions.EmptyParamList);
-                    if (m != null)
-                    {
-                        InitJEngine.Appdomain.Invoke(m, instance, null);
-                    }
+                    InitJEngine.Appdomain.Invoke(m, instance, null);
                 }
             }
 
@@ -316,11 +306,8 @@ namespace JEngine.Core
                             }
                         }
 
-                        var tp = t.GetField(field.fieldName,bindingAttr);
-                        if (tp == null) tp = t.BaseType?.GetField(field.fieldName, bindingAttr);
-                        if (tp != null)
+                        void SetField(Type fieldType)
                         {
-                            var fieldType = tp.FieldType;
                             fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
                             if (fieldType is ILRuntimeType) //如果在热更中
@@ -346,37 +333,20 @@ namespace JEngine.Core
                                 }
                             }
                         }
+
+                        var tp = t.GetField(field.fieldName,bindingAttr);
+                        if (tp == null) tp = t.BaseType?.GetField(field.fieldName, bindingAttr);
+                        if (tp != null)
+                        {
+                            SetField(tp.FieldType);
+                        }
                         else
                         {
                             var pi = t.GetProperty(field.fieldName,bindingAttr);
                             if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
                             if (pi != null)
                             {
-                                var fieldType = pi.PropertyType;
-                                fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
-
-                                if (fieldType is ILRuntimeType) //如果在热更中
-                                {
-                                    var components = go.GetComponents<CrossBindingAdaptorType>();
-                                    foreach (var c in components)
-                                    {
-                                        if (c.ILInstance.Type.ReflectionType == fieldType)
-                                        {
-                                            obj = c.ILInstance;
-                                            classData.BoundData = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    var component = go.GetComponent(fieldType);
-                                    if (component != null)
-                                    {
-                                        obj = component;
-                                        classData.BoundData = true;
-                                    }
-                                }
+                                SetField(pi.PropertyType);
                             }
                             else
                             {
@@ -400,7 +370,7 @@ namespace JEngine.Core
                 //如果有数据再绑定
                 if (classData.BoundData)
                 {
-                    void _setVal(MemberInfo mi)
+                    void BindVal(MemberInfo mi)
                     {
                         try
                         {
@@ -426,13 +396,13 @@ namespace JEngine.Core
                     if (fi == null) fi = t.BaseType?.GetField(field.fieldName, bindingAttr);
                     if (fi != null)
                     {
-                        _setVal(fi);
+                        BindVal(fi);
                     }
                     else
                     {
                         var pi = t.GetProperty(field.fieldName,bindingAttr);
                         if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
-                        _setVal(pi);
+                        BindVal(pi);
                     }
                 }
             }
@@ -532,77 +502,6 @@ namespace JEngine.Core
 
             return null;
         }
-
-
-#if UNITY_EDITOR
-        [ContextMenu("Convert Path to GameObject")]
-        private void Convert()
-        {
-            foreach (ClassData @class in scriptsToBind)
-            {
-                Log.Print(
-                    $"<color=#34ebc9>==========Start processing {@class.classNamespace}.{@class.className}==========</color>");
-                var fields = @class.fields.ToArray();
-                foreach (ClassField field in fields)
-                {
-                    if (field.fieldType == ClassField.FieldType.NotSupported) continue;
-
-                    if (field.fieldType == ClassField.FieldType.GameObject ||
-                        field.fieldType == ClassField.FieldType.UnityComponent)
-                    {
-                        if (!string.IsNullOrEmpty(field.value))
-                        {
-                            if (field.value.Contains("."))
-                            {
-                                field.value =
-                                    field.value.Remove(field.value.IndexOf(".", StringComparison.Ordinal));
-                            }
-
-                            GameObject go = field.gameObject;
-                            if (go == null)
-                            {
-                                try
-                                {
-                                    go = field.value == "${this}"
-                                        ? gameObject
-                                        : GameObject.Find(field.value);
-                                    if (go == null) //找父物体
-                                    {
-                                        go = FindSubGameObject(field);
-                                    }
-                                }
-                                catch (Exception) //找父物体（如果抛出空异常）
-                                {
-                                    go = FindSubGameObject(field);
-                                }
-                            }
-
-                            if (go != null)
-                            {
-                                field.gameObject = go;
-                                Log.Print(
-                                    $"Convert path {field.value} to GameObject <color=green>successfully</color>");
-                                field.value = "";
-                            }
-                            else
-                            {
-                                Log.PrintError(
-                                    $"Convert path {field.value} to GameObject failed: path does not exists");
-                            }
-                        }
-                    }
-                }
-
-                Log.Print(
-                    $"<color=#34ebc9>==========Finish processing {@class.classNamespace}.{@class.className}==========</color>");
-            }
-
-            //转换后保存场景
-            var scene = SceneManager.GetActiveScene();
-            bool saveResult = UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, scene.path);
-            Debug.Log("Saved Scene " + scene.path + " " + (saveResult ? "Success" : "Failed!"));
-        }
-#endif
     }
 
 
@@ -614,7 +513,7 @@ namespace JEngine.Core
         [FormerlySerializedAs("ActiveAfter")] public bool activeAfter = true;
 
         [FormerlySerializedAs("Fields")] [Reorderable(elementNameProperty = "fieldName")]
-        public FieldList fields;
+        public FieldList fields = new FieldList();
 
         public bool BoundData { get; set; }
         public bool Added { get; set; }

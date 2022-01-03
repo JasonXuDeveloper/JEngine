@@ -34,8 +34,8 @@ namespace JEngine.Core
     {
         public static void Instantiate()
         {
-            var _BindMgr = FindObjectOfType<ClassBindMgr>();
-            if (_BindMgr != null)
+            var bindMgr = FindObjectOfType<ClassBindMgr>();
+            if (bindMgr != null)
                 return;
 
             _instance = new GameObject("ClassBindMgr").AddComponent<ClassBindMgr>();
