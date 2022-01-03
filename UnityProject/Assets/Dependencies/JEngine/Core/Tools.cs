@@ -121,7 +121,7 @@ namespace JEngine.Core
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
                 .FindAll(a =>
-                    a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(InitJEngine.Appdomain.GetType(typeName).ReflectionType))
+                    a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
                 .Select(a => a.ILInstance).ToArray();
         }
 
@@ -129,21 +129,21 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
                 .Select(a => a.ILInstance).ToArray();
         }
         
         public static object GetHotComponent(CrossBindingAdaptorType[] adapters, ILType type)
         {
             return adapters.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
                 .Select(a => a.ILInstance).ToArray();
         }
         
         public static object GetHotComponent(List<CrossBindingAdaptorType> adapters, ILType type)
         {
             return adapters
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(type.ReflectionType))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
                 .Select(a => a.ILInstance).ToArray();
         }
 
@@ -162,7 +162,7 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>(true);
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.ReflectionType.IsAssignableFrom(InitJEngine.Appdomain.GetType(typeName).ReflectionType))
+                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
                 .Select(a => a.ILInstance).ToArray();
         }
     }
