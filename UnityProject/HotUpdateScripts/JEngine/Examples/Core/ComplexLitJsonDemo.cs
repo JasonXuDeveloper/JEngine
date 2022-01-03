@@ -33,6 +33,7 @@ namespace JEngine.Examples
     public class JsonTestClass
     {
         public int intVal;
+        public float floatVal;
         public DataClass hotVal;
 
         public override string ToString()
@@ -73,10 +74,11 @@ namespace JEngine.Examples
 
         private void Test2()
         {
-            Log.Print("测试2，热更类型，内部分别有1个本地类型和1个热更类型字段");
+            Log.Print("测试2，热更类型，内部分别有2个本地类型和1个热更类型字段");
             var t2 = new JsonTestClass()
             {
                 intVal = 10,
+                floatVal = 3.14159f,
                 hotVal = new DataClass()
                 {
                     gm = true,
@@ -101,6 +103,7 @@ namespace JEngine.Examples
                 b = new JsonTestClass()
                 {
                     intVal = 999,
+                    floatVal = 3.1415926f,
                     hotVal = new DataClass()
                     {
                         gm = false,

@@ -21,8 +21,9 @@ namespace JEngine.Helper
 
         public void Register(AppDomain appdomain)
         {
-            JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(obj.ToString())); //float->string
-            JsonMapper.RegisterImporter<string, float>(input => float.Parse(input)); //string->float
+            JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(double.Parse(obj.ToString()))); //float->double
+            JsonMapper.RegisterImporter<string, float>(float.Parse); //string->float
+            JsonMapper.RegisterImporter<double, float>(input => (float)input); //string->float
             
             //给BindableProperty注册转换
             //这里注册了几个简单的类型
