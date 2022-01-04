@@ -4,8 +4,8 @@ using System.Linq;
 using UnityEngine;
 using System.Reflection;
 using ILRuntime.CLR.Utils;
-using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Reflection;
+using ILRuntime.CLR.TypeSystem;
 using UnityEngine.Serialization;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -153,7 +153,7 @@ namespace JEngine.Core
             classData.BoundData = false;
             var fields = classData.fields.ToArray();
             var bindingAttr = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                              BindingFlags.Static;
+                              BindingFlags.Static | BindingFlags.FlattenHierarchy;
 
             foreach (ClassField field in fields)
             {
@@ -164,10 +164,10 @@ namespace JEngine.Core
                 {
                     if (field.fieldType == ClassField.FieldType.Number)
                     {
-                        var fieldType = t.GetField(field.fieldName, bindingAttr).FieldType ??
-                                        (t.BaseType.GetField(field.fieldName, bindingAttr).FieldType ??
-                                         (t.GetProperty(field.fieldName, bindingAttr).PropertyType ??
-                                          t.BaseType.GetProperty(field.fieldName, bindingAttr).PropertyType));
+                        var fieldType = t.GetField(field.fieldName, bindingAttr)?.FieldType ??
+                                        (t.BaseType?.GetField(field.fieldName, bindingAttr)?.FieldType ??
+                                         (t.GetProperty(field.fieldName, bindingAttr)?.PropertyType ??
+                                          t.BaseType?.GetProperty(field.fieldName, bindingAttr)?.PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
                         if (fieldType == typeof(SByte))
@@ -310,12 +310,12 @@ namespace JEngine.Core
                         {
                             fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
-                            if (fieldType is ILRuntimeType) //如果在热更中
+                            if (fieldType is ILRuntimeType ilType) //如果在热更中
                             {
                                 var components = go.GetComponents<CrossBindingAdaptorType>();
                                 foreach (var c in components)
                                 {
-                                    if (c.ILInstance.Type.ReflectionType == fieldType)
+                                    if (c.ILInstance.Type.CanAssignTo(ilType.ILType))
                                     {
                                         obj = c.ILInstance;
                                         classData.BoundData = true;
@@ -364,7 +364,7 @@ namespace JEngine.Core
                 catch (Exception except)
                 {
                     Log.PrintError(
-                        $"自动绑定{name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过");
+                        $"自动绑定{name}出错：{classType}.{field.fieldName}获取值{field.value}出错：{except.Message}，已跳过,{except.StackTrace}");
                 }
 
                 //如果有数据再绑定

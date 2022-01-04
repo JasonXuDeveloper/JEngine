@@ -7454,7 +7454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scriptsToBind:
   - classNamespace: JEngine.Examples
-    className: AutoBindDemo1
+    className: ClassBindDemo1
     activeAfter: 1
     fields:
       array:
@@ -7483,7 +7483,7 @@ MonoBehaviour:
         value: this is a string
         gameObject: {fileID: 0}
   - classNamespace: JEngine.Examples
-    className: AutoBindDemo2
+    className: ClassBindDemo2
     activeAfter: 1
     fields:
       array:
@@ -7499,6 +7499,27 @@ MonoBehaviour:
         fieldName: txtFile
         value: Localization.csv
         gameObject: {fileID: 0}
+  - classNamespace: JEngine.Examples
+    className: ClassBindDemo3
+    activeAfter: 1
+    fields:
+      array:
+      - fieldType: 0
+        fieldName: a
+        value: 12345
+        gameObject: {fileID: 0}
+      - fieldType: 4
+        fieldName: aIn
+        value: 
+        gameObject: {fileID: 1925922024}
+      - fieldType: 0
+        fieldName: <a>k__BackingField
+        value: 34567
+        gameObject: {fileID: 0}
+      - fieldType: 4
+        fieldName: <aIn>k__BackingField
+        value: 
+        gameObject: {fileID: 1925922024}
 --- !u!4 &1925922026
 Transform:
   m_ObjectHideFlags: 0

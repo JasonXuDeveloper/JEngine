@@ -375,6 +375,8 @@ namespace JEngine.Core
             
             //现在需要将buffer切割，从offset开始，到count为止
             var encryptedData = new byte[count];//创建加密数据数组
+            var l = _buffer.Length - offset;
+            if (count > l) count = l;
             Buffer.BlockCopy(_buffer, offset, encryptedData, 0, count);//从原始数据里分割出来
 
             // Log.Print("获取到的密文："+string.Join(", ", encryptedData));

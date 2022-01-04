@@ -1,5 +1,5 @@
 ﻿//
-// AutoBindDemo.cs
+// ClassBindDemo.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -30,7 +30,7 @@ using UnityEngine.EventSystems;
 
 namespace JEngine.Examples
 {
-    public class AutoBindDemo1 : JBehaviour
+    public class ClassBindDemo1 : JBehaviour
     {
         public int IntField1;
 
@@ -48,31 +48,49 @@ namespace JEngine.Examples
 
         [SerializeField] private bool BoolPropertyInstance;
 
-        AutoBindDemo2 a2 = null;
+        ClassBindDemo2 a2 = null;
 
 
         public override void Init()
         {
-            Log.Print("[Autobind] AutoBindDemo1::Inited");
+            Log.Print("[ClassBindDemo1] ClassBindDemo1::Inited");
             //GameObjectField1.SetActive(!GameObjectField1.activeSelf);
-            Log.Print($"[Autobind] a2 is null? {a2 is null}");
+            Log.Print($"[ClassBindDemo1] a2 is null? {a2 is null}");
         }
     }
 
-    public class AutoBindDemo2 : MonoBehaviour
+    public class ClassBindDemo2 : MonoBehaviour
     {
         public TextAsset txtFile;
 
-        AutoBindDemo1 a1 = null;
+        ClassBindDemo1 a1 = null;
 
         [HideInInspector]public float floatField;
 
         public void Awake()
         {
-            Log.Print("[Autobind] AutoBindDemo2::Awake");
-            Log.Print($"[Autobind] txtFile value is: {txtFile.text}");
-            Log.Print($"[Autobind] a1 is null? {a1 is null}");
-            Log.Print($"[Autobind] floatField: {floatField}");
+            Log.Print("[ClassBindDemo2] ClassBindDemo2::Awake");
+            Log.Print($"[ClassBindDemo2] txtFile value is: {txtFile.text}");
+            Log.Print($"[ClassBindDemo2] a1 is null? {a1 is null}");
+            Log.Print($"[ClassBindDemo2] floatField: {floatField}");
         }
+    }
+
+    public class ClassBindDemo3 : MonoBehaviour, AInterface
+    {
+        public int a { get; set; }
+        public AInterface aIn { get; set; }
+        public void Awake()
+        {
+            Debug.Log("[ClassBindDemo3] a=" + a);
+            Debug.Log("[ClassBindDemo3] aIn == (AInterface)this: " + (aIn == (AInterface)this));
+        }
+    }
+
+    public interface AInterface
+    {
+        int a { get; set; }
+        AInterface aIn { get; set; }
+        void Awake();
     }
 }

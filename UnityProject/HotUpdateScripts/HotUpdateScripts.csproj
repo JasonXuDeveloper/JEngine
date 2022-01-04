@@ -44,7 +44,6 @@
     <Compile Include="JEngine\Event\EventAttributes.cs" />
     <Compile Include="JEngine\Core\JExtensions.cs" />
     <Compile Include="JEngine\Net\JWebSocket.cs" />
-    <Compile Include="JEngine\Examples\Core\AutoBindDemo.cs" />
     <Compile Include="JEngine\Examples\Core\ConvertDemo.cs" />
     <Compile Include="JEngine\Examples\Core\CrossDomainDemo.cs" />
     <Compile Include="JEngine\Examples\Core\InstantiateDemo.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Proto2cs\dataClass.cs" />
     <Compile Include="JEngine\Examples\Core\AntiCheatDemo.cs" />
     <Compile Include="JEngine\Examples\Core\MultiInheritenceDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\ClassBindDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
