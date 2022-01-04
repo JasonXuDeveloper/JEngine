@@ -33,12 +33,8 @@ namespace JEngine.Core
             get => _encrypted;
             set => _encrypted = value;
         }
-        
-        public JStream(byte[] buffer,string key) 
-            : this(buffer,key, true) {
-        }
 
-        public JStream(byte[] buffer, string key, bool writable)
+        public JStream(byte[] buffer, string key)
         {
             _buffer = buffer ?? throw new ArgumentNullException(nameof(buffer), "buffer == null");
             _length = _capacity = buffer.Length;

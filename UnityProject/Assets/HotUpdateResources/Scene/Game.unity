@@ -7512,14 +7512,6 @@ MonoBehaviour:
         fieldName: aIn
         value: 
         gameObject: {fileID: 1925922024}
-      - fieldType: 0
-        fieldName: <a>k__BackingField
-        value: 34567
-        gameObject: {fileID: 0}
-      - fieldType: 4
-        fieldName: <aIn>k__BackingField
-        value: 
-        gameObject: {fileID: 1925922024}
 --- !u!4 &1925922026
 Transform:
   m_ObjectHideFlags: 0
