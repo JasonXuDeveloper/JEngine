@@ -2797,8 +2797,12 @@ namespace JEngine.Helper
                 else
                 {
                     var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
-                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType));
-                    res = ilInstances;
+                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType))
+                        .Select(i => i.CLRInstance).ToArray();
+                    int n = ilInstances.Length;
+                    res = Array.CreateInstance(type.TypeForCLR, n);
+                    for (int i = 0; i < n; i++)
+                        ((Array) res).SetValue(ilInstances[i], i);
                 }
 
                 return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -2823,8 +2827,12 @@ namespace JEngine.Helper
             if (type is ILRuntimeType ilType)
             {
                 var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
-                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType));
-                res = ilInstances;
+                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType))
+                    .Select(i => i.CLRInstance).ToArray();
+                int n = ilInstances.Length;
+                res = Array.CreateInstance(ilType.ILType.TypeForCLR, n);
+                for (int i = 0; i < n; i++)
+                    ((Array) res).SetValue(ilInstances[i], i);
             }
             else
             {

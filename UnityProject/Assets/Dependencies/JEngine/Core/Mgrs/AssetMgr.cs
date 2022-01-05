@@ -19,6 +19,21 @@ namespace JEngine.Core
             get => Assets.loggable;
             set => Assets.loggable = value;
         }
+
+        public static string Error(string path)
+        {
+            return AssetCache.ContainsKey(path) ? AssetCache[path].error : "";
+        }
+
+        public static LoadState State(string path)
+        {
+            return AssetCache.ContainsKey(path) ? AssetCache[path].loadState : LoadState.Init;
+        }
+
+        public static float Progress(string path)
+        {
+            return AssetCache.ContainsKey(path) ? AssetCache[path].progress : 0;
+        }
         
         public static Object Load(string path,Type type = null)
         {

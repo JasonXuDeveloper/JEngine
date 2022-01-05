@@ -189,6 +189,9 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(UnityEngine.Object), typeof(UnityEngine.Object)};
             method = type.GetMethod("op_Inequality", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, op_Inequality_17);
+            args = new Type[]{typeof(UnityEngine.Object)};
+            method = type.GetMethod("DestroyImmediate", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, DestroyImmediate_18);
 
 
         }
@@ -526,6 +529,22 @@ namespace ILRuntime.Runtime.Generated
             __ret->ObjectType = ObjectTypes.Integer;
             __ret->Value = result_of_this_method ? 1 : 0;
             return __ret + 1;
+        }
+
+        static StackObject* DestroyImmediate_18(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            UnityEngine.Object @obj = (UnityEngine.Object)typeof(UnityEngine.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            UnityEngine.Object.DestroyImmediate(@obj);
+
+            return __ret;
         }
 
 
