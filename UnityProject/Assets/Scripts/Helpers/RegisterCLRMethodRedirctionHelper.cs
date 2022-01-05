@@ -2796,7 +2796,7 @@ namespace JEngine.Helper
                 }
                 else
                 {
-                    var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
+                    var adapters = Tools.GetAllMonoAdapters();
                     var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType))
                         .Select(i => i.CLRInstance).ToArray();
                     int n = ilInstances.Length;
@@ -2826,7 +2826,7 @@ namespace JEngine.Helper
             object res;
             if (type is ILRuntimeType ilType)
             {
-                var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
+                var adapters = Tools.GetAllMonoAdapters();
                 var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType))
                     .Select(i => i.CLRInstance).ToArray();
                 int n = ilInstances.Length;
@@ -2862,7 +2862,7 @@ namespace JEngine.Helper
                 }
                 else
                 {
-                    var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
+                    var adapters = Tools.GetAllMonoAdapters();
                     var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType));
                     res = ilInstances.Length > 0 ? ilInstances[0] : null;
                 }
@@ -2888,7 +2888,7 @@ namespace JEngine.Helper
             object res;
             if (type is ILRuntimeType ilType)
             {
-                var adapters = Tools.FindObjectsOfTypeAll<CrossBindingAdaptorType>();
+                var adapters = Tools.GetAllMonoAdapters();
                 var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType));
                 res = ilInstances.Length > 0 ? ilInstances[0] : null;
             }

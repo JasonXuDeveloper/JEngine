@@ -31,9 +31,9 @@ using UnityEngine;
 
 namespace HotUpdateScripts
 {
-    public class Program
+    public static class Program
     {
-        public void RunGame()
+        public static void RunGame()
         {
 
         }
