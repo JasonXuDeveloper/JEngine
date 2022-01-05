@@ -15,14 +15,7 @@ namespace JEngine.Core
         private static Loom _current;
 
         //private int _count;
-        public static Loom Current
-        {
-            get
-            {
-                Initialize();
-                return _current;
-            }
-        }
+        public static Loom Current => _current;
 
         void Awake()
         {

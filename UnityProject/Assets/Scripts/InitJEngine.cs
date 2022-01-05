@@ -69,6 +69,7 @@ public class InitJEngine : MonoBehaviour
             AssetMgr.LoadSceneAsync(gameScene, false, onProgress, (b) =>
             {
                 if (!b) return;
+                Loom.Initialize();//初始化Loom，确保JEngine相关工具能正常运行
                 Instance.Load();
                 ClassBindMgr.Instantiate();
                 Instance.OnHotFixLoaded();
