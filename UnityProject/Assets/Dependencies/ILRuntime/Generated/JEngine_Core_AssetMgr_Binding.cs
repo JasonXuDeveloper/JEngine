@@ -22,15 +22,37 @@ namespace ILRuntime.Runtime.Generated
             MethodBase method;
             Type[] args;
             Type type = typeof(JEngine.Core.AssetMgr);
+            args = new Type[]{typeof(System.String), typeof(System.Boolean)};
+            method = type.GetMethod("Unload", flag, null, args, null);
+            app.RegisterCLRMethodRedirection(method, Unload_0);
             args = new Type[]{typeof(System.String), typeof(System.Boolean), typeof(System.Action<System.Single>), typeof(System.Action<System.Boolean>)};
             method = type.GetMethod("LoadSceneAsync", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, LoadSceneAsync_0);
+            app.RegisterCLRMethodRedirection(method, LoadSceneAsync_1);
 
 
         }
 
 
-        static StackObject* LoadSceneAsync_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        static StackObject* Unload_0(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Boolean @ignore = ptr_of_this_method->Value == 1;
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @path = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+
+            JEngine.Core.AssetMgr.Unload(@path, @ignore);
+
+            return __ret;
+        }
+
+        static StackObject* LoadSceneAsync_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;

@@ -69,6 +69,13 @@ namespace JEngine.Examples
             Log.Print("现在尝试复制多层跨域继承的类");
             var m2 = GameObject.Instantiate(m);
             Log.Print($"m2.gameObject = {m2.gameObject}");
+            //ILRuntime有个bug，不是泛型的FindObject(s)OfType似乎得存个变量，不然用String.Format拼接会报错
+            var all = FindObjectsOfType(typeof(MultiInherit));
+            Log.Print($"共有{all.Length}个MultiInherit");
+            Log.Print($"泛型也可以用，FindObjectsOfType<MultiInherit>()[0].GetType()：{FindObjectsOfType<MultiInherit>()[0].GetType()}");
+            var result = FindObjectOfType(typeof(MultiInherit));
+            Log.Print($"FindObjectOfType(typeof(MultiInherit))：{result}");
+            Log.Print($"泛型也可以用，FindObjectOfType<MultiInherit>()：{FindObjectOfType<MultiInherit>()}");
 
             Log.Print("尝试SendMessage方法，SendMessageUpward和BroadCast效果一样，就不测试了，可以自己写代码测试。CLR重定向后SendMessage等类似效果的代码已经可以使用，如果这里出现报错，请看控制台输出的Warning，里面有解释");
             SendMessage("MsgToSend", 200);
