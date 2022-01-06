@@ -93,7 +93,8 @@ namespace JEngine.Editor
 		BuildBundles,
 		GenerateClrBind,
 		GenerateCrossDomainAdapter,
-		OpenJEngineSetting
+		OpenJEngineSetting,
+		ClassBindInfo
 	}
 
 	internal class Setting : EditorWindow
@@ -193,6 +194,13 @@ namespace JEngine.Editor
 			new[] {"生成CLR绑定", "Generate CLR Binding"},
 			new[] {"生成跨域适配器", "Generate Cross Domain Adapter"},
 			new[] {"打开JEngine面板", "Open JEngine Setting"},
+			new []{"\n自动匹配全部fields会匹配对应类型全部没有打[ClassBindIgnore]的字段及属性，同时可以在JEngine面板内选择是否匹配private和打了[HideInInspector]标签的字段及属性，\n" +
+			       "自动校正field的type只会针对已经在ClassBind面板内添加的field进行其type的矫正，\n" +
+			       "重新排序全部fields会根据field的名称排序fields，同时会删除不存在的字段及属性（不包含打了HideInInspector或ClassBindIgnore标签的字段及属性）\n",
+				"\nGet all fields for ClassBind will match all fields and properties from a type except it has [ClassBindIgnore] attribute, " +
+				"and it is optional to ignore private fields and properties, or ignore fields and properties with [HideInInspector] attribute, you need to set it up in JEngine Setting Panel,\n" +
+				"Get all types for ClassBind will adjust all types for current fields in the ClassBind Inspector,\n" +
+				"Rearrange fields will rearrange all fields by its name, and will remove non-exist fields and properties in the specific type (not including fields and properties with ClassBindIgnore or HideInInspector attribute)\n"},//ClassBindInfo
 		};
 
 		/// <summary>

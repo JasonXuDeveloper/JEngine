@@ -96,7 +96,7 @@ namespace JEngine.Core
                     clrILInstance.SetValue(clrInstance, instance);
                     clrAppDomain.SetValue(clrInstance, InitJEngine.Appdomain);
                     instance.CLRInstance = clrInstance;
-                    classData.ClrInstance = (CrossBindingAdaptorType) clrInstance;
+                    classData.ClrInstance = (CrossBindingAdaptorType)clrInstance;
                 }
             }
             //直接继承Mono的，热更工程多层继承mono的，非继承mono的，或不需要继承的，用这个
@@ -308,7 +308,9 @@ namespace JEngine.Core
 
                         void SetField(Type fieldType)
                         {
-                            fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
+                            fieldType = fieldType is ILRuntimeWrapperType wrapperType
+                                ? wrapperType.RealType
+                                : fieldType;
 
                             if (fieldType is ILRuntimeType ilType) //如果在热更中
                             {
@@ -334,7 +336,7 @@ namespace JEngine.Core
                             }
                         }
 
-                        var tp = t.GetField(field.fieldName,bindingAttr);
+                        var tp = t.GetField(field.fieldName, bindingAttr);
                         if (tp == null) tp = t.BaseType?.GetField(field.fieldName, bindingAttr);
                         if (tp != null)
                         {
@@ -342,7 +344,7 @@ namespace JEngine.Core
                         }
                         else
                         {
-                            var pi = t.GetProperty(field.fieldName,bindingAttr);
+                            var pi = t.GetProperty(field.fieldName, bindingAttr);
                             if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
                             if (pi != null)
                             {
@@ -392,7 +394,8 @@ namespace JEngine.Core
                                 $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
                         }
                     }
-                    var fi = t.GetField(field.fieldName,bindingAttr);
+
+                    var fi = t.GetField(field.fieldName, bindingAttr);
                     if (fi == null) fi = t.BaseType?.GetField(field.fieldName, bindingAttr);
                     if (fi != null)
                     {
@@ -400,7 +403,7 @@ namespace JEngine.Core
                     }
                     else
                     {
-                        var pi = t.GetProperty(field.fieldName,bindingAttr);
+                        var pi = t.GetProperty(field.fieldName, bindingAttr);
                         if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
                         BindVal(pi);
                     }
@@ -430,7 +433,7 @@ namespace JEngine.Core
                 //Mono类型能设置enabled
                 if (clrInstance.GetType().IsSubclassOf(typeof(MonoBehaviour)))
                 {
-                    ((MonoBehaviour) clrInstance).enabled = true;
+                    ((MonoBehaviour)clrInstance).enabled = true;
                 }
 
                 //不管是啥类型，直接invoke这个awake方法
@@ -552,6 +555,15 @@ namespace JEngine.Core
 
     [Serializable]
     public class FieldList : ReorderableArray<ClassField>
+    {
+    }
+
+    /// <summary>
+    /// Ignore the following field/property while matching fields in the editor
+    /// 在编辑器下进行自动匹配时忽略该字段/属性
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+    public class ClassBindIgnoreAttribute : Attribute
     {
     }
 }

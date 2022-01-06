@@ -63,6 +63,13 @@ namespace JEngine.Editor
                     CleanFields(target as ClassBind);
                 }
             });
+            
+            GUILayout.Space(5);
+            
+            Setting.MakeHorizontal(50, () =>
+            {
+                EditorGUILayout.HelpBox(Setting.GetString(SettingString.ClassBindInfo), MessageType.Info);
+            });
 
 
             GUILayout.Space(15);
@@ -88,6 +95,11 @@ namespace JEngine.Editor
             return type.IsSubclassOf(jType);
         }
         
+        /// <summary>
+        /// 清理/排序/删除
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="toast"></param>
         public static async void CleanFields(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
@@ -149,6 +161,11 @@ namespace JEngine.Editor
                 Setting.GetString(SettingString.Done));
         }
 
+        /// <summary>
+        /// 修改类型
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="toast"></param>
         public static async void DoFieldType(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
@@ -199,12 +216,18 @@ namespace JEngine.Editor
                 Setting.GetString(SettingString.Done));
         }
 
+        /// <summary>
+        /// 自动匹配
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="toast"></param>
         public static async void DoConvert(ClassBind instance, bool toast = true)
         {
             int affectCounts = 0;
             foreach (var data in instance.scriptsToBind) //遍历
             {
-                string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
+                string className =
+                    $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
                 Type t = HotAssembly.GetType(className); //加载热更类
 
                 if (t == null)
@@ -227,6 +250,7 @@ namespace JEngine.Editor
                         else
                             break;
                     }
+
                     if (tBase?.FullName != "JEngine.Core.JBehaviour")
                     {
                         hotInstance = Activator.CreateInstance(t);
@@ -235,25 +259,31 @@ namespace JEngine.Editor
 
 
                 var fieldsInCb = data.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
+                var flag = BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                           BindingFlags.Public | BindingFlags.NonPublic;
+                var flag4Private = BindingFlags.DeclaredOnly | BindingFlags.Instance |
+                                   BindingFlags.Public;
                 var members = new List<MemberInfo>(0);
+                //忽略有ClassBindIgnore标签的
+                var fs = t.GetFields(flag).ToList()
+                    .FindAll(x => !Attribute.IsDefined(x, typeof(ClassBindIgnoreAttribute), true));
+                var ps = t.GetProperties(flag).ToList()
+                    .FindAll(x => !Attribute.IsDefined(x, typeof(ClassBindIgnoreAttribute), true));
                 if (Setting.ClassBindIgnorePrivate)
                 {
-                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                 BindingFlags.Public));
-                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                     BindingFlags.Public));
+                    members.AddRange(fs.FindAll(x => !x.IsPrivate));
+                    members.AddRange(t.GetProperties(flag4Private).ToList().FindAll(x =>
+                        !Attribute.IsDefined(x, typeof(ClassBindIgnoreAttribute), true)));
                 }
                 else
                 {
-                    members.AddRange(t.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                 BindingFlags.Public | BindingFlags.NonPublic));
-                    members.AddRange(t.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance |
-                                                     BindingFlags.Public | BindingFlags.NonPublic));
+                    members.AddRange(fs);
+                    members.AddRange(ps);
                 }
 
                 foreach (var field in members)
                 {
-                    //跳过标签的
+                    //跳过HideInInspector标签的
                     if (Setting.ClassBindIgnoreHideInInspector)
                     {
                         var attr = field.GetCustomAttributes(typeof(HideInInspector), false);
@@ -268,7 +298,7 @@ namespace JEngine.Editor
                         String.Format(Setting.GetString(SettingString.ClassBindProgressContentForGetType),
                             $"{t.Name}:{field.Name}",
                             members.ToList().IndexOf(field), members.Count),
-                        members.ToList().IndexOf(field) / (float) members.Count);
+                        members.ToList().IndexOf(field) / (float)members.Count);
 
                     if (!fieldsInCb.Contains(field.Name))
                     {
@@ -277,8 +307,8 @@ namespace JEngine.Editor
                         cf.fieldName = fieldName;
 
                         Type fieldType = (field is PropertyInfo)
-                            ? ((PropertyInfo) field).PropertyType
-                            : ((FieldInfo) field).FieldType;
+                            ? ((PropertyInfo)field).PropertyType
+                            : ((FieldInfo)field).FieldType;
 
                         SetType(cf, fieldType, HotAssembly);
                         SetVal(ref cf, field, HotAssembly, hotInstance, instance.gameObject);
