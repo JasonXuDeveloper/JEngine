@@ -66,6 +66,7 @@ namespace ProjectAdapter
                             _isAwaking = false;
                             _awaked = true;
                             OnEnable();
+                            Start();
                         }
                     }
                 }
@@ -81,6 +82,11 @@ namespace ProjectAdapter
 
             void Start()
             {
+                if (!_awaked)
+                {
+                    return;
+                }
+         
                 if (!_mStartMethodGot)
                 {
                     _mStartMethod = instance.Type.GetMethod("Start", 0);
@@ -719,7 +725,6 @@ namespace ProjectAdapter
             bool _mOnRenderImageMethodGot;
             private bool _isCamera;
             private bool _hasChecked;
-
             void OnRenderImage(RenderTexture src, RenderTexture dest)
             {
                 if (!_hasChecked)

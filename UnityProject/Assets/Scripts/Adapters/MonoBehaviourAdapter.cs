@@ -172,6 +172,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         isAwaking = false;
                         awaked = true;
                         OnEnable();
+                        Start();
                     }
                 }
             }
@@ -185,8 +186,13 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         IMethod _mStartMethod;
         bool _mStartMethodGot;
 
-        async void Start()
+        void Start()
         {
+            if (!awaked)
+            {
+                return;
+            }
+            
             if (!isMonoBehaviour) return;
 
             if (!_mStartMethodGot)

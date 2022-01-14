@@ -44,7 +44,7 @@ namespace JEngine.Examples
 
             Log.Print($"这个对象用GetComponent获取是null嘛？{gameObject.GetComponent<CrossDomainDemo>() == null}");
 
-            Log.Print("再来一个跨域继承泛型的Demo吧，JEngine这个框架实现了太多不可能了😂");
+            Log.Print("再来一个跨域继承泛型的Demo吧，ILRuntime2.0似乎可以生成这个了，后续JEngine会提供可视化工具");
             Log.Print("参考UnityProject/Assets/Scripts/Adapters/GenericExampleAdapter.cs这个文件，提供了泛型跨域继承的2个demo");
             Log.Print("首先是public class GenericTest1 : GenericExample<GenericTest1>这种，泛型参数是它本身的继承，本地工程需要写一个继承Adapter的泛型适配器，参考GenericExampleAdapter1，即可");
             Log.Print("现在挂一个这个类到该gameObject上");

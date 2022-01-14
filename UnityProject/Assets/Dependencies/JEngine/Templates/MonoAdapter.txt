@@ -51,6 +51,7 @@
                             _isAwaking = false;
                             _awaked = true;
                             OnEnable();
+                            Start();
                         }
                     }
                 }
@@ -66,6 +67,11 @@
 
             void Start()
             {
+                if (!_awaked)
+                {
+                    return;
+                }
+         
                 if (!_mStartMethodGot)
                 {
                     _mStartMethod = instance.Type.GetMethod("Start", 0);
