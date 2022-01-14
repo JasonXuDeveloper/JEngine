@@ -93,4 +93,12 @@ namespace JEngine.Examples
         AInterface aIn { get; set; }
         void Awake();
     }
+
+    public class ClassBindDemo
+    {
+        public void Awake()
+        {
+            Debug.Log("<color=red>[ClassBind] 这个周期ClassBind正在初始化，同时会调用ClassBind创建的实例的Awake方法（可选）</color>");
+        }
+    }
 }
