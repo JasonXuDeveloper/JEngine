@@ -58,10 +58,10 @@
     <Compile Include="JEngine\Examples\Data\HotData.cs" />
     <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
     <Compile Include="JEngine\UI\JUI.cs" />
-    <Compile Include="Proto2cs\dataClass.cs" />
     <Compile Include="JEngine\Examples\Core\AntiCheatDemo.cs" />
     <Compile Include="JEngine\Examples\Core\MultiInheritenceDemo.cs" />
     <Compile Include="JEngine\Examples\Core\ClassBindDemo.cs" />
+    <Compile Include="Proto2cs\JEngine_Examples_DataClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
