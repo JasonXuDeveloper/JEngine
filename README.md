@@ -1,3 +1,21 @@
+<p align="center">
+    <img src="https://s4.ax1x.com/2022/01/15/7YVGkR.png" alt="logo" width="256" height="256">
+</p>
+
+<h3 align="center">JEngine</h3>
+
+<p align="center">
+  The solution that allows unity games update in runtime.
+  <br>
+  <br>
+  <a href="https://xgamedev.uoyou.com/"><strong>Documentation »</strong></a>
+  <br>
+  ·
+  <br>
+  <a href="README_zh-cn.md">中文页面 »</a>
+</p>
+
+
 # JENGINE v0.7.0 preview
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
@@ -38,6 +56,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
    ```bash
    git clone git@github.com:JasonXuDeveloper/JEngine.git
+   cd JEngine
    git submodule init
    git submodule update
    ```
