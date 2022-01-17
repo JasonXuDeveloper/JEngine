@@ -338,7 +338,7 @@ namespace JEngine.Core
                     }
                     else
                     {
-                        Loom.QueueOnOtherThread(action, null);
+                        action(null);
                     }
                 }, _cancellationTokenSource.Token);
             }

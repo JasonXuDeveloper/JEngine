@@ -32,17 +32,6 @@ namespace JEngine.Core
     {
         public static string DllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
         
-        public static void MakeBytes()
-        {
-            var bytes = FileToByte(DllPath);
-            var result = ByteToFile(CryptoHelper.AesEncrypt(bytes, "DevelopmentMode."),
-                "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-            if (!result)
-            {
-                Log.PrintError("DLL转Byte[]出错！");
-            }
-        }
-
         /// <summary>
         /// 删除文件或目录
         /// </summary>
@@ -91,7 +80,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static bool ByteToFile(byte[] byteArray, string fileName)
         {
-            bool result = false;
+            bool result;
             try
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))

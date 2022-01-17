@@ -46,9 +46,6 @@ namespace JEngine.Editor
              private static readonly DirectoryInfo LibraryDirectory = new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
              private static readonly DirectoryInfo HiddenDirectory = new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
 
-             private static readonly FileInfo HotFile =
-                 new FileInfo("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-             
              public static void Update()
              {
                  hasAdded = true;
@@ -79,15 +76,6 @@ namespace JEngine.Editor
                          "*.dll", SearchOption.AllDirectories).ToList();
                      
                      var watch = new Stopwatch();
-                     watch.Start();
-                     DLLMgr.MakeBytes();
-                     watch.Stop();
-                     if (watch.ElapsedMilliseconds > 0)
-                     {
-                         Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
-                             watch.ElapsedMilliseconds));
-                     }
-     
                      AssetDatabase.Refresh();
      
                      Setting.LastDLLCleanUpTime = lastModifiedStr;
@@ -154,19 +142,6 @@ namespace JEngine.Editor
                              watch.ElapsedMilliseconds));
                      }
      
-                     _isDone = true;
-                 }
-     
-                 if (!HotFile.Exists)
-                 {
-                     _isDone = false;
-                     var watch = new Stopwatch();
-                     watch.Start();
-                     DLLMgr.MakeBytes();
-                     watch.Stop();
-                     Log.Print(String.Format(Setting.GetString(SettingString.DLLConvertLog),
-                         watch.ElapsedMilliseconds));
-                     AssetDatabase.Refresh();
                      _isDone = true;
                  }
              }

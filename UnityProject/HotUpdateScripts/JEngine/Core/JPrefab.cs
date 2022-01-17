@@ -23,11 +23,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using libx;
 using System;
 using System.Text;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JEngine.Core
 {
@@ -38,50 +38,64 @@ namespace JEngine.Core
         /// 从热更资源里读取prefab
         /// </summary>
         /// <param name="path"></param>
-        public JPrefab(string path)
+        public JPrefab(string path, bool async = false) : this(path, async, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Load a prefab from hot update resources (async)
+        /// 从热更资源里读取prefab （异步）
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="complete">Action<bool,JPrefab>, success 与 JPrefab</param>
+        public JPrefab(string path, Action<bool, JPrefab> complete = null) : this(path, true, complete)
+        {
+
+        }
+
+
+        private JPrefab(string path,bool async,Action<bool,JPrefab> complete)
         {
             if (!path.Contains(".prefab"))
             {
                 path = new StringBuilder(path).Append(".prefab").ToString();
             }
-            _request = Assets.LoadAssetAsync(path, typeof(GameObject));
-            Loaded = false;
-            _request.completed += (AssetRequest request) =>
+            if (async)
             {
+                _ = LoadPrefabAsync(path, complete);
+            }
+            else
+            {
+                var obj = AssetMgr.Load(path, typeof(GameObject));
+                Instance = obj != null ? obj as GameObject : null;
                 Loaded = true;
-                Instance = (GameObject)request.asset;
-                ErrorMessage = _request.error;
-            };
+            }
             this.path = path;
         }
 
         /// <summary>
-        /// Load a prefab from hot update resources
-        /// 从热更资源里读取prefab
+        /// Wait for async
+        /// 如果是异步加载JPrefab，则可以使用此方法等待
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="complete">Action<bool,JPrefab>, success 与 JPrefab</param>
-        public JPrefab(string path,Action<bool,JPrefab> complete)
+        public async Task WaitForAsyncLoading()
         {
-            if (!path.Contains(".prefab"))
+            while(!Loaded)
             {
-                path = new StringBuilder(path).Append(".prefab").ToString();
+                await Task.Delay(1);
             }
-            _request = Assets.LoadAssetAsync(path, typeof(GameObject));
-            Loaded = false;
-            _request.completed += (AssetRequest request) =>
-            {
-                Loaded = true;
-                Instance = (GameObject)request.asset;
-                ErrorMessage = _request.error;
-                complete?.Invoke(String.IsNullOrEmpty(ErrorMessage), this);
-            };
-            this.path = path;
+        }
+
+
+        private async Task LoadPrefabAsync(string path, Action<bool, JPrefab> callback)
+        {
+            var obj = await AssetMgr.LoadAsync(path, typeof(GameObject));
+            Instance = obj != null ? obj as GameObject : null;
+            Loaded = true;
+            callback?.Invoke(!Error, this);
         }
 
         private string path;
-
-        private AssetRequest _request;
 
         /// <summary>
         /// If the prefab has loaded or not (if it has error, it will still be loaded)
@@ -99,19 +113,19 @@ namespace JEngine.Core
         /// Error message when error
         /// 错误时的错误信息
         /// </summary>
-        public string ErrorMessage;
+        public string ErrorMessage => AssetMgr.Error(path);
 
         /// <summary>
         /// Progress of loading a prefab
         /// 加载prefab的进度
         /// </summary>
-        public float Progress => _request.progress;
+        public float Progress => AssetMgr.Progress(path);
 
         /// <summary>
         /// State of loading a prefab
         /// 加载prefab的状态
         /// </summary>
-        public LoadState State => _request.loadState;
+        public libx.LoadState State => AssetMgr.State(path);
 
         /// <summary>
         /// Prefab GameObject (this is not in scene and it has not been instantiated)
@@ -123,7 +137,22 @@ namespace JEngine.Core
         /// All GameObjects that has been instantiated to scene
         /// 全部被生成到场景中的游戏对象
         /// </summary>
-        public List<GameObject> InstantiatedGameObjects = new List<GameObject>(0);
+        public List<GameObject> InstantiatedGameObjects
+        {
+            get
+            {
+                List<GameObject> ret = new List<GameObject>();
+                for(int i = 0, cnt = _instantiatedGameObjects.Count; i < cnt; i++)
+                {
+                    var gameObject = _instantiatedGameObjects[i];
+                    if (gameObject == null || ReferenceEquals(gameObject, null)) continue;
+                    ret.Add(gameObject);
+                }
+                _instantiatedGameObjects = ret;
+                return ret;
+            }
+        }
+        private List<GameObject> _instantiatedGameObjects = new List<GameObject>(0);
 
         /// <summary>
         /// Instantiate a prefab
@@ -258,6 +287,18 @@ namespace JEngine.Core
             return go;
         }
 
+        /// <summary>
+        /// Destory all instantiated gameObjects from this prefab
+        /// 删除该prefab生成的全部gameObject
+        /// </summary>
+        public void DestroyAllInstantiatedObjects()
+        {
+            for (int i = 0, cnt = InstantiatedGameObjects.Count; i < cnt; i++)
+            {
+                UnityEngine.Object.DestroyImmediate(InstantiatedGameObjects[i]);
+            }
+        }
+
         public override string ToString()
         {
             return $"JPrefab: {path}";
@@ -279,8 +320,9 @@ namespace JEngine.Core
             {
                 return;
             }
-            _request.Release();
-            _request = null;
+            DestroyAllInstantiatedObjects();
+            _instantiatedGameObjects.Clear();
+            AssetMgr.Unload(path);
             Instance = null;
             GC.Collect();
             GC.SuppressFinalize(this);

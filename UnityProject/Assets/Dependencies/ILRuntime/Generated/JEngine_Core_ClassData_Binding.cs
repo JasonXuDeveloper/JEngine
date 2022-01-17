@@ -37,6 +37,8 @@ namespace ILRuntime.Runtime.Generated
             app.RegisterCLRFieldSetter(field, set_activeAfter_2);
             app.RegisterCLRFieldBinding(field, CopyToStack_activeAfter_2, AssignFromStack_activeAfter_2);
 
+            app.RegisterCLRCreateArrayInstance(type, s => new JEngine.Core.ClassData[s]);
+
             args = new Type[]{};
             method = type.GetConstructor(flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Ctor_0);

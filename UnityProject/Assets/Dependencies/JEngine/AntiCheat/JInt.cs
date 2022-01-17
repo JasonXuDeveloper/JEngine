@@ -84,8 +84,11 @@ namespace JEngine.AntiCheat
 
         public static implicit operator JInt(int val) => new JInt(val);
         public static implicit operator int(JInt val) => val.Value;
+        
         public static bool operator ==(JInt a, JInt b) => a.Value == b.Value;
+        public static bool operator ==(JInt a, int b) => a.Value == b;
         public static bool operator !=(JInt a, JInt b) => a.Value != b.Value;
+        public static bool operator !=(JInt a, int b) => a.Value != b;
 
         public static JInt operator ++(JInt a)
         {
@@ -118,6 +121,6 @@ namespace JEngine.AntiCheat
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => Value.Equals((obj is JInt ? (JInt) obj : default).Value);
+        public override bool Equals(object obj) => Value.Equals(obj is JInt ? ((JInt) obj).Value : obj);
     }
 }

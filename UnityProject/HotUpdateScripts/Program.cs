@@ -31,11 +31,16 @@ using UnityEngine;
 
 namespace HotUpdateScripts
 {
-    public class Program
+    public static class Program
     {
-        public void RunGame()
+        public static void SetupGame()
         {
+            Debug.Log("<color=cyan>[SetupGame] 这个周期在ClassBind初始化之前，可以对游戏数据进行一些初始化</color>");
+        }
 
+        public static void RunGame()
+        {
+            Debug.Log("<color=yellow>[RunGame] 这个周期在ClassBind初始化后，可以激活游戏相关逻辑</color>");
         }
     }
 }

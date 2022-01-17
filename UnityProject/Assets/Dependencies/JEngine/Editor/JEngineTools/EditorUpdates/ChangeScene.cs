@@ -29,6 +29,7 @@ namespace JEngine.Editor
                     if (!Application.isPlaying) return;
                     await Task.Delay(10);
                 }
+                DynamicGI.UpdateEnvironment();
             }
             var key = Object.FindObjectOfType<InitJEngine>().key;
             var k = PlayerPrefs.GetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", "");

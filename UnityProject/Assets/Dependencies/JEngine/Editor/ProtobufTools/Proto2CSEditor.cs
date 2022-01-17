@@ -42,7 +42,7 @@ namespace JEngine.Editor
 		{
 			win = GetWindow<Proto2CSEditor>("Proto2CS Generator");
 			win.folder = EditorUtility.OpenFolderPanel("Select proto files directory 请选择proto文件路径",
-				Application.dataPath + "/Dependencies/Protobuf/ProtoFiles", "");
+				Application.dataPath, "");
 			win.minSize = new Vector2(500, 500);
 			win.Show();
 		}
@@ -102,7 +102,7 @@ namespace JEngine.Editor
 			if (GUILayout.Button("Select Path 选择路径", GUILayout.ExpandWidth(false)))
 			{
 				folder = EditorUtility.OpenFolderPanel("Select proto files destination 请选择proto文件路径",
-					Application.dataPath + "/Dependencies/Protobuf/ProtoFiles", "");
+					Application.dataPath, "");
 			}
 
 			GUILayout.EndHorizontal();

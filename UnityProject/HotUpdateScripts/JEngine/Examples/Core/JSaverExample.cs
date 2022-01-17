@@ -99,7 +99,11 @@ namespace JEngine.Examples
             DataClass data = new DataClass
             {
                 id = 666,
-                name = "JSaver - JSON"
+                name = "JSaver - JSON",
+                data = new System.Collections.Generic.Dictionary<string, string>()
+                {
+                    {"test","112233" }
+                }
             };
             JSaver.SaveAsJSON("数据存JSON", data);
             Value.text = $"测试数据已以JSON存到本地，\n\n" +
@@ -107,7 +111,8 @@ namespace JEngine.Examples
                 $"JSaver获取后，数据为：\n{JSaver.GetString("数据存JSON")}\n\n" +
                 $"JSON转对象：\n"+
                 $"data.id = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").id}\n" +
-                $"data.name = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").name}";
+                $"data.name = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").name}" +
+                $"data.data['test'] = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").data["test"]}";
         }
 
         /// <summary>
@@ -119,7 +124,11 @@ namespace JEngine.Examples
             DataClass data = new DataClass
             {
                 id = 666666,
-                name = "JSaver - Protobuf"
+                name = "JSaver - Protobuf",
+                data = new System.Collections.Generic.Dictionary<string, string>()
+                {
+                    {"test-proto","112233" }
+                }
             };
             JSaver.SaveAsProtobufBytes("数据存Protobuf", data);
             Value.text = $"测试数据已以Protobuf存到本地，\n\n" +
@@ -127,7 +136,8 @@ namespace JEngine.Examples
                 $"JSaver获取后，数据为（二进制转Base64）：\n{JSaver.GetString("数据存Protobuf")}\n\n" +
                 $"Protobuf转对象：\n" +
                 $"data.id = {JSaver.GetObjectFromProtobuf<DataClass>("数据存Protobuf").id}\n" +
-                $"data.name = {JSaver.GetObjectFromProtobuf<DataClass>("数据存Protobuf").name}";
+                $"data.name = {JSaver.GetObjectFromProtobuf<DataClass>("数据存Protobuf").name}"+
+                $"data.data['test-proto'] = {JSaver.GetObjectFromProtobuf<DataClass>("数据存Protobuf").data["test-proto"]}";
         }
 
     }

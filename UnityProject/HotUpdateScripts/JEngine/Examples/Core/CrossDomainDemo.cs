@@ -44,7 +44,7 @@ namespace JEngine.Examples
 
             Log.Print($"这个对象用GetComponent获取是null嘛？{gameObject.GetComponent<CrossDomainDemo>() == null}");
 
-            Log.Print("再来一个跨域继承泛型的Demo吧，JEngine这个框架实现了太多不可能了😂");
+            Log.Print("再来一个跨域继承泛型的Demo吧，ILRuntime2.0似乎可以生成这个了，后续JEngine会提供可视化工具");
             Log.Print("参考UnityProject/Assets/Scripts/Adapters/GenericExampleAdapter.cs这个文件，提供了泛型跨域继承的2个demo");
             Log.Print("首先是public class GenericTest1 : GenericExample<GenericTest1>这种，泛型参数是它本身的继承，本地工程需要写一个继承Adapter的泛型适配器，参考GenericExampleAdapter1，即可");
             Log.Print("现在挂一个这个类到该gameObject上");
@@ -69,6 +69,13 @@ namespace JEngine.Examples
             Log.Print("现在尝试复制多层跨域继承的类");
             var m2 = GameObject.Instantiate(m);
             Log.Print($"m2.gameObject = {m2.gameObject}");
+            //ILRuntime有个bug，不是泛型的FindObject(s)OfType似乎得存个变量，不然用String.Format拼接会报错
+            var all = FindObjectsOfType(typeof(MultiInherit));
+            Log.Print($"共有{all.Length}个MultiInherit");
+            Log.Print($"泛型也可以用，FindObjectsOfType<MultiInherit>()[0].GetType()：{FindObjectsOfType<MultiInherit>()[0].GetType()}");
+            var result = FindObjectOfType(typeof(MultiInherit));
+            Log.Print($"FindObjectOfType(typeof(MultiInherit))：{result}");
+            Log.Print($"泛型也可以用，FindObjectOfType<MultiInherit>()：{FindObjectOfType<MultiInherit>()}");
 
             Log.Print("尝试SendMessage方法，SendMessageUpward和BroadCast效果一样，就不测试了，可以自己写代码测试。CLR重定向后SendMessage等类似效果的代码已经可以使用，如果这里出现报错，请看控制台输出的Warning，里面有解释");
             SendMessage("MsgToSend", 200);
