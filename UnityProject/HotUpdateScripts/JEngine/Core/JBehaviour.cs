@@ -212,7 +212,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject);
+            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T));
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T[] GetJBehaviours<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject).ToArray();
+            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T)).ToArray();
         }
 
         /// <summary>
