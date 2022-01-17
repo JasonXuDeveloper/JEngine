@@ -11,10 +11,13 @@
   <br>
   <a href="https://xgamedev.uoyou.com/"><strong>Documentation »</strong></a>
   <br>
+  <small>(The documentation is in Chinese yet can translate the whole webpage to a different language)</small>
+  <br>
   ·
   <br>
   <a href="README_zh-cn.md">中文页面 »</a>
 </p>
+
 
 
 # JENGINE v0.7.0 preview
@@ -62,7 +65,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
    git submodule update
    ```
 
-2. 方法二，git clone的时候顺带安装子模块
+2. 方法二，git clone的时候顺带安装子模块（推荐）
 
    ```bash
    git clone git@github.com:JasonXuDeveloper/JEngine.git --recursive
@@ -144,6 +147,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
   - 修复0.6.3出现的**全部Issue**（更少bug，更强大）
   - 更多**Demo**（更完善，使用起来更容易驾驭）
   - 新增**可扩展验证器**（新功能） ==> 开发中
+  - 便捷**UI扩展工具**（新功能）
   - **ILRuntime2.0**（更强大的性能，同时解决很多曾经的bug）
   - **JPrefab升级**（支持同步/异步创建，支持批量销毁）
 
