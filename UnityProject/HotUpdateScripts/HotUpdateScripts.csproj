@@ -62,6 +62,7 @@
     <Compile Include="JEngine\Examples\Core\MultiInheritenceDemo.cs" />
     <Compile Include="JEngine\Examples\Core\ClassBindDemo.cs" />
     <Compile Include="Proto2cs\JEngine_Examples_DataClass.cs" />
+    <Compile Include="JEngine\UI\JUIExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
