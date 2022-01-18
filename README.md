@@ -46,10 +46,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 > 已有项目使用JEngine热更新，并成功上架iOS
 >
 
-[English Document](README_en-us.md)
-
-![banner](https://s1.ax1x.com/2020/10/09/0rtUL4.png)
-
 
 
 ## 下载方式（非常重要）
@@ -181,13 +177,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
   | 自行扩展Inspector运行时序列化             | 不支持         | 支持            | 支持            |
   | 底层优化                                  | 部分           | 全面            | 全面            |
 
-  
-
-  ## JEngine热更逻辑
-
-  ![flowchart](https://s1.ax1x.com/2020/09/06/wenIpV.png)
-
-  
+​    
 
   ## 推荐项目
 
