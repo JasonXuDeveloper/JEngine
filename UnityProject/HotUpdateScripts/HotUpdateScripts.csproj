@@ -63,6 +63,8 @@
     <Compile Include="JEngine\Examples\Core\ClassBindDemo.cs" />
     <Compile Include="Proto2cs\JEngine_Examples_DataClass.cs" />
     <Compile Include="JEngine\UI\JUIExtensions.cs" />
+    <Compile Include="JEngine\Core\JValidation.cs" />
+    <Compile Include="JEngine\Examples\Core\ValidationDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
