@@ -1,4 +1,4 @@
-﻿//
+//
 // JBehaviour.cs
 //
 // Author:
@@ -191,14 +191,14 @@ namespace JEngine.Core
 
             var jBehaviour = type;
             var cb = gameObject.AddComponent<ClassBind>();
-            var _cb = new ClassData()
+            var cd = new ClassData()
             {
                 classNamespace = "",
                 className = jBehaviour.FullName,
                 activeAfter = activeAfter,
             };
-            var id = (cb.AddClass(_cb) as JBehaviour)._instanceID;
-            cb.Active(_cb);
+            var id = (cb.AddClass(cd) as JBehaviour)._instanceID;
+            cb.Active(cd);
             UnityEngine.Object.Destroy(cb);
             return id;
         }
@@ -212,7 +212,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject);
+            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T));
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T[] GetJBehaviours<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject).ToArray();
+            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T)).ToArray();
         }
 
         /// <summary>
