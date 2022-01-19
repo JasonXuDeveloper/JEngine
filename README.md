@@ -69,7 +69,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 > 注，这里的github地址可以换为gitee地址
 >
-> 如果安装submodule的时候报错了，则需要配置Github的ssh key，（如果还是不行）下载JEngine的zip，然后[进入这个目录](UnityProject/Assets/Dependencies)，找到这些submodule，下载这些zip然后替换进JEngine工程对应的地方
+> 如果安装submodule的时候报错了，则需要配置Github的ssh key
+
+3. 方法三，直接下载zip，然后进入UnityProject/Assets/Dependencies，解压里面的zip
 
 
 
@@ -144,7 +146,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
   - LitJson及Protobuf**优化及维护**（更稳定的序列化插件）
   - 修复0.6.3出现的**全部Issue**（更少bug，更强大）
   - 更多**Demo**（更完善，使用起来更容易驾驭）
-  - 新增**可扩展验证器**（新功能） ==> 开发中
+  - 新增**可扩展验证器**（新功能）
   - 便捷**UI扩展工具**（新功能）
   - **ILRuntime2.0**（更强大的性能，同时解决很多曾经的bug）
   - **JPrefab升级**（支持同步/异步创建，支持批量销毁）
