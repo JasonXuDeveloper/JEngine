@@ -2764,11 +2764,26 @@ namespace JEngine.Helper
                 if (type is CLRType)
                 {
                     //Unity主工程的类不需要任何特殊处理，直接调用Unity接口
-                    res = instance != null ? instance.GetComponent(type.TypeForCLR) : null;
+                    var result = instance != null ? instance.GetComponents(type.TypeForCLR) : null;
+                    res = result;
+                    if (result != null)
+                    {
+                        int n = result.Length;
+                        res = Array.CreateInstance(type.TypeForCLR, n);
+                        for (int i = 0; i < n; i++)
+                            ((Array) res).SetValue(result[i], i);
+                    }
                 }
                 else
                 {
-                    res = Tools.GetHotComponent(instance, type as ILType);
+                    var ilInstances = ((ILTypeInstance[])Tools.GetHotComponent(
+                            instance,
+                            type as ILType))
+                        .Select(i => i.CLRInstance).ToArray();
+                    int n = ilInstances.Length;
+                    res = Array.CreateInstance(type.TypeForCLR, n);
+                    for (int i = 0; i < n; i++)
+                        ((Array) res).SetValue(ilInstances[i], i);
                 }
 
                 return ILIntepreter.PushObject(ptr_of_this_method, __mStack, res);
