@@ -443,6 +443,7 @@ namespace JEngine.Core
                 var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
                 if (awakeMethod == null)
                 {
+                    awakeMethod = t.GetMethod("Awake", flags);
                 }
                 else
                 {
