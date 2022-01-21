@@ -30,11 +30,25 @@ namespace ILRuntime.Runtime.Generated
             System_Action_3_ILTypeInstance_Object_Object_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
-            System_Collections_Generic_List_1_ILTypeInstance_Binding.Register(app);
+            UnityEngine_ColorUtility_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Text_Binding.Register(app);
+            UnityEngine_Component_Binding.Register(app);
             UnityEngine_GameObject_Binding.Register(app);
             UnityEngine_Transform_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Button_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Outline_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Shadow_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Image_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_RectTransform_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_RawImage_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Slider_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Toggle_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Scrollbar_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Dropdown_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_InputField_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_Transform_Canvas_Binding.Register(app);
+            System_Collections_Generic_List_1_ILTypeInstance_Binding.Register(app);
             System_Object_Binding.Register(app);
-            UnityEngine_Component_Binding.Register(app);
             GenericExample_1_ProjectAdapter_GenericExampleAdapter2_Binding_Adapter_Binding.Register(app);
             GenericExample_1_ILTypeInstance_Binding.Register(app);
             ExampleAPI_Binding.Register(app);
@@ -55,9 +69,7 @@ namespace ILRuntime.Runtime.Generated
             JSONTest_Binding.Register(app);
             LitJson_JsonMapper_Binding.Register(app);
             UnityEngine_PlayerPrefs_Binding.Register(app);
-            System_Nullable_1_Int32_Binding.Register(app);
-            System_Nullable_1_Int64_Binding.Register(app);
-            System_Nullable_1_Boolean_Binding.Register(app);
+            System_Collections_Generic_Dictionary_2_String_String_Binding.Register(app);
             JEngine_AntiCheat_JFloat_Binding.Register(app);
             JEngine_AntiCheat_JLong_Binding.Register(app);
             WebSocketSharp_MessageEventArgs_Binding.Register(app);
@@ -133,6 +145,7 @@ namespace ILRuntime.Runtime.Generated
             System_Threading_Tasks_Task_1_Object_Binding.Register(app);
             System_Runtime_CompilerServices_TaskAwaiter_1_Object_Binding.Register(app);
             System_Action_2_Boolean_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_ArgumentException_Binding.Register(app);
         }
 
         /// <summary>
