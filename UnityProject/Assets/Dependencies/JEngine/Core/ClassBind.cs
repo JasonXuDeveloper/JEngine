@@ -437,16 +437,12 @@ namespace JEngine.Core
                 }
 
                 //不管是啥类型，直接invoke这个awake方法
-                var awakeMethod = clrInstance.GetType().GetMethod("Awake",
-                    BindingFlags.Default | BindingFlags.Public
-                                         | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                         BindingFlags.NonPublic | BindingFlags.Static);
+                var flags = BindingFlags.Default | BindingFlags.Public
+                                                | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                                BindingFlags.NonPublic | BindingFlags.Static;
+                var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
                 if (awakeMethod == null)
                 {
-                    awakeMethod = t.GetMethod("Awake",
-                        BindingFlags.Default | BindingFlags.Public
-                                             | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                             BindingFlags.NonPublic | BindingFlags.Static);
                 }
                 else
                 {

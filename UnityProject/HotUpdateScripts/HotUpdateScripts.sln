@@ -7,11 +7,17 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|anycpu = Debug|anycpu
 		Release|anycpu = Release|anycpu
+		Debug-Windows|Any CPU = Debug-Windows|Any CPU
+		Release-Windows|Any CPU = Release-Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Debug|anycpu.ActiveCfg = Debug|anycpu
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Debug|anycpu.Build.0 = Debug|anycpu
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release|anycpu.ActiveCfg = Release|anycpu
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release|anycpu.Build.0 = Release|anycpu
+		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Debug-Windows|Any CPU.ActiveCfg = Debug|anycpu
+		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Debug-Windows|Any CPU.Build.0 = Debug|anycpu
+		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release-Windows|Any CPU.ActiveCfg = Debug|anycpu
+		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release-Windows|Any CPU.Build.0 = Debug|anycpu
 	EndGlobalSection
 EndGlobal

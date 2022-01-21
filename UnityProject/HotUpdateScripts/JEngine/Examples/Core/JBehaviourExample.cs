@@ -92,6 +92,16 @@ namespace JEngine.Examples
             Log.Print("Good bye from JBehaviour Example");
         }
 
+        public override void OnShow()
+        {
+            Log.Print("JBehaviour has been shown");
+        }
+
+        public override void OnHide()
+        {
+            Log.Print("JBehaviour has been hidden");
+        }
+
         /// <summary>
         /// Parse string to frequency
         /// </summary>

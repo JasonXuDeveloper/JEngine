@@ -133,6 +133,21 @@ namespace JEngine.Core
                             JBehaviours.Remove(jb.Value._instanceID);
                             i--;
                         }
+                        else
+                        {
+                            if (jb.Value._gameObject.activeInHierarchy == jb.Value.Hidden)
+                            {
+                                if (jb.Value.Hidden)
+                                {
+                                    jb.Value.Show();
+                                }
+                                else
+                                {
+                                    jb.Value.Hide();
+                                }
+                                jb.Value.Hidden = !jb.Value.Hidden;
+                            }
+                        }
                     }
                     catch (MissingReferenceException)
                     {
@@ -269,57 +284,64 @@ namespace JEngine.Core
         /// 实例ID
         /// </summary>
         public string InstanceID => _instanceID;
-        private string _instanceID;
+        [ClassBindIgnore] private string _instanceID;
 
         /// <summary>
         /// GameObject of this instance
         /// 游戏对象
         /// </summary>
         public GameObject gameObject => _gameObject;
-        private GameObject _gameObject;
+        [ClassBindIgnore] private GameObject _gameObject;
 
         /// <summary>
         /// Loop in frame or millisecond
         /// 帧模式或毫秒模式
         /// </summary>
-        public bool FrameMode = true;
+        [ClassBindIgnore] public bool FrameMode = true;
 
         /// <summary>
         /// Frequency of loop, if frame = false, this field stands for milliseconds
         /// 循环频率，如果是毫秒模式，单位就是ms
         /// </summary>
-        public int Frequency = 1;
+        [ClassBindIgnore] public int Frequency = 1;
 
         /// <summary>
         /// Total time that this JBehaviour has run
         /// 该JBehaviour运行总时长
         /// </summary>
-        public float TotalTime = 0;
+        [ClassBindIgnore] public float TotalTime = 0;
 
         /// <summary>
         /// Deltatime of loop
         /// 循环耗时
         /// </summary>
-        public float LoopDeltaTime = 0;
+        [ClassBindIgnore] public float LoopDeltaTime = 0;
 
         /// <summary>
         /// Loop counts
         /// 循环次数
         /// </summary>
-        public long LoopCounts = 0;
+        [ClassBindIgnore] public long LoopCounts = 0;
 
 
         /// <summary>
         /// Time scale
         /// 时间倍速
         /// </summary>
-        public float TimeScale = 1;
+        [ClassBindIgnore] public float TimeScale = 1;
 
         /// <summary>
         /// Pause before init
         /// 是否暂停
         /// </summary>
-        private bool Paused = false;
+        [ClassBindIgnore] private bool Paused = false;
+
+
+        /// <summary>
+        /// Is gameObject hidden
+        /// 是否隐藏
+        /// </summary>
+        [ClassBindIgnore] private bool Hidden = false;
 
         #endregion
 
@@ -334,6 +356,7 @@ namespace JEngine.Core
             {
                 this._gameObject.SetActive(false);
             }
+            OnHide();
             return this;
         }
 
@@ -347,6 +370,7 @@ namespace JEngine.Core
             {
                 this._gameObject.SetActive(true);
             }
+            OnShow();
             return this;
         }
 
@@ -444,7 +468,7 @@ namespace JEngine.Core
         /// Cancel delay
         /// 取消延迟
         /// </summary>
-        private CancellationTokenSource LoopAwaitToken;
+        [ClassBindIgnore] private CancellationTokenSource LoopAwaitToken;
 
         /// <summary>
         /// Do the loop
@@ -597,6 +621,16 @@ namespace JEngine.Core
         {
 
         }
+
+        public virtual void OnShow()
+        {
+
+        }
+
+        public virtual void OnHide()
+        {
+
+        }
         #endregion
     }
 
@@ -624,5 +658,15 @@ namespace JEngine.Core
         /// 销毁
         /// </summary>
         void End();
+
+        /// <summary>
+        /// 显示
+        /// </summary>
+        void OnShow();
+
+        /// <summary>
+        /// 隐藏
+        /// </summary>
+        void OnHide();
     }
 }
