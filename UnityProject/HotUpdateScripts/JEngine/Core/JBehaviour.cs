@@ -139,11 +139,11 @@ namespace JEngine.Core
                             {
                                 if (jb.Value.Hidden)
                                 {
-                                    jb.Value.Show();
+                                    jb.Value.OnShow();
                                 }
                                 else
                                 {
-                                    jb.Value.Hide();
+                                    jb.Value.OnHide();
                                 }
                                 jb.Value.Hidden = !jb.Value.Hidden;
                             }
@@ -356,6 +356,7 @@ namespace JEngine.Core
             {
                 this._gameObject.SetActive(false);
             }
+            Hidden = true;
             OnHide();
             return this;
         }
@@ -370,6 +371,7 @@ namespace JEngine.Core
             {
                 this._gameObject.SetActive(true);
             }
+            Hidden = false;
             OnShow();
             return this;
         }
