@@ -93,7 +93,7 @@ namespace JEngine.Examples
         /*
          * Datas
          */
-        public static DataClass data;
+        public static DataClass data = new DataClass();
 
         public static GameObject Panel;
 
