@@ -150,6 +150,7 @@ JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**�
   - 便捷**UI扩展工具**（新功能）
   - **ILRuntime2.0**（更强大的性能，同时解决很多曾经的bug）
   - **JPrefab升级**（支持同步/异步创建，支持批量销毁）
+  - **JBehaviour新周期**（类似MonoBehaviour的OnEnable和OnDisable）
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
