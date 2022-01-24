@@ -64,23 +64,25 @@
 
             IMethod _mStartMethod;
             bool _mStartMethodGot;
-
+            private bool started;
+    
             void Start()
             {
-                if (!_awaked)
+                if (!_awaked || started)
                 {
                     return;
                 }
-         
+                            
                 if (!_mStartMethodGot)
                 {
                     _mStartMethod = instance.Type.GetMethod("Start", 0);
                     _mStartMethodGot = true;
                 }
-
+    
                 if (_mStartMethod != null)
                 {
                     appdomain.Invoke(_mStartMethod, instance, Tools.Param0);
+                    started = true;
                 }
             }
 

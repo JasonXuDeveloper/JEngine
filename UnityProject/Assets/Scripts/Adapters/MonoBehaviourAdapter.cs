@@ -185,10 +185,11 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         IMethod _mStartMethod;
         bool _mStartMethodGot;
+        private bool started;
 
         void Start()
         {
-            if (!awaked)
+            if (!awaked || started)
             {
                 return;
             }
@@ -204,6 +205,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             if (_mStartMethod != null)
             {
                 _appdomain.Invoke(_mStartMethod, _instance, Tools.Param0);
+                started = true;
             }
         }
 
