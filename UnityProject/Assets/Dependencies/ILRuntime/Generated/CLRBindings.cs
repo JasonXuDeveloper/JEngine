@@ -30,6 +30,7 @@ namespace ILRuntime.Runtime.Generated
             System_Action_3_ILTypeInstance_Object_Object_Binding.Register(app);
             System_Action_1_ILTypeInstance_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Type_UIBehaviour_Binding.Register(app);
+            System_Action_2_ILTypeInstance_Int64_Binding.Register(app);
             UnityEngine_ColorUtility_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Transform_Text_Binding.Register(app);
             UnityEngine_Component_Binding.Register(app);
@@ -102,11 +103,14 @@ namespace ILRuntime.Runtime.Generated
             System_IDisposable_Binding.Register(app);
             System_Reflection_MemberInfo_Binding.Register(app);
             System_Reflection_MethodBase_Binding.Register(app);
+            System_Threading_Tasks_Task_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_Runtime_CompilerServices_TaskAwaiter_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
+            System_Exception_Binding.Register(app);
+            System_Collections_IDictionary_Binding.Register(app);
+            System_Reflection_ParameterInfo_Binding.Register(app);
             System_Char_Binding.Register(app);
             System_Collections_Generic_List_1_String_Binding.Register(app);
             System_Text_StringBuilder_Binding.Register(app);
-            System_Exception_Binding.Register(app);
-            System_Collections_IDictionary_Binding.Register(app);
             JEngine_Core_CryptoHelper_Binding.Register(app);
             System_Convert_Binding.Register(app);
             System_Int16_Binding.Register(app);
@@ -136,8 +140,6 @@ namespace ILRuntime.Runtime.Generated
             System_Collections_Generic_List_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_GC_Binding.Register(app);
             System_Func_1_Boolean_Binding.Register(app);
-            System_Threading_Tasks_Task_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
-            System_Runtime_CompilerServices_TaskAwaiter_1_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_TimeoutException_Binding.Register(app);
             System_IO_MemoryStream_Binding.Register(app);
             ProtoBuf_Serializer_Binding.Register(app);
