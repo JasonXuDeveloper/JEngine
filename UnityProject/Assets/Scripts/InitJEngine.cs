@@ -90,8 +90,6 @@ public class InitJEngine : MonoBehaviour
             {
                 //先确保可以跳转场景
                 if (!b) return;
-                //初始化Loom，确保JEngine相关工具能正常运行
-                Loom.Initialize();
                 //加载热更DLL
                 Instance.LoadHotFixAssembly();
                 //调用SetupGame周期

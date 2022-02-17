@@ -38,7 +38,6 @@ namespace JEngine.Core
         {
             Reset();
             JActions.Add(this);
-            Loom.Initialize();
         }
 
         private int _index;
