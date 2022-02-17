@@ -1,8 +1,8 @@
 {
   "name": "com.jasonxudeveloper.jengine",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "displayName": "JEngine",
-  "description": "JEngine是针对Unity开发者设计的开箱即用的框架，封装了强大的功能，小白也能快速上手，轻松制作可以热更新的游戏 | JEngine is a streamlined and easy-to-use framework designed for Unity Programmers which contains powerful features, beginners can start up quickly and making hot update-able games easily",
+  "description": "The solution that allows unity games update in runtime.",
   "license": "MIT",
   "unity": "2019.3",
   "keywords": [
@@ -17,6 +17,6 @@
     "url": "https://github.com/JasonXuDeveloper"
   },
   "dependencies": {
-    "com.ourpalm.ilruntime": "1.6.7"
+    "com.ourpalm.ilruntime": "2.0.2"
   }
 }
