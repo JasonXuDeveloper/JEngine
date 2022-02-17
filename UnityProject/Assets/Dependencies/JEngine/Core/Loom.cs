@@ -1,97 +1,81 @@
 ﻿using System;
-using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace JEngine.Core
 {
     public class Loom : MonoBehaviour
     {
-        public static int maxThreads = 8;
+        public static int maxThreads = 6;
         static int numThreads;
 
         private static Loom _current;
-
-        //private int _count;
+        private int _count;
         public static Loom Current => _current;
 
-        void Awake()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Init()
         {
-            _current = this;
-            initialized = true;
-            DontDestroyOnLoad(gameObject);
+            maxThreads = Environment.ProcessorCount;
+            Log.Print($"Loom ProcessorCount, {maxThreads}");
+
+            var go = new GameObject();
+            go.name = "Loom";
+            _current = go.AddComponent<Loom>();
+            DontDestroyOnLoad(go);
         }
 
-        static bool initialized;
-
-        public static void Initialize()
-        {
-            if (!initialized)
-            {
-
-                if (!Application.isPlaying)
-                    return;
-                initialized = true;
-                var g = new GameObject("Loom");
-                _current = g.AddComponent<Loom>();
-#if !ARTIST_BUILD
-                DontDestroyOnLoad(g);
-#endif
-            }
-
-        }
-
-        public struct NoDelayedQueueItem
-        {
-            public Action<object> action;
-            public object param;
-        }
-
-        private List<NoDelayedQueueItem> _actions = new List<NoDelayedQueueItem>();
+        private List<Action> _actions = new List<Action>();
 
         public struct DelayedQueueItem
         {
             public float time;
-            public Action<object> action;
-            public object param;
+            public Action action;
         }
 
         private List<DelayedQueueItem> _delayed = new List<DelayedQueueItem>();
 
-        List<DelayedQueueItem> _currentDelayed = new List<DelayedQueueItem>();
-
-        public static void QueueOnMainThread(Action<object> taction, object tparam)
+        public static void QueueOnMainThread(Action action)
         {
-            QueueOnMainThread(taction, tparam, 0f);
+            QueueOnMainThread(action, 0f);
         }
 
-        public static void QueueOnMainThread(Action<object> taction, object tparam, float time)
+        public static void QueueOnMainThread(Action<object> action, object p)
         {
-            if (time != 0)
+            QueueOnMainThread(action, p, 0f);
+        }
+
+        public static void QueueOnMainThread(Action action, float time)
+        {
+            if (time > 0f)
             {
                 lock (Current._delayed)
                 {
-                    Current._delayed.Add(new DelayedQueueItem
-                        {time = Time.time + time, action = taction, param = tparam});
+                    Current._delayed.Add(new DelayedQueueItem { time = Time.time + time, action = action });
                 }
             }
             else
             {
                 lock (Current._actions)
                 {
-                    Current._actions.Add(new NoDelayedQueueItem {action = taction, param = tparam});
+                    Current._actions.Add(action);
                 }
             }
         }
 
+        public static void QueueOnMainThread(Action<object> action, object p, float time)
+        {
+            QueueOnMainThread(() => action(p), time);
+        }
+
         public static Thread RunAsync(Action a)
         {
-            Initialize();
             while (numThreads >= maxThreads)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(1);
             }
 
             Interlocked.Increment(ref numThreads);
@@ -103,11 +87,11 @@ namespace JEngine.Core
         {
             try
             {
-                ((Action) action)();
+                ((Action)action)();
             }
-            catch(Exception ex)
+            catch (Exception e)
             {
-                Debug.LogError(ex);
+                Debug.LogException(e);
             }
             finally
             {
@@ -116,60 +100,70 @@ namespace JEngine.Core
 
         }
 
+        private List<Action> curActions = new List<Action>();
 
-        void OnDisable()
-        {
-            if (_current == this)
-            {
-
-                _current = null;
-            }
-        }
-
-
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        List<NoDelayedQueueItem> _currentActions = new List<NoDelayedQueueItem>();
+        private List<DelayedQueueItem> curDelayeds = new List<DelayedQueueItem>();
 
         // Update is called once per frame
         void Update()
         {
-            if (_actions.Count > 0)
+            lock (_actions)
             {
-                lock (_actions)
+                if (_actions.Count > 0)
                 {
-                    _currentActions.Clear();
-                    _currentActions.AddRange(_actions);
+                    curActions.AddRange(_actions);
                     _actions.Clear();
-                }
-
-                for (int i = 0; i < _currentActions.Count; i++)
-                {
-                    _currentActions[i].action(_currentActions[i].param);
                 }
             }
 
-            if (_delayed.Count > 0)
+            if (curActions.Count > 0)
             {
-                lock (_delayed)
+                foreach (var a in curActions)
                 {
-                    _currentDelayed.Clear();
-                    _currentDelayed.AddRange(_delayed.Where(d => d.time <= Time.time));
-                    for (int i = 0; i < _currentDelayed.Count; i++)
+                    try
                     {
-                        _delayed.Remove(_currentDelayed[i]);
+                        a();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
                     }
                 }
 
-                for (int i = 0; i < _currentDelayed.Count; i++)
+                curActions.Clear();
+            }
+
+            lock (_delayed)
+            {
+                var i = _delayed.Count - 1;
+                while (i >= 0)
                 {
-                    _currentDelayed[i].action(_currentDelayed[i].param);
+                    var item = _delayed[i];
+                    if (item.time <= Time.time)
+                    {
+                        curDelayeds.Add(item);
+                        _delayed.RemoveAt(i);
+                    }
+
+                    i--;
                 }
+            }
+
+            if (curDelayeds.Count > 0)
+            {
+                foreach (var item in curDelayeds)
+                {
+                    try
+                    {
+                        item.action();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
+                }
+
+                curDelayeds.Clear();
             }
         }
     }
