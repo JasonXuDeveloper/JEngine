@@ -1,5 +1,23 @@
 ## All Versions
 
+### 0.7.0 (Feburary 17 2021)
+
+  - Mark dependencies as **modules** (More standardized)
+  - Support **offline mode** (Run your game without building a resource server)
+  - Modify **developing procedure** (Enhanced experience when developing)
+  - **Decoupling framework code** (More lightweight and even easier to use)
+  - **Enhanced framework code** (A better performance)
+  - Enhanced **Litjson and Protobuf-net** (More reliable (de)serializing tools)
+  - **Fixed all Issues** occured in 0.6.3 (More powerful and less bugs)
+  - More **Demo** (Easier to start)
+  - Add **extensible validator** (New feature)
+  - Useful **UI extension tools** (New feature)
+  - **ILRuntime2.0** (A better performance with less bugs)
+  - **JPrefab Upgrade** (Support (a)synchronization to create and destory mutliple at once)
+  - **JBehaviour new lifecycles** (Similar to MonoBehaviour's OnEnable and OnDisable)
+
+
+
 ### v0.6.3 (August 13 2021)
 
 - **Implemented** ```[System.Serializable]``` when generating **c# from proto**
