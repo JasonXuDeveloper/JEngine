@@ -40,7 +40,7 @@
 
 # JENGINE v0.7.0
 
-**JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly. **
+**JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
 The ```master``` branch is the latest version that the developers think can be used normally and will not have too many problems. It is recommended to use and has the most powerful functions (fixes bugs in versions 0.6 and 0.5 at the same time);
 
@@ -86,11 +86,11 @@ The ``development`` branch is the development branch. You are welcome to make ch
 
 ## JEngine Benefits
 
-The purpose of JEngine is to provide **lean, beautiful and efficient **code functions for game developers, and to make game developers **easier to make games**
+The purpose of JEngine is to provide **lean, beautiful and efficient** code functions for game developers, and to make game developers **easier to make games**
 
 The **Unity hot update framework** on the market, **no one has a lower learning cost than JEngine**, it is more **difficult to use, and it takes a lot of time to get started , run through the framework**;
 
-And **JEngine may take a few minutes to get started quickly, and it can run through the framework in a few hours at most. ** **No need to pay attention to the bottom layer of any hot updates**, **Just write the game code and make the game scene**!
+And JEngine may take a few minutes to get started quickly, and it can run through the framework in a few hours at most. **No need to pay attention to the bottom layer of any hot updates, Just write the game code and make the game scene**!
 
 ### Old Project
 
@@ -110,11 +110,11 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 **JEngine** has complete documentation and frequent maintenance. As long as there is an issue, it will usually be resolved within 3 days. At the same time, the underlying hot update source code has been verified by a large number of online projects, so there is no need to worry about quality, performance, efficiency and other issues!
 
-**If you think JEngine is helpful to you, please give this framework a Star! **
+**If you think JEngine is helpful to you, please give this framework a Star!**
 
-​    
 
-  ## v0.7.0 New Features
+
+## v0.7.0 New Features
 
   - Mark dependencies as **modules** (More standardized)
   - Support **offline mode** (Run your game without building a resource server)
@@ -134,7 +134,7 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
   
 
-  ## Suggestions
+## Suggestions
 
   - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
   - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
