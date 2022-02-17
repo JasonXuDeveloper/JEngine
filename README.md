@@ -7,11 +7,30 @@
 
 <p align="center">
   The solution that allows unity games update in runtime.
+    <br>
+  <a style="text-decoration:none">
+    <img src="https://img.shields.io/github/license/JasonXuDeveloper/JEngine" alt="license" />
+  </a>
+  <a style="text-decoration:none">
+    <img src="https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine" alt="last" />
+  </a>
+  <a style="text-decoration:none">
+    <img src="https://img.shields.io/github/issues/JasonXuDeveloper/JEngine" alt="issue" />
+  </a>
+  <a style="text-decoration:none">
+    <img src="https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine" alt="topLanguage" />
+  </a>
+  <a style="text-decoration:none">
+    <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield" alt="status" />
+  </a>
+  <a style="text-decoration:none">
+    <img src="https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge" alt="badge" />
+  </a>
   <br>
   <br>
   <a href="https://xgamedev.uoyou.com/"><strong>Documentation »</strong></a>
   <br>
-  <small>(The documentation is in Chinese yet can translate the whole webpage to a different language)</small>
+  <small>(The documentation is yet in Chinese and can use Google Translated version from <a href="https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://xgamedev.net" target="_blank">here</a>)</small>
   <br>
   ·
   <br>
@@ -19,12 +38,11 @@
 </p>
 
 
-
-# JENGINE v0.7.0 preview
+# JENGINE v0.7.0
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
-```master```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大；
+```master```分支为开发者认为的可以正常使用，不会有太大问题的最新版本，建议使用，功能最为强大（同时修复了0.6和0.5版本的bug）；
 
 ```0.6.x```分支目前大部分商业项目正在使用，<u>内容完善，文档视频充足，不会再进行任何更新或维护</u>；
 
@@ -32,12 +50,6 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 ```development```分支为开发分支，欢迎fork后在该分支进行修改并PR，也欢迎提交issue！
 
-![topLanguage](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)
-![issue](https://img.shields.io/github/issues/JasonXuDeveloper/JEngine)
-![license](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)
-![last](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine?ref=badge_shield)
-[![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine)
 
 
 
