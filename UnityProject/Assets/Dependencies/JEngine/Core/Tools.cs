@@ -123,6 +123,11 @@ namespace JEngine.Core
                 .ToList();
         }
 
+        public static bool CanAssignTo(this object instance, Type type)
+        {
+            return ((ILTypeInstance)instance).Type.CanAssignTo(InitJEngine.Appdomain.GetType(type.FullName));
+        }
+
         public static object GetHotComponent(GameObject gameObject, string typeName)
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
