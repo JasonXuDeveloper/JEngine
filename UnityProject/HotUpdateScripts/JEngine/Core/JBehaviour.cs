@@ -32,7 +32,6 @@ using System.Collections;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using JEngine.UI;
 
 namespace JEngine.Core
 {
@@ -227,7 +226,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T));
+            return (T)JBehaviours.Values.ToList().Find(jb => jb._gameObject == gameObject && jb.CanAssignTo(typeof(T)));
         }
 
         /// <summary>
@@ -251,7 +250,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T[] GetJBehaviours<T>(GameObject gameObject) where T : JBehaviour
         {
-            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject && jb.GetType() == typeof(T)).ToArray();
+            return (T[])JBehaviours.Values.ToList().FindAll(jb => jb._gameObject == gameObject && jb.CanAssignTo(typeof(T))).ToArray();
         }
 
         /// <summary>
