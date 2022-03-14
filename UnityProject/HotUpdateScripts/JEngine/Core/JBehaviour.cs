@@ -118,7 +118,7 @@ namespace JEngine.Core
                 for (int i = 0; i < JBehaviours.Count; i++)
                 {
                     var jb = JBehaviours.ElementAt(i);
-                    if(jb.Value == null)
+                    if (jb.Value == null)
                     {
                         JBehaviours.Remove(jb.Key);
                         continue;
@@ -465,6 +465,11 @@ namespace JEngine.Core
             DoLoop();
         }
 
+        private protected void SetHidden()
+        {
+            Hidden = !_gameObject.activeInHierarchy;
+        }
+
         /// <summary>
         /// Cancel delay
         /// 取消延迟
@@ -573,6 +578,22 @@ namespace JEngine.Core
             if (_gameObject == null)
             {
                 _gameObject = new GameObject(_instanceID);//生成GameObject
+                SetHidden();
+                try
+                {
+                    if (gameObject.activeInHierarchy)
+                    {
+                        OnShow();
+                    }
+                    else
+                    {
+                        OnHide();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.PrintError($"{_gameObject.name}<{_instanceID}> OnShow/OnHide failed: {e.Message}, {e.Data["StackTrace"]}, skipped OnShow/OnHide");
+                }
 
                 //编辑器下可视化
                 if (Application.isEditor)

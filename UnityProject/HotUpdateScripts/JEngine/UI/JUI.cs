@@ -96,7 +96,24 @@ namespace JEngine.UI
             _bind = true;
             _bindType = typeof(T);
             _initialVal = val.Value;
-            val.OnChangeWithOldVal += Message<T>;
+            val.OnChangeWithOldVal += Message;
+            _end += (j) => Unbind(val);
+            return this;
+        }
+
+        /// <summary>
+        /// Unbinds a data
+        /// 取消绑定数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public JUI Unbind<T>(BindableProperty<T> val)
+        {
+            _bind = false;
+            _bindType = null;
+            _initialVal = null;
+            val.OnChangeWithOldVal -= Message;
             return this;
         }
 
