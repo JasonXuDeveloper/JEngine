@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System.IO;
+using System;
 using Google.Protobuf.Reflection;
 using JEngine.Core;
 using ProtoBuf.Reflection;
