@@ -76,12 +76,12 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{};
             method = type.GetMethod("SetResult", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, SetResult_5);
-            args = new Type[]{typeof(System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>), typeof(global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor)};
+            args = new Type[]{typeof(ET.ETTask<UnityEngine.Object>), typeof(global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor)};
             if (genericMethods.TryGetValue("AwaitUnsafeOnCompleted", out lst))
             {
                 foreach(var m in lst)
                 {
-                    if(m.MatchGenericParameters(args, typeof(void), typeof(System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>).MakeByRefType(), typeof(global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor).MakeByRefType()))
+                    if(m.MatchGenericParameters(args, typeof(void), typeof(ET.ETTask<UnityEngine.Object>).MakeByRefType(), typeof(global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor).MakeByRefType()))
                     {
                         method = m.MakeGenericMethod(args);
                         app.RegisterCLRMethodRedirection(method, AwaitUnsafeOnCompleted_6);
@@ -439,13 +439,13 @@ namespace ILRuntime.Runtime.Generated
             global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor @stateMachine = (global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor)typeof(global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object> @awaiter = (System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>)typeof(System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (CLR.Utils.Extensions.TypeFlags)16);
+            ET.ETTask<UnityEngine.Object> @awaiter = (ET.ETTask<UnityEngine.Object>)typeof(ET.ETTask<UnityEngine.Object>).CheckCLRTypes(__intp.RetriveObject(ptr_of_this_method, __mStack), (CLR.Utils.Extensions.TypeFlags)0);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
             System.Runtime.CompilerServices.AsyncTaskMethodBuilder instance_of_this_method = (System.Runtime.CompilerServices.AsyncTaskMethodBuilder)typeof(System.Runtime.CompilerServices.AsyncTaskMethodBuilder).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)16);
 
-            instance_of_this_method.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>, global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor>(ref @awaiter, ref @stateMachine);
+            instance_of_this_method.AwaitUnsafeOnCompleted<ET.ETTask<UnityEngine.Object>, global::IAsyncStateMachineClassInheritanceAdaptor.IAsyncStateMachineAdaptor>(ref @awaiter, ref @stateMachine);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
             switch(ptr_of_this_method->ObjectType)
@@ -550,7 +550,7 @@ namespace ILRuntime.Runtime.Generated
                     break;
                  case ObjectTypes.ArrayReference:
                     {
-                        var instance_of_arrayReference = __mStack[ptr_of_this_method->Value] as System.Runtime.CompilerServices.TaskAwaiter<UnityEngine.Object>[];
+                        var instance_of_arrayReference = __mStack[ptr_of_this_method->Value] as ET.ETTask<UnityEngine.Object>[];
                         instance_of_arrayReference[ptr_of_this_method->ValueLow] = @awaiter;
                     }
                     break;

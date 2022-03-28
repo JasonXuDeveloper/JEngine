@@ -1,10 +1,11 @@
-﻿using libx;
-using System;
+﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
 using ILRuntime.Mono.Cecil.Pdb;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -69,39 +70,23 @@ public class InitJEngine : MonoBehaviour
         //初始化Debug
         GameStats.Initialize();
         GameStats.Debug = debug;
-        AssetMgr.Loggable = debug;
+    }
 
-        //进入热更后的回调
-        Updater.OnAssetsInitialized = (gameScene, onProgress) =>
-        {
-            //短路径
-            Assets.AddSearchPath("Assets/HotUpdateResources/Controller");
-            Assets.AddSearchPath("Assets/HotUpdateResources/Dll");
-            Assets.AddSearchPath("Assets/HotUpdateResources/Material");
-            Assets.AddSearchPath("Assets/HotUpdateResources/Other");
-            Assets.AddSearchPath("Assets/HotUpdateResources/Prefab");
-            Assets.AddSearchPath("Assets/HotUpdateResources/Scene");
-            Assets.AddSearchPath("Assets/HotUpdateResources/ScriptableObject");
-            Assets.AddSearchPath("Assets/HotUpdateResources/TextAsset");
-            Assets.AddSearchPath("Assets/HotUpdateResources/UI");
-
-            //跳转场景并初始化热更代码
-            AssetMgr.LoadSceneAsync(gameScene, false, onProgress, (b) =>
-            {
-                //先确保可以跳转场景
-                if (!b) return;
-                //加载热更DLL
-                Instance.LoadHotFixAssembly();
-                //调用SetupGame周期
-                Instance.InvokeHotUpdate(SetupGameMethod);
-                //初始化ClassBind
-                ClassBindMgr.Instantiate();
-                //调用RunGame周期
-                Instance.InvokeHotUpdate(RunGameMethod);
-                //调用在主工程的热更代码加载完毕后的周期
-                HotUpdateLoadedHelper.Init(Appdomain);
-            });
-        };
+    /// <summary>
+    /// 加载热更
+    /// </summary>
+    public void LoadHotUpdateCallback()
+    {
+        //加载热更DLL
+        Instance.LoadHotFixAssembly();
+        //调用SetupGame周期
+        Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
+        //初始化ClassBind
+        ClassBindMgr.Instantiate();
+        //调用RunGame周期
+        Tools.InvokeHotMethod(HotMainType, RunGameMethod);
+        //调用在主工程的热更代码加载完毕后的周期
+        HotUpdateLoadedHelper.Init(Appdomain);
     }
 
     /// <summary>
@@ -145,7 +130,7 @@ public class InitJEngine : MonoBehaviour
 #endif
         {
             //真机模式解密加载
-            var dllFile = (TextAsset)AssetMgr.Load(DllName, typeof(TextAsset));
+            var dllFile = (TextAsset)AssetMgr.Load($"Assets/HotUpdateResources/Dll/{DllName}", typeof(TextAsset));
             if (dllFile == null)
             {
                 return;
@@ -159,7 +144,7 @@ public class InitJEngine : MonoBehaviour
         var buffer = new byte[dll.Length];
         Array.Copy(dll, buffer, dll.Length);
         //卸载dll资源
-        AssetMgr.Unload(DllName, true);
+        AssetMgr.Unload($"Assets/HotUpdateResources/Dll/{DllName}");
 
         //尝试加载dll
         try
@@ -202,9 +187,15 @@ public class InitJEngine : MonoBehaviour
         LoadILRuntime.InitializeILRuntime(Appdomain);
     }
 
-    public void InvokeHotUpdate(string method)
+    /// <summary>
+    /// 重载游戏
+    /// </summary>
+    public static void HotReload()
     {
-        Appdomain.Invoke(HotMainType, method, Tools.Param0, Tools.Param0);
+        Destroy(Instance.gameObject);
+        SceneManager.LoadScene(0);
+        AssetMgr.RemoveUnusedAssets();
+        Success = false;
     }
 
     [Serializable]

@@ -4,7 +4,6 @@ using System.Timers;
 using ILRuntime.Runtime.Intepreter;
 using JEngine.Interface;
 using JEngine.Net;
-using libx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WebSocketSharp;
@@ -37,7 +36,6 @@ namespace JEngine.Helper
             appdomain.DelegateManager.RegisterMethodDelegate<Object, ElapsedEventArgs>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object[]>();
             appdomain.DelegateManager.RegisterMethodDelegate<SocketIOEvent>();
-            appdomain.DelegateManager.RegisterMethodDelegate<AssetRequest>();
             appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.Object>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object>();
             appdomain.DelegateManager

@@ -30,11 +30,6 @@ namespace ILRuntime.Runtime.Generated
             method = type.GetMethod("set_Value", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, set_Value_1);
 
-            field = type.GetField("OnChangeWithOldVal", flag);
-            app.RegisterCLRFieldGetter(field, get_OnChangeWithOldVal_0);
-            app.RegisterCLRFieldSetter(field, set_OnChangeWithOldVal_0);
-            app.RegisterCLRFieldBinding(field, CopyToStack_OnChangeWithOldVal_0, AssignFromStack_OnChangeWithOldVal_0);
-
             args = new Type[]{typeof(System.Int64)};
             method = type.GetConstructor(flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Ctor_0);
@@ -75,31 +70,6 @@ namespace ILRuntime.Runtime.Generated
             instance_of_this_method.Value = value;
 
             return __ret;
-        }
-
-
-        static object get_OnChangeWithOldVal_0(ref object o)
-        {
-            return ((JEngine.Core.BindableProperty<System.Int64>)o).OnChangeWithOldVal;
-        }
-
-        static StackObject* CopyToStack_OnChangeWithOldVal_0(ref object o, ILIntepreter __intp, StackObject* __ret, IList<object> __mStack)
-        {
-            var result_of_this_method = ((JEngine.Core.BindableProperty<System.Int64>)o).OnChangeWithOldVal;
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
-        }
-
-        static void set_OnChangeWithOldVal_0(ref object o, object v)
-        {
-            ((JEngine.Core.BindableProperty<System.Int64>)o).OnChangeWithOldVal = (JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal)v;
-        }
-
-        static StackObject* AssignFromStack_OnChangeWithOldVal_0(ref object o, ILIntepreter __intp, StackObject* ptr_of_this_method, IList<object> __mStack)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal @OnChangeWithOldVal = (JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal)typeof(JEngine.Core.BindableProperty<System.Int64>.onChangeWithOldVal).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (CLR.Utils.Extensions.TypeFlags)8);
-            ((JEngine.Core.BindableProperty<System.Int64>)o).OnChangeWithOldVal = @OnChangeWithOldVal;
-            return ptr_of_this_method;
         }
 
 

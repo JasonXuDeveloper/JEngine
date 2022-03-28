@@ -7825,7 +7825,7 @@ MonoBehaviour:
         gameObject: {fileID: 0}
       - fieldType: 5
         fieldName: txtFile
-        value: Localization.csv
+        value: Assets/HotUpdateResources/TextAsset/Localization.csv
         gameObject: {fileID: 0}
   - classNamespace: JEngine.Examples
     className: ClassBindDemo3

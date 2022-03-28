@@ -107,25 +107,7 @@ namespace JEngine.Core
         /// If has error while loading or not
         /// 加载时是否有错
         /// </summary>
-        public bool Error => !String.IsNullOrEmpty(ErrorMessage);
-
-        /// <summary>
-        /// Error message when error
-        /// 错误时的错误信息
-        /// </summary>
-        public string ErrorMessage => AssetMgr.Error(path);
-
-        /// <summary>
-        /// Progress of loading a prefab
-        /// 加载prefab的进度
-        /// </summary>
-        public float Progress => AssetMgr.Progress(path);
-
-        /// <summary>
-        /// State of loading a prefab
-        /// 加载prefab的状态
-        /// </summary>
-        public libx.LoadState State => AssetMgr.State(path);
+        public bool Error => Instance == null;
 
         /// <summary>
         /// Prefab GameObject (this is not in scene and it has not been instantiated)
@@ -168,7 +150,7 @@ namespace JEngine.Core
             }
             if (Error)
             {
-                throw new Exception($"{path} has an error: {ErrorMessage}");
+                throw new Exception($"{path} has an error");
             }
             var go = UnityEngine.Object.Instantiate(Instance);
             if (!String.IsNullOrEmpty(name))
@@ -194,7 +176,7 @@ namespace JEngine.Core
             }
             if (Error)
             {
-                throw new Exception($"{path} has an error: {ErrorMessage}");
+                throw new Exception($"{path} has an error");
             }
             var go = UnityEngine.Object.Instantiate(Instance, parent);
             if (!String.IsNullOrEmpty(name))
@@ -221,7 +203,7 @@ namespace JEngine.Core
             }
             if (Error)
             {
-                throw new Exception($"{path} has an error: {ErrorMessage}");
+                throw new Exception($"{path} has an error");
             }
             var go = UnityEngine.Object.Instantiate(Instance, parent, instantiateInWorldSpace);
             if (!String.IsNullOrEmpty(name))
@@ -248,7 +230,7 @@ namespace JEngine.Core
             }
             if (Error)
             {
-                throw new Exception($"{path} has an error: {ErrorMessage}");
+                throw new Exception($"{path} has an error");
             }
             var go = UnityEngine.Object.Instantiate(Instance, position, rotation);
             if (!String.IsNullOrEmpty(name))
@@ -276,7 +258,7 @@ namespace JEngine.Core
             }
             if (Error)
             {
-                throw new Exception($"{path} has an error: {ErrorMessage}");
+                throw new Exception($"{path} has an error");
             }
             var go = UnityEngine.Object.Instantiate(Instance, position, rotation, parent);
             if (!String.IsNullOrEmpty(name))

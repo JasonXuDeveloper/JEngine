@@ -1,6 +1,15 @@
 ## All Versions
 
-### 0.7.0 (Feburary 17 2021)
+### 0.7.1 (March 28 2022)
+
+- **Update** ILRuntime v2.0.2
+- Support **multiple** hot update **packages**
+- **Removed** XAsset
+- Imported **BundleMaster**
+
+
+
+### 0.7.0 (Feburary 17 2022)
 
   - Mark dependencies as **modules** (More standardized)
   - Support **offline mode** (Run your game without building a resource server)
