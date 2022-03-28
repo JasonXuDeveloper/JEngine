@@ -30,16 +30,16 @@ namespace JEngine.Core
     public class JResource
     {
         /// <summary>
-        /// 加载热更资源
+        /// 加载热更资源（请使用全路径）
         /// Load hot update resource
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="path"></param>
-        /// <param name="mode"></param>
+        /// <param name="package"></param>
         /// <returns></returns>
-        public static T LoadRes<T>(string path, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
+        public static T LoadRes<T>(string path, string package) where T : UnityEngine.Object
         {
-            return AssetMgr.Load(ResPath(path, mode), typeof(T)) as T;
+            return AssetMgr.Load<T>(path, package, typeof(T));
         }
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace JEngine.Core
         /// Load hot update resource
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="mode"></param>
+        /// <param name="package"></param>
         /// <returns></returns>
-        public static void UnloadRes(string path, MatchMode mode = MatchMode.AutoMatch)
+        public static void UnloadRes(string path, string package)
         {
-            AssetMgr.Unload(ResPath(path, mode));
+            AssetMgr.Unload(path, package);
         }
 
         /// <summary>
@@ -62,10 +62,10 @@ namespace JEngine.Core
         /// <param name="path"></param>
         /// <param name="callback"></param>
         /// <param name="mode"></param>
-        public static async void LoadResAsync<T>(string path, Action<T> callback, MatchMode mode = MatchMode.AutoMatch) where T : UnityEngine.Object
+        public static async void LoadResAsync<T>(string path, Action<T> callback) where T : UnityEngine.Object
         {
-            var asset = await AssetMgr.LoadAsync(path, typeof(T));
-            callback?.Invoke(asset as T);
+            var asset = await AssetMgr.LoadAsync<T>(path, typeof(T));
+            callback?.Invoke(asset);
         }
 
         /// <summary>
@@ -79,64 +79,21 @@ namespace JEngine.Core
         /// Load hot update scene async but parallel (can add callback)
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="callback"></param>
+        /// <param name="package"></param>
+        /// <param name="loading"></param>
+        /// <param name="finished"></param>
         /// <param name="additive"></param>
-        public static void LoadSceneAsync(string path, Action callback = null, bool additive = false)
+        public static void LoadSceneAsync(string path, string package = null, Action<float> loading = null, Action finished = null, bool additive = false)
         {
-            AssetMgr.LoadSceneAsync(path, additive, (p) =>
+            AssetMgr.LoadSceneAsync(path, additive, package, (p) =>
             {
+                loading?.Invoke(p);
                 LoadSceneProgress = p;
-            }, (b) =>
-            {
-                callback?.Invoke();
-                LoadSceneProgress = 1;
-            });
-        }
-
-
-        private static string ResPath(string path, MatchMode mode)
-        {
-            if (path.Contains("Assets/HotUpdateResources/"))
-            {
-                path = path.Replace("Assets/HotUpdateResources/", "");
-                path = path.Substring(path.IndexOf("/") + 1);
-            }
-            switch (mode)
-            {
-                case MatchMode.AutoMatch:
-                    return path;
-                case MatchMode.Animation:
-                    return "Assets/HotUpdateResources/Controller/" + path;
-                case MatchMode.Material:
-                    return "Assets/HotUpdateResources/Material/" + path;
-                case MatchMode.Prefab:
-                    return "Assets/HotUpdateResources/Prefab/" + path;
-                case MatchMode.Scene:
-                    return "Assets/HotUpdateResources/Scene/" + path;
-                case MatchMode.ScriptableObject:
-                    return "Assets/HotUpdateResources/ScriptableObject/" + path;
-                case MatchMode.TextAsset:
-                    return "Assets/HotUpdateResources/TextAsset/" + path;
-                case MatchMode.UI:
-                    return "Assets/HotUpdateResources/UI/" + path;
-                case MatchMode.Other:
-                    return "Assets/HotUpdateResources/Other/" + path;
-                default:
-                    return path;
-            }
-        }
-
-        public enum MatchMode
-        {
-            AutoMatch = 1,
-            Animation = 2,
-            Material = 3,
-            Prefab = 4,
-            Scene = 5,
-            ScriptableObject = 6,
-            TextAsset = 7,
-            UI = 8,
-            Other = 9
+             }, (b) =>
+             {
+                 finished?.Invoke();
+                 LoadSceneProgress = 1;
+             });
         }
     }
 }

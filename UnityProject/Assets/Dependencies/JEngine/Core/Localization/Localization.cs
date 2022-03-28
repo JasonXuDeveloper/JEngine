@@ -41,7 +41,7 @@ namespace JEngine.Core
         private static Dictionary<string, Dictionary<string, string>> _phrases;//language,key,value
 
         private static string _language;
-        private const string CsvLoc = "Localization.csv";
+        private const string CsvLoc = "Assets/HotUpdateResources/TextAsset/Localization.csv";
 
         public static string CurrentLanguage
         {
@@ -65,7 +65,8 @@ namespace JEngine.Core
             
             //获取全部行
             List<string> allRows = new List<string>(0);
-            byte[] array = Encoding.UTF8.GetBytes(file.text);            
+            byte[] array = Encoding.UTF8.GetBytes(file.text);     
+            AssetMgr.Unload(CsvLoc);
             MemoryStream stream = new MemoryStream(array);
             StreamReader sr = new StreamReader(stream, Encoding.Default);
             String line;

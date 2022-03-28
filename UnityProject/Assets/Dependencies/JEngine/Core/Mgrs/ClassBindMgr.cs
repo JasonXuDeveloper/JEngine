@@ -58,6 +58,10 @@ namespace JEngine.Core
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
+                if (LoadedScenes.Contains(scene))
+                {
+                    LoadedScenes.Remove(scene);
+                }
                 LoadedScenes.Add(scene);
                 DoBind();
             };

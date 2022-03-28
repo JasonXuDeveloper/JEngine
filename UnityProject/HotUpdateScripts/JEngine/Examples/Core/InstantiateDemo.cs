@@ -50,7 +50,7 @@ namespace JEngine.Examples
                  * JPrefab 同步加载：
                  * var prefab = new JPrefab(path, false);
                  */
-                var prefab = new JPrefab("InstantiateDemo", true);
+                var prefab = new JPrefab("Assets/HotUpdateResources/Prefab/InstantiateDemo.prefab", true);
                 await prefab.WaitForAsyncLoading();
 
                 Log.Print("开始Instantiate");

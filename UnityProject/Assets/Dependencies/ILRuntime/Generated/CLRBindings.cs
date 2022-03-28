@@ -131,6 +131,7 @@ namespace ILRuntime.Runtime.Generated
             System_Diagnostics_Stopwatch_Binding.Register(app);
             JEngine_Core_GameStats_Binding.Register(app);
             JEngine_Core_AssetMgr_Binding.Register(app);
+            System_Action_1_Single_Binding.Register(app);
             System_Collections_Generic_List_1_Action_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Single_Binding.Register(app);
             System_Collections_Generic_Dictionary_2_Int32_Int32_Binding.Register(app);
@@ -144,8 +145,7 @@ namespace ILRuntime.Runtime.Generated
             System_IO_MemoryStream_Binding.Register(app);
             ProtoBuf_Serializer_Binding.Register(app);
             System_Runtime_CompilerServices_AsyncTaskMethodBuilder_Binding.Register(app);
-            System_Threading_Tasks_Task_1_Object_Binding.Register(app);
-            System_Runtime_CompilerServices_TaskAwaiter_1_Object_Binding.Register(app);
+            ET_ETTask_1_Object_Binding.Register(app);
             System_Action_2_Boolean_CoroutineAdapter_Binding_Adaptor_Binding.Register(app);
             System_ArgumentException_Binding.Register(app);
         }

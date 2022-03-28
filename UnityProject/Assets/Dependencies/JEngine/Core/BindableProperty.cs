@@ -30,10 +30,10 @@ namespace JEngine.Core
 {
     public class BindableProperty<T>
     {
-        public delegate void onChange(T val);
-        public delegate void onChangeWithOldVal(T oldVal, T newVal);
-        public onChange OnChange;
-        public onChangeWithOldVal OnChangeWithOldVal;
+        // public delegate void onChange(T val);
+        // public delegate void onChangeWithOldVal(T oldVal, T newVal);
+        public Action<T> OnChange;
+        public Action<T,T> OnChangeWithOldVal;
 
         private T _value;
         public T Value

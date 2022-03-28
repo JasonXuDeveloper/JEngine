@@ -118,7 +118,7 @@ namespace JEngine.Core
                 for (int i = 0; i < JBehaviours.Count; i++)
                 {
                     var jb = JBehaviours.ElementAt(i);
-                    if (jb.Value == null)
+                    if(jb.Value == null)
                     {
                         JBehaviours.Remove(jb.Key);
                         continue;

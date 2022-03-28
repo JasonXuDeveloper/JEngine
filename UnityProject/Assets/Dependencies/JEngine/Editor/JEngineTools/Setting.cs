@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using JEngine.Core;
-using libx;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -466,9 +465,9 @@ namespace JEngine.Editor
 			//更新按钮
 			MakeHorizontal(GetSpace(0.1f), () =>
 			{
-				GUI.enabled = !UpdateJEngine.installing;
+				GUI.enabled = false;
 
-				if (GUILayout.Button(GetString(SettingString.UpdateJEngine), GUILayout.Height(30)))
+				if (GUILayout.Button(GetString(SettingString.UpdateJEngine) +" - 暂不可用", GUILayout.Height(30)))
 				{
 					UpdateJEngine.Update();
 					GUIUtility.ExitGUI();
@@ -480,7 +479,7 @@ namespace JEngine.Editor
 			#endregion
 
 			#region 热更场景相关
-
+			
 			//直接进热更场景
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
@@ -498,59 +497,38 @@ namespace JEngine.Editor
 			if (_showScenes)
 			{
 				//获取热更场景
-				Assets.basePath = BuildScript.outputPath + Path.DirectorySeparatorChar;
-				Assets.loadDelegate = AssetDatabase.LoadAssetAtPath;
-
-				var assets = new List<string>();
-				var rules = BuildScript.GetBuildRules();
-				foreach (var asset in rules.scenesInBuild)
-				{
-					var path = AssetDatabase.GetAssetPath(asset);
-					if (string.IsNullOrEmpty(path))
-					{
-						continue;
-					}
-
-					assets.Add(path);
-				}
-
-				foreach (var rule in rules.rules)
-				{
-					if (rule.searchPattern.Contains("*.unity"))
-					{
-						assets.AddRange(rule.GetAssets());
-					}
-				}
-
-				foreach (var asset in assets)
+				var assets =
+					BM.BuildAssetsTools.GetPackageSceneAssets(
+						AssetDatabase.LoadAssetAtPath<BM.AssetLoadTable>(BM.BuildAssets.AssetLoadTablePath));
+			
+				foreach (var sceneObj in assets)
 				{
 					MakeHorizontal(GetSpace(0.1f), () =>
 					{
 						GUI.enabled = false;
-						Object sceneObj = AssetDatabase.LoadAssetAtPath<Object>(asset);
-
+						var asset = AssetDatabase.GetAssetPath(sceneObj);
 						EditorGUILayout.ObjectField(sceneObj,
 							typeof(Object), false);
 						GUI.enabled = true;
-
+			
 						GUILayout.Space(15);
-
+			
 						if (GUILayout.Button(GetString(SettingString.LoadSceneBtn)))
 						{
 							EditorSceneManager.OpenScene(asset);
 							GUIUtility.ExitGUI();
 						}
-
+			
 						GUILayout.Space(5);
-
+			
 						if (GUILayout.Button(GetString(SettingString.LoadSceneAdditiveBtn)))
 						{
 							EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
 							GUIUtility.ExitGUI();
 						}
-
+			
 						GUILayout.Space(5);
-
+			
 						if (GUILayout.Button(GetString(SettingString.UnloadSceneBtn)))
 						{
 							EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
@@ -559,7 +537,7 @@ namespace JEngine.Editor
 					});
 				}
 			}
-
+			
 			#endregion
 
 			#region ClassBind相关

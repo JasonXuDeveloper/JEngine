@@ -1,186 +1,160 @@
-using libx;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using BM;
+using ET;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace JEngine.Core
 {
     public static class AssetMgr
     {
-        private static readonly Dictionary<string, AssetRequest> AssetCache = new Dictionary<string, AssetRequest>();
-        private static readonly Dictionary<string, BundleRequest> BundleCache = new Dictionary<string, BundleRequest>();
+        public static bool RuntimeMode => AssetComponentConfig.AssetLoadMode != AssetLoadMode.Develop;
 
-        public static bool RuntimeMode => Assets.runtimeMode;
-
-        public static bool Loggable
+        public static Object Load(string path)
         {
-            get => Assets.loggable;
-            set => Assets.loggable = value;
+            return Load(path, null, null);
         }
 
-        public static string Error(string path)
+        public static Object Load(string path, string package)
         {
-            return AssetCache.ContainsKey(path) ? AssetCache[path].error : "";
-        }
-
-        public static LoadState State(string path)
-        {
-            return AssetCache.ContainsKey(path) ? AssetCache[path].loadState : LoadState.Init;
-        }
-
-        public static float Progress(string path)
-        {
-            return AssetCache.ContainsKey(path) ? AssetCache[path].progress : 0;
+            return Load(path, package, null);
         }
         
-        public static Object Load(string path,Type type = null)
+        public static Object Load(string path, Type type)
         {
-            var res = GetAssetFromCache(path);
-            if (res != null)
-            {
-                return res;
-            }
-            type = CheckType(type);
-            var req = Assets.LoadAsset(path, type);
-            CheckError(path, req);
-            AssetCache[path] = req;
-            return req.asset;
+            return Load(path, null, type);
+        }
+
+        public static Object Load(string path, string package, Type type)
+        {
+            
+            var ret = AssetComponent.Load(out var handler, path, package);
+            AddCache(handler);
+            return ret;
+        }
+
+        public static T Load<T>(string path)
+            where T : Object
+        {
+            return Load<T>(path, null, null);
+        }
+
+        public static T Load<T>(string path, string package)
+            where T : Object
+        {
+            return Load<T>(path, package, null);
         }
         
-        public static Task<Object> LoadAsync(string path,Type type = null)
+        public static T Load<T>(string path, Type type)
+            where T : Object
         {
-            var res = GetAssetFromCache(path);
-            var tcs = new TaskCompletionSource<Object>();
-            if (res != null)
+            return Load<T>(path, null, type);
+        }
+
+        public static T Load<T>(string path, string package, Type type)
+            where T : Object
+        {
+            var ret = AssetComponent.Load<T>(out var handler, path, package);
+            AddCache(handler);
+            return ret;
+        }
+
+        public static async ETTask<Object> LoadAsync(string path, Type type = null)
+        {
+            return await LoadAsync(path, null, type);
+        }
+
+        public static async ETTask<Object> LoadAsync(string path, string package = null, Type type = null)
+        {
+            var ret = await AssetComponent.LoadAsync(out var handler, path, package);
+            AddCache(handler);
+            return ret;
+        }
+
+        public static async ETTask<T> LoadAsync<T>(string path, Type type = null)
+            where T : Object
+        {
+            return await LoadAsync<T>(path, null, type);
+        }
+
+        public static async ETTask<T> LoadAsync<T>(string path, string package = null, Type type = null)
+            where T : Object
+        {
+            var ret = await AssetComponent.LoadAsync<T>(out var handler, path, package);
+            AddCache(handler);
+            return ret;
+        }
+
+        /// <summary>
+        /// 强制卸载所有该路径资源的引用
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="package"></param>
+        public static void Unload(string path, string package = null)
+        {
+            package = string.IsNullOrEmpty(package) ? AssetComponentConfig.DefaultBundlePackageName : package;
+            AssetComponent.UnLoadByPath(path, package);
+        }
+
+        public static void LoadScene(string path, bool additive, string package = null)
+        {
+            AssetComponent.LoadScene(path, package);
+            if (additive)
+                SceneManager.LoadScene(path, LoadSceneMode.Additive);
+            else
+                SceneManager.LoadScene(path);
+            RemoveUnusedAssets();
+        }
+
+        public static async void LoadSceneAsync(string path, bool additive, string package = null,
+            Action<float> loadingCallback = null,
+            Action<AsyncOperation> finishedCallback = null)
+        {
+            await AssetComponent.LoadSceneAsync(path, package);
+            AsyncOperation operation = additive
+                ? SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive)
+                : SceneManager.LoadSceneAsync(path);
+            operation.allowSceneActivation = false;
+            while (!operation.isDone && operation.progress < 0.9f)
             {
-                tcs.SetResult(res);
-                return tcs.Task;
+                loadingCallback?.Invoke(operation.progress);
+                await Task.Delay(1);
             }
-            type = CheckType(type);
-            var req = Assets.LoadAssetAsync(path, type);
-            req.completed += ar =>
+
+            loadingCallback?.Invoke(1);
+            operation.allowSceneActivation = true;
+            operation.completed += asyncOperation =>
             {
-                CheckError(path, req);
-                AssetCache[path] = ar;
-                tcs.SetResult(ar.asset);
+                RemoveUnusedAssets();
+                finishedCallback?.Invoke(asyncOperation);
             };
-            return tcs.Task;
         }
 
-        public static void Unload(string path, bool ignore = false)
+        private static List<LoadHandler> _cacheAssets = new List<LoadHandler>();
+
+        private static void AddCache(LoadHandler handler)
         {
-            if (AssetCache.TryGetValue(path, out var req))
-            {
-                ReleaseAsset(req);
-            }
-            else if (!ignore)
-            {
-                Log.PrintError($"Resource '{path}' has not loaded yet");
-            }
+            _cacheAssets.Add(handler);
         }
 
-        public static async void LoadSceneAsync(string path, bool additive, Action<float> loadingCallback = null,
-            Action<bool> finishedCallback = null)
+        private static void RemoveCache(LoadHandler handler)
         {
-            var req = Assets.LoadSceneAsync(path, additive);
-            while (!req.isDone)
-            {
-                loadingCallback?.Invoke(req.progress);
-                await Task.Delay(10);
-            }
-            CheckError(path, req);
-            finishedCallback?.Invoke(string.IsNullOrEmpty(req.error));
-        }
-
-        public static AssetBundle LoadBundle(string path)
-        {
-            var res = GetBundleFromCache(path);
-            if (res != null)
-            {
-                return res;
-            }
-            var req = Assets.LoadBundle(path);
-            CheckError(path, req);
-            BundleCache[path] = req;
-            return req.assetBundle;
-        }
-        
-        public static Task<AssetBundle> LoadBundleAsync(string path)
-        {
-            var res = GetBundleFromCache(path);
-            var tcs = new TaskCompletionSource<AssetBundle>();
-            if (res != null)
-            {
-                tcs.SetResult(res);
-                return tcs.Task;
-            }
-            var req = Assets.LoadBundleAsync(path);
-            req.completed += ar =>
-            {
-                CheckError(path, req);
-                AssetCache[path] = ar;
-                tcs.SetResult(((BundleRequest) ar).assetBundle);
-            };
-            return tcs.Task;
-        }
-
-        public static void UnloadBundle(string path, bool ignore = false)
-        {
-            if (BundleCache.TryGetValue(path, out var req))
-            {
-                ReleaseAsset(req);
-            }
-            else if (!ignore)
-            {
-                Log.PrintError($"Bundle '{path}' has not loaded yet");
-            }
+            _cacheAssets.Remove(handler);
         }
 
         public static void RemoveUnusedAssets()
         {
-            Assets.RemoveUnusedAssets();
-        }
-        
-        private static Object GetAssetFromCache(string path)
-        {
-            if (AssetCache.TryGetValue(path, out var v))
+            for (int i = 0, cnt = _cacheAssets.Count; i < cnt; i++)
             {
-                return v.asset;
+                _cacheAssets[i].UnLoad();
+                _cacheAssets.RemoveAt(i);
+                i--;
+                cnt--;
             }
-
-            return null;
-        }
-
-        private static AssetBundle GetBundleFromCache(string path)
-        {
-            if (BundleCache.TryGetValue(path, out var v))
-            {
-                return v.assetBundle;
-            }
-
-            return null;
-        }
-
-        private static Type CheckType(Type t)
-        {
-            if (t == null) return typeof(Object);
-            return t;
-        }
-
-        private static void CheckError(string path, AssetRequest req)
-        {
-            if (req.isDone && !string.IsNullOrEmpty(req.error))
-            {
-                Log.PrintError($"Error when loading '{path}': {req.error}");
-            }
-        }
-
-        private static void ReleaseAsset(AssetRequest req)
-        {
-            req.Release();
-            req.Unload();
         }
     }
 }

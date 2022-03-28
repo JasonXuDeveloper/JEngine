@@ -13,7 +13,73 @@ namespace JEngine.Core
 {
     public static class Tools
     {
-        public static readonly object[] Param0 = new object[0];
+        public static readonly object[] Param0 = Array.Empty<object>();
+        private const float Bytes2Mb = 1f / (1024 * 1024);
+        
+        /// <summary>
+        /// 当前时间戳(ms)
+        /// </summary>
+        /// <returns></returns>
+        public static long TimeStamp => (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
+
+        /// <summary>
+        /// 获取下载速度
+        /// </summary>
+        /// <param name="downloadSpeed"></param>
+        /// <returns></returns>
+        public static string GetDisplaySpeed(float downloadSpeed)
+        {
+            if (downloadSpeed >= 1024 * 1024)
+            {
+                return $"{downloadSpeed * Bytes2Mb:f2}MB/s";
+            }
+            if (downloadSpeed >= 1024)
+            {
+                return $"{downloadSpeed / 1024:f2}KB/s";
+            }
+            return $"{downloadSpeed:f2}B/s";
+        }
+        
+        /// <summary>
+        /// 获取显示大小
+        /// </summary>
+        /// <param name="downloadSize"></param>
+        /// <returns></returns>
+        public static string GetDisplaySize(long downloadSize)
+        {
+            if (downloadSize >= 1024 * 1024)
+            {
+                return $"{downloadSize * Bytes2Mb:f2}MB";
+            }
+            if (downloadSize >= 1024)
+            {
+                return $"{downloadSize / 1024:f2}KB";
+            }
+            return $"{downloadSize:f2}B";
+        }
+
+        /// <summary>
+        /// 调用热更方法
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="method"></param>
+        public static void InvokeHotMethod(string type, string method)
+        {
+            InitJEngine.Appdomain.Invoke(type, method, Param0, Param0);
+        }
+
+        /// <summary>
+        /// 调用热更方法
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="method"></param>
+        /// <param name="instance"></param>
+        /// <param name="param"></param>
+        public static void InvokeHotMethod(string type, string method, object instance, params object[] param)
+        {
+            InitJEngine.Appdomain.Invoke(type, method, instance, param);
+        }
+
         
         public static object ConvertSimpleType(object value, Type destinationType)
         {
