@@ -139,6 +139,13 @@ namespace JEngine.Helper
                     return ((Func<KeyValuePair<String, ILTypeInstance>, Boolean>)act)(obj);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.EventHandler<System.Threading.Tasks.UnobservedTaskExceptionEventArgs>>((act) =>
+            {
+                return new System.EventHandler<System.Threading.Tasks.UnobservedTaskExceptionEventArgs>((sender, e) =>
+                {
+                    ((Action<System.Object, System.Threading.Tasks.UnobservedTaskExceptionEventArgs>)act)(sender, e);
+                });
+            });
         }
     }
 }

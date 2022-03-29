@@ -78,6 +78,8 @@
     <Compile Include="JEngine\UI\JUIExtensions.cs" />
     <Compile Include="JEngine\Core\JValidation.cs" />
     <Compile Include="JEngine\Examples\Core\ValidationDemo.cs" />
+    <Compile Include="JEngine\Examples\Core\AddOnDemo.cs" />
+    <Compile Include="BPath.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

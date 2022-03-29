@@ -58,7 +58,7 @@ namespace JEngine.Helper
             appdomain.DelegateManager.RegisterMethodDelegate<Int32>();
             appdomain.DelegateManager.RegisterMethodDelegate<GameObject, Action>();
             appdomain.DelegateManager.RegisterMethodDelegate<GameObject, PointerEventData>();
-
+            appdomain.DelegateManager.RegisterMethodDelegate<System.Object, System.Threading.Tasks.UnobservedTaskExceptionEventArgs>();
             appdomain.DelegateManager.RegisterMethodDelegate<System.Int64, System.Int64>();
             appdomain.DelegateManager.RegisterMethodDelegate<Boolean, Boolean>();
             appdomain.DelegateManager.RegisterMethodDelegate<Single, Single>();
