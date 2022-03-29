@@ -1,10 +1,10 @@
 ﻿//
-// Program.cs
+// AddOnDemo.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
 //
-// Copyright (c) 2020 JEngine
+// Copyright (c) 2022 JEngine
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,35 +23,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
 using JEngine.Core;
-using JEngine.AntiCheat;
-using JEngine.Examples;
-using JEngine.Net;
 using UnityEngine;
 
-namespace HotUpdateScripts
+namespace JEngine.Examples
 {
-    public static class Program
+    public class AddOnDemo
     {
-        public static void SetupGame()
+        public async void Awake()
         {
-            Debug.Log("<color=cyan>[SetupGame] 这个周期在ClassBind初始化之前，可以对游戏数据进行一些初始化</color>");
-            //防止Task内的报错找不到堆栈，不建议删下面的代码
-            System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (sender, e) =>
+            var packageName = "AddOn1";
+            var package = await Updater.CheckPackage(packageName);
+            Debug.Log(StringifyHelper.JSONSerliaze(package));
+            Updater.UpdatePackage("AddOn1", package: package, nextScene: BM.BPath.Assets_HotUpdateResources_AddOns_AddOn1_Scenes_test__unity, onLoadSceneFinished: () =>
             {
-                foreach (var innerEx in e.Exception.InnerExceptions)
-                {
-                    Debug.LogError($"{innerEx.Message}\n" +
-                    $"ILRuntime StackTrace: {innerEx.Data["StackTrace"]}\n\n" +
-                    $"Full Stacktrace: {innerEx.StackTrace}");
-                }
-            };
-        }
-
-        public static void RunGame()
-        {
-            Debug.Log("<color=yellow>[RunGame] 这个周期在ClassBind初始化后，可以激活游戏相关逻辑</color>");
-            //如果生成热更解决方案跳过，参考https://xgamedev.uoyou.com/guide-v0-6.html#hash-516317491的方法一，把生成的平台改成Any CPU（默认是小写的，windows下无法生成）
+                Debug.Log("进入分包场景");
+                Debug.Log(((TextAsset)AssetMgr.Load(BM.BPath.Assets_HotUpdateResources_AddOns_AddOn1_Others_test__txt, "AddOn1")).text);
+            });
         }
     }
 }
