@@ -4,6 +4,7 @@
 
 
 
+
 <h3 align="center">JEngine</h3>
 
 <p align="center">
@@ -35,6 +36,7 @@
   <br>
   <a href="https://github.com/JasonXuDeveloper/JEngine/">框架首页 »</a>
 </p>
+
 
 
 # JENGINE v0.7.1
@@ -102,9 +104,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   > 若您的项目使用了JEngine，欢迎联系作者，作者很乐意把您的作品展示出来~
 
-| <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="g1" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <p align="center">[爱丽丝造梦空间](https://www.taptap.com/app/224117)</p> | <p align="center">[肝到发慌](https://www.taptap.com/app/225175)</p> |
+| <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="g1" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/0ac05aa58706032db05c5dbf1df77cf4_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <p align="center">[爱丽丝造梦空间](https://www.taptap.com/app/224117)</p> | <p align="center">[肝到发慌](https://www.taptap.com/app/225175)</p> | <p align="center">[割韭菜](https://www.taptap.com/app/232558)</p> |
 
 
 
@@ -139,30 +141,32 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 **JEngine**文档齐全，维护频繁，只要有issue，通常3日内必定解决，同时底层的热更源码经过大量上线项目验证，无需担心质量、性能、效率等问题！
 
 **如果你觉得JEngine对你有帮助，请给该框架一个Star！**
+ 
 
-​    
+## v0.7.1 最新功能
 
-  ## v0.7.1 最新功能
+- **升级** ILRuntime v2.0.2
 
-  - **升级** ILRuntime v2.0.2
 - 支持 **分包**
+
 - **弃用** XAsset
+
 - 开始使用 **BundleMaster**
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 
   
 
-  ## JEngine专业版
+## JEngine专业版
 
-  JEngine专业版现已推出，大幅度提高开发效率和底层性能，可以根据需求进群联系作者进行购买，可以补差价升级
+JEngine专业版现已推出，大幅度提高开发效率和底层性能，可以根据需求进群联系作者进行购买，可以补差价升级
 
-  （开源版功能对于小项目开发和正常使用足矣，可以自行魔改来实现更完善的功能，或购买体验版进行尝试，好用再升级一年或永久版！提倡先用开源版开发，觉得好用再升级专业版，请理性消费！）
+（开源版功能对于小项目开发和正常使用足矣，可以自行魔改来实现更完善的功能，或购买体验版进行尝试，好用再升级一年或永久版！提倡先用开源版开发，觉得好用再升级专业版，请理性消费！）
 
 详情可以参考：[这里](https://docs.xgamedev.net/zh/documents/pro/)
 
-  ## 推荐项目
+## 推荐项目
 
-  - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
-  - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
+- [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
+- [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
 
