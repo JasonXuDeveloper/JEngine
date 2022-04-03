@@ -186,18 +186,7 @@ public class InitJEngine : MonoBehaviour
         //初始化ILRuntime
         LoadILRuntime.InitializeILRuntime(Appdomain);
     }
-
-    /// <summary>
-    /// 重载游戏
-    /// </summary>
-    public static void HotReload()
-    {
-        Destroy(Instance.gameObject);
-        SceneManager.LoadScene(0);
-        AssetMgr.RemoveUnusedAssets();
-        Success = false;
-    }
-
+    
     [Serializable]
     private enum ILRuntimeJITFlag
     {
