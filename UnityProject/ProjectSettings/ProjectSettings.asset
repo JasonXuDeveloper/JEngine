@@ -554,7 +554,6 @@ PlayerSettings:
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
     1: 
-    7: INIT_JE
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
