@@ -24,32 +24,42 @@ namespace JEngine.Editor
                 Debug.LogError(Setting.GetString(SettingString.NoticeText));
                 EditorUtility.DisplayDialog(Setting.GetString(SettingString.Notice),
                     Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
-                //注入宏
-                var target = EditorUserBuildSettings.activeBuildTarget;
-                var group = BuildPipeline.GetBuildTargetGroup(target);
-                var d = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-                if (!d.Contains("INIT_JE"))
-                {
-                    if (!d.EndsWith(";"))
-                    {
-                        d += ";";
-                    }
-                }
-                else
-                {
-                    d = d.Replace("INIT_JE;", "").Replace("INIT_JE", "");
-                }
-
-                d += "INIT_JE;";
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(group,d);
+                InjectDefineSymbol();
             }
             else
             {
                 prefix = File.ReadAllText(fPath);
             }
+
+            InjectDefineSymbol();
             
             hasAdded = true;
             Setting.SetPrefix(prefix);
+        }
+
+        private static void InjectDefineSymbol()
+        {
+            //注入宏
+            var target = EditorUserBuildSettings.activeBuildTarget;
+            var group = BuildPipeline.GetBuildTargetGroup(target);
+            var org = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
+            var d = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
+            if (!d.Contains("INIT_JE"))
+            {
+                if (!d.EndsWith(";"))
+                {
+                    d += ";";
+                }
+            }
+            else
+            {
+                d = d.Replace("INIT_JE;", "").Replace("INIT_JE", "");
+            }
+
+            d += "INIT_JE;";
+
+            if(org != d)
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(group,d);
         }
     }
 }
