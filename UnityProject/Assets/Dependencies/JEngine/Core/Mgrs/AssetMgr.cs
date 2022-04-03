@@ -24,12 +24,13 @@ namespace JEngine.Core
             return Load(path, package, null);
         }
         
+        [Obsolete]
         public static Object Load(string path, Type type)
         {
             return Load(path, null, type);
         }
 
-        public static Object Load(string path, string package, Type type)
+        private static Object Load(string path, string package, Type type)
         {
             
             var ret = AssetComponent.Load(out var handler, path, package);
@@ -49,13 +50,14 @@ namespace JEngine.Core
             return Load<T>(path, package, null);
         }
         
+        [Obsolete]
         public static T Load<T>(string path, Type type)
             where T : Object
         {
             return Load<T>(path, null, type);
         }
 
-        public static T Load<T>(string path, string package, Type type)
+        private static T Load<T>(string path, string package, Type type)
             where T : Object
         {
             var ret = AssetComponent.Load<T>(out var handler, path, package);
@@ -63,25 +65,49 @@ namespace JEngine.Core
             return ret;
         }
 
-        public static async ETTask<Object> LoadAsync(string path, Type type = null)
+        public static async ETTask<Object> LoadAsync(string path)
+        {
+            return await LoadAsync(path, null, null);
+        }
+
+        public static async ETTask<Object> LoadAsync(string path, string package)
+        {
+            return await LoadAsync(path, package, null);
+        }
+
+        [Obsolete]
+        public static async ETTask<Object> LoadAsync(string path, Type type)
         {
             return await LoadAsync(path, null, type);
         }
 
-        public static async ETTask<Object> LoadAsync(string path, string package = null, Type type = null)
+        private static async ETTask<Object> LoadAsync(string path, string package, Type type)
         {
             var ret = await AssetComponent.LoadAsync(out var handler, path, package);
             AddCache(handler);
             return ret;
         }
 
-        public static async ETTask<T> LoadAsync<T>(string path, Type type = null)
+        public static async ETTask<T> LoadAsync<T>(string path)
+            where T : Object
+        {
+            return await LoadAsync<T>(path, null, null);
+        }
+
+        public static async ETTask<T> LoadAsync<T>(string path, string package)
+            where T : Object
+        {
+            return await LoadAsync<T>(path, package, null);
+        }
+        
+        [Obsolete]
+        public static async ETTask<T> LoadAsync<T>(string path, Type type)
             where T : Object
         {
             return await LoadAsync<T>(path, null, type);
         }
 
-        public static async ETTask<T> LoadAsync<T>(string path, string package = null, Type type = null)
+        private static async ETTask<T> LoadAsync<T>(string path, string package = null, Type type = null)
             where T : Object
         {
             var ret = await AssetComponent.LoadAsync<T>(out var handler, path, package);
