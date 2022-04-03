@@ -126,7 +126,7 @@ namespace JEngine.Core
             AssetComponent.UnLoadByPath(path, package);
         }
 
-        public static void LoadScene(string path, bool additive, string package = null)
+        public static void LoadScene(string path, bool additive = false, string package = null)
         {
             AssetComponent.LoadScene(path, package);
             if (additive)
@@ -136,7 +136,7 @@ namespace JEngine.Core
             RemoveUnusedAssets();
         }
 
-        public static async void LoadSceneAsync(string path, bool additive, string package = null,
+        public static async void LoadSceneAsync(string path, bool additive = false, string package = null,
             Action<float> loadingCallback = null,
             Action<AsyncOperation> finishedCallback = null)
         {
