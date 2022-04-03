@@ -15,7 +15,7 @@ namespace JEngine.Core
     {
         public static readonly object[] Param0 = Array.Empty<object>();
         private const float Bytes2Mb = 1f / (1024 * 1024);
-        
+
         /// <summary>
         /// 当前时间戳(ms)
         /// </summary>
@@ -33,13 +33,15 @@ namespace JEngine.Core
             {
                 return $"{downloadSpeed * Bytes2Mb:f2}MB/s";
             }
+
             if (downloadSpeed >= 1024)
             {
                 return $"{downloadSpeed / 1024:f2}KB/s";
             }
+
             return $"{downloadSpeed:f2}B/s";
         }
-        
+
         /// <summary>
         /// 获取显示大小
         /// </summary>
@@ -51,10 +53,12 @@ namespace JEngine.Core
             {
                 return $"{downloadSize * Bytes2Mb:f2}MB";
             }
+
             if (downloadSize >= 1024)
             {
                 return $"{downloadSize / 1024:f2}KB";
             }
+
             return $"{downloadSize:f2}B";
         }
 
@@ -80,7 +84,7 @@ namespace JEngine.Core
             InitJEngine.Appdomain.Invoke(type, method, instance, param);
         }
 
-        
+
         public static object ConvertSimpleType(object value, Type destinationType)
         {
             object returnValue;
@@ -133,7 +137,7 @@ namespace JEngine.Core
             {
                 instance = FindGOForHotClass(ilt);
             }
-            else if(ins is Transform t)
+            else if (ins is Transform t)
             {
                 instance = t.gameObject;
             }
@@ -175,17 +179,20 @@ namespace JEngine.Core
             return pi.GetValue(instance.CLRInstance) as GameObject;
         }
 
+#if INIT_JE
         public static List<T> FindObjectsOfTypeAll<T>()
         {
             return ClassBindMgr.LoadedScenes.SelectMany(scene => scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
         }
-        
+#endif
+
         public static List<CrossBindingAdaptorType> GetAllMonoAdapters()
         {
             return UnityEngine.Object.FindObjectsOfType<MonoBehaviour>().ToList()
-                .FindAll(x => x.GetType().GetInterfaces().Contains(typeof(CrossBindingAdaptorType))).Select(x => (CrossBindingAdaptorType)x)
+                .FindAll(x => x.GetType().GetInterfaces().Contains(typeof(CrossBindingAdaptorType)))
+                .Select(x => (CrossBindingAdaptorType)x)
                 .ToList();
         }
 
@@ -210,14 +217,14 @@ namespace JEngine.Core
                 .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
                 .Select(a => a.ILInstance).ToArray();
         }
-        
+
         public static object GetHotComponent(CrossBindingAdaptorType[] adapters, ILType type)
         {
             return adapters.ToList()
                 .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
                 .Select(a => a.ILInstance).ToArray();
         }
-        
+
         public static object GetHotComponent(List<CrossBindingAdaptorType> adapters, ILType type)
         {
             return adapters
@@ -240,7 +247,8 @@ namespace JEngine.Core
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>(true);
             return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
+                .FindAll(a =>
+                    a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
                 .Select(a => a.ILInstance).ToArray();
         }
     }

@@ -1,3 +1,4 @@
+#if INIT_JE
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -2917,3 +2918,4 @@ namespace JEngine.Helper
         }
     }
 }
+#endif

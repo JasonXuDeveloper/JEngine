@@ -81,8 +81,10 @@ public class InitJEngine : MonoBehaviour
         Instance.LoadHotFixAssembly();
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
+#if INIT_JE
         //初始化ClassBind
         ClassBindMgr.Instantiate();
+#endif
         //调用RunGame周期
         Tools.InvokeHotMethod(HotMainType, RunGameMethod);
         //调用在主工程的热更代码加载完毕后的周期

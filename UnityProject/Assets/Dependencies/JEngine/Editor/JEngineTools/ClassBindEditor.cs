@@ -1,3 +1,4 @@
+#if INIT_JE
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -487,3 +488,4 @@ namespace JEngine.Editor
         }
     }
 }
+#endif

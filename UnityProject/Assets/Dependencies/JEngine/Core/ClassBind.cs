@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if INIT_JE
+using System;
 using Malee.List;
 using System.Linq;
 using UnityEngine;
@@ -564,3 +565,4 @@ namespace JEngine.Core
     {
     }
 }
+#endif

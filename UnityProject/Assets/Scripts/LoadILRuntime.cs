@@ -2,7 +2,6 @@
 using System.Threading;
 using JEngine.Helper;
 using LitJson;
-using ProtoBuf;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class LoadILRuntime
@@ -14,7 +13,7 @@ public static class LoadILRuntime
         appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
         appdomain.DebugService.StartDebugService(56000);
 #endif
-
+#if INIT_JE
         RegisterCrossBindingAdaptorHelper.HelperRegister(appdomain);
         RegisterCLRMethodRedirectionHelper.HelperRegister(appdomain);
         RegisterMethodDelegateHelper.HelperRegister(appdomain);
@@ -22,13 +21,13 @@ public static class LoadILRuntime
         RegisterDelegateConvertorHelper.HelperRegister(appdomain);
         RegisterLitJsonHelper.HelperRegister(appdomain);
         RegisterValueTypeBinderHelper.HelperRegister(appdomain);
-
         //Protobuf适配
-        PType.RegisterILRuntimeCLRRedirection(appdomain);
-        
+        ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
+#endif
+
         //LitJson适配
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
-        
+
         //CLR绑定（有再去绑定）
         Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
         if (t != null)
