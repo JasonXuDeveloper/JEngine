@@ -1,9 +1,9 @@
-﻿using System;
+﻿#if INIT_JE
+using System;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
-
 namespace ProtoBuf
 {
     public sealed class IExtensibleAdapter : CrossBindingAdaptor
@@ -62,3 +62,4 @@ namespace ProtoBuf
         }
     }
 }
+#endif
