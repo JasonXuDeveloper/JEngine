@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using BM;
 using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
@@ -132,7 +133,8 @@ public class InitJEngine : MonoBehaviour
 #endif
         {
             //真机模式解密加载
-            var dllFile = (TextAsset)AssetMgr.Load($"Assets/HotUpdateResources/Dll/{DllName}", typeof(TextAsset));
+            var dllFile = (TextAsset)AssetMgr.Load($"Assets/HotUpdateResources/Dll/{DllName}",
+                AssetComponentConfig.DefaultBundlePackageName);
             if (dllFile == null)
             {
                 return;
