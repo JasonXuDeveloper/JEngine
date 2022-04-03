@@ -93,7 +93,9 @@ namespace JEngine.Editor
 		GenerateClrBind,
 		GenerateCrossDomainAdapter,
 		OpenJEngineSetting,
-		ClassBindInfo
+		ClassBindInfo,
+		Notice,
+		NoticeText
 	}
 
 	internal class Setting : EditorWindow
@@ -200,6 +202,15 @@ namespace JEngine.Editor
 				"and it is optional to ignore private fields and properties, or ignore fields and properties with [HideInInspector] attribute, you need to set it up in JEngine Setting Panel,\n" +
 				"Get all types for ClassBind will adjust all types for current fields in the ClassBind Inspector,\n" +
 				"Rearrange fields will rearrange all fields by its name, and will remove non-exist fields and properties in the specific type (not including fields and properties with ClassBindIgnore or HideInInspector attribute)\n"},//ClassBindInfo
+			new []
+			{
+				"温馨提示",
+				"Kindly Notice"
+			},//Notice
+			new []
+			{
+				"[JEngine] 第一次使用请看文档！文档网站：docs.xgamedev.net","[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net"
+			},//NoticeText
 		};
 
 		/// <summary>
@@ -324,18 +335,16 @@ namespace JEngine.Editor
 			return result;
 		}
 
-		public static void SetPrefix()
+		public static void SetPrefix(string prefix)
 		{
 			if (string.IsNullOrEmpty(_prefix))
 			{
-				_prefix = $"JEngine.Editor.Setting.{Application.productName}";
+				_prefix = $"JEngine.Editor.Setting.{Application.productName}.{prefix}.";
 			}
 		}
 
 		private void OnGUI()
 		{
-			SetPrefix();
-
 			if (_instance == null)
 			{
 				_instance = this;
