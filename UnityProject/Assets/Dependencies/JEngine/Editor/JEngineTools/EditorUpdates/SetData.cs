@@ -9,8 +9,8 @@ namespace JEngine.Editor
     {
         public static bool hasAdded;
         private static string path = "JEngine.lock";
-        
-        public static void Update()
+
+        public static string GetPrefix()
         {
             string prefix = "";
             
@@ -31,8 +31,13 @@ namespace JEngine.Editor
                 prefix = File.ReadAllText(fPath);
             }
 
+            return prefix;
+        }
+        
+        public static void Update()
+        {
+            string prefix = GetPrefix();
             InjectDefineSymbol();
-            
             hasAdded = true;
             Setting.SetPrefix(prefix);
         }

@@ -13,8 +13,8 @@ namespace JEngine.Editor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static async void DoChange()
         {
-            var prefix = $"JEngine.Editor.Setting.{Application.productName}";
-            var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
+            var prefix = $"JEngine.Editor.Setting.{Application.productName}.{SetData.GetPrefix()}.";
+            var jump = PlayerPrefs.GetString($"{prefix}JumpStartUpScene", "1") == "1";
             if (!jump) return;
             var scene = SceneManager.GetActiveScene();
             if (scene.path != Setting.StartUpScenePath)
@@ -32,10 +32,10 @@ namespace JEngine.Editor
                 DynamicGI.UpdateEnvironment();
             }
             var key = Object.FindObjectOfType<InitJEngine>().key;
-            var k = PlayerPrefs.GetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", "");
+            var k = PlayerPrefs.GetString($"{prefix}.EncryptPassword", "");
             if (string.IsNullOrEmpty(k))
             {
-                PlayerPrefs.SetString($"JEngine.Editor.Setting.{Application.productName}.EncryptPassword", key);
+                PlayerPrefs.SetString($"{prefix}.EncryptPassword", key);
             }
             else
             {
