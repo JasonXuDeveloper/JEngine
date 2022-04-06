@@ -41,11 +41,9 @@ namespace JEngine.Editor
             {
                 if (key != k)
                 {
-                    var res = EditorUtility.DisplayDialog("DLL解密秘钥异常",
-                                    $"面板里配置的加密密码是：{k}\n" +
-                                    $"游戏场景里配置的解密密码是：{key}\n" +
-                                    $"点击确定使用面板配置的密码，点击忽略则继续使用当前密码'{key}'"
-                                    , "确定","忽略");
+                    var res = EditorUtility.DisplayDialog(
+                        string.Format(Setting.GetString(SettingString.MismatchDLLKey), k, key),
+                        Setting.GetString(SettingString.Ok), Setting.GetString(SettingString.Ignore));
                     if (res)
                     {
                         Object.FindObjectOfType<InitJEngine>().key = k;

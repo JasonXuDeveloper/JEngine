@@ -184,7 +184,7 @@
             void OnDestroy()
             {
                 _destoryed = true;
-
+                
                 if (!_mDestroyMethodGot)
                 {
                     _mDestroyMethod = instance.Type.GetMethod("OnDestroy", 0);
@@ -195,6 +195,9 @@
                 {
                     appdomain.Invoke(_mDestroyMethod, instance, Tools.Param0);
                 }
+                
+                //销毁ILTypeIns
+                _instance = null;
             }
 
             IMethod _mOnTriggerEnterMethod;

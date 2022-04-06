@@ -317,8 +317,12 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         void OnDestroy()
         {
             _destoryed = true;
-
-            if (!isMonoBehaviour) return;
+            if (!isMonoBehaviour)
+            {
+                //销毁ILTypeIns
+                _instance = null;
+                return;
+            }
 
             if (!_mDestroyMethodGot)
             {
@@ -330,6 +334,9 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 _appdomain.Invoke(_mDestroyMethod, _instance, Tools.Param0);
             }
+            
+            //销毁ILTypeIns
+            _instance = null;
         }
 
         IMethod _mOnTriggerEnterMethod;
