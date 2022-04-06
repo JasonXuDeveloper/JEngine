@@ -315,6 +315,7 @@ using UnityEngine;
 using JEngine.Editor;
 using " + nameSpace + @";
 using UnityEditor.AnimatedValues;
+using System.Collections.Generic;
 
 ");
             sb.Append(

@@ -95,7 +95,10 @@ namespace JEngine.Editor
 		OpenJEngineSetting,
 		ClassBindInfo,
 		Notice,
-		NoticeText
+		NoticeText,
+		MismatchDLLKey,
+		Ok,
+		Ignore,
 	}
 
 	internal class Setting : EditorWindow
@@ -215,6 +218,28 @@ namespace JEngine.Editor
 				"[JEngine] 第一次使用请看文档！文档网站：docs.xgamedev.net",
 				"[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net"
 			}, //NoticeText
+			new []
+			{
+				"DLL解密秘钥异常",
+				$"面板里配置的加密密码是：{0}\n" +
+				$"游戏场景里配置的解密密码是：{1}\n" +
+				$"点击确定使用面板配置的密码，点击忽略则继续使用当前密码'{1}'",
+				
+				"DLL decrypt key exception",
+				$"DLL Encryption password on JEngine Setting during building Assetbundle is: {0}\n" +
+				$"DLL Encryption password in Updater during runtime is: {1}\n" +
+				$"Press ok to use the password from JEngine setting, press ignore to continue using the current password '{1}'"
+			},//mismatchDLLKey
+			new []
+			{
+				"确定",
+				"Ok"
+			},//OK
+			new []
+			{
+				"忽略",
+				"Ignore"
+			},//Ignore
 		};
 
 		/// <summary>
