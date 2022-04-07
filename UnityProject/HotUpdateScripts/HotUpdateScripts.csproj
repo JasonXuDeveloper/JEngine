@@ -47,7 +47,6 @@
     <Compile Include="JEngine\Core\JSaver.cs" />
     <Compile Include="JEngine\Core\JObjectPool.cs" />
     <Compile Include="JEngine\Core\JBehaviour.cs" />
-    <Compile Include="JEngine\Core\JResource.cs" />
     <Compile Include="JEngine\Core\JAction.cs" />
     <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />

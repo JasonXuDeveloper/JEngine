@@ -161,17 +161,18 @@ namespace JEngine.Core
                 Init();
             }
             
-            if (_phrases != null && !_phrases.TryGetValue(_language,out var dic))
+            if (_phrases != null && !_phrases.ContainsKey(_language))
             {
-                string newLang = _phrases.Keys.ToList().Find(k => k.Split('-')[0] == _language.Split('-')[0]);
+                string newLang = _phrases.Keys.ToList().Find(k => k.StartsWith($"{_language.Split('-')[0]}-"));
                 if (_language != "zh-cn" && newLang == null)
                 {
                     newLang = "zh-cn";
                 }
-                else
+                else if (newLang == null)
                 {
-                    return $"[invalid language: {_language}]";;
+                    return $"[invalid language: {_language}]";
                 }
+
                 Log.PrintError($"不存在语言{_language}，自动替换为{newLang}");
                 ChangeLanguage(newLang);
             }
