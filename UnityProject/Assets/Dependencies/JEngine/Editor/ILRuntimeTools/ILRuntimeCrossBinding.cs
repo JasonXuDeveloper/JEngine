@@ -320,7 +320,8 @@ using System.Collections.Generic;
 ");
             sb.Append(
                 @"[CustomEditor(typeof(");
-            sb.Append(clsName + "Adapter.Adapter");
+            sb.Append((nameSpace == clsName && !string.IsNullOrEmpty(nameSpace) ? nameSpace + "." : "") + clsName +
+                      "Adapter.Adapter");
             sb.Append(@"), true)]
 public class ");
             sb.Append(clsName);
