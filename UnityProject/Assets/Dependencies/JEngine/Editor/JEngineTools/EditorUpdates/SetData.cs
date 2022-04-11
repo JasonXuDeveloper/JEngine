@@ -24,6 +24,14 @@ namespace JEngine.Editor
                 Debug.LogError(Setting.GetString(SettingString.NoticeText));
                 EditorUtility.DisplayDialog(Setting.GetString(SettingString.Notice),
                     Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
+                if (Setting.Language == JEngineLanguage.English)
+                {
+                    Application.OpenURL("https://docs.xgamedev.net/documents/0.7/");
+                }
+                else
+                {
+                    Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.7/");
+                }
                 InjectDefineSymbol();
             }
             else

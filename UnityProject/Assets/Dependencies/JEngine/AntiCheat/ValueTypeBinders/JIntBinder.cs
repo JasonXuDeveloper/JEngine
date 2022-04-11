@@ -1,3 +1,4 @@
+#if INIT_JE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,3 +226,4 @@ namespace JEngine.AntiCheat.ValueTypeBinders
         }
     }
 }
+#endif
