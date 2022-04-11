@@ -23,10 +23,9 @@ public static class LoadILRuntime
         RegisterValueTypeBinderHelper.HelperRegister(appdomain);
         //Protobuf适配
         ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
-#endif
-
         //LitJson适配
         JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
+#endif
 
         //CLR绑定（有再去绑定）
         Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");

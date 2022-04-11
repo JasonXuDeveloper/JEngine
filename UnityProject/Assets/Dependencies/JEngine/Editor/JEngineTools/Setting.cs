@@ -245,7 +245,7 @@ namespace JEngine.Editor
 		/// <summary>
 		/// 语言
 		/// </summary>
-		private static JEngineLanguage Language
+		public static JEngineLanguage Language
 		{
 			get => (JEngineLanguage)(int.Parse(PlayerPrefs.GetString($"{_prefix}.PanelLanguage", "0")));
 			set => PlayerPrefs.SetString($"{_prefix}.PanelLanguage", value == JEngineLanguage.中文 ? "0" : "1");

@@ -38,7 +38,7 @@ namespace JEngine.Editor
         [MenuItem("JEngine/Open Documents",priority = 1999)]
         public static void OpenDocument()
         {
-            Application.OpenURL("https://xgamedev.uoyou.com");
+            Application.OpenURL("https://docs.xgamedev.net/");
         }
         
         [MenuItem("JEngine/Open on Github",priority = 2000)]
