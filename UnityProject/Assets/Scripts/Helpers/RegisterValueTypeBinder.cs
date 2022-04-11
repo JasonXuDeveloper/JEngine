@@ -1,3 +1,4 @@
+#if INIT_JE
 using ILRuntime.Runtime.Enviorment;
 using JEngine.AntiCheat;
 using JEngine.AntiCheat.ValueTypeBinders;
@@ -28,3 +29,4 @@ namespace JEngine.Helper
         }
     }
 }
+#endif
