@@ -194,6 +194,7 @@ namespace BM
                     string name = assetPath.Replace("/", "_");
                     name = name.Replace(".", "__");
                     name = name.Replace("-", "_");
+                    name = name.Replace("+", "_");
                     name = name.Replace(" ", "__");
                     name = RemoveSymbol(name);
                     sb.Append("\t\tpublic const string " + name + " = \"" + assetPath + "\";\n");
