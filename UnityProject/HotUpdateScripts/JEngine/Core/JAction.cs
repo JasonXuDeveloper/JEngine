@@ -68,8 +68,7 @@ namespace JEngine.Core
         {
             if (time > 0)
             {
-                _delays.Add(_toDo.Count, time);
-                _toDo.Add(null);
+                _delays[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = time;
             }
             return this;
         }
@@ -78,28 +77,25 @@ namespace JEngine.Core
         {
             if (frame > 0)
             {
-                _delayFrames.Add(_toDo.Count, frame);
-                _toDo.Add(null);
+                _delayFrames[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = frame;
             }
             return this;
         }
 
         public JAction Until(Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
-            _waits.Add(_toDo.Count, condition);
-            _frequency.Add(_toDo.Count, frequency);
-            _timeout.Add(_toDo.Count, timeout);
-            _toDo.Add(null);
+            _waits[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = condition;
+            _frequency[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = frequency;
+            _timeout[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = timeout;
             return this;
         }
 
         public JAction RepeatWhen(Action action, Func<bool> condition, float frequency = 0.5f, float timeout = -1)
         {
-            _whens.Add(_toDo.Count, action);
-            _whenCauses.Add(_toDo.Count, condition);
-            _whenFrequency.Add(_toDo.Count, frequency);
-            _whenTimeout.Add(_toDo.Count, timeout);
-            _toDo.Add(null);
+            _whens[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = action;
+            _whenCauses[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = condition;
+            _whenFrequency[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = frequency;
+            _whenTimeout[_toDo.Count == 0 ? 0 : _toDo.Count - 1] = timeout;
             return this;
         }
 
@@ -245,7 +241,6 @@ namespace JEngine.Core
                 if (_delays.ContainsKey(index))
                 {
                     await Task.Delay((int)(_delays[index] * 1000));
-                    continue;
                 }
 
                 //DelayFrames
@@ -255,7 +250,6 @@ namespace JEngine.Core
                     var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
                     var duration = durationPerFrame * _delayFrames[index];
                     await Task.Delay(duration);
-                    continue;
                 }
 
 
@@ -275,7 +269,6 @@ namespace JEngine.Core
                         await Task.Delay((int)(_frequency[index] * 1000));
                         _time += _frequency[index];
                     }
-                    continue;
                 }
 
                 //Repeat When
@@ -314,7 +307,6 @@ namespace JEngine.Core
                         await Task.Delay((int)(_frequency * 1000));
                         _time += _frequency;
                     }
-                    continue;
                 }
 
                 //Do
