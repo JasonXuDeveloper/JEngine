@@ -464,8 +464,8 @@ namespace BM
                 fs.Close();
             }
             UpdateBundleDataInfo.AddCRCFileInfo(PackegName, FileName, VerifyHelper.GetCRC32(data));
-            UpdateBundleDataInfo.FinishUpdateSize += data.Length;
             UpdateBundleDataInfo.FinishDownLoadBundleCount++;
+            UpdateBundleDataInfo.FinishUpdateSize += data.Length;
             foreach (Queue<DownLoadTask> downLoadTaskQueue in PackageDownLoadTask.Values)
             {
                 if (downLoadTaskQueue.Count > 0)
