@@ -51,7 +51,6 @@
                             _isAwaking = false;
                             _awaked = true;
                             OnEnable();
-                            //Start();
                         }
                     }
                 }

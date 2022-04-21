@@ -172,7 +172,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         isAwaking = false;
                         awaked = true;
                         OnEnable();
-                        //Start();
                     }
                 }
             }
