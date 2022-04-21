@@ -96,7 +96,6 @@ namespace BM
             {
                 Directory.CreateDirectory(Application.streamingAssetsPath);
             }
-            DeleteHelper.DeleteDir(Application.streamingAssetsPath);
             AssetLoadTable assetLoadTable = AssetDatabase.LoadAssetAtPath<AssetLoadTable>(AssetLoadTablePath);
             foreach (AssetsLoadSetting assetsLoadSetting in assetLoadTable.AssetsLoadSettings)
             {
@@ -113,6 +112,10 @@ namespace BM
                 if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);
+                }
+                else
+                {
+                    DeleteHelper.DeleteDir(directoryPath);
                 }
                 DirectoryInfo subBundlePath = new DirectoryInfo(assetPathFolder);
                 FileInfo[] fileInfos = subBundlePath.GetFiles();
