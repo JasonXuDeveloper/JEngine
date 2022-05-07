@@ -122,7 +122,17 @@ namespace JEngine.Core
 
         public JAction Do(Action action)
         {
-            _toDo.Add(action);
+            _toDo.Add(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception e)
+                {
+                    Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                }
+            });
             return this;
         }
 
@@ -158,7 +168,17 @@ namespace JEngine.Core
 
         public JAction OnCancel(Action action)
         {
-            _onCancel = action;
+            _onCancel = () =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception e)
+                {
+                    Log.PrintError($"JAction OnCancel错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                }
+            };
             return this;
         }
 
@@ -167,10 +187,7 @@ namespace JEngine.Core
         {
             _cancel = true;
             _cancellationTokenSource.Cancel();
-            if (Application.isPlaying)
-            {
-                _onCancel?.Invoke();
-            }
+            _onCancel?.Invoke();
             return this;
         }
 
