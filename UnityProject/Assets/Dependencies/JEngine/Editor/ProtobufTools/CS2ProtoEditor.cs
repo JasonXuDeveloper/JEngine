@@ -98,8 +98,7 @@ namespace JEngine.Editor
 			var _class = win._class;
 			
 			//先热更里找
-			Type t = Assembly
-				.LoadFile("Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll").GetType(_class);
+			Type t = JEngine.Core.Tools.GetHotType(_class);
 
 			if (t == null)
 			{

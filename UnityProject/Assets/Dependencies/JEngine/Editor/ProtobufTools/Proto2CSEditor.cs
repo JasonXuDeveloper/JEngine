@@ -205,6 +205,15 @@ namespace JEngine.Editor
 
 			set.Process();
 			var errors = set.GetErrors();
+			if (errors != null && errors.Length > 0)
+			{
+				foreach (var error in errors)
+				{
+					Debug.LogError(error);
+				}
+
+				return;
+			}
 			CSharpCodeGenerator.ClearTypeNames();
 			var files = CSharpCodeGenerator.Default.Generate(set);
 
