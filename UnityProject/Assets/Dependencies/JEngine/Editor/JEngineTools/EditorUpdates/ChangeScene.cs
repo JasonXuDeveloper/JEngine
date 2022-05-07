@@ -14,13 +14,14 @@ namespace JEngine.Editor
         private static async void DoChange()
         {
             var prefix = $"JEngine.Editor.Setting.{Application.productName}.{SetData.GetPrefix()}.";
-            var jump = PlayerPrefs.GetString($"{prefix}JumpStartUpScene", "1") == "1";
+            var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
             if (!jump) return;
             var scene = SceneManager.GetActiveScene();
-            if (scene.path != Setting.StartUpScenePath)
+            var path = PlayerPrefs.GetString($"{prefix}.StartUpScenePath", "Assets/Init.unity");
+            if (scene.path != path)
             {
-                string name = Setting.StartUpScenePath
-                    .Substring(Setting.StartUpScenePath.LastIndexOf('/') + 1)
+                string name = path
+                    .Substring(path.LastIndexOf('/') + 1)
                     .Replace(".unity", "");
 
                 SceneManager.LoadScene(name);
@@ -31,6 +32,7 @@ namespace JEngine.Editor
                 }
                 DynamicGI.UpdateEnvironment();
             }
+
             var key = Object.FindObjectOfType<InitJEngine>().key;
             var k = PlayerPrefs.GetString($"{prefix}.EncryptPassword", "");
             if (string.IsNullOrEmpty(k))
