@@ -52,6 +52,14 @@ namespace JEngine.Examples
         }
     }
 
+    [System.Serializable]
+    [global::ProtoBuf.ProtoContract()]
+    public class SubPBTest: PBTest
+    {
+        [global::ProtoBuf.ProtoMember(3)]
+        public string c;
+    }
+
     public class ProtobufDemo
     {
         public void Awake()
@@ -82,6 +90,34 @@ namespace JEngine.Examples
             Log.Print(string.Join(",", result.a));
             Log.Print("反序列化成功，现在我们打印一下反序列化后的类型的label字段，也就是热更的enum");
             Log.Print(result.label);
+
+            Log.Print("测试一下继承后的类去序列化");
+            var spbtest = new SubPBTest()
+            {
+                a = new List<HotData>()
+                {
+                    new HotData()
+                    {
+                        v=1,
+                        k="第一个"
+                    },
+                    new HotData()
+                    {
+                        v=2,
+                        k="第二个"
+                    },
+                },
+                label = PBTest.Label.LABEL_OPTIONAL,
+                c = "测试继承"
+            };
+            bytes = StringifyHelper.ProtoSerialize(spbtest);
+            Log.Print($"序列化后的byte[]长度：{bytes.Length}");
+            Log.Print("开始反序列化");
+            var result2 = StringifyHelper.ProtoDeSerialize<SubPBTest>(bytes);
+            Log.Print("反序列化成功，现在我们打印一下反序列化后的类型的a, labels和c字段");
+            Log.Print(string.Join(",", result2.a));
+            Log.Print(result2.label);
+            Log.Print(result2.c);
         }
     }
 }
