@@ -40,8 +40,6 @@ namespace JEngine.Core
             JActions.Add(this);
         }
 
-        private int _index;
-
         private bool _executing = false;
         private bool _parallel = false;
         private bool _cancel = false;
@@ -136,6 +134,22 @@ namespace JEngine.Core
             return this;
         }
 
+        public JAction Do(Task action)
+        {
+            _toDo.Add(async () =>
+            {
+                try
+                {
+                    await action;
+                }
+                catch (Exception e)
+                {
+                    Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                }
+            });
+            return this;
+        }
+
         public JAction Parallel()
         {
             _parallel = true;
@@ -144,22 +158,22 @@ namespace JEngine.Core
 
         public JAction Execute(bool onMainThread = false)
         {
-            _ = Do(onMainThread);
+            Do(onMainThread).Coroutine();
             return this;
         }
 
         public JAction ExecuteAsyncParallel(Action callback = null, bool onMainThread = false)
         {
-            _ = _ExecuteAsync(callback, onMainThread);
+            _ExecuteAsync(callback, onMainThread).Coroutine();
             return this;
         }
 
-        public async Task<JAction> ExecuteAsync(bool onMainThread = false)
+        public async ET.ETTask<JAction> ExecuteAsync(bool onMainThread = false)
         {
             return await Do(onMainThread);
         }
 
-        private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
+        private async ET.ETTask<JAction> _ExecuteAsync(Action callback, bool onMainThread)
         {
             await Do(onMainThread);
             callback?.Invoke();
@@ -215,7 +229,6 @@ namespace JEngine.Core
 
         private void _reset()
         {
-            _index = JActions.Count;
             _executing = false;
             _parallel = false;
             _cancel = false;
@@ -233,13 +246,13 @@ namespace JEngine.Core
         }
 
 
-        private async Task<JAction> Do(bool onMainThread)
+        private async ET.ETTask<JAction> Do(bool onMainThread)
         {
-            //这边不log的时候，会有概率跳过，迫不得已加了个Log
-            if (onMainThread)
-            {
-                Log.Print($"正在往主线程增加JAction[{_index}]的任务");
-            }
+            ////这边不log的时候，会有概率跳过，迫不得已加了个Log
+            //if (onMainThread)
+            //{
+            //    Log.Print($"正在往主线程增加JAction[{_index}]的任务");
+            //}
 
             if (_executing == true && !_parallel)
             {
@@ -334,7 +347,7 @@ namespace JEngine.Core
                     continue;
                 }
 
-                //Do
+                //Do=
                 await Task.Run(() =>
                 {
                     void action(object p)
