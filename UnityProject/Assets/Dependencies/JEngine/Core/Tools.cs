@@ -278,11 +278,13 @@ namespace JEngine.Core
                     .SelectMany(g => g.GetComponentsInChildren<T>(true))
                     .ToList();
             }
+#if INIT_JE
             return ClassBindMgr.LoadedScenes.SelectMany(scene => scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
+#endif
         }
-        
+
         /// <summary>
         /// Get a class instance from a gameObject, can be either hot or local
         /// </summary>

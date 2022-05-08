@@ -37,7 +37,7 @@ public class UpdateScreen : MonoBehaviour, IUpdater
     public Text version;
     public string packageName;
 
-    private async void Start()
+    private void Start()
     {
         try
         {
