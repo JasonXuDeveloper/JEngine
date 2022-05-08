@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AssetsLoadSetting_1
   m_EditorClassIdentifier: 
   BuildName: Main
-  BuildIndex: 4
+  BuildIndex: 0
   BundleVariant: je
   NameByHash: 1
   BuildAssetBundleOptions: 256
@@ -30,3 +30,12 @@ MonoBehaviour:
   - Assets/HotUpdateResources/UI
   ScenePath:
   - Assets/HotUpdateResources/Scene
+  BlacklistFile:
+  - .DS_store
+  - LightingData.asset
+  BlacklistExtension:
+  - .dll
+  - .cs
+  - .meta
+  - .js
+  - .boo

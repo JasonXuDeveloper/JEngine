@@ -43,7 +43,7 @@ public class UpdateScreen : MonoBehaviour, IUpdater
         {
             version.text = "资源版本号: v" + Application.version;
         }
-        catch (Exception e)
+        catch
         {
             version.text = "初始版本";
         }

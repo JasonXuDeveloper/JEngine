@@ -37,7 +37,24 @@ namespace BM
         [Header("场景资源")]
         [Tooltip("需要通过Bundle加载的场景的路径")]
         public List<string> ScenePath = new List<string>();
-        
+
+        [Header("黑名单文件")]
+        [Header("该列表内的同名文件不会被打入AB")]
+        public List<string> BlacklistFile = new List<string>()
+        {
+            ".DS_store",
+            "LightingData.asset"
+        };
+
+        [Header("黑名单后缀")] [Header("该列表内的同后缀文件不会被打入AB")]
+        public List<string> BlacklistExtension = new List<string>()
+        {
+            ".dll",
+            ".cs",
+            ".meta",
+            ".js",
+            ".boo"
+        };
     }
 }
 
