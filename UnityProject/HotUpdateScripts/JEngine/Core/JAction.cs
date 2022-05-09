@@ -128,6 +128,7 @@ namespace JEngine.Core
                 }
                 catch (Exception e)
                 {
+                    e = e.InnerException;
                     Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
                 }
             });
@@ -144,6 +145,7 @@ namespace JEngine.Core
                 }
                 catch (Exception e)
                 {
+                    e = e.InnerException;
                     Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
                 }
             });
@@ -190,6 +192,7 @@ namespace JEngine.Core
                 }
                 catch (Exception e)
                 {
+                    e = e.InnerException;
                     Log.PrintError($"JAction OnCancel错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
                 }
             };
