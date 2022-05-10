@@ -78,6 +78,8 @@ public class InitJEngine : MonoBehaviour
     /// </summary>
     public void LoadHotUpdateCallback()
     {
+        //替换LogHandler
+        Debug.unityLogger.logHandler = new JEngine.Core.Logger(Debug.unityLogger.logHandler);
         //加载热更DLL
         Instance.LoadHotFixAssembly();
         //调用SetupGame周期
