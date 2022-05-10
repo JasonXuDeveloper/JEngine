@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -133,8 +135,18 @@ namespace JEngine.Core
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
-                    SetStackTracesString(exception,
-                        $"==========ILRuntime StackTrace==========\n{d}\n\n==========Normal StackTrace=========\n{exception.StackTrace}");
+                    string s = GetAllExceptionStackTrace(exception);
+                    //能反射就反射
+                    if (_stackTraceString != null)
+                    {
+                        SetStackTracesString(exception,
+                            $"==========ILRuntime StackTrace==========\n{s}\n\n==========Normal StackTrace=========\n{exception.StackTrace}");
+                    }
+                    //不能反射就额外打个Log
+                    else
+                    {
+                        Debug.LogError($"下面的报错的额外信息：\n==========ILRuntime StackTrace==========\n{s}");
+                    }
                 }
                 logHandler.LogException(exception, null);
             }
@@ -148,12 +160,41 @@ namespace JEngine.Core
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
-                    
-                    SetStackTracesString(exception,
-                        $"==========ILRuntime StackTrace==========\n{d}\n\n==========Normal StackTrace=========\n{exception.StackTrace}");
+                    string s = GetAllExceptionStackTrace(exception);
+                    //能反射就反射
+                    if (_stackTraceString != null)
+                    {
+                        SetStackTracesString(exception,
+                            $"==========ILRuntime StackTrace==========\n{s}\n\n==========Normal StackTrace=========\n{exception.StackTrace}");
+                    }
+                    //不能反射就额外打个Log
+                    else
+                    {
+                        Debug.LogError($"下面的报错的额外信息：\n==========ILRuntime StackTrace==========\n{s}");
+                    }
                 }
                 logHandler.LogException(exception, context);
             }
+        }
+
+        /// <summary>
+        /// 获取全部堆栈信息
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        private string GetAllExceptionStackTrace(Exception exception)
+        {
+            Exception temp = exception;
+            List<Exception> all = new List<Exception>();
+            int depth = 20;//深度20层
+            while (depth-- > 0 && temp != null && temp.Data["StackTrace"] != null)
+            {
+                all.Add(temp);
+                temp = temp != exception.InnerException ? exception.InnerException : null;//inner是自己就好退出了
+            }
+            //把最底层的放最外面
+            all.Reverse();
+            return string.Join("\n\n", all.Select(e => e.Data["StackTrace"]).ToList().FindAll(s => s != null));
         }
 
         public void LogFormat(LogType logType, string format, params object[] args)
