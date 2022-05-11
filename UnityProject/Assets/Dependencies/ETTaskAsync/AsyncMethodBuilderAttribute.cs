@@ -1,4 +1,5 @@
-﻿namespace System.Runtime.CompilerServices
+﻿#if !NOT_UNITY
+namespace System.Runtime.CompilerServices
 {
     public sealed class AsyncMethodBuilderAttribute: Attribute
     {
@@ -13,3 +14,4 @@
         }
     }
 }
+#endif

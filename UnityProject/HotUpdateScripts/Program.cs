@@ -60,7 +60,7 @@ namespace HotUpdateScripts
         /// <summary>
         /// 异步必看
         /// </summary>
-        //public static async void AsyncTest()
+        //public static async System.Threading.Tasks.Task AsyncTest()
         //{
         //    //因为编译的时候疑似给async方法包了一层try-catch，导致ILRuntime无法正确显示async方法内部报错的堆栈，这个时候需要这样：
         //    await aw();
@@ -72,8 +72,8 @@ namespace HotUpdateScripts
         /// <returns></returns>
         //private static async System.Threading.Tasks.Task aw()
         //{
-        //    await System.Threading.Tasks.Task.Delay(2000);
-        //    throw new System.Exception("报错");
+        //    await System.Threading.Tasks.Task.Delay(20);
+        //    throw new System.NullReferenceException();
         //}
 
         /// <summary>

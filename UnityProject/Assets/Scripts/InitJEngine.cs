@@ -78,8 +78,10 @@ public class InitJEngine : MonoBehaviour
     /// </summary>
     public void LoadHotUpdateCallback()
     {
-        //替换LogHandler
+        //替换LogHandler，让UnityEngine.Debug.LogException能定位更精准的堆栈，同时利用插件精简堆栈信息
         Debug.unityLogger.logHandler = new JEngine.Core.Logger(Debug.unityLogger.logHandler);
+        //给ETTask/ETVoid的报错定位到UnityEngine.Debug.LogException
+        ET.ETTask.ExceptionHandler += Debug.LogException;
         //加载热更DLL
         Instance.LoadHotFixAssembly();
         //调用SetupGame周期

@@ -145,17 +145,19 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 
 ## v0.7.2 最新功能
 
-- 新Protobuf**序列化Demo**
-
-- **更新**Protobuf-net魔改版**插件**
-
-- **优化**JAction
-
 - Bug**修复**
 
 - **优化**底层
 
-- **重写**Unity**日志输出**
+- **更新**ETTask
+
+- **优化**JAction
+
+- **优化**Unity**报错堆栈**
+
+- 新Protobuf**序列化Demo**
+
+- **更新**Protobuf-net魔改版**插件**
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

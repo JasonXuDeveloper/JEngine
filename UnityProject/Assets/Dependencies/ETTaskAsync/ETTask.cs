@@ -6,9 +6,11 @@ using System.Runtime.ExceptionServices;
 
 namespace ET
 {
-    [AsyncMethodBuilder(typeof(ETAsyncTaskMethodBuilder))]
-    public class ETTask : ICriticalNotifyCompletion
+    [AsyncMethodBuilder(typeof (ETAsyncTaskMethodBuilder))]
+    public class ETTask: ICriticalNotifyCompletion
     {
+        public static Action<Exception> ExceptionHandler;
+        
         public static ETTaskCompleted CompletedTask
         {
             get
@@ -30,10 +32,10 @@ namespace ET
             {
                 return new ETTask();
             }
-
+            
             if (queue.Count == 0)
             {
-                return new ETTask() { fromPool = true };
+                return new ETTask() {fromPool = true};    
             }
             return queue.Dequeue();
         }
@@ -44,7 +46,7 @@ namespace ET
             {
                 return;
             }
-
+            
             this.state = AwaiterStatus.Pending;
             this.callback = null;
             queue.Enqueue(this);
@@ -62,31 +64,28 @@ namespace ET
         private ETTask()
         {
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         [DebuggerHidden]
         private async ETVoid InnerCoroutine()
         {
             await this;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void Coroutine()
         {
             InnerCoroutine().Coroutine();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public ETTask GetAwaiter()
         {
             return this;
         }
+
         
         public bool IsCompleted
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DebuggerHidden]
             get
             {
@@ -94,7 +93,6 @@ namespace ET
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void UnsafeOnCompleted(Action action)
         {
@@ -107,14 +105,12 @@ namespace ET
             this.callback = action;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void OnCompleted(Action action)
         {
             this.UnsafeOnCompleted(action);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void GetResult()
         {
@@ -126,15 +122,14 @@ namespace ET
                 case AwaiterStatus.Faulted:
                     ExceptionDispatchInfo c = this.callback as ExceptionDispatchInfo;
                     this.callback = null;
-                    c?.Throw();
                     this.Recycle();
+                    c?.Throw();
                     break;
                 default:
                     throw new NotSupportedException("ETTask does not allow call GetResult directly when task not completed. Please use 'await'.");
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void SetResult()
         {
@@ -167,11 +162,11 @@ namespace ET
         }
     }
 
-    [AsyncMethodBuilder(typeof(ETAsyncTaskMethodBuilder<>))]
-    public class ETTask<T> : ICriticalNotifyCompletion
+    [AsyncMethodBuilder(typeof (ETAsyncTaskMethodBuilder<>))]
+    public class ETTask<T>: ICriticalNotifyCompletion
     {
         private static readonly Queue<ETTask<T>> queue = new Queue<ETTask<T>>();
-
+        
         /// <summary>
         /// 请不要随便使用ETTask的对象池，除非你完全搞懂了ETTask!!!
         /// 假如开启了池,await之后不能再操作ETTask，否则可能操作到再次从池中分配出来的ETTask，产生灾难性的后果
@@ -183,14 +178,14 @@ namespace ET
             {
                 return new ETTask<T>();
             }
-
+            
             if (queue.Count == 0)
             {
-                return new ETTask<T>() { fromPool = true };
+                return new ETTask<T>() { fromPool = true };    
             }
             return queue.Dequeue();
         }
-
+        
         private void Recycle()
         {
             if (!this.fromPool)
@@ -217,28 +212,24 @@ namespace ET
         {
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         private async ETVoid InnerCoroutine()
         {
             await this;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void Coroutine()
         {
             InnerCoroutine().Coroutine();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public ETTask<T> GetAwaiter()
         {
             return this;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public T GetResult()
         {
@@ -251,25 +242,24 @@ namespace ET
                 case AwaiterStatus.Faulted:
                     ExceptionDispatchInfo c = this.callback as ExceptionDispatchInfo;
                     this.callback = null;
-                    c?.Throw();
                     this.Recycle();
+                    c?.Throw();
                     return default;
                 default:
                     throw new NotSupportedException("ETask does not allow call GetResult directly when task not completed. Please use 'await'.");
             }
         }
-        
+
+
         public bool IsCompleted
         {
             [DebuggerHidden]
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 return state != AwaiterStatus.Pending;
             }
-        }
+        } 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void UnsafeOnCompleted(Action action)
         {
@@ -282,14 +272,12 @@ namespace ET
             this.callback = action;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void OnCompleted(Action action)
         {
             this.UnsafeOnCompleted(action);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerHidden]
         public void SetResult(T result)
         {
@@ -306,8 +294,7 @@ namespace ET
             this.callback = null;
             c?.Invoke();
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         [DebuggerHidden]
         public void SetException(Exception e)
         {
