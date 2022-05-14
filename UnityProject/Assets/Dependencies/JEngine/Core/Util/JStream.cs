@@ -378,7 +378,7 @@ namespace JEngine.Core
             // Log.Print("获取到的密文："+string.Join(", ", encryptedData));
 
             //给encryptedData解密
-            var decrypt = CryptoHelper.AesDecryptWithNoPadding(encryptedData, _key);
+            var decrypt = CryptoMgr.AesDecryptWithNoPadding(encryptedData, _key);
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
             offset = remainder;
             

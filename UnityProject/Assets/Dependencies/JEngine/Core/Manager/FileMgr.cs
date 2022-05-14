@@ -1,5 +1,5 @@
 //
-// DllMgr.cs
+// FileMgr.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,14 +23,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System.IO;
 
 namespace JEngine.Core
 {
-    public class DLLMgr
+    public static partial class FileMgr
     {
-        public static string DllPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
+        /// <summary>
+        /// 是否存在文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool HasFile(string path)
+        {
+            return File.Exists(path);
+        }
         
         /// <summary>
         /// 删除文件或目录

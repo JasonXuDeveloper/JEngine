@@ -17,53 +17,8 @@ using Object = UnityEngine.Object;
 
 namespace JEngine.Core
 {
-    public static class Tools
+    public static partial class Tools
     {
-        public static readonly object[] Param0 = Array.Empty<object>();
-        private const float Bytes2Mb = 1f / (1024 * 1024);
-        
-        /// <summary>
-        /// 当前时间戳(ms)
-        /// </summary>
-        /// <returns></returns>
-        public static long TimeStamp => (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
-
-        /// <summary>
-        /// 获取下载速度
-        /// </summary>
-        /// <param name="downloadSpeed"></param>
-        /// <returns></returns>
-        public static string GetDisplaySpeed(float downloadSpeed)
-        {
-            if (downloadSpeed >= 1024 * 1024)
-            {
-                return $"{downloadSpeed * Bytes2Mb:f2}MB/s";
-            }
-            if (downloadSpeed >= 1024)
-            {
-                return $"{downloadSpeed / 1024:f2}KB/s";
-            }
-            return $"{downloadSpeed:f2}B/s";
-        }
-        
-        /// <summary>
-        /// 获取显示大小
-        /// </summary>
-        /// <param name="downloadSize"></param>
-        /// <returns></returns>
-        public static string GetDisplaySize(long downloadSize)
-        {
-            if (downloadSize >= 1024 * 1024)
-            {
-                return $"{downloadSize * Bytes2Mb:f2}MB";
-            }
-            if (downloadSize >= 1024)
-            {
-                return $"{downloadSize / 1024:f2}KB";
-            }
-            return $"{downloadSize:f2}B";
-        }
-
         /// <summary>
         /// 缓存domain
         /// </summary>
@@ -86,7 +41,7 @@ namespace JEngine.Core
                     return InitJEngine.Appdomain;
                 }
                 _cacheDomain = new AppDomain();
-                _cacheDomain.LoadAssembly(new MemoryStream(DLLMgr.FileToByte(DLLMgr.DllPath)),null, new PdbReaderProvider());
+                _cacheDomain.LoadAssembly(new MemoryStream(DllMgr.GetDllBytes(ConstMgr.MainHotDLLName)),null, new PdbReaderProvider());
                 LoadILRuntime.InitializeILRuntime(_cacheDomain);
                 return _cacheDomain;
             }

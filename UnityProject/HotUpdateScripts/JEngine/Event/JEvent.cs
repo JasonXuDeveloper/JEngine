@@ -234,14 +234,7 @@ namespace JEngine.Event
                 await new JAction()
                 .Do(() =>
                 {
-                    try
-                    {
-                        method.Invoke(value, parameters);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.PrintError($"[JEvent] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                    }
+                    method.Invoke(value, parameters);
                 })
                 .ExecuteAsync(RunInMain);
             });

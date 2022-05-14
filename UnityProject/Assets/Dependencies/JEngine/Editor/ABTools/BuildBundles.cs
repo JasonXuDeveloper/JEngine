@@ -15,16 +15,16 @@ namespace JEngine.Editor
         [MenuItem("Tools/BuildAsset/构建AssetBundle %#&B")]
         private static void BuildAssetBundles()
         {
-            DLLMgr.Delete("Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
-            // DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Rules.asset");
-            // DLLMgr.Delete(Directory.GetParent(Application.dataPath)+"/Assets/XAsset/ScriptableObjects/Manifest.asset");
+            string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
+            FileMgr.Delete(dllPath);
 
             Action<string> buildAct = async s =>
             {
                 var watch = new Stopwatch();
                 watch.Start();
-                var bytes = DLLMgr.FileToByte(DLLMgr.DllPath);
-                var result = DLLMgr.ByteToFile(CryptoHelper.AesEncrypt(bytes,s), "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes");
+                var bytes = FileMgr.FileToByte(dllPath);
+                var result = FileMgr.ByteToFile(CryptoMgr.AesEncrypt(bytes, s),
+                    DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
                 watch.Stop();
                 Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
                 if (!result)
@@ -32,7 +32,7 @@ namespace JEngine.Editor
                     Log.PrintError("DLL转Byte[]出错！");
                     return;
                 }
-            
+
                 Setting.EncryptPassword = s;
 
                 await Task.Delay(3);
@@ -42,9 +42,9 @@ namespace JEngine.Editor
                 watch.Start();
                 BuildAssets.BuildAllBundle();
                 watch.Stop();
-                Log.Print("BuildAssetBundles in: " + watch.ElapsedMilliseconds + " ms."); 
+                Log.Print("BuildAssetBundles in: " + watch.ElapsedMilliseconds + " ms.");
             };
-            
+
             if (string.IsNullOrEmpty(Setting.EncryptPassword))
             {
                 CryptoWindow.ShowWindow();
@@ -55,7 +55,7 @@ namespace JEngine.Editor
                 buildAct.Invoke(Setting.EncryptPassword);
             }
         }
-        
+
         private const string KViewCachePath = "Tools/BuildAsset/View/Caches";
         private const string KViewDataPath = "Tools/BuildAsset/View/Built Bundles";
         

@@ -1,5 +1,5 @@
 ﻿//
-// CryptoHelper.cs
+// CryptoMgr.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,14 +23,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Security.Cryptography;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace JEngine.Core
 {
-    public class CryptoHelper
+    public static class CryptoMgr
     { 
         /// <summary>
         /// 加密字符串
@@ -87,18 +86,18 @@ namespace JEngine.Core
                 return null;
             }
         }
-        
+
         /// <summary>
         /// AES 算法加密(ECB模式) 将明文加密
         /// </summary>
-        /// <param name="toEncryptArray,">明文</param>
-        /// <param name="Key">密钥</param>
+        /// <param name="toEncryptArray">明文</param>
+        /// <param name="key">密钥</param>
         /// <returns>加密后base64编码的密文</returns>
-        public static byte[] AesEncrypt(byte[] toEncryptArray, string Key)
+        public static byte[] AesEncrypt(byte[] toEncryptArray, string key)
         {
             try
             {
-                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+                byte[] keyArray = Encoding.UTF8.GetBytes(key);
 
                 RijndaelManaged rDel = new RijndaelManaged();
                 rDel.Key = keyArray;
@@ -121,13 +120,13 @@ namespace JEngine.Core
         /// AES 算法解密(ECB模式) 将密文base64解码进行解密，返回明文
         /// </summary>
         /// <param name="toDecryptArray">密文</param>
-        /// <param name="Key">密钥</param>
+        /// <param name="key">密钥</param>
         /// <returns>明文</returns>
-        public static byte[] AesDecrypt(byte[] toDecryptArray, string Key)
+        public static byte[] AesDecrypt(byte[] toDecryptArray, string key)
         {
             try
             {
-                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+                byte[] keyArray = Encoding.UTF8.GetBytes(key);
 
                 RijndaelManaged rDel = new RijndaelManaged();
                 rDel.Key = keyArray;
@@ -148,14 +147,14 @@ namespace JEngine.Core
         /// <summary>
         /// AES 算法加密(ECB模式) 无padding填充，用于分块解密
         /// </summary>
-        /// <param name="toEncryptArray,">明文</param>
-        /// <param name="Key">密钥</param>
+        /// <param name="toEncryptArray">明文</param>
+        /// <param name="key">密钥</param>
         /// <returns>加密后base64编码的密文</returns>
-        public static byte[] AesEncryptWithNoPadding(byte[] toEncryptArray, string Key)
+        public static byte[] AesEncryptWithNoPadding(byte[] toEncryptArray, string key)
         {
             try
             {
-                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+                byte[] keyArray = Encoding.UTF8.GetBytes(key);
 
                 RijndaelManaged rDel = new RijndaelManaged();
                 rDel.Key = keyArray;
@@ -178,13 +177,13 @@ namespace JEngine.Core
         /// AES 算法解密(ECB模式) 无padding填充，用于分块解密
         /// </summary>
         /// <param name="toDecryptArray">密文</param>
-        /// <param name="Key">密钥</param>
+        /// <param name="key">密钥</param>
         /// <returns>明文</returns>
-        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string Key)
+        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string key)
         {
             try
             {
-                byte[] keyArray = Encoding.UTF8.GetBytes(Key);
+                byte[] keyArray = Encoding.UTF8.GetBytes(key);
 
                 RijndaelManaged rDel = new RijndaelManaged();
                 rDel.Key = keyArray;

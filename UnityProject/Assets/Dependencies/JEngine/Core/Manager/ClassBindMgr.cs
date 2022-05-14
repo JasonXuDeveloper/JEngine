@@ -30,7 +30,7 @@ using UnityEngine.SceneManagement;
 
 namespace JEngine.Core
 {
-    public class ClassBindMgr : MonoBehaviour
+    public partial class ClassBindMgr : MonoBehaviour
     {
         public static void Instantiate()
         {

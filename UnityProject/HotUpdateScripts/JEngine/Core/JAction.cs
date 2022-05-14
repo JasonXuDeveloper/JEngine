@@ -325,12 +325,6 @@ namespace JEngine.Core
         /// <returns></returns>
         private async ET.ETTask<JAction> Do(bool onMainThread)
         {
-            ////这边不log的时候，会有概率跳过，迫不得已加了个Log
-            //if (onMainThread)
-            //{
-            //    Log.Print($"正在往主线程增加JAction[{_index}]的任务");
-            //}
-
             if (_item.executing && !_item.parallel)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
@@ -431,29 +425,23 @@ namespace JEngine.Core
                                 await Task.Run(action, _item.cancellationTokenSource.Token);
                             }
 
-
                             await Task.Delay((int)(frequency * 1000));
                             time += frequency;
                         }
                         continue;
                     }
 
-                    //Do
-                    void Action(object p)
+                    //DO
+                    if (!onMainThread)
                     {
-                        Task.Run(() =>
+                        await Task.Run(() =>
                         {
                             Execute(_item.toDo[index]);
                         }, _item.cancellationTokenSource.Token);
-
-                    }
-                    if (onMainThread)
-                    {
-                        Loom.QueueOnMainThread(Action, null);
                     }
                     else
                     {
-                        Action(null);
+                        Execute(_item.toDo[index]);
                     }
                 }
                 tcs.SetResult(true);
@@ -598,15 +586,7 @@ namespace JEngine.Core
             {
                 toDo.Add(() =>
                 {
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception e)
-                    {
-                        e = e.InnerException;
-                        Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
-                    }
+                    action();
                 });
             }
 
@@ -614,18 +594,7 @@ namespace JEngine.Core
             {
                 toDo.Add(async () =>
                 {
-                    try
-                    {
-                        await action;
-                    }
-                    catch (Exception e)
-                    {
-                        if (e.InnerException != null)
-                        {
-                            e = e.InnerException;
-                        }
-                        Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
-                    }
+                    await action;
                 });
             }
 
@@ -638,18 +607,7 @@ namespace JEngine.Core
             {
                 onCancel = () =>
                 {
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception e)
-                    {
-                        if (e.InnerException != null)
-                        {
-                            e = e.InnerException;
-                        }
-                        Log.PrintError($"JAction OnCancel错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
-                    }
+                    action();
                 };
             }
         }

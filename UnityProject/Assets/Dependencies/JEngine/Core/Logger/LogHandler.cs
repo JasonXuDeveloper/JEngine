@@ -1,3 +1,28 @@
+//
+// Logger.cs
+//
+// Author:
+//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
+//
+// Copyright (c) 2020 JEngine
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,8 +37,8 @@ namespace JEngine.Core
 {
     internal class Logger : ILogger
     {
-        private const string kNoTagFormat = "{0}";
-        private const string kTagFormat = "{0}: {1}";
+        private const string KNoTagFormat = "{0}";
+        private const string KTagFormat = "{0}: {1}";
 
         private Logger()
         {}
@@ -64,67 +89,67 @@ namespace JEngine.Core
         public void Log(LogType logType, object message)
         {
             if (IsLogTypeAllowed(logType))
-                logHandler.LogFormat(logType, null, kNoTagFormat, new object[] {GetString(message)});
+                logHandler.LogFormat(logType, null, KNoTagFormat, new object[] {GetString(message)});
         }
 
         public void Log(LogType logType, object message, Object context)
         {
             if (IsLogTypeAllowed(logType))
-                logHandler.LogFormat(logType, context, kNoTagFormat, new object[] {GetString(message)});
+                logHandler.LogFormat(logType, context, KNoTagFormat, new object[] {GetString(message)});
         }
 
         public void Log(LogType logType, string tag, object message)
         {
             if (IsLogTypeAllowed(logType))
-                logHandler.LogFormat(logType, null, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(logType, null, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void Log(LogType logType, string tag, object message, Object context)
         {
             if (IsLogTypeAllowed(logType))
-                logHandler.LogFormat(logType, context, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(logType, context, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void Log(object message)
         {
             if (IsLogTypeAllowed(LogType.Log))
-                logHandler.LogFormat(LogType.Log, null, kNoTagFormat, new object[] {GetString(message)});
+                logHandler.LogFormat(LogType.Log, null, KNoTagFormat, new object[] {GetString(message)});
         }
 
         public void Log(string tag, object message)
         {
             if (IsLogTypeAllowed(LogType.Log))
-                logHandler.LogFormat(LogType.Log, null, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Log, null, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void Log(string tag, object message, Object context)
         {
             if (IsLogTypeAllowed(LogType.Log))
-                logHandler.LogFormat(LogType.Log, context, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Log, context, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void LogWarning(string tag, object message)
         {
             if (IsLogTypeAllowed(LogType.Warning))
-                logHandler.LogFormat(LogType.Warning, null, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Warning, null, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void LogWarning(string tag, object message, Object context)
         {
             if (IsLogTypeAllowed(LogType.Warning))
-                logHandler.LogFormat(LogType.Warning, context, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Warning, context, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void LogError(string tag, object message)
         {
             if (IsLogTypeAllowed(LogType.Error))
-                logHandler.LogFormat(LogType.Error, null, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Error, null, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void LogError(string tag, object message, Object context)
         {
             if (IsLogTypeAllowed(LogType.Error))
-                logHandler.LogFormat(LogType.Error, context, kTagFormat, new object[] {tag, GetString(message)});
+                logHandler.LogFormat(LogType.Error, context, KTagFormat, new object[] {tag, GetString(message)});
         }
 
         public void LogException(Exception exception)

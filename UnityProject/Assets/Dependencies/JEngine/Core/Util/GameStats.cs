@@ -21,21 +21,16 @@ namespace JEngine.Core
             go.AddComponent<GameStats>();
             DontDestroyOnLoad(go);
         }
-        
+
         private void Update()
         {
             //进入热更了再开始
             if (Debug && InitJEngine.Success)
             {
                 //仅限于Editor的部分
-                #if UNITY_EDITOR
-                if (_encryptedCounts != InitJEngine.EncryptedCounts)
-                {
-                    var diff = InitJEngine.EncryptedCounts - _encryptedCounts;
-                    Log.Print($"第{_totalFrames}帧JStream总共将热更DLL分为了{InitJEngine.EncryptedCounts}块，新增{diff}块，进行解释执行");
-                    _encryptedCounts = InitJEngine.EncryptedCounts;
-                }
-                #endif
+#if UNITY_EDITOR
+                //待插入脚本
+#endif
             }
         }
 

@@ -1,5 +1,5 @@
-﻿//
-// Log.cs
+//
+// ConstMgr.cs
 //
 // Author:
 //       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
@@ -23,26 +23,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-using UnityEngine;
+using System;
 
 namespace JEngine.Core
 {
-    public class Log
+    public static partial class ConstMgr
     {
-        public static void Print(object message)
-        {
-            Debug.Log("[JEngine] " + message);
-        }
-
-        public static void PrintWarning(object message)
-        {
-            Debug.LogWarning("<color=#ffa673>[JEngine Warnning]</color> " + message);
-        }
-
-        public static void PrintError(object message)
-        {
-            Debug.LogError("<color=#db4259>[JEngine Error]</color> " + message);
-        }
+        public const string DLLSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
+        public const string PdbSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
+        public const string DLLBytesFolder = "Assets/HotUpdateResources/Dll/";
+        public const string MainHotDLLName = "HotUpdateScripts";
+        public const string DLLExtension = ".dll";
+        public const string PdbExtension = ".pdb";
+        public const string BytesExtension = ".bytes";
+        
+        public static byte[] NullBytes => Array.Empty<byte>();
     }
 }

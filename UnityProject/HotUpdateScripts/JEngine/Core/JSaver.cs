@@ -67,7 +67,7 @@ namespace JEngine.Core
                 return null;
             }
             string strData = val.ToString();
-            var result = CryptoHelper.EncryptStr(strData, encryptKey);
+            var result = CryptoMgr.EncryptStr(strData, encryptKey);
 
             PlayerPrefs.SetString(dataName, result);
             AddJSaverKeys(dataName);
@@ -96,7 +96,7 @@ namespace JEngine.Core
             try
             {
                 byte[] byteData = StringifyHelper.ProtoSerialize(val);
-                var result = CryptoHelper.AesEncrypt(byteData, encryptKey);
+                var result = CryptoMgr.AesEncrypt(byteData, encryptKey);
                 PlayerPrefs.SetString(dataName, Convert.ToBase64String(result));
                 AddJSaverKeys(dataName);
                 return result;
@@ -130,7 +130,7 @@ namespace JEngine.Core
             try
             {
                 string strData = StringifyHelper.JSONSerliaze(val);
-                var result = CryptoHelper.EncryptStr(strData, encryptKey);
+                var result = CryptoMgr.EncryptStr(strData, encryptKey);
                 PlayerPrefs.SetString(dataName, result);
                 AddJSaverKeys(dataName);
                 return result;
@@ -171,7 +171,7 @@ namespace JEngine.Core
             var result = PlayerPrefs.GetString(dataName);
             try
             {
-                result = CryptoHelper.DecryptStr(result, encryptKey);
+                result = CryptoMgr.DecryptStr(result, encryptKey);
                 return result;
             }
             catch (Exception ex)
@@ -314,7 +314,7 @@ namespace JEngine.Core
             var result = PlayerPrefs.GetString(dataName);
             try
             {
-                result = CryptoHelper.DecryptStr(result, encryptKey);
+                result = CryptoMgr.DecryptStr(result, encryptKey);
                 return StringifyHelper.JSONDeSerliaze<T>(result);
             }
             catch (Exception ex)
@@ -351,7 +351,7 @@ namespace JEngine.Core
             var result = PlayerPrefs.GetString(dataName);
             try
             {
-                byte[] bytes = CryptoHelper.AesDecrypt(Convert.FromBase64String(result), encryptKey);
+                byte[] bytes = CryptoMgr.AesDecrypt(Convert.FromBase64String(result), encryptKey);
                 return StringifyHelper.ProtoDeSerialize<T>(bytes);
             }
             catch (Exception ex)
