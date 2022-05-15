@@ -120,11 +120,11 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 - **Enhanced** framework code
 
-- **Enhance ** Lifecycle
+- **Enhanced** Lifecycle
 
 - **Updated** ETTask
 
-- **Enhanced **JAction
+- **Enhanced** JAction
 
 - **Enhanced** JBehaviour
 
