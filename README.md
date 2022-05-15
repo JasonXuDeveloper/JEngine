@@ -38,7 +38,7 @@
 </p>
 
 
-# JENGINE v0.7.1
+# JENGINE v0.7.2
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
@@ -114,12 +114,27 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 
 
-## v0.7.1 New Features
+## v0.7.2 New Features
 
-  - **Update** ILRuntime v2.0.2
-- Support **multiple** hot update **packages**
-- **Removed** XAsset
-- Imported **BundleMaster**
+  - Bug **fixed**
+
+- **Enhanced** framework code
+
+- **Enhance ** Lifecycle
+
+- **Updated** ETTask
+
+- **Enhanced **JAction
+
+- **Enhanced** JBehaviour
+
+- **Enhanced** Unity **Exception StackTrace**
+
+- **HotUpdateResource** support **Blacklist**
+
+- **New** Protobuf **Serialize Demo**
+
+- **Updated** Protobuf-net **library**
 
   [Click here to see the change log](CHANGE.md)
 
