@@ -37,6 +37,9 @@ namespace JEngine.Core
         public const string PdbExtension = ".pdb";
         public const string BytesExtension = ".bytes";
         
+        public const float Bytes2Mb = 1f / (1024 * 1024);
+        
         public static byte[] NullBytes => Array.Empty<byte>();
+        public static object[] NullObjects => Array.Empty<object>();
     }
 }

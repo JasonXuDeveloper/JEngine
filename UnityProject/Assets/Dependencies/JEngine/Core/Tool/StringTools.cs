@@ -4,9 +4,6 @@ namespace JEngine.Core
 {
     public static partial class Tools
     {
-        public static readonly object[] Param0 = Array.Empty<object>();
-        private const float Bytes2Mb = 1f / (1024 * 1024);
-        
         /// <summary>
         /// 当前时间戳(ms)
         /// </summary>
@@ -22,7 +19,7 @@ namespace JEngine.Core
         {
             if (downloadSpeed >= 1024 * 1024)
             {
-                return $"{downloadSpeed * Bytes2Mb:f2}MB/s";
+                return $"{downloadSpeed * ConstMgr.Bytes2Mb:f2}MB/s";
             }
             if (downloadSpeed >= 1024)
             {
@@ -54,7 +51,7 @@ namespace JEngine.Core
         {
             if (downloadSize >= 1024 * 1024)
             {
-                return $"{downloadSize * Bytes2Mb:f2}MB";
+                return $"{downloadSize * ConstMgr.Bytes2Mb:f2}MB";
             }
             if (downloadSize >= 1024)
             {

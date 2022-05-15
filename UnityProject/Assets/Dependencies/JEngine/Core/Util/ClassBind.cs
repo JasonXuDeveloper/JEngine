@@ -103,28 +103,34 @@ namespace JEngine.Core
             //直接继承Mono的，热更工程多层继承mono的，非继承mono的，或不需要继承的，用这个
             else
             {
-                //挂个适配器到编辑器（直接继承mono，非继承mono，无需继承，都可以用这个）
-                var clrInstance = gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
-                clrInstance.enabled = false;
-                clrInstance.ILInstance = instance;
-                clrInstance.AppDomain = InitJEngine.Appdomain;
-                classData.ClrInstance = clrInstance;
-
-
-                //是MonoBehaviour继承，需要指定CLRInstance
+                //挂个适配器到编辑器（直接继承mono）
                 if (isMono)
                 {
+                    var clrInstance = gameObject.AddComponent<MonoBehaviourAdapter.Adaptor>();
+                    clrInstance.enabled = false;
+                    clrInstance.ILInstance = instance;
+                    clrInstance.AppDomain = InitJEngine.Appdomain;
+                    classData.ClrInstance = clrInstance;
+                    //是MonoBehaviour继承，需要指定CLRInstance
                     instance.CLRInstance = clrInstance;
+                    //判断类型
+                    classData.Added = true;
                 }
+                //非继承mono，无需继承，都可以用这个
+                else
+                {
+                    var clrInstance = gameObject.AddComponent<DO_NOT_USE.ClassBindNonMonoBehaviourAdapter.Adaptor>();
+                    clrInstance.enabled = false;
+                    clrInstance.ILInstance = instance;
+                    clrInstance.isJBehaviour = Tools.IsJBehaviourType(classType);
+                    clrInstance.AppDomain = InitJEngine.Appdomain;
+                    classData.ClrInstance = clrInstance;
+                    classData.Added = true;
 
-                //判断类型
-                clrInstance.isMonoBehaviour = isMono;
-
-                classData.Added = true;
-
-                //JBehaviour额外处理
-                var go = t.GetField("_gameObject", BindingFlags.Public);
-                go?.SetValue(clrInstance.ILInstance, gameObject);
+                    //JBehaviour额外处理
+                    var go = t.GetField("_gameObject", BindingFlags.Public);
+                    go?.SetValue(clrInstance.ILInstance, gameObject);
+                }
             }
 
             if (isMono)

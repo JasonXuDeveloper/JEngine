@@ -44,7 +44,6 @@ public class MonoBehaviourAdapterEditor : Editor
         if (instance != null)
         {
             EditorGUILayout.LabelField("Script", clr.ILInstance.Type.Name);
-            SerializeILTypeInstance.SerializeJBehaviourType(_fadeGroup, instance);
 
             int index = 0;
             foreach (var i in instance.Type.FieldMapping)

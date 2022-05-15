@@ -1,168 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
+using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using ILRuntime.CLR.TypeSystem;
-using ILRuntime.Mono.Cecil.Pdb;
 using ILRuntime.Reflection;
+using ILRuntime.CLR.TypeSystem;
+using System.Collections.Generic;
+using Object = UnityEngine.Object;
+using UnityEngine.SceneManagement;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Component = UnityEngine.Component;
-using Object = UnityEngine.Object;
 
 namespace JEngine.Core
 {
     public static partial class Tools
     {
-        /// <summary>
-        /// 缓存domain
-        /// </summary>
-        private static AppDomain _cacheDomain;
-        
-        /// <summary>
-        /// ILRuntime的Appdomain
-        /// </summary>
-        public static AppDomain Domain
-        {
-            get
-            {
-                if (_cacheDomain != null)
-                {
-                    _cacheDomain.Dispose();
-                }
-                
-                if (Application.isPlaying && InitJEngine.Appdomain != null)
-                {
-                    return InitJEngine.Appdomain;
-                }
-                _cacheDomain = new AppDomain();
-                _cacheDomain.LoadAssembly(new MemoryStream(DllMgr.GetDllBytes(ConstMgr.MainHotDLLName)),null, new PdbReaderProvider());
-                LoadILRuntime.InitializeILRuntime(_cacheDomain);
-                return _cacheDomain;
-            }
-        }
-
-        /// <summary>
-        /// 通过字符串获取热更类型
-        /// </summary>
-        /// <param name="typename"></param>
-        /// <returns></returns>
-        public static Type GetHotType(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            ad.Dispose();
-            return t?.ReflectionType;
-        }
-        
-        /// <summary>
-        /// 通过字符串获取热更IL类型
-        /// </summary>
-        /// <param name="typename"></param>
-        /// <returns></returns>
-        public static IType GetHotILType(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            ad.Dispose();
-            return t;
-        }
-        
-        /// <summary>
-        /// 通过字符串获取热更类型实例
-        /// </summary>
-        /// <param name="typename"></param>
-        /// <returns></returns>
-        public static ILTypeInstance GetHotInstance(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            ad.Dispose();
-            if (t == null) return null;
-            return ad.Instantiate(typename);
-        }
-        
-        /// <summary>
-        /// 判断是否包含热更类型
-        /// </summary>
-        /// <param name="typename"></param>
-        /// <returns></returns>
-        public static bool HasHotType(string typename)
-        {
-            AppDomain ad = Domain;
-            bool ret = ad.LoadedTypes.ContainsKey(typename);
-            ad.Dispose();
-            return ret;
-        }
-        
-        /// <summary>
-        /// 判断是否继承了JBehaviour
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsJBehaviourType(Type type)
-        {
-            Type jType = GetHotType("JEngine.Core.JBehaviour");
-            if (jType == null)
-            {
-                return false;
-            }
-            return type.IsSubclassOf(jType);
-        }
-        
-        /// <summary>
-        /// 判断是不是继承了JBehaviour
-        /// </summary>
-        /// <param name="typename"></param>
-        /// <returns></returns>
-        public static bool IsJBehaviourType(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            var jb = ad.GetType("JEngine.Core.JBehaviour");
-            bool ret = t.CanAssignTo(jb);
-            ad.Dispose();
-            return ret;
-        }
-        
-        /// <summary>
-        /// 调用热更方法
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="method"></param>
-        public static void InvokeHotMethod(string type, string method)
-        {
-            InitJEngine.Appdomain.Invoke(type, method, Param0, Param0);
-        }
-
-        /// <summary>
-        /// 调用热更方法
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="method"></param>
-        /// <param name="instance"></param>
-        /// <param name="param"></param>
-        public static void InvokeHotMethod(string type, string method, object instance, params object[] param)
-        {
-            InitJEngine.Appdomain.Invoke(type, method, instance, param);
-        }
-
-        /// <summary>
-        /// 获取热更方法的全部参数
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="methodName"></param>
-        /// <returns></returns>
-        public static ParameterInfo[] GetHotMethodParams(Type type,string methodName)
-        {
-            return type.GetMethod(methodName)?.GetParameters();
-        }
-        
         /// <summary>
         /// 获取对象的gameObject
         /// </summary>
@@ -301,16 +153,6 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 判断是否可以被分配到类型
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="type"></param>
-        public static bool CanAssignTo(this object instance, Type type)
-        {
-            return ((ILTypeInstance)instance).Type.CanAssignTo(InitJEngine.Appdomain.GetType(type.FullName));
-        }
-        
-        /// <summary>
         /// 获取场景内全部MonoBehaviour适配器
         /// </summary>
         /// <returns></returns>
@@ -393,53 +235,6 @@ namespace JEngine.Core
             return clrInstances.ToList()
                 .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
                 .Select(a => a.ILInstance).ToArray();
-        }
-        
-        
-        /// <summary>
-        /// 将对象转换为特定类型
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="destinationType"></param>
-        /// <returns></returns>
-        public static object ConvertSimpleType(this object value, Type destinationType)
-        {
-            object returnValue;
-            if (value == null || destinationType.IsInstanceOfType(value))
-            {
-                return value;
-            }
-
-            if (value is string str && str.Length == 0)
-            {
-                return destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-            }
-
-            TypeConverter converter = TypeDescriptor.GetConverter(destinationType);
-            bool flag = converter.CanConvertFrom(value.GetType());
-            if (!flag)
-            {
-                converter = TypeDescriptor.GetConverter(value.GetType());
-            }
-
-            if (!flag && !converter.CanConvertTo(destinationType))
-            {
-                Log.PrintError("无法转换成类型：'" + value + "' ==> " + destinationType);
-            }
-
-            try
-            {
-                returnValue = flag
-                    ? converter.ConvertFrom(null, null, value)
-                    : converter.ConvertTo(null, null, value, destinationType);
-            }
-            catch (Exception e)
-            {
-                Log.PrintError("类型转换出错：'" + value + "' ==> " + destinationType + "\n" + e.Message);
-                returnValue = destinationType.IsValueType ? Activator.CreateInstance(destinationType) : null;
-            }
-
-            return returnValue;
         }
     }
 }

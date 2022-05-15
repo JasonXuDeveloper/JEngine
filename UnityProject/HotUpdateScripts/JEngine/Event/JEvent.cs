@@ -94,8 +94,8 @@ namespace JEngine.Event
                             method.Invoke(val, parameters);
                         }, null);
                         //这边不log的时候，空标签会报错，于是我选择了log
-                        Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{allParams}'的方法，目前进度" +
-                                $"{i + 1}/{todo.Count}</color>");
+                        //Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{allParams}'的方法，目前进度" +
+                        //        $"{i + 1}/{todo.Count}</color>");
                     }
                     else
                     {

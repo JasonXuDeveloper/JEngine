@@ -77,6 +77,8 @@ public class InitJEngine : MonoBehaviour
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
 #if INIT_JE
+        //初始化LifeCycle
+        LifeCycleMgr.Initialize();
         //初始化ClassBind
         ClassBindMgr.Instantiate();
 #endif
