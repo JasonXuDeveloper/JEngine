@@ -82,61 +82,6 @@ namespace JEngine.Editor
             GUILayout.Space(15);
         }
 
-        private static AppDomain Domain
-        {
-            get
-            {
-                AppDomain ad = new AppDomain();
-                ad.LoadAssembly(new MemoryStream(DLLMgr.FileToByte(DLLMgr.DllPath)),null, new PdbReaderProvider());
-                LoadILRuntime.InitializeILRuntime(ad);
-                return ad;
-            }
-        }
-
-        private static Type GetHotType(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            ad.Dispose();
-            return t.ReflectionType;
-        }
-        
-        private static ILTypeInstance GetHotInstance(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            ad.Dispose();
-            if (t == null) return null;
-            return ad.Instantiate(typename);
-        }
-        
-        private static bool HasHotType(string typename)
-        {
-            AppDomain ad = Domain;
-            bool ret = ad.LoadedTypes.ContainsKey(typename);
-            ad.Dispose();
-            return ret;
-        }
-        
-        private static bool IsJBehaviourType(Type type)
-        {
-            Type jType = GetHotType("JEngine.Core.JBehaviour");
-            if (jType == null)
-            {
-                return false;
-            }
-            return type.IsSubclassOf(jType);
-        }
-        
-        private static bool IsJBehaviourType(string typename)
-        {
-            AppDomain ad = Domain;
-            var t = ad.GetType(typename);
-            var jb = ad.GetType("JEngine.Core.JBehaviour");
-            bool ret = t.CanAssignTo(jb);
-            ad.Dispose();
-            return ret;
-        }
         
         /// <summary>
         /// 清理/排序/删除
@@ -149,7 +94,7 @@ namespace JEngine.Editor
             foreach (var data in instance.scriptsToBind) //遍历
             {
                 string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
-                Type t = GetHotType(className); //加载热更类
+                Type t = JEngine.Core.Tools.GetHotType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -216,7 +161,7 @@ namespace JEngine.Editor
             foreach (var data in instance.scriptsToBind) //遍历
             {
                 string className = $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
-                Type t = GetHotType(className); //加载热更类
+                Type t = JEngine.Core.Tools.GetHotType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -272,7 +217,7 @@ namespace JEngine.Editor
             {
                 string className =
                     $"{data.classNamespace + (string.IsNullOrEmpty(data.classNamespace) ? "" : ".")}{data.className}";
-                Type t = GetHotType(className); //加载热更类
+                Type t = JEngine.Core.Tools.GetHotType(className); //加载热更类
 
                 if (t == null)
                 {
@@ -405,7 +350,7 @@ namespace JEngine.Editor
                 cf.fieldType = ClassField.FieldType.GameObject;
             }
             else if (type == typeof(Component) || type.IsSubclassOf(typeof(MonoBehaviour)) ||
-                     IsJBehaviourType(type))
+                     JEngine.Core.Tools.IsJBehaviourType(type))
             {
                 cf.fieldType = ClassField.FieldType.UnityComponent;
             }
@@ -441,7 +386,7 @@ namespace JEngine.Editor
                 {
                     cf.fieldType = ClassField.FieldType.Bool;
                 }
-                else if (HasHotType(type.FullName))
+                else if (JEngine.Core.Tools.HasHotType(type.FullName))
                 {
                     cf.fieldType = ClassField.FieldType.UnityComponent;
                 }
@@ -468,7 +413,7 @@ namespace JEngine.Editor
         {
             if (type is ILRuntimeType) return;
             if (type != typeof(Object) ||
-                !IsJBehaviourType(type))
+                !JEngine.Core.Tools.IsJBehaviourType(type))
             {
                 try
                 {

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -57,22 +59,12 @@ namespace JEngine.Editor
             var group = BuildPipeline.GetBuildTargetGroup(target);
             var org = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
             var d = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-            if (!d.Contains("INIT_JE"))
-            {
-                if (!d.EndsWith(";"))
-                {
-                    d += ";";
-                }
-            }
-            else
-            {
-                d = d.Replace("INIT_JE;", "").Replace("INIT_JE", "");
-            }
-
-            d += "INIT_JE;";
-
-            if(org != d)
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(group,d);
+            string[] Symbols = new string[] { "INIT_JE" };
+            List<string> dfList = d.Split(';').ToList();
+            dfList.AddRange(Symbols.Except(dfList));
+            d = string.Join(";", dfList.Distinct().ToArray());
+            if (org != d)
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(group, d);
         }
     }
 }

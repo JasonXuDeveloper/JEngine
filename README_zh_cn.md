@@ -39,7 +39,7 @@
 
 
 
-# JENGINE v0.7.1
+# JENGINE v0.7.2
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -104,9 +104,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
   > 若您的项目使用了JEngine，欢迎联系作者，作者很乐意把您的作品展示出来~
 
-| <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="g1" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/0ac05aa58706032db05c5dbf1df77cf4_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <p align="center">[爱丽丝造梦空间](https://www.taptap.com/app/224117)</p> | <p align="center">[肝到发慌](https://www.taptap.com/app/225175)</p> | <p align="center">[割韭菜](https://www.taptap.com/app/232558)</p> |
+| <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="g1" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/0ac05aa58706032db05c5dbf1df77cf4_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/5c13a62dfeec50334f16e2f31db151e2_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <p align="center">[爱丽丝造梦空间](https://www.taptap.com/app/224117)</p> | <p align="center">[肝到发慌](https://www.taptap.com/app/225175)</p> | <p align="center">[割韭菜](https://www.taptap.com/app/232558)</p> | <p align="center">[明明消消乐](https://www.taptap.com/app/233988)</p> |
 
 
 
@@ -118,7 +118,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 JEngine的目的是针对游戏开发者提供**精简、美观且高效**的**代码**功能，并且使游戏开发者**更加轻松的制作游戏**
 
-市面上的**Unity热更新框架**，**没有**一个**比JEngine**的**学习成本低**，使用**难度较大**，需要耗费**大量时间去入门、跑通框架**；
+市面上的**Unity热更新框架**，**没有**一个**比JEngine**的**学习成本低**，市面上**其他框架**使用**难度较大**，需要耗费**大量时间去入门、跑通框架**；
 
 而**JEngine入门快的话可能几分钟即可，最多几小时即可跑通框架**，**简单易用**、**傻瓜式操作**，**不需要去关注管理热更资源**，**不需要关注任何热更新的底层**，**只管写游戏代码，做游戏场景即可**！
 
@@ -141,17 +141,29 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 **JEngine**文档齐全，维护频繁，只要有issue，通常3日内必定解决，同时底层的热更源码经过大量上线项目验证，无需担心质量、性能、效率等问题！
 
 **如果你觉得JEngine对你有帮助，请给该框架一个Star！**
- 
 
-## v0.7.1 最新功能
 
-- **升级** ILRuntime v2.0.2
+## v0.7.2 最新功能
 
-- 支持 **分包**
+- Bug**修复**
 
-- **弃用** XAsset
+- **优化**底层
 
-- 开始使用 **BundleMaster**
+- **优化**周期
+
+- **更新**ETTask
+
+- **优化**JAction
+
+- **优化**JBehaviour
+
+- **优化**Unity**报错堆栈**
+
+- **热更**包支持**黑名单**功能
+
+- 新Protobuf**序列化Demo**
+
+- **更新**Protobuf-net魔改版**插件**
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

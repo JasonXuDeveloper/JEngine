@@ -74,7 +74,7 @@ public class Updater : MonoBehaviour
     private bool mainPackageCheckCRC = true;
 
     [Tooltip("Develop是开发模式，Local是离线模式，Build是真机模式")] [SerializeField]
-    private AssetLoadMode mode;
+    private AssetLoadMode mode = AssetLoadMode.Develop;
 
     /// <summary>
     /// 获取分包信息

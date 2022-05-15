@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
-using BM;
 using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
 using ILRuntime.Mono.Cecil.Pdb;
-using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -21,18 +18,11 @@ public class InitJEngine : MonoBehaviour
     //是否成功加载
     public static bool Success;
 
-    //编辑器下数据，用于统计分块解密，以及提供dll和pdb的位置
-#if UNITY_EDITOR
-    public static long EncryptedCounts => ((JStream)(Instance._fs)).EncryptedCounts;
-    private const string DLLPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.dll";
-    private const string PdbPath = "Assets/HotUpdateResources/Dll/Hidden~/HotUpdateScripts.pdb";
-#endif
-
     //dll名字，入口函数名字，以及周期方法名
-    private const string DllName = "HotUpdateScripts.bytes";
+    private const string DllName = "HotUpdateScripts";
     private const string HotMainType = "HotUpdateScripts.Program";
-    private const string RunGameMethod = "RunGame";
     private const string SetupGameMethod = "SetupGame";
+    private const string RunGameMethod = "RunGame";
 
     //加密密钥
     [Tooltip("加密密钥，需要16位")] [FormerlySerializedAs("Key")] [SerializeField]
@@ -78,11 +68,17 @@ public class InitJEngine : MonoBehaviour
     /// </summary>
     public void LoadHotUpdateCallback()
     {
+        //替换LogHandler，让UnityEngine.Debug.LogException能定位更精准的堆栈，同时利用插件精简堆栈信息
+        Debug.unityLogger.logHandler = new JEngine.Core.Logger(Debug.unityLogger.logHandler);
+        //给ETTask/ETVoid的报错定位到UnityEngine.Debug.LogException
+        ET.ETTask.ExceptionHandler += Debug.LogException;
         //加载热更DLL
         Instance.LoadHotFixAssembly();
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
 #if INIT_JE
+        //初始化LifeCycle
+        LifeCycleMgr.Initialize();
         //初始化ClassBind
         ClassBindMgr.Instantiate();
 #endif
@@ -101,67 +97,29 @@ public class InitJEngine : MonoBehaviour
         Appdomain = new AppDomain((int)useJIT);
         _pdb = null;
 
+        bool isEditorMode = !AssetMgr.RuntimeMode;
+
         //dll的二进制
-        byte[] dll;
-
-#if UNITY_EDITOR
-        //开发模式
-        if (!AssetMgr.RuntimeMode)
+        byte[] dll = DllMgr.GetDllBytes(DllName, isEditorMode);
+        //pdb默认不存在
+        byte[] pdb = ConstMgr.NullBytes;
+        //编辑器下模拟加密dll并读取pdb
+        if (isEditorMode)
         {
-            //判断有没有dll
-            if (File.Exists(DLLPath))
-            {
-                //直接读DLL
-                dll = DLLMgr.FileToByte(DLLPath);
-                //模拟加密
-                dll = CryptoHelper.AesEncrypt(dll, key);
-            }
-            else
-            {
-                Log.PrintError("DLL文件不存在");
-                return;
-            }
-
-            //查看是否有PDB文件
-            if (File.Exists(PdbPath) && usePdb &&
-                (File.GetLastWriteTime(DLLPath) - File.GetLastWriteTime(PdbPath)).Seconds < 30)
-            {
-                _pdb = new MemoryStream(DLLMgr.FileToByte(PdbPath));
-            }
-        }
-        else
-#endif
-        {
-            //真机模式解密加载
-            var dllFile = (TextAsset)AssetMgr.Load($"Assets/HotUpdateResources/Dll/{DllName}",
-                AssetComponentConfig.DefaultBundlePackageName);
-            if (dllFile == null)
-            {
-                return;
-            }
-
-            //对定义的对象赋值
-            dll = dllFile.bytes;
+            DllMgr.SimulateEncryption(ref dll, key);
+            pdb = DllMgr.GetPdbBytes(DllName);
         }
 
         //生成缓冲区，复制加密dll数据
         var buffer = new byte[dll.Length];
         Array.Copy(dll, buffer, dll.Length);
-        //卸载dll资源
-        AssetMgr.Unload($"Assets/HotUpdateResources/Dll/{DllName}");
 
         //尝试加载dll
         try
         {
             //这里默认用分块解密，JStream
             _fs = new JStream(buffer, key);
-
-            /*
-             * 如果一定要直接解密然后不进行分块解密加载Dll，可以这样：
-             * var original = CryptoHelper.AesDecrypt(dll.bytes, Key);
-             * _fs = new JStream(original, Key);
-             * _fs.Encrypted = false;
-             */
+            _pdb = new MemoryStream(pdb);
 
             //加载dll
             Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
@@ -190,7 +148,7 @@ public class InitJEngine : MonoBehaviour
         //初始化ILRuntime
         LoadILRuntime.InitializeILRuntime(Appdomain);
     }
-    
+
     [Serializable]
     private enum ILRuntimeJITFlag
     {

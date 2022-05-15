@@ -66,7 +66,7 @@ namespace JEngine.Core
         {
             try
             {
-                var res = (TextAsset) AssetMgr.Load(path, typeof(TextAsset));
+                var res = (TextAsset) AssetMgr.Load(path);
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(res.bytes)) as T;
             }
             catch (IOException ex)
@@ -149,7 +149,7 @@ namespace JEngine.Core
         {
             try
             {
-                var res = AssetMgr.Load(path, typeof(TextAsset));
+                var res = AssetMgr.Load(path);
                 TextAsset textAsset = (TextAsset)res;
 
                 if (textAsset == null)

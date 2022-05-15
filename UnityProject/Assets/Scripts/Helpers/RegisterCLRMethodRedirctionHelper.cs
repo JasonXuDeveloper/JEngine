@@ -1564,7 +1564,6 @@ namespace JEngine.Helper
 
             if (!go.activeSelf) return; //不sendmessage隐藏的
 
-            bool invoked = false;
             var clrInstances = go.GetComponents<CrossBindingAdaptorType>();
             foreach (var clrInstance in clrInstances)
             {

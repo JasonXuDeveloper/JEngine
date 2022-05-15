@@ -1,5 +1,18 @@
 ## All Versions
 
+### 0.7.2 (May 15 2022)
+
+- Bug **fixed**
+- **Enhanced** framework code
+- **Enhance ** Lifecycle
+- **Updated** ETTask
+- **Enhanced **JAction
+- **Enhanced** JBehaviour
+- **Enhanced** Unity **Exception StackTrace**
+- **HotUpdateResource** support **Blacklist**
+- **New** Protobuf **Serialize Demo**
+- **Updated** Protobuf-net **library**
+
 ### 0.7.1 (March 28 2022)
 
 - **Update** ILRuntime v2.0.2

@@ -125,6 +125,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Ben.Demystifier">
+      <HintPath>..\Assets\Dependencies\Ben.Demystifier\Ben.Demystifier.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Proto2cs\" />

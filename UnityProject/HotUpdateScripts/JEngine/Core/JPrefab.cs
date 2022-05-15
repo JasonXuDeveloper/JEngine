@@ -54,8 +54,18 @@ namespace JEngine.Core
 
         }
 
+        public JPrefab(string path,string package, Action<bool, JPrefab> complete = null) : this(path,package, true, complete)
+        {
 
-        private JPrefab(string path,bool async,Action<bool,JPrefab> complete)
+        }
+
+        public JPrefab(string path, bool async, Action<bool, JPrefab> complete) : this(path,null, true, complete)
+        {
+
+        }
+
+
+        private JPrefab(string path, string package, bool async, Action<bool, JPrefab> complete)
         {
             if (!path.Contains(".prefab"))
             {
@@ -67,7 +77,7 @@ namespace JEngine.Core
             }
             else
             {
-                var obj = AssetMgr.Load(path, typeof(GameObject));
+                var obj = AssetMgr.Load(path);
                 Instance = obj != null ? obj as GameObject : null;
                 Loaded = true;
             }
@@ -89,7 +99,7 @@ namespace JEngine.Core
 
         private async Task LoadPrefabAsync(string path, Action<bool, JPrefab> callback)
         {
-            var obj = await AssetMgr.LoadAsync(path, typeof(GameObject));
+            var obj = await AssetMgr.LoadAsync(path);
             Instance = obj != null ? obj as GameObject : null;
             Loaded = true;
             callback?.Invoke(!Error, this);

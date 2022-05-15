@@ -80,20 +80,22 @@ namespace JEngine.Examples
             Log.Print("[ClassBindDemo2] ClassBindDemo2::Start");
         }
 
-        private void FixedUpdate()
-        {
-            Log.Print("[ClassBindDemo2] ClassBindDemo2::FixedUpdate");
-        }
+        //太多log看着头大，先关了
 
-        private void Update()
-        {
-            Log.Print("[ClassBindDemo2] ClassBindDemo2::Update");
-        }
+        //private void FixedUpdate()
+        //{
+        //    Log.Print("[ClassBindDemo2] ClassBindDemo2::FixedUpdate");
+        //}
 
-        private void LateUpdate()
-        {
-            Log.Print("[ClassBindDemo2] ClassBindDemo2::LateUpdate");
-        }
+        //private void Update()
+        //{
+        //    Log.Print("[ClassBindDemo2] ClassBindDemo2::Update");
+        //}
+
+        //private void LateUpdate()
+        //{
+        //    Log.Print("[ClassBindDemo2] ClassBindDemo2::LateUpdate");
+        //}
 
         private void OnEnable()
         {

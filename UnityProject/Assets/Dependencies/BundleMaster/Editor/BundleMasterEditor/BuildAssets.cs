@@ -70,15 +70,20 @@ namespace BM
                 AssetDatabase.Refresh();
             }
             //构建完成后索引自动+1 需要自己取消注释
+            List<int> instanceIds = new List<int>();
             foreach (AssetsLoadSetting assetsLoadSetting in assetLoadTable.AssetsLoadSettings)
             {
-                assetsLoadSetting.BuildIndex++;
+                instanceIds.Add(assetsLoadSetting.GetInstanceID());
             }
             //保存配置文件
             foreach (string guid in  AssetDatabase.FindAssets($"t:{nameof(AssetsLoadSetting)}"))
             {
                 var obj = AssetDatabase.LoadAssetAtPath<AssetsLoadSetting>(AssetDatabase.GUIDToAssetPath(guid));
-                EditorUtility.SetDirty(obj);
+                if (instanceIds.Contains(obj.GetInstanceID()))
+                {
+                    AssetLogHelper.Log($"{obj.BuildName}分包已打包成功，版本索引{obj.BuildIndex}->{++obj.BuildIndex}");
+                    EditorUtility.SetDirty(obj);
+                }
             }
             AssetDatabase.SaveAssets();
             //打包结束
@@ -155,7 +160,7 @@ namespace BM
             {
                 string path = paths[i];
                 //获取所有需要主动加载的资源
-                BuildAssetsTools.GetChildFiles(path, files);
+                BuildAssetsTools.GetChildFiles(path, files, assetsLoadSetting.BlacklistFile, assetsLoadSetting.BlacklistExtension);
             }
             //添加打包进去的场景
             var sceneAssets = BuildAssetsTools.GetPackageSceneAssets(assetsLoadSetting).ToArray();

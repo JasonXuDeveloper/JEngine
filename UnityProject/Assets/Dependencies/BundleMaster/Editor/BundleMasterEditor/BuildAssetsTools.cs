@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -13,14 +14,13 @@ namespace BM
         /// <summary>
         /// 获取一个目录下所有的子文件
         /// </summary>
-        public static void GetChildFiles(string basePath, HashSet<string> files)
+        public static void GetChildFiles(string basePath, HashSet<string> files, List<string> blacklistFile, List<string> blacklistExt)
         {
             DirectoryInfo basefolder = new DirectoryInfo(basePath);
             FileInfo[] basefil = basefolder.GetFiles();
             for (int i = 0; i < basefil.Length; i++)
             {
-                    
-                if (CantLoadType(basefil[i].FullName))
+                if (CantLoadType(basefil[i].FullName, blacklistFile, blacklistExt))
                 {
                     files.Add(basePath + "/" + basefil[i].Name);
                 }
@@ -35,8 +35,7 @@ namespace BM
                     FileInfo[] fil = subfolder.GetFiles();
                     for (int j = 0; j < fil.Length; j++)
                     {
-                    
-                        if (CantLoadType(fil[j].FullName))
+                        if (CantLoadType(fil[j].FullName, blacklistFile, blacklistExt))
                         {
                             files.Add(subfolders[i] + "/" + fil[j].Name);
                         }
@@ -70,23 +69,22 @@ namespace BM
         /// <summary>
         /// 需要忽略加载的格式
         /// </summary>
-        public static bool CantLoadType(string fileFullName)
+        public static bool CantLoadType(string fileFullName, List<string> blacklistFile,List<string> blacklistExt)
         {
-            string suffix = Path.GetExtension(fileFullName);
-            switch (suffix)
+            if (!CantLoadFile(fileFullName, blacklistFile))
             {
-                case ".dll":
-                    return false;
-                case ".cs":
-                    return false;
-                case ".meta":
-                    return false;
-                case ".js":
-                    return false;
-                case ".boo":
-                    return false;
+                return false;
             }
-            return true;
+            string suffix = Path.GetExtension(fileFullName);
+            return !blacklistExt.Contains(suffix);
+        }
+        
+        /// <summary>
+        /// 不能加载的文件
+        /// </summary>
+        public static bool CantLoadFile(string fillPathOrName, List<string> blacklistFile)
+        {
+            return !blacklistFile.Any(fillPathOrName.Contains);
         }
         
         /// <summary>

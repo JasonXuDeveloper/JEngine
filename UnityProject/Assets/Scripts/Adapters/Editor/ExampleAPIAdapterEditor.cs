@@ -6,6 +6,7 @@ using UnityEngine;
 using JEngine.Editor;
 using ProjectAdapter;
 using UnityEditor.AnimatedValues;
+using System.Collections.Generic;
 
 [CustomEditor(typeof(ExampleAPIAdapter.Adapter), true)]
 public class ExampleAPIAdapterEditor : Editor
