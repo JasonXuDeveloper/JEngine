@@ -159,7 +159,7 @@ public class Updater : MonoBehaviour
                     {
                         float diff = Tools.TimeStamp - now;
                         diff = diff < 1 ? 1 : diff;
-                        diff *= 1000;//ms -> s
+                        diff /= 1000;//ms -> s
                         var speed = info.FinishUpdateSize / diff;
                         updater.OnMessage(
                             $"下载中...{Tools.GetDisplaySpeed(speed)}, 进度：{Math.Round(info.Progress, 2)}%");
