@@ -49,7 +49,6 @@ namespace JEngine.Core
             //添加实例ID
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
-
             LoopAwaitToken = new CancellationTokenSource();
         }
 
@@ -182,6 +181,7 @@ namespace JEngine.Core
             {
                 T val = System.Activator.CreateInstance<T>();
                 val._gameObject = gameObject;
+                val.Check();
                 if (activeAfter) val.Activate();
                 return val;
             }
@@ -582,10 +582,9 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Call to launch JBehaviour
-        /// 启动生命周期
+        /// 检测字典，应当在Awake之前被执行
         /// </summary>
-        private protected void Awake()
+        private void Check()
         {
             if (_gameObject == null)
             {
@@ -605,6 +604,14 @@ namespace JEngine.Core
                 }
             }
             AddJBehaviourToGameObjectDict(_gameObject, this);
+        }
+
+        /// <summary>
+        /// Call to launch JBehaviour
+        /// 启动生命周期
+        /// </summary>
+        private protected void Awake()
+        {
             SetHiddenMonitoring(false);
             Launch();
         }

@@ -99,6 +99,7 @@ namespace JEngine.Core.DO_NOT_USE
                             if (isJBehaviour)
                             {
                                 //JBehaviour额外处理
+                                GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
                                 LifeCycleMgr.Instance.AddOnEnableItem(_instance, GetMethodInfo(type, "OnEnable"));
                                 LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
                             }

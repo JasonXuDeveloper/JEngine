@@ -73,10 +73,12 @@ namespace JEngine.Examples
             Log.Print($"[ClassBindDemo2] txtFile value is: {txtFile.text}");
             Log.Print($"[ClassBindDemo2] a1 is null? {a1 is null}");
             Log.Print($"[ClassBindDemo2] floatField: {floatField}");
+            Debug.Log($"[ClassBindDemo2] Get JBehaviour == null? {gameObject.GetJBehaviour<ClassBindDemo1>() == null}");
         }
 
         private void Start()
         {
+            Debug.Log(gameObject.GetJBehaviour<ClassBindDemo1>() == null);
             Log.Print("[ClassBindDemo2] ClassBindDemo2::Start");
         }
 
