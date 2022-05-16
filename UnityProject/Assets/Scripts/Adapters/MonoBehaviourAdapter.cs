@@ -50,7 +50,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         public void Reset()
         {
-            _mAwakeMethodGot = false;
             _mOnEnableMethodGot = false;
             _mOnDisableMethodGot = false;
             _mDestroyMethodGot = false;
@@ -117,7 +116,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         private bool _destoryed;
 
         IMethod _mAwakeMethod;
-        bool _mAwakeMethodGot;
         public bool awaked;
         public bool isAwaking;
 
