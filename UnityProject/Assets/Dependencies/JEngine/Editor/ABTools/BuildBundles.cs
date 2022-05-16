@@ -7,6 +7,7 @@ using BM;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
@@ -15,13 +16,13 @@ namespace JEngine.Editor
         [MenuItem("Tools/BuildAsset/构建AssetBundle %#&B")]
         private static void BuildAssetBundles()
         {
-            string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
-            FileMgr.Delete(dllPath);
+            FileMgr.Delete( DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
 
             Action<string> buildAct = async s =>
             {
                 var watch = new Stopwatch();
                 watch.Start();
+                string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
                 var bytes = FileMgr.FileToByte(dllPath);
                 var result = FileMgr.ByteToFile(CryptoMgr.AesEncrypt(bytes, s),
                     DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));

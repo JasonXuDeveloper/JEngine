@@ -51,7 +51,7 @@ namespace JEngine.Core
         public static string GetDllInRuntimePath(string name)
         {
             Tools.EnsureEndWith(ref name, ConstMgr.BytesExtension);
-            return Path.Combine(ConstMgr.DLLSourceFolder, name);
+            return Path.Combine(ConstMgr.DLLBytesFolder, name);
         }
         
         /// <summary>

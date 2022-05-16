@@ -41,13 +41,13 @@ namespace JEngine.Editor
 
         private static bool _isDone = true;
 
-        private static readonly string HotProjectName = "HotUpdateScripts";
+        private static readonly string HotProjectName = ConstMgr.MainHotDLLName;
 
         private static readonly DirectoryInfo LibraryDirectory =
             new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
 
         private static readonly DirectoryInfo HiddenDirectory =
-            new DirectoryInfo("Assets/HotUpdateResources/Dll/Hidden~");
+            new DirectoryInfo(ConstMgr.DLLSourceFolder);
 
         public static void Update()
         {

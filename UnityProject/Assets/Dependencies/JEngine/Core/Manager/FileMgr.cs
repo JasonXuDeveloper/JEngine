@@ -23,7 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
 using System.IO;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -73,8 +76,9 @@ namespace JEngine.Core
                     return byteArray;
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.LogException(ex);
                 return null;
             }
         }
@@ -96,8 +100,9 @@ namespace JEngine.Core
                     result = true;
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.LogException(ex);
                 result = false;
             }
 
