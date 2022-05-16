@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.Core;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -55,16 +54,10 @@ namespace JEngine.Core.DO_NOT_USE
                 set => _appdomain = value;
             }
 
-            public void Reset()
-            {
-                _mAwakeMethodGot = false;
-            }
-
             private bool _destoryed;
 
             public bool isJBehaviour;
             IMethod _mAwakeMethod;
-            bool _mAwakeMethodGot;
             public bool awaked;
             public bool isAwaking;
 
@@ -106,6 +99,7 @@ namespace JEngine.Core.DO_NOT_USE
                             if (isJBehaviour)
                             {
                                 //JBehaviour额外处理
+                                GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
                                 LifeCycleMgr.Instance.AddOnEnableItem(_instance, GetMethodInfo(type, "OnEnable"));
                                 LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
                             }

@@ -25,7 +25,6 @@ namespace ProjectAdapter
             private bool _destoryed;
             
             IMethod _mAwakeMethod;
-            bool _mAwakeMethodGot;
             public bool awaked;
             public bool isAwaking;
     
