@@ -119,7 +119,10 @@ public class InitJEngine : MonoBehaviour
         {
             //这里默认用分块解密，JStream
             _fs = new JStream(buffer, key);
-            _pdb = new MemoryStream(pdb);
+            if (pdb.Length != 0)
+            {
+                _pdb = new MemoryStream(pdb);
+            }
 
             //加载dll
             Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
