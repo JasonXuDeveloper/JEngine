@@ -42,7 +42,7 @@ namespace JEngine.Core
             Tools.EnsureEndWith(ref name, ConstMgr.DLLExtension);
             return Path.Combine(ConstMgr.DLLSourceFolder, name);
         }
-        
+
         /// <summary>
         /// Get DLL path in the runtime (located in HotUpdateResources/DLL)
         /// </summary>
@@ -53,7 +53,30 @@ namespace JEngine.Core
             Tools.EnsureEndWith(ref name, ConstMgr.BytesExtension);
             return Path.Combine(ConstMgr.DLLBytesFolder, name);
         }
-        
+
+        /// <summary>
+        /// Get PDB path in the editor (located at hidden file with .pdb extension)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string GetPdbInEditorPath(string name)
+        {
+            Tools.EnsureEndWith(ref name, ConstMgr.PdbExtension);
+            return Path.Combine(ConstMgr.PdbSourceFolder, name);
+        }
+
+        /// <summary>
+        /// Get PDB path in the runtime (located in HotUpdateResources/DLL)
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string GetPdbInRuntimePath(string name)
+        {
+            Tools.EnsureEndWith(ref name, ConstMgr.PdbExtension);
+            Tools.EnsureEndWith(ref name, ConstMgr.BytesExtension);
+            return Path.Combine(ConstMgr.PdbBytesFolder, name);
+        }
+
         /// <summary>
         /// Get DLL binary data
         /// </summary>
@@ -72,6 +95,7 @@ namespace JEngine.Core
                 {
                     return FileMgr.FileToByte(path);
                 }
+
                 throw new FileNotFoundException($"DLL not found in: {path}");
             }
 
@@ -90,26 +114,37 @@ namespace JEngine.Core
         /// Get PDB binary data
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="editor"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static byte[] GetPdbBytes(string name)
+        public static byte[] GetPdbBytes(string name, bool editor = true)
         {
-            //DLL文件
-            string dllName = name;
-            Tools.EnsureEndWith(ref dllName, ConstMgr.DLLExtension);
-            var dllPath = Path.Combine(ConstMgr.DLLSourceFolder, name);
-            
-            //PDB文件
-            Tools.EnsureEndWith(ref name, ConstMgr.PdbExtension);
-            string path = Path.Combine(ConstMgr.PdbSourceFolder, name);
-            //查看是否有PDB文件并且是最新的
-            if (File.Exists(path) && 
-                (File.GetLastWriteTime(dllPath) - File.GetLastWriteTime(path)).Seconds < 30)
+            if (editor)
             {
-                return FileMgr.FileToByte(path);
+                //DLL文件
+                var dllPath = GetDllInEditorPath(name);
+
+                //PDB文件
+                string path = GetPdbInEditorPath(name);
+                //查看是否有PDB文件并且是最新的
+                if (File.Exists(path) &&
+                    (File.GetLastWriteTime(dllPath) - File.GetLastWriteTime(path)).Seconds < 30)
+                {
+                    return FileMgr.FileToByte(path);
+                }
+
+                throw new InvalidOperationException("Pdb is invalid");
             }
 
-            throw new InvalidOperationException("Pdb is invalid");
+            var pdbPath = GetPdbInRuntimePath(name);
+            var pdbFile = (TextAsset)AssetMgr.Load(pdbPath,
+                AssetComponentConfig.DefaultBundlePackageName);
+            if (pdbFile == null)
+            {
+                throw new FileNotFoundException($"Pdb not found in: {pdbPath}");
+            }
+
+            return pdbFile.bytes;
         }
 
         /// <summary>
@@ -118,12 +153,13 @@ namespace JEngine.Core
         /// <param name="source">plaintext data</param>
         /// <param name="key">key</param>
         /// <exception cref="InvalidOperationException"></exception>
-        public static void SimulateEncryption(ref byte[] source,string key)
+        public static void SimulateEncryption(ref byte[] source, string key)
         {
             if (key.Length != 16)
             {
                 throw new InvalidOperationException("key to encrypt has to be length of 16");
             }
+
             source = CryptoMgr.AesEncrypt(source, key);
         }
     }

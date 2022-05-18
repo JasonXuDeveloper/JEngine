@@ -109,6 +109,12 @@ public class InitJEngine : MonoBehaviour
             DllMgr.SimulateEncryption(ref dll, key);
             pdb = DllMgr.GetPdbBytes(DllName);
         }
+        else if (usePdb)
+        {
+            var pdbFileBytes = DllMgr.GetPdbBytes(DllName, false);
+            pdb = new byte[pdbFileBytes.Length];
+            Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
+        }
 
         //生成缓冲区，复制加密dll数据
         var buffer = new byte[dll.Length];
@@ -125,7 +131,14 @@ public class InitJEngine : MonoBehaviour
             }
 
             //加载dll
-            Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
+            if (usePdb)
+            {
+                Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
+            }
+            else
+            {
+                Appdomain.LoadAssembly(_fs);
+            }
         }
         catch (Exception e)
         {

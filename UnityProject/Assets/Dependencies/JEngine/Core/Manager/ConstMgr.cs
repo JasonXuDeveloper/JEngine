@@ -31,6 +31,7 @@ namespace JEngine.Core
     {
         public const string DLLSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
         public const string PdbSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
+        public const string PdbBytesFolder = "Assets/HotUpdateResources/Dll/";
         public const string DLLBytesFolder = "Assets/HotUpdateResources/Dll/";
         public const string MainHotDLLName = "HotUpdateScripts";
         public const string DLLExtension = ".dll";

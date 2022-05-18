@@ -6,6 +6,7 @@ namespace BM
 		public const string Assets_HotUpdateResources_Controller_Controller__txt = "Assets/HotUpdateResources/Controller/Controller.txt";
 		public const string Assets_HotUpdateResources_Dll___DS_Store = "Assets/HotUpdateResources/Dll/.DS_Store";
 		public const string Assets_HotUpdateResources_Dll_HotUpdateScripts__bytes = "Assets/HotUpdateResources/Dll/HotUpdateScripts.bytes";
+		public const string Assets_HotUpdateResources_Dll_HotUpdateScripts__pdb__bytes = "Assets/HotUpdateResources/Dll/HotUpdateScripts.pdb.bytes";
 		public const string Assets_HotUpdateResources_Material_Material__txt = "Assets/HotUpdateResources/Material/Material.txt";
 		public const string Assets_HotUpdateResources_Other_impact__ttf = "Assets/HotUpdateResources/Other/impact.ttf";
 		public const string Assets_HotUpdateResources_Prefab_InstantiateDemo__prefab = "Assets/HotUpdateResources/Prefab/InstantiateDemo.prefab";
