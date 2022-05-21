@@ -74,11 +74,11 @@ public class InitJEngine : MonoBehaviour
         ET.ETTask.ExceptionHandler += Debug.LogException;
         //加载热更DLL
         Instance.LoadHotFixAssembly();
+        //初始化LifeCycle
+        LifeCycleMgr.Initialize();
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
 #if INIT_JE
-        //初始化LifeCycle
-        LifeCycleMgr.Initialize();
         //初始化ClassBind
         ClassBindMgr.Instantiate();
 #endif

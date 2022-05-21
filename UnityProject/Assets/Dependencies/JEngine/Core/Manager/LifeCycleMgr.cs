@@ -25,10 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace JEngine.Core
 {
@@ -36,12 +36,12 @@ namespace JEngine.Core
     {
         private class LifeCycleItem
         {
-            public object Instance;
-            public MethodInfo Method;
+            public readonly object ItemInstance;
+            public readonly MethodInfo Method;
 
-            public LifeCycleItem(object instance, MethodInfo method)
+            public LifeCycleItem(object itemInstance, MethodInfo method)
             {
-                Instance = instance;
+                ItemInstance = itemInstance;
                 Method = method;
             }
         }
@@ -64,7 +64,7 @@ namespace JEngine.Core
         /// <summary>
         /// 单帧处理过的对象
         /// </summary>
-        private List<object> _instances = null;
+        private List<object> _instances;
 
         /// <summary>
         /// All awake methods
@@ -142,7 +142,7 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveUpdateItem(object instance)
         {
-            _updateItems.RemoveWhere(i => i.Instance == instance);
+            _updateItems.RemoveWhere(i => i.ItemInstance == instance);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveLateUpdateItem(object instance)
         {
-            _lateUpdateItems.RemoveWhere(i => i.Instance == instance);
+            _lateUpdateItems.RemoveWhere(i => i.ItemInstance == instance);
         }
         
         /// <summary>
@@ -180,7 +180,7 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveFixedUpdateItem(object instance)
         {
-            _fixedUpdateItems.RemoveWhere(i => i.Instance == instance);
+            _fixedUpdateItems.RemoveWhere(i => i.ItemInstance == instance);
         }
         
         /// <summary>
@@ -207,17 +207,17 @@ namespace JEngine.Core
             foreach (var item in cloned)
             {
                 //忽略
-                if (ignoreCondition != null && ignoreCondition(item.Instance))
+                if (ignoreCondition != null && ignoreCondition(item.ItemInstance))
                 {
                     continue;
                 }
                 
                 //执行
-                if (item.Instance != null && item.Method != null)
+                if (item.ItemInstance != null && item.Method != null)
                 {
                     try
                     {
-                        item.Method.Invoke(item.Instance, ConstMgr.NullObjects);
+                        item.Method.Invoke(item.ItemInstance, ConstMgr.NullObjects);
                     }
                     catch(Exception ex)
                     {
@@ -263,7 +263,7 @@ namespace JEngine.Core
                 {
                     _instances = new List<object>();
                 }
-                _instances.AddRange(_awakeItems.Select(i=>i.Instance));
+                _instances.AddRange(_awakeItems.Select(i=>i.ItemInstance));
                 ExecuteItems(_awakeItems);
             }
             
@@ -274,8 +274,8 @@ namespace JEngine.Core
                 if (_instances != null && _instances.Count > 0)
                 {
                     //调用enable，并记录本帧处理的对象
-                    _instances.AddRange(_enableItems.ToList().FindAll(i => !_instances.Contains(i.Instance))
-                        .Select(i => i.Instance));
+                    _instances.AddRange(_enableItems.ToList().FindAll(i => !_instances.Contains(i.ItemInstance))
+                        .Select(i => i.ItemInstance));
                     ExecuteItems(_enableItems,true, _instances.Contains);
                 }
                 else
@@ -285,7 +285,7 @@ namespace JEngine.Core
                     {
                         _instances = new List<object>();
                     }
-                    _instances.AddRange(_enableItems.Select(i=>i.Instance));
+                    _instances.AddRange(_enableItems.Select(i=>i.ItemInstance));
                     ExecuteItems(_enableItems);
                 }
             }
@@ -297,8 +297,8 @@ namespace JEngine.Core
                 if (_instances != null && _instances.Count > 0)
                 {
                     //调用start，并记录本帧处理的对象
-                    _instances.AddRange(_startItems.ToList().FindAll(i => !_instances.Contains(i.Instance))
-                        .Select(i => i.Instance));
+                    _instances.AddRange(_startItems.ToList().FindAll(i => !_instances.Contains(i.ItemInstance))
+                        .Select(i => i.ItemInstance));
                     ExecuteItems(_startItems,true, _instances.Contains);
                 }
                 else
@@ -308,7 +308,7 @@ namespace JEngine.Core
                     {
                         _instances = new List<object>();
                     }
-                    _instances.AddRange(_startItems.Select(i=>i.Instance));
+                    _instances.AddRange(_startItems.Select(i=>i.ItemInstance));
                     ExecuteItems(_startItems);
                 }
             }
