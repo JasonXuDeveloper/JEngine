@@ -175,7 +175,9 @@ namespace JEngine.Core
             if (Application.isEditor)
             {
                 var id = AddClassBind(gameObject, activeAfter, typeof(T));
-                return (T)JBehaviours[id];
+                var ret = (T)JBehaviours[id];
+                ret.Check();
+                return ret;
             }
             else//不然直接返回实例
             {
@@ -581,11 +583,14 @@ namespace JEngine.Core
             }
         }
 
+
+        [ClassBindIgnore] private bool _checked = false;
         /// <summary>
         /// 检测字典，应当在Awake之前被执行
         /// </summary>
         private void Check()
         {
+            if (_checked) return;
             if (_gameObject == null)
             {
                 _gameObject = new GameObject(_instanceID);//生成GameObject
@@ -604,6 +609,7 @@ namespace JEngine.Core
                 }
             }
             AddJBehaviourToGameObjectDict(_gameObject, this);
+            _checked = true;
         }
 
         /// <summary>
