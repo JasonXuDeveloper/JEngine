@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AssetsLoadSetting_2
   m_EditorClassIdentifier: 
   BuildName: AddOn1
-  BuildIndex: 0
+  BuildIndex: 1
   BundleVariant: je
   NameByHash: 0
   BuildAssetBundleOptions: 256

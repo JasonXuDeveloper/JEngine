@@ -16,7 +16,8 @@ namespace JEngine.Editor
         [MenuItem("Tools/BuildAsset/构建AssetBundle %#&B")]
         private static void BuildAssetBundles()
         {
-            FileMgr.Delete( DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
+            FileMgr.Delete(DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
+            FileMgr.Delete(DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
 
             Action<string> buildAct = async s =>
             {
@@ -31,6 +32,20 @@ namespace JEngine.Editor
                 if (!result)
                 {
                     Log.PrintError("DLL转Byte[]出错！");
+                    return;
+                }
+
+                watch.Reset();
+                watch.Start();
+                string pdbPath = DllMgr.GetPdbInEditorPath(ConstMgr.MainHotDLLName);
+                bytes = FileMgr.FileToByte(pdbPath);
+                result = FileMgr.ByteToFile(bytes,
+                    DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
+                watch.Stop();
+                Log.Print("Convert PDBs in: " + watch.ElapsedMilliseconds + " ms.");
+                if (!result)
+                {
+                    Log.PrintError("PDB转Byte[]出错！");
                     return;
                 }
 
