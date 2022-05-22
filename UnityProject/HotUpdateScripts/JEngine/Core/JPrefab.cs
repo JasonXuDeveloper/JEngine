@@ -38,7 +38,17 @@ namespace JEngine.Core
         /// 从热更资源里读取prefab
         /// </summary>
         /// <param name="path"></param>
-        public JPrefab(string path, bool async = false) : this(path, async, null)
+        public JPrefab(string path, bool async = false) : this(path, null, async, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Load a prefab from hot update resources
+        /// 从热更资源里读取prefab
+        /// </summary>
+        /// <param name="path"></param>
+        public JPrefab(string path, string package, bool async = false) : this(path, package, async, null)
         {
 
         }
@@ -49,17 +59,12 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="path"></param>
         /// <param name="complete">Action<bool,JPrefab>, success 与 JPrefab</param>
-        public JPrefab(string path, Action<bool, JPrefab> complete = null) : this(path, true, complete)
+        public JPrefab(string path, Action<bool, JPrefab> complete = null) : this(path, null, true, complete)
         {
 
         }
 
         public JPrefab(string path,string package, Action<bool, JPrefab> complete = null) : this(path,package, true, complete)
-        {
-
-        }
-
-        public JPrefab(string path, bool async, Action<bool, JPrefab> complete) : this(path,null, true, complete)
         {
 
         }
