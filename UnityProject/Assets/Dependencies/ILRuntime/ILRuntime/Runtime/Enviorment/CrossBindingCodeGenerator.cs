@@ -38,7 +38,7 @@ using ILRuntime.Runtime.Intepreter;
 namespace ");
             sb.AppendLine(nameSpace);
             sb.Append(@"{   
-    public partial class ");
+    public class ");
             sb.Append(clsName);
             sb.AppendLine(@"Adapter : CrossBindingAdaptor
     {");
@@ -67,7 +67,7 @@ namespace ");
         }
 ");
 
-            sb.AppendLine(string.Format("        public partial class Adapter : {0}, CrossBindingAdaptorType", realClsName));
+            sb.AppendLine(string.Format("        public class Adapter : {0}, CrossBindingAdaptorType", realClsName));
             sb.AppendLine("        {");
             GenerateCrossBindingMethodInfo(sb, virtMethods);
             sb.AppendLine(@"
