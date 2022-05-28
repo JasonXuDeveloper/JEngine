@@ -40,7 +40,7 @@ public class CoroutineAdapter : CrossBindingAdaptor
         return new Adaptor(appdomain, instance);
     }
     //Coroutine生成的类实现了IEnumerator<System.Object>, IEnumerator, IDisposable,所以都要实现，这个可以通过reflector之类的IL反编译软件得知
-    internal class Adaptor : IEnumerator<Object>, IEnumerator, IDisposable, CrossBindingAdaptorType
+    public class Adaptor : IEnumerator<Object>, IEnumerator, IDisposable, CrossBindingAdaptorType
     {
         ILTypeInstance instance;
         AppDomain appdomain;

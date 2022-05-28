@@ -39,12 +39,36 @@ namespace JEngine.Core
         private static readonly Queue<JActionItem> Items = new Queue<JActionItem>();
 
         /// <summary>
+        /// 全部JAction
+        /// </summary>
+        private static readonly HashSet<JAction> AllJActions = new HashSet<JAction>();
+
+        /// <summary>
         /// 构造函数
         /// </summary>
-        public JAction()
+        public JAction(): this($"JAction[{AllJActions.Count}]")
+        {
+
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public JAction(string name)
         {
             //池子里有就从池子里取
-            _item = Items.Count > 0 ? Items.Dequeue() : new JActionItem();
+            if (Items.Count > 0)
+            {
+                _item = Items.Dequeue();
+                _isRecycled = true;
+            }
+            else
+            {
+                _item = new JActionItem();
+            }
+            //记录一下这个引用
+            _name = name;
+            AllJActions.Add(this);
         }
 
         /// <summary>
@@ -53,9 +77,29 @@ namespace JEngine.Core
         private readonly JActionItem _item;
 
         /// <summary>
+        /// 名字
+        /// </summary>
+        private string _name;
+
+        /// <summary>
+        /// 是否为复用的
+        /// </summary>
+        private bool _isRecycled;
+
+        /// <summary>
+        /// 是否为主线程的
+        /// </summary>
+        private bool _isMainThread;
+
+        /// <summary>
         /// 是否已经释放
         /// </summary>
         private bool _disposed;
+
+        /// <summary>
+        /// 当前执行的任务的index
+        /// </summary>
+        private int _index;
 
         /// <summary>
         /// 检测是否被释放
@@ -71,7 +115,7 @@ namespace JEngine.Core
                 }
                 catch (Exception e)
                 {
-                    Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}");
+                    Log.PrintError($"{_name} 错误: {e.Message}, {e.Data["StackTrace"]}");
                     throw e;
                 }
             }
@@ -330,17 +374,19 @@ namespace JEngine.Core
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
                 return this;
             }
+
             if (!_item.parallel)
             {
                 _item.executing = true;
             }
+            _isMainThread = onMainThread;
             _item.cancel = false;
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Loom.QueueOnMainThread(async () =>
             {
                 for (int i = 0; i < _item.toDo.Count; i++)
                 {
-                    int index = i;
+                    _index = i;
 
                     if (_item.cancel || !Application.isPlaying)
                     {
@@ -349,28 +395,28 @@ namespace JEngine.Core
                     }
 
                     //Delay
-                    if (_item.delays.ContainsKey(index))
+                    if (_item.delays.ContainsKey(_index))
                     {
-                        await Task.Delay((int)(_item.delays[index] * 1000));
+                        await Task.Delay((int)(_item.delays[_index] * 1000));
                         continue;
                     }
 
                     //DelayFrames
-                    if (_item.delayFrames.ContainsKey(index))
+                    if (_item.delayFrames.ContainsKey(_index))
                     {
                         //计算1帧时间(ms)
                         var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
-                        var duration = durationPerFrame * _item.delayFrames[index];
+                        var duration = durationPerFrame * _item.delayFrames[_index];
                         await Task.Delay(duration);
                         continue;
                     }
 
 
                     //Wait Until
-                    if (_item.waits.ContainsKey(index))
+                    if (_item.waits.ContainsKey(_index))
                     {
                         float time = 0;
-                        while (!_item.waits[index]() && Application.isPlaying)
+                        while (!_item.waits[_index]() && Application.isPlaying)
                         {
                             if (_item.cancel)
                             {
@@ -378,25 +424,25 @@ namespace JEngine.Core
                                 return;
                             }
 
-                            if (_item.timeout[index] > 0 && time >= _item.timeout[index])
+                            if (_item.timeout[_index] > 0 && time >= _item.timeout[_index])
                             {
                                 throw new TimeoutException();
                             }
 
-                            await Task.Delay((int)(_item.frequency[index] * 1000));
-                            time += _item.frequency[index];
+                            await Task.Delay((int)(_item.frequency[_index] * 1000));
+                            time += _item.frequency[_index];
                         }
                         continue;
                     }
 
                     //Repeat When
-                    if (_item.whens.ContainsKey(index))
+                    if (_item.whens.ContainsKey(_index))
                     {
                         float time = 0;
-                        Func<bool> condition = _item.whenCauses[index];
-                        float frequency = _item.whenFrequency[index];
-                        float timeout = _item.whenTimeout[index];
-                        Action action = _item.whens[index];
+                        Func<bool> condition = _item.whenCauses[_index];
+                        float frequency = _item.whenFrequency[_index];
+                        float timeout = _item.whenTimeout[_index];
+                        Action action = _item.whens[_index];
                         while (condition() && Application.isPlaying)
                         {
                             if (_item.cancel)
@@ -431,17 +477,19 @@ namespace JEngine.Core
                         continue;
                     }
 
+                    //(_item == null).ToString();
+
                     //DO
                     if (!onMainThread)
                     {
                         await Task.Run(() =>
                         {
-                            Execute(_item.toDo[index]);
+                            Execute(_item.toDo[_index]);
                         }, _item.cancellationTokenSource.Token);
                     }
                     else
                     {
-                        Execute(_item.toDo[index]);
+                        Execute(_item.toDo[_index]);
                     }
                 }
                 tcs.SetResult(true);
@@ -467,7 +515,7 @@ namespace JEngine.Core
                 {
                     e = e.InnerException;
                 }
-                Log.PrintError($"JAction错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                Log.PrintError($"{_name} 错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
             }
         }
 
