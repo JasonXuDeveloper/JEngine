@@ -5,7 +5,7 @@ namespace JEngine.Core
     public static partial class Tools
     {
         /// <summary>
-        /// 当前时间戳(ms)
+        /// 当前时间戳(s)
         /// </summary>
         /// <returns></returns>
         public static long TimeStamp => (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
