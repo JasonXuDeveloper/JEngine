@@ -188,6 +188,10 @@ namespace JEngine.Core
         /// </summary>
         public static void Initialize()
         {
+            if (_instance != null)
+            {
+                return;
+            }
             _instance = new GameObject("LifeCycleMgr").AddComponent<LifeCycleMgr>();
             DontDestroyOnLoad(_instance);
         }

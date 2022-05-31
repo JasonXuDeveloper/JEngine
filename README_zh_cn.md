@@ -181,4 +181,6 @@ JEngine专业版现已推出，大幅度提高开发效率和底层性能，可�
 
 - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
 - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
+  - [TEngine](https://github.com/ALEXTANGXIAO/TEngine ) - Unity框架解决方案
+  - [MetaJUI](https://github.com/Meta404Dev/MetaJUI) - MetaJUI是为JEngine定制的UI框架，当然你也可以通过很简单的修改，移植到自己的工程项目
 

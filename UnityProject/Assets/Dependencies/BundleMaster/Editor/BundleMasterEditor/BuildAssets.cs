@@ -203,11 +203,18 @@ namespace BM
                 for (int i = 0; i < depends.Length; i++)
                 {
                     string depend = depends[i];
-                    //脚本不能作为依赖
-                    if (depend.EndsWith(".cs"))
+                    //禁用后缀不能作为依赖
+                    if (assetsLoadSetting.BlacklistExtension.Any(depend.EndsWith))
                     {
                         continue;
                     }
+
+                    //禁用文件不能作为依赖
+                    if (assetsLoadSetting.BlacklistFile.Any(depend.Contains))
+                    {
+                        continue;
+                    }
+                    
                     //shader单独进包
                     if (BuildAssetsTools.IsShaderAsset(depend))
                     {

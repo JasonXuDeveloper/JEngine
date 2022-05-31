@@ -49,6 +49,10 @@ namespace JEngine.Editor
         private static readonly DirectoryInfo HiddenDirectory =
             new DirectoryInfo(ConstMgr.DLLSourceFolder);
 
+        public delegate void PostCleanEvent(int count);
+
+        public static event PostCleanEvent onPostClean;
+
         public static void Update()
         {
             hasAdded = true;
@@ -143,6 +147,7 @@ namespace JEngine.Editor
                     Log.Print(String.Format(Setting.GetString(SettingString.DLLCleanLog),
                         counts,
                         watch.ElapsedMilliseconds));
+                    onPostClean?.Invoke(counts);
                 }
 
                 _isDone = true;

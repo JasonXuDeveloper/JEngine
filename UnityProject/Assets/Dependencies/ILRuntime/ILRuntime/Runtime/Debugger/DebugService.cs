@@ -1618,7 +1618,7 @@ namespace ILRuntime.Runtime.Debugger
             var valuePointerEnd = stack.ValueTypeStackPointer;
             StringBuilder final = new StringBuilder();
             HashSet<long> leakVObj = new HashSet<long>();
-            for (var i = stack.ValueTypeStackBase; i > stack.ValueTypeStackPointer;)
+            for (var i = stack.ValueTypeStackBase; i > stack.ValueTypeStackPointer && i <= stack.ValueTypeStackBase;)
             {
                 leakVObj.Add((long)i);
                 i = Minus(i, i->ValueLow + 1);
@@ -1681,17 +1681,35 @@ namespace ILRuntime.Runtime.Debugger
 
             for (var i = stack.ValueTypeStackBase; i > stack.ValueTypeStackPointer;)
             {
-                var vt = domain.GetTypeByIndex(i->Value);
-                var cnt = i->ValueLow;
-                bool leak = leakVObj.Contains((long)i);
-                final.AppendLine("----------------------------------------------");
-                final.AppendLine(string.Format("{2}(0x{0:X8}){1}", (long)i, vt, leak ? "*" : ""));
-                for (int j = 0; j < cnt; j++)
+                try
+                {
+                    var vt = domain.GetTypeByIndex(i->Value);
+                    var cnt = i->ValueLow;
+                    bool leak = leakVObj.Contains((long)i);
+                    final.AppendLine("----------------------------------------------");
+                    final.AppendLine(string.Format("{2}(0x{0:X8}){1}", (long)i, vt, leak ? "*" : ""));
+                    for (int j = 0; j < cnt; j++)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        var ptr = Minus(i, j + 1);
+                        sb.Append(string.Format("(0x{0:X8}) Type:{1} ", (long)ptr, ptr->ObjectType));
+                        GetStackObjectText(sb, ptr, mStack, valuePointerEnd);
+                        final.AppendLine(sb.ToString());
+                    }
+                }
+                catch
                 {
                     StringBuilder sb = new StringBuilder();
-                    var ptr = Minus(i, j + 1);
-                    sb.Append(string.Format("(0x{0:X8}) Type:{1} ", (long)ptr, ptr->ObjectType));
-                    GetStackObjectText(sb, ptr, mStack, valuePointerEnd);
+                    final.AppendLine("----------------------------------------------");
+                    sb.Append(string.Format("*(0x{0:X8}) Type:{1} ", (long)i, i->ObjectType));
+                    try
+                    {
+                        GetStackObjectText(sb, i, mStack, valuePointerEnd);
+                    }
+                    catch
+                    {
+                        sb.Append(" Cannot Fetch Object Info");
+                    }
                     final.AppendLine(sb.ToString());
                 }
                 i = Minus(i, i->ValueLow + 1);
@@ -1743,9 +1761,16 @@ namespace ILRuntime.Runtime.Debugger
                         {
                             if (esp->ObjectType < ObjectTypes.Object || esp->Value < mStack.Count)
                             {
-                                var obj = StackObject.ToObject(esp, domain, mStack);
-                                if (obj != null)
-                                    text = obj.ToString();
+                                try
+                                {
+                                    var obj = StackObject.ToObject(esp, domain, mStack);
+                                    if (obj != null)
+                                        text = obj.ToString();
+                                }
+                                catch
+                                {
+                                    text = "Invalid Object";
+                                }
                             }
                         }
 

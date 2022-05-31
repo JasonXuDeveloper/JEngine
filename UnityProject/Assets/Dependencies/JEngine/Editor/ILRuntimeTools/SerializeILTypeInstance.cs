@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Reflection;
+using JEngine.Core.DO_NOT_USE;
 using Object = UnityEngine.Object;
 
 namespace JEngine.Editor
@@ -199,14 +201,19 @@ namespace JEngine.Editor
             var obj = instance[objValue];
             try
             {
-                var clrInstance = Tools.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
+                object clrInstance = Tools.FindObjectsOfTypeAll<MonoBehaviourAdapter.Adaptor>()
                     .Find(adaptor =>
-                        adaptor.ILInstance.Equals(instance[i.Value]));
+                        adaptor.ILInstance.Equals(obj));
+                if (clrInstance == null)
+                {
+                    clrInstance = Tools.FindObjectsOfTypeAll<ClassBindNonMonoBehaviourAdapter.Adaptor>()
+                        .Find(adaptor =>
+                            adaptor.ILInstance.Equals(obj));
+                }
                 if (clrInstance != null)
                 {
                     GUI.enabled = false;
-                    EditorGUILayout.ObjectField(objName, clrInstance, typeof(MonoBehaviourAdapter.Adaptor),
-                        true);
+                    EditorGUILayout.ObjectField(name, (MonoBehaviour)clrInstance, typeof(MonoBehaviour), true);
                     GUI.enabled = true;
                 }
                 else
@@ -256,14 +263,13 @@ namespace JEngine.Editor
             var objName = i.Key;
             var obj = instance[objValue];
             //可绑定值，可以尝试更改
-            if (type.ReflectionType.ToString().Contains("BindableProperty") && obj != null)
+            if (type.ReflectionType.IsGenericType && type.ReflectionType.GetGenericTypeDefinition() == typeof(BindableProperty<>) && obj != null)
             {
                 PropertyInfo fi = type.ReflectionType.GetProperty("Value");
                 object val = fi?.GetValue(obj);
 
-                string genericTypeStr = type.ReflectionType.ToString().Split('`')[1].Replace("1<", "")
-                    .Replace(">", "");
-                Type genericType = Type.GetType(genericTypeStr);
+                Type genericType = type.ReflectionType.GenericTypeArguments[0];
+                genericType = genericType is ILRuntimeWrapperType wt ? wt.RealType : genericType;
                 if (genericType == null ||
                     (!genericType.IsPrimitive && genericType != typeof(string))) //不是基础类型或字符串
                 {
