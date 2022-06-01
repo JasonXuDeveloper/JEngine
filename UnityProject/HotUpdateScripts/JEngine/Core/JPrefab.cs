@@ -78,7 +78,8 @@ namespace JEngine.Core
             }
             if (async)
             {
-                LoadPrefabAsync(path, package, complete).Coroutine();
+                LoadTask = LoadPrefabAsync(path, package, complete);
+                LoadTask.Coroutine();
             }
             else
             {
@@ -95,12 +96,11 @@ namespace JEngine.Core
         /// </summary>
         public async Task WaitForAsyncLoading()
         {
-            await Task.Delay(1);
-            while (!Loaded && !Error)
-            {
-                await Task.Delay(1);
-            }
+            await ET.ETTaskHelper.WaitAll(new ET.ETTask[] { LoadTask });
         }
+
+
+        private readonly ET.ETTask LoadTask;
 
 
         private async ET.ETTask LoadPrefabAsync(string path, string package, Action<bool, JPrefab> callback)
