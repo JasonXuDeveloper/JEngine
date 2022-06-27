@@ -172,6 +172,7 @@ public class Updater : MonoBehaviour
                 }
             }
             mb.onComplete = ONComplete;
+            return;
         }
         
         async void Init()
