@@ -82,5 +82,10 @@ public class UpdateScreen : MonoBehaviour, IUpdater
         InitJEngine.Instance.LoadHotUpdateCallback();
     }
 
+    public void OnUpdateFailed()
+    {
+        progressBar.gameObject.SetActive(false);
+        buttonStart.gameObject.SetActive(true);
+    }
     #endregion
 }
