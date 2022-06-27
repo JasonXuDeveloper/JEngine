@@ -322,12 +322,22 @@ namespace JEngine.Core
             if (_instances != null && _instances.Count > 0)
             {
                 //调用fixed update
-                ExecuteItems(_fixedUpdateItems,false, _instances.Contains);
+                ExecuteItems(_fixedUpdateItems,false, obj =>
+                {
+                    return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
+                                                    || _startItems.Any(i => i.ItemInstance == obj)
+                                                    || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
             else
             {
                 //调用fixed update
-                ExecuteItems(_fixedUpdateItems,false);
+                ExecuteItems(_fixedUpdateItems, false, obj =>
+                {
+                    return _awakeItems.Any(i => i.ItemInstance == obj)
+                           || _startItems.Any(i => i.ItemInstance == obj)
+                           || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
         }
 
@@ -342,12 +352,22 @@ namespace JEngine.Core
             if (_instances != null && _instances.Count > 0)
             {
                 //调用update
-                ExecuteItems(_updateItems,false, _instances.Contains);
+                ExecuteItems(_updateItems,false, obj =>
+                {
+                    return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
+                                                    || _startItems.Any(i => i.ItemInstance == obj)
+                                                    || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
             else
             {
                 //调用update
-                ExecuteItems(_updateItems,false);
+                ExecuteItems(_updateItems,false, obj =>
+                {
+                    return _awakeItems.Any(i => i.ItemInstance == obj)
+                           || _startItems.Any(i => i.ItemInstance == obj)
+                           || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
         }
 
@@ -362,12 +382,22 @@ namespace JEngine.Core
             if (_instances != null && _instances.Count > 0)
             {
                 //调用late update
-                ExecuteItems(_lateUpdateItems,false, _instances.Contains);
+                ExecuteItems(_lateUpdateItems,false, obj =>
+                {
+                    return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
+                                                    || _startItems.Any(i => i.ItemInstance == obj)
+                                                    || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
             else
             {
                 //调用late update
-                ExecuteItems(_lateUpdateItems,false);
+                ExecuteItems(_lateUpdateItems,false, obj =>
+                {
+                    return _awakeItems.Any(i => i.ItemInstance == obj)
+                           || _startItems.Any(i => i.ItemInstance == obj)
+                           || _enableItems.Any(i => i.ItemInstance == obj);
+                });
             }
         }
     }
