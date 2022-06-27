@@ -17,6 +17,8 @@ public interface IUpdater
         void OnLoadSceneProgress(float progress);
 
         void OnLoadSceneFinish();
+
+        void OnUpdateFailed();
     }
 
     public class BaseUpdater : IUpdater
@@ -50,16 +52,23 @@ public interface IUpdater
         {
             onLoadSceneFinish?.Invoke();
         }
+        
+        public Action onUpdateFailed;
+        public void OnUpdateFailed()
+        {
+            onUpdateFailed?.Invoke();
+        }
+        
 
-        public BaseUpdater(Action<string> onMessage, Action<float> onProgress, Action<string> onVersion, Action<float> onLoadSceneProgress, Action onLoadSceneFinish)
+        public BaseUpdater(Action<string> onMessage, Action<float> onProgress, Action<string> onVersion, Action<float> onLoadSceneProgress, Action onLoadSceneFinish, Action onUpdateFailed)
         {
             this.onMessage = onMessage;
             this.onProgress = onProgress;
             this.onVersion = onVersion;
             this.onLoadSceneProgress = onLoadSceneProgress;
             this.onLoadSceneFinish = onLoadSceneFinish;
+            this.onUpdateFailed = onUpdateFailed;
         }
-
     }
 
 public class Updater : MonoBehaviour
@@ -99,7 +108,12 @@ public class Updater : MonoBehaviour
         UpdateBundleDataInfo package = null)
     {
         package = package ?? await CheckPackage(bundlePackageName, false);
-        return package.GetVersion(bundlePackageName)[0];
+        var ver = package.GetVersion(bundlePackageName);
+        if (ver == null)
+        {
+            throw new InvalidOperationException("Can not find local package version");
+        }
+        return ver[0];
     }
 
     /// <summary>
@@ -112,7 +126,12 @@ public class Updater : MonoBehaviour
         UpdateBundleDataInfo package = null)
     {
         package = package ?? await CheckPackage(bundlePackageName, false);
-        return package.GetVersion(bundlePackageName)[1];
+        var ver = package.GetVersion(bundlePackageName);
+        if (ver == null)
+        {
+            throw new InvalidOperationException("Can not find remote package version");
+        }
+        return ver[1];
     }
 
     /// <summary>
@@ -130,9 +149,31 @@ public class Updater : MonoBehaviour
         if (string.IsNullOrEmpty(key)) key = null;
         MessageBox.Dispose();
         package = package ?? await CheckPackage(bundlePackageName, checkCRC);
-        updater.OnVersion("资源版本号: v" + Application.version + "res" +
-                          await GetRemotePackageVersion(bundlePackageName, package));
 
+        try
+        {
+            updater.OnVersion("资源版本号: v" + Application.version + "res" +
+                              await GetRemotePackageVersion(bundlePackageName, package));
+        }
+        //can not find remote version
+        catch (InvalidOperationException)
+        {
+            var mb = MessageBox.Show("错误", "无法获取服务器信息", "返回", "退出");
+
+            void ONComplete(MessageBox.EventId ok)
+            {
+                if (ok == MessageBox.EventId.Ok)
+                {
+                    updater.OnUpdateFailed();
+                }
+                else
+                {
+                    Quit();
+                }
+            }
+            mb.onComplete = ONComplete;
+        }
+        
         async void Init()
         {
             updater.OnProgress(1);
@@ -209,14 +250,15 @@ public class Updater : MonoBehaviour
     /// <param name="onVersion"></param>
     /// <param name="onLoadSceneProgress"></param>
     /// <param name="onLoadSceneFinished"></param>
+    /// <param name="onUpdateFailed"></param>
     public static void UpdatePackage(string bundlePackageName, bool checkCRC = true,
         UpdateBundleDataInfo package = null, string key = null,
         string nextScene = null,
         Action<string> onMessage = null, Action<float> onProgress = null, Action<string> onVersion = null,
-        Action<float> onLoadSceneProgress = null, Action onLoadSceneFinished = null)
+        Action<float> onLoadSceneProgress = null, Action onLoadSceneFinished = null, Action onUpdateFailed = null)
     {
         BaseUpdater updater =
-            new BaseUpdater(onMessage, onProgress, onVersion, onLoadSceneProgress, onLoadSceneFinished);
+            new BaseUpdater(onMessage, onProgress, onVersion, onLoadSceneProgress, onLoadSceneFinished, onUpdateFailed);
         UpdatePackage(bundlePackageName, updater, checkCRC, package, key, nextScene);
     }
 

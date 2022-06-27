@@ -27,8 +27,6 @@ using System;
 using UnityEngine;
 using System.Linq;
 using System.Threading;
-using System.Reflection;
-using System.Collections;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -259,7 +257,30 @@ namespace JEngine.Core
         }
 
         /// <summary>
+        /// Find a JBehaviour that is the given type
+        /// 通过指定类型寻找一个JBehaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T FindJBehaviourOfType<T>() where T: JBehaviour
+        {
+            return (T)JBehaviours.Values.First(j => j is T);
+        }
+
+        /// <summary>
+        /// Find all JBehaviours that are the given type
+        /// 通过指定类型寻找全部JBehaviour
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[] FindJBehavioursOfType<T>() where T : JBehaviour
+        {
+            return (T[])JBehaviours.Values.ToList().FindAll(j => j is T).ToArray();
+        }
+
+        /// <summary>
         /// Remove a JBehaviour
+        /// 删除一个JBehaviour
         /// </summary>
         /// <param name="jBehaviour"></param>
         public static void RemoveJBehaviour(JBehaviour jBehaviour)
@@ -499,9 +520,9 @@ namespace JEngine.Core
 
             while (_gameObject != null && !LoopAwaitToken.IsCancellationRequested)
             {
-                if (Paused)//暂停
+                if (Paused || Hidden)//暂停或没Active
                 {
-                    await Task.Delay(25);
+                    await Task.Delay(10);
                     continue;
                 }
 
