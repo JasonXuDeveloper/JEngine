@@ -78,8 +78,7 @@ namespace JEngine.Core
             }
             if (async)
             {
-                LoadTask = LoadPrefabAsync(path, package, complete);
-                LoadTask.Coroutine();
+                LoadPrefabAsync(path, package, complete).Coroutine();
             }
             else
             {
@@ -96,19 +95,32 @@ namespace JEngine.Core
         /// </summary>
         public async Task WaitForAsyncLoading()
         {
-            await ET.ETTaskHelper.WaitAll(new ET.ETTask[] { LoadTask });
+            if (!AssetMgr.RuntimeMode)
+            {
+                await Task.Delay(1);
+                while (!Loaded)
+                {
+                    await Task.Delay(10);
+                }
+            }
+            else
+            {
+                await ET.ETTaskHelper.WaitAll(new ET.ETTask[] { LoadTask });
+            }
         }
 
 
-        private readonly ET.ETTask LoadTask;
+        private ET.ETTask LoadTask;
 
 
         private async ET.ETTask LoadPrefabAsync(string path, string package, Action<bool, JPrefab> callback)
         {
+            LoadTask = ET.ETTask.Create(true);
             var obj = await AssetMgr.LoadAsync<GameObject>(path, package);
             Instance = obj;
             Loaded = true;
             callback?.Invoke(!Error, this);
+            LoadTask.SetResult();
         }
 
         private string path;

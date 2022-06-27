@@ -31,7 +31,7 @@ MonoBehaviour:
   ScenePath:
   - Assets/HotUpdateResources/Scene
   BlacklistFile:
-  - .DS_store
+  - .DS_Store
   - LightingData.asset
   BlacklistExtension:
   - .dll
