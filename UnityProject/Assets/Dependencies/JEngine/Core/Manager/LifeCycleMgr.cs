@@ -90,12 +90,7 @@ namespace JEngine.Core
         /// All late update methods
         /// </summary>
         private readonly HashSet<LifeCycleItem> _lateUpdateItems = new HashSet<LifeCycleItem>();
-
-        /// <summary>
-        /// All objects have been fixedUpdated
-        /// </summary>
-        private readonly HashSet<object> _fixedUpdatedObjects = new HashSet<object>();
-
+        
         /// <summary>
         /// Add awake task
         /// </summary>
@@ -203,7 +198,7 @@ namespace JEngine.Core
         /// <param name="items"></param>
         /// <param name="removeAfterInvoke"></param>
         /// <param name="ignoreCondition"></param>
-        private HashSet<LifeCycleItem> ExecuteItems(HashSet<LifeCycleItem> items, bool removeAfterInvoke = true,
+        private void ExecuteItems(HashSet<LifeCycleItem> items, bool removeAfterInvoke = true,
             Func<object, bool> ignoreCondition = null)
         {
             //执行后被移除的item
@@ -240,8 +235,6 @@ namespace JEngine.Core
             {
                 items.RemoveWhere(itemToRemove.Contains);
             }
-
-            return itemToRemove;
         }
 
         /// <summary>
@@ -261,39 +254,12 @@ namespace JEngine.Core
         /// </summary>
         private void FixedUpdate()
         {
-            //判断一下是否定义过Fixed，没的话在这里加入列表
-            if (_instance != null)
-            {
-                foreach (var item in _instances)
-                {
-                    if (_fixedUpdateItems.All(i => i.ItemInstance != item))
-                    {
-                        _fixedUpdatedObjects.Add(item);
-                    }
-                }
-            }
-            foreach (var item in _updateItems)
-            {
-                if (_fixedUpdateItems.All(i => i.ItemInstance != item))
-                {
-                    _fixedUpdatedObjects.Add(item);
-                }
-            }
-            foreach (var item in _lateUpdateItems)
-            {
-                if (_fixedUpdateItems.All(i => i.ItemInstance != item))
-                {
-                    _fixedUpdatedObjects.Add(item);
-                }
-            }
-            
             //处理fixed update
-            HashSet<LifeCycleItem> executed;
             //确保本帧没处理过这些对象
             if (_instances != null && _instances.Count > 0)
             {
                 //调用fixed update
-                executed = ExecuteItems(_fixedUpdateItems, false, obj =>
+                ExecuteItems(_fixedUpdateItems, false, obj =>
                 {
                     return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
                                                     || _startItems.Any(i => i.ItemInstance == obj)
@@ -303,18 +269,12 @@ namespace JEngine.Core
             else
             {
                 //调用fixed update
-                executed = ExecuteItems(_fixedUpdateItems, false, obj =>
+                ExecuteItems(_fixedUpdateItems, false, obj =>
                 {
                     return _awakeItems.Any(i => i.ItemInstance == obj)
                            || _startItems.Any(i => i.ItemInstance == obj)
                            || _enableItems.Any(i => i.ItemInstance == obj);
                 });
-            }
-
-            //记录这些被fixedUpdate过了
-            foreach (var item in executed)
-            {
-                _fixedUpdatedObjects.Add(item.ItemInstance);
             }
         }
 
@@ -323,6 +283,8 @@ namespace JEngine.Core
         /// </summary>
         private void Update()
         {
+            _instances?.Clear();
+
             //处理update
             //确保本帧没处理过这些对象
             if (_instances != null && _instances.Count > 0)
@@ -330,8 +292,7 @@ namespace JEngine.Core
                 //调用update
                 ExecuteItems(_updateItems, false, obj =>
                 {
-                    return _instances.Contains(obj) || !_fixedUpdatedObjects.Contains(obj)
-                                                    || _awakeItems.Any(i => i.ItemInstance == obj)
+                    return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
                                                     || _startItems.Any(i => i.ItemInstance == obj)
                                                     || _enableItems.Any(i => i.ItemInstance == obj);
                 });
@@ -342,7 +303,6 @@ namespace JEngine.Core
                 ExecuteItems(_updateItems, false, obj =>
                 {
                     return _awakeItems.Any(i => i.ItemInstance == obj)
-                           || !_fixedUpdatedObjects.Contains(obj)
                            || _startItems.Any(i => i.ItemInstance == obj)
                            || _enableItems.Any(i => i.ItemInstance == obj);
                 });
@@ -354,7 +314,6 @@ namespace JEngine.Core
         /// </summary>
         private void LateUpdate()
         {
-            _instances?.Clear();
             //如果有awake
             if (_awakeItems.Count > 0)
             {
@@ -366,9 +325,20 @@ namespace JEngine.Core
 
                 _instances.AddRange(_awakeItems.Select(i => i.ItemInstance));
                 ExecuteItems(_awakeItems);
+                
+                //如果有enable，那么在awake的同一帧也该调用enable
+                if (_enableItems.Count > 0)
+                {
+                    //确保本帧没处理过这些对象
+                    if (_instances != null && _instances.Count > 0)
+                    {
+                        //调用执行过awake的对象的enable
+                        ExecuteItems(_enableItems, true, s=>!_instances.Contains(s));
+                    }
+                }
             }
 
-            //如果有enable
+            //如果有enable（这些是没awake的enable）
             if (_enableItems.Count > 0)
             {
                 //确保本帧没处理过这些对象
@@ -415,7 +385,7 @@ namespace JEngine.Core
                     ExecuteItems(_startItems);
                 }
             }
-
+            
             //处理late update
             //确保本帧没处理过这些对象
             if (_instances != null && _instances.Count > 0)
@@ -423,8 +393,7 @@ namespace JEngine.Core
                 //调用late update
                 ExecuteItems(_lateUpdateItems, false, obj =>
                 {
-                    return _instances.Contains(obj) || !_fixedUpdatedObjects.Contains(obj)
-                                                    || _awakeItems.Any(i => i.ItemInstance == obj)
+                    return _instances.Contains(obj) || _awakeItems.Any(i => i.ItemInstance == obj)
                                                     || _startItems.Any(i => i.ItemInstance == obj)
                                                     || _enableItems.Any(i => i.ItemInstance == obj);
                 });
@@ -435,7 +404,6 @@ namespace JEngine.Core
                 ExecuteItems(_lateUpdateItems, false, obj =>
                 {
                     return _awakeItems.Any(i => i.ItemInstance == obj)
-                           || !_fixedUpdatedObjects.Contains(obj)
                            || _startItems.Any(i => i.ItemInstance == obj)
                            || _enableItems.Any(i => i.ItemInstance == obj);
                 });
