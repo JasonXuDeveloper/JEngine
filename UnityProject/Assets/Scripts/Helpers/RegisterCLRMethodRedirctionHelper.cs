@@ -366,7 +366,7 @@ namespace JEngine.Helper
 
         }
         
-        private static unsafe void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, IList<object> __mStack, ref System.Nullable<System.UInt64> instance_of_this_method)
+        private static unsafe void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, List<object> __mStack, ref System.Nullable<System.UInt64> instance_of_this_method)
         {
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
             switch(ptr_of_this_method->ObjectType)
@@ -412,7 +412,7 @@ namespace JEngine.Helper
             }
         }
 
-        private static unsafe StackObject* GetValueOrDefault_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
+        private static unsafe StackObject* GetValueOrDefault_2(ILIntepreter __intp, StackObject* __esp, List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -434,7 +434,7 @@ namespace JEngine.Helper
             return __ret + 1;
         }
         
-        private static unsafe void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, IList<object> __mStack, ref System.UInt32? instance_of_this_method)
+        private static unsafe void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, List<object> __mStack, ref System.UInt32? instance_of_this_method)
         {
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
             switch(ptr_of_this_method->ObjectType)
@@ -481,7 +481,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* GetValueOrDefault_1(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -506,7 +506,7 @@ namespace JEngine.Helper
 
 
         private static unsafe StackObject* GetValueOrDefault_0(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -530,7 +530,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe void WriteBackInstance(AppDomain __domain,
-            StackObject* ptr_of_this_method, IList<object> __mStack,
+            StackObject* ptr_of_this_method, List<object> __mStack,
             ref Boolean? instance_of_this_method)
         {
             ptr_of_this_method = ILIntepreter.GetObjectAndResolveReference(ptr_of_this_method);
@@ -724,7 +724,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_7(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -742,7 +742,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_8(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -767,7 +767,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_9(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -796,7 +796,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_10(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -828,7 +828,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_11(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -867,7 +867,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_12(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -889,7 +889,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_13(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -919,7 +919,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_14(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -952,7 +952,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_15(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -988,7 +988,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_16(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1030,7 +1030,7 @@ namespace JEngine.Helper
         }
 
         private static unsafe StackObject* Instantiate_17(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             throw new NotSupportedException("JEngine不支持这种Instantiate");
         }
@@ -1045,7 +1045,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_1(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1082,7 +1082,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* Deserialize_2(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1111,7 +1111,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* CancelInvoke_3(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1157,7 +1157,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* CancelInvoke_4(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1212,7 +1212,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        private static unsafe StackObject* IsInvoking_5(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        private static unsafe StackObject* IsInvoking_5(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1270,7 +1270,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        private static unsafe StackObject* IsInvoking_6(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        private static unsafe StackObject* IsInvoking_6(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1335,7 +1335,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* InvokeRepeating_2(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1440,7 +1440,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        private static unsafe StackObject* Invoke_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        private static unsafe StackObject* Invoke_1(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1587,7 +1587,7 @@ namespace JEngine.Helper
             }
         }
 
-        static unsafe StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_1(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1647,7 +1647,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_2(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1713,7 +1713,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_3(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1779,7 +1779,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* BroadcastMessage_4(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1851,7 +1851,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_1(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1913,7 +1913,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_2(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -1980,7 +1980,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_3(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2048,7 +2048,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessageUpwards_4(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2121,7 +2121,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_1(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2167,7 +2167,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_2(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2219,7 +2219,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_3(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2271,7 +2271,7 @@ namespace JEngine.Helper
             return __ret;
         }
 
-        static unsafe StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* SendMessage_4(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2338,7 +2338,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* PrintError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* PrintError(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2363,7 +2363,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* PrintWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* PrintWarning(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2388,7 +2388,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* Print(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* Print(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2413,7 +2413,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* LogError(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* LogError(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2438,7 +2438,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* LogWarning(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* LogWarning(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2463,7 +2463,7 @@ namespace JEngine.Helper
         /// <param name="__method"></param>
         /// <param name="isNewObj"></param>
         /// <returns></returns>
-        static unsafe StackObject* Log(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* Log(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2593,7 +2593,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        static unsafe StackObject* AddComponent2(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* AddComponent2(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             //CLR重定向的说明请看相关文档和教程，这里不多做解释
@@ -2630,7 +2630,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        static unsafe StackObject* AddComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* AddComponent(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2664,7 +2664,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         private static unsafe StackObject* GetComponent_1(ILIntepreter __intp, StackObject* __esp,
-            IList<object> __mStack, CLRMethod __method, bool isNewObj)
+            List<object> __mStack, CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -2707,7 +2707,7 @@ namespace JEngine.Helper
         /// <param name="isNewObj"></param>
         /// <returns></returns>
         /// <exception cref="System.NullReferenceException"></exception>
-        static unsafe StackObject* GetComponent(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* GetComponent(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2742,7 +2742,7 @@ namespace JEngine.Helper
         }
 
 
-        static unsafe StackObject* GetComponents_7(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* GetComponents_7(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2792,7 +2792,7 @@ namespace JEngine.Helper
             return __esp;
         }
 
-        static unsafe StackObject* FindObjectsOfType_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* FindObjectsOfType_10(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2827,7 +2827,7 @@ namespace JEngine.Helper
 
         }
         
-        static unsafe StackObject* FindObjectsOfType_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* FindObjectsOfType_11(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2858,7 +2858,7 @@ namespace JEngine.Helper
 
         }
         
-        static unsafe StackObject* FindObjectOfType_10(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* FindObjectOfType_10(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;
@@ -2889,7 +2889,7 @@ namespace JEngine.Helper
 
         }
         
-        static unsafe StackObject* FindObjectOfType_11(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack,
+        static unsafe StackObject* FindObjectOfType_11(ILIntepreter __intp, StackObject* __esp, List<object> __mStack,
             CLRMethod __method, bool isNewObj)
         {
             AppDomain __domain = __intp.AppDomain;

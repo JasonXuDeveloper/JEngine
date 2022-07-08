@@ -120,7 +120,7 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         return ret + 1;
     }
 
-    StackObject* Quaternion_Multiply2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* Quaternion_Multiply2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
     {
         var ret = ILIntepreter.Minus(esp, 2);
         Vector3 vec;
@@ -210,7 +210,7 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         return ret + 1;
     }
 
-    StackObject* Quaternion_Euler(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* Quaternion_Euler(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
     {
         var ret = ILIntepreter.Minus(esp, 1);
         var ptr = ILIntepreter.Minus(esp, 1);
@@ -286,7 +286,7 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         return ret;
     }
 
-    StackObject* Get_EulerAngle(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+    StackObject* Get_EulerAngle(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
     {
         var ret = ILIntepreter.Minus(esp, 1);
 
@@ -323,7 +323,7 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         }
         else
         {
-            vec = (Quaternion)StackObject.ToObject(a, intp.AppDomain, mStack);
+            vec = (Quaternion)StackObject.ToObject(a, intp.AppDomain, (List<object>)mStack);
             intp.Free(ptr);
         }
     }
@@ -335,13 +335,13 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
         CopyValueTypeToStack(ref vec, dst, mStack);
     }
 
-    void PushVector3(ref Vector3 vec, ILIntepreter intp, StackObject* ptr, IList<object> mStack)
+    void PushVector3(ref Vector3 vec, ILIntepreter intp, StackObject* ptr, List<object> mStack)
     {
         var binder = Vector3Binder;
         if (binder != null)
             binder.PushVector3(ref vec, intp, ptr, mStack);
         else
-            ILIntepreter.PushObject(ptr, mStack, vec, true);
+            ILIntepreter.PushObject(ptr, (List<object>)mStack, vec, true);
     }
 }
 #endif

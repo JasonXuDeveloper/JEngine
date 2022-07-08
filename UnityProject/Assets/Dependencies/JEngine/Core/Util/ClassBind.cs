@@ -128,7 +128,7 @@ namespace JEngine.Core
                     classData.Added = true;
 
                     //JBehaviour额外处理
-                    var go = t.GetField("_gameObject", BindingFlags.Public);
+                    var go = t.GetField("_gameObject", BindingFlags.Public| BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
                     go?.SetValue(clrInstance.ILInstance, gameObject);
                 }
             }
