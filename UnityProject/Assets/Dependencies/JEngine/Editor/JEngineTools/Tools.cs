@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using JEngine.Core;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -93,7 +94,7 @@ namespace JEngine.Editor
                     throw new TimeoutException("Post request time out");
                 }
                 timeout--;
-                await Task.Delay(1);
+                await TimeMgr.Delay(1);
             }
             return result;
         }
@@ -132,7 +133,7 @@ namespace JEngine.Editor
             while (isPopping)
             {
                 EditorUtility.DisplayProgressBar(title, info, Random.Range(0f, 1f));
-                await Task.Delay(1);
+                await TimeMgr.Delay(1);
             }
 
             EditorUtility.ClearProgressBar();

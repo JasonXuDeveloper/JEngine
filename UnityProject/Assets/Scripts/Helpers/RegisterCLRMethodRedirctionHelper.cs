@@ -1525,7 +1525,7 @@ namespace JEngine.Helper
                     //当计时器的时间小于暂停时间转毫秒除以时间系数时，等待1帧
                     if (Time.timeScale == 0 || sw.ElapsedMilliseconds < (time * 1000) / Time.timeScale)
                     {
-                        await Task.Delay(1, token);
+                        await TimeMgr.Delay(1);
                     }
                     else //不满足条件就结束了
                     {

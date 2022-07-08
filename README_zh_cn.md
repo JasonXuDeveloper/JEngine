@@ -186,5 +186,5 @@ JEngine专业版现已推出，大幅度提高开发效率和底层性能，可�
 - [TEngine](https://github.com/ALEXTANGXIAO/TEngine ) - Unity框架解决方案
 - [MetaJUI](https://github.com/Meta404Dev/MetaJUI) - MetaJUI是为JEngine定制的UI框架，当然你也可以通过很简单的修改，移植到自己的工程项目
 - [BundleMaster](https://github.com/mister91jiao/BundleMaster) - Unity资源加载大师
-- [Nino](https://github.com/JasonXuDeveloper/Nino) - Useful Unity Modules | 实用的Unity模块
+- [Nino](https://github.com/JasonXuDeveloper/Nino) - 实用的高性能C#模块，尤其在Unity平台能带来令人难以置信的效益。
 

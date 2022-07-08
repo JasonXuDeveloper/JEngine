@@ -146,6 +146,13 @@ namespace JEngine.Helper
                     ((Action<System.Object, System.Threading.Tasks.UnobservedTaskExceptionEventArgs>)act)(sender, e);
                 });
             });
+            appdomain.DelegateManager.RegisterDelegateConvertor<System.Predicate<UnityEngine.GameObject>>((act) =>
+            {
+                return new System.Predicate<UnityEngine.GameObject>((obj) =>
+                {
+                    return ((Func<UnityEngine.GameObject, System.Boolean>)act)(obj);
+                });
+            });
         }
     }
 }

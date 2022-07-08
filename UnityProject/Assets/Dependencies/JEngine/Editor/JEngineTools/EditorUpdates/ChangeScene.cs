@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,7 +29,7 @@ namespace JEngine.Editor
                 while (SceneManager.GetActiveScene().name != name)
                 {
                     if (!Application.isPlaying) return;
-                    await Task.Delay(10);
+                    await TimeMgr.Delay(10);
                 }
                 DynamicGI.UpdateEnvironment();
             }

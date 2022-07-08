@@ -397,7 +397,7 @@ namespace JEngine.Core
                     //Delay
                     if (_item.delays.ContainsKey(_index))
                     {
-                        await Task.Delay((int)(_item.delays[_index] * 1000));
+                        await JEngine.Core.TimeMgr.Delay((int)(_item.delays[_index] * 1000));
                         continue;
                     }
 
@@ -407,7 +407,7 @@ namespace JEngine.Core
                         //计算1帧时间(ms)
                         var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
                         var duration = durationPerFrame * _item.delayFrames[_index];
-                        await Task.Delay(duration);
+                        await JEngine.Core.TimeMgr.Delay(duration);
                         continue;
                     }
 
@@ -429,7 +429,7 @@ namespace JEngine.Core
                                 throw new TimeoutException();
                             }
 
-                            await Task.Delay((int)(_item.frequency[_index] * 1000));
+                            await JEngine.Core.TimeMgr.Delay((int)(_item.frequency[_index] * 1000));
                             time += _item.frequency[_index];
                         }
                         continue;
@@ -471,7 +471,7 @@ namespace JEngine.Core
                                 await Task.Run(action, _item.cancellationTokenSource.Token);
                             }
 
-                            await Task.Delay((int)(frequency * 1000));
+                            await JEngine.Core.TimeMgr.Delay((int)(frequency * 1000));
                             time += frequency;
                         }
                         continue;

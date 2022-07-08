@@ -51,7 +51,7 @@ namespace JEngine.Editor
 
                 Setting.EncryptPassword = s;
 
-                await Task.Delay(3);
+                await TimeMgr.Delay(3);
                 AssetDatabase.Refresh();
 
                 watch = new Stopwatch();
