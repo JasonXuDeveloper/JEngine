@@ -60,7 +60,7 @@ namespace JEngine.Examples
             //取消注册ExtensionManager，这样下次不会post到这个实例内的方法
             JEvent.defaultEvent.Unregister(ExtensionManager);
 
-            await Task.Delay(3000);
+            await JEngine.Core.TimeMgr.Delay(3000);
 
             //创建独立的JEvent
             JEvent e = new JEvent();

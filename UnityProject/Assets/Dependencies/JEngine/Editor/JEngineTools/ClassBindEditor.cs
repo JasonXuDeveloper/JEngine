@@ -129,7 +129,7 @@ namespace JEngine.Editor
                             field.fieldName, data.fields.IndexOf(field), data.fields.Length),
                         data.fields.IndexOf(field) / (float) data.fields.Length);
 
-                    await Task.Delay(50); //延迟一下，动画更丝滑
+                    await TimeMgr.Delay(50); //延迟一下，动画更丝滑
                 }
 
                 var f = data.fields.OrderBy(s => s.fieldName);
@@ -193,7 +193,7 @@ namespace JEngine.Editor
                             field.fieldName, data.fields.IndexOf(field), data.fields.Length),
                         data.fields.IndexOf(field) / (float) data.fields.Length);
 
-                    await Task.Delay(50); //延迟一下，动画更丝滑
+                    await TimeMgr.Delay(50); //延迟一下，动画更丝滑
                 }
 
             }
@@ -285,11 +285,11 @@ namespace JEngine.Editor
                         affectCounts++;
                     }
 
-                    await Task.Delay(10); //延迟一下，动画更丝滑
+                    await TimeMgr.Delay(10); //延迟一下，动画更丝滑
                 }
             }
 
-            await Task.Delay(50); //延迟一下，动画更丝滑
+            await TimeMgr.Delay(50); //延迟一下，动画更丝滑
 
             EditorUtility.ClearProgressBar();
 

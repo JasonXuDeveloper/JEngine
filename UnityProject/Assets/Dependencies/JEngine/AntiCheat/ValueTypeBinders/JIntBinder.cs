@@ -65,7 +65,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             appdomain.RegisterCLRMethodRedirection(method, JInt_Add2);
         }
         
-        StackObject* JInt_Implicit(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Implicit(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -79,7 +79,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
 
-        StackObject* JInt_Add(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Add(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
         {
             var ret = ILIntepreter.Minus(esp, 2);
             var ptr = ILIntepreter.Minus(esp, 1);
@@ -96,7 +96,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ret + 1;
         }
         
-        StackObject* JInt_Add2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Add2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
         {
             var ret = ILIntepreter.Minus(esp, 2);
             var ptr = ILIntepreter.Minus(esp, 1);
@@ -113,7 +113,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ret + 1;
         }
         
-        StackObject* NewJInt(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* NewJInt(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -133,7 +133,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
         
-        StackObject* NewJInt2(ILIntepreter intp, StackObject* esp, IList<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* NewJInt2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -153,7 +153,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
         
-        void WriteBackInstance(StackObject* ptr, IList<object> mStack, ref JInt instanceOfThisMethod)
+        void WriteBackInstance(StackObject* ptr, List<object> mStack, ref JInt instanceOfThisMethod)
         {
             ptr = ILIntepreter.GetObjectAndResolveReference(ptr);
             switch(ptr->ObjectType)
@@ -199,7 +199,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             }
         }
 
-        public static void ParseJInt(out JInt j, ILIntepreter intp, StackObject* ptr, IList<object> mStack)
+        public static void ParseJInt(out JInt j, ILIntepreter intp, StackObject* ptr, List<object> mStack)
         {
             var a = ILIntepreter.GetObjectAndResolveReference(ptr);
             if (a->ObjectType == ObjectTypes.ValueTypeObjectReference)
@@ -218,7 +218,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
         }
 
         
-        public void PushJInt(ref JInt j, ILIntepreter intp, StackObject* ptr, IList<object> mStack)
+        public void PushJInt(ref JInt j, ILIntepreter intp, StackObject* ptr, List<object> mStack)
         {
             intp.AllocValueType(ptr, CLRType);
             var dst = *((StackObject**)&ptr->Value);

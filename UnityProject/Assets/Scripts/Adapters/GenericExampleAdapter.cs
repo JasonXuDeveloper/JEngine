@@ -83,7 +83,7 @@ namespace ProjectAdapter
                             {
                                 while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
                                 {
-                                    await Task.Delay(20);
+                                    await JEngine.Core.TimeMgr.Delay(20);
                                 }
                             }
                             catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
@@ -1400,7 +1400,7 @@ namespace ProjectAdapter
                             {
                                 while (Application.isPlaying && !destoryed && !gameObject.activeInHierarchy)
                                 {
-                                    await Task.Delay(20);
+                                    await JEngine.Core.TimeMgr.Delay(20);
                                 }
                             }
                             catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了

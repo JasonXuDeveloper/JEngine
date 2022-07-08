@@ -47,7 +47,7 @@ namespace JEngine.Core
 
         public async void SetText()
         {
-            await Task.Delay(100);
+            await TimeMgr.Delay(100);
             text.text = Localization.GetString(key);
         }
     }

@@ -173,7 +173,7 @@ namespace JEngine.Core
             while (!operation.isDone && operation.progress < 0.9f)
             {
                 loadingCallback?.Invoke(operation.progress);
-                await Task.Delay(1);
+                await TimeMgr.Delay(1);
             }
 
             loadingCallback?.Invoke(1);
