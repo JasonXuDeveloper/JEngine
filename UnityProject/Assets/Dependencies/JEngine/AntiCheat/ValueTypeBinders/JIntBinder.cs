@@ -10,6 +10,11 @@ using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+using AutoList = System.Collections.Generic.List<object>;
+#else
+using AutoList = ILRuntime.Other.UncheckedList<object>;
+#endif
 
 namespace JEngine.AntiCheat.ValueTypeBinders
 {
@@ -65,7 +70,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             appdomain.RegisterCLRMethodRedirection(method, JInt_Add2);
         }
         
-        StackObject* JInt_Implicit(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Implicit(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -79,7 +84,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
 
-        StackObject* JInt_Add(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Add(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             var ret = ILIntepreter.Minus(esp, 2);
             var ptr = ILIntepreter.Minus(esp, 1);
@@ -96,7 +101,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ret + 1;
         }
         
-        StackObject* JInt_Add2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* JInt_Add2(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             var ret = ILIntepreter.Minus(esp, 2);
             var ptr = ILIntepreter.Minus(esp, 1);
@@ -113,7 +118,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ret + 1;
         }
         
-        StackObject* NewJInt(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* NewJInt(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -133,7 +138,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
         
-        StackObject* NewJInt2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        StackObject* NewJInt2(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             StackObject* ptr;
             StackObject* ret = ILIntepreter.Minus(esp, 1);
@@ -153,7 +158,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             return ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }
         
-        void WriteBackInstance(StackObject* ptr, List<object> mStack, ref JInt instanceOfThisMethod)
+        void WriteBackInstance(StackObject* ptr, AutoList mStack, ref JInt instanceOfThisMethod)
         {
             ptr = ILIntepreter.GetObjectAndResolveReference(ptr);
             switch(ptr->ObjectType)
@@ -199,7 +204,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
             }
         }
 
-        public static void ParseJInt(out JInt j, ILIntepreter intp, StackObject* ptr, List<object> mStack)
+        public static void ParseJInt(out JInt j, ILIntepreter intp, StackObject* ptr, AutoList mStack)
         {
             var a = ILIntepreter.GetObjectAndResolveReference(ptr);
             if (a->ObjectType == ObjectTypes.ValueTypeObjectReference)
@@ -218,7 +223,7 @@ namespace JEngine.AntiCheat.ValueTypeBinders
         }
 
         
-        public void PushJInt(ref JInt j, ILIntepreter intp, StackObject* ptr, List<object> mStack)
+        public void PushJInt(ref JInt j, ILIntepreter intp, StackObject* ptr, AutoList mStack)
         {
             intp.AllocValueType(ptr, CLRType);
             var dst = *((StackObject**)&ptr->Value);
