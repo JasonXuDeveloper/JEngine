@@ -23,6 +23,11 @@ using ILRuntime.CLR.TypeSystem;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Reflection;
 using Object = System.Object;
+#if DEBUG && !DISABLE_ILRUNTIME_DEBUG
+using AutoList = System.Collections.Generic.List<object>;
+#else
+using AutoList = ILRuntime.Other.UncheckedList<object>;
+#endif
 
 namespace LitJson
 {
@@ -1128,7 +1133,7 @@ namespace LitJson
             }
         }
 
-        public unsafe static StackObject* JsonToObject(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        public unsafe static StackObject* JsonToObject(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1142,7 +1147,7 @@ namespace LitJson
             return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
         }
 
-        public unsafe static StackObject* JsonToObject2(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        public unsafe static StackObject* JsonToObject2(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = intp.AppDomain;
             StackObject* ptr_of_this_method;
@@ -1156,7 +1161,7 @@ namespace LitJson
             return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
         }
 
-        public unsafe static StackObject* JsonToObject3(ILIntepreter intp, StackObject* esp, List<object> mStack, CLRMethod method, bool isNewObj)
+        public unsafe static StackObject* JsonToObject3(ILIntepreter intp, StackObject* esp, AutoList mStack, CLRMethod method, bool isNewObj)
         {
             ILRuntime.Runtime.Enviorment.AppDomain __domain = intp.AppDomain;
             StackObject* ptr_of_this_method;
