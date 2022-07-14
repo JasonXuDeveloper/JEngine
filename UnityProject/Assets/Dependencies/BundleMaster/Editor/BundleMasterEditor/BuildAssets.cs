@@ -1,9 +1,13 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
+using Debug = UnityEngine.Debug;
+using UnityEngine.Rendering;
 
 namespace BM
 {
@@ -14,14 +18,6 @@ namespace BM
         /// </summary>
         public static string AssetLoadTablePath = "Assets/Dependencies/BundleMaster/Editor/BundleMasterEditor/BuildSettings/AssetLoadTable.asset";
         
-        // [MenuItem("Tools/BuildAsset/创建分包总索引文件")]
-        // [MenuItem("Assets/Create/BuildAsset/创建分包总索引文件")]
-        public static void CreateBundleTableSetting()
-        {
-            AssetLoadTable assetLoadTable = ScriptableObject.CreateInstance<AssetLoadTable>();
-            AssetDatabase.CreateAsset(assetLoadTable, AssetLoadTablePath);
-        }
-        
         [MenuItem("Tools/BuildAsset/创建分包配置文件")]
         [MenuItem("Assets/Create/BuildAsset/创建分包配置文件")]
         public static void CreateSingleSetting()
@@ -29,17 +25,27 @@ namespace BM
             AssetsLoadSetting assetsLoadSetting = ScriptableObject.CreateInstance<AssetsLoadSetting>();
             AssetDatabase.CreateAsset(assetsLoadSetting, "Assets/Dependencies/BundleMaster/Editor/BundleMasterEditor/BuildSettings/AssetsLoadSetting.asset");
         }
-
+        
+        [MenuItem("Tools/BuildAsset/创建原生资源分包配置文件")]
+        [MenuItem("Assets/Create/BuildAsset/创建原生资源分包配置文件")]
+        public static void CreateOriginSetting()
+        {
+            AssetsOriginSetting assetsOriginSetting = ScriptableObject.CreateInstance<AssetsOriginSetting>();
+            AssetDatabase.CreateAsset(assetsOriginSetting, "Assets/Dependencies/BundleMaster/Editor/BundleMasterEditor/BuildSettings/AssetsOriginSetting.asset");
+        }
+        
         // [MenuItem("Tools/BuildAsset/构建AssetBundle")]
         public static void BuildAllBundle()
         {
-            //清理配置表
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             AssetLoadTable assetLoadTable = AssetDatabase.LoadAssetAtPath<AssetLoadTable>(AssetLoadTablePath);
-            assetLoadTable.AssetsLoadSettings = assetLoadTable.AssetsLoadSettings.FindAll(s => s != null);
+            //清理不存在的AssetSetting
+            assetLoadTable.AssetsSettings = assetLoadTable.AssetsSettings.FindAll(s => s != null);
             EditorUtility.SetDirty(assetLoadTable);
             AssetDatabase.SaveAssets();
-
-            List<AssetsLoadSetting> assetsLoadSettings = assetLoadTable.AssetsLoadSettings;
+            
+            List<AssetsSetting> assetsSettings = assetLoadTable.AssetsSettings;
             //开始构建前剔除多余场景
             List<EditorBuildSettingsScene> editorBuildSettingsScenes = new List<EditorBuildSettingsScene>();
             foreach (SceneAsset sceneAsset in assetLoadTable.InitScene)
@@ -54,15 +60,46 @@ namespace BM
                 Directory.CreateDirectory(encryptAssetFolderPath);
             }
             DeleteHelper.DeleteDir(encryptAssetFolderPath);
+            //记录工程包含的Shader
+            HashSet<string> alwaysIncludedShaders = new HashSet<string>();
+            Object graphicsSettings = 
+#if UNITY_2020_1_OR_NEWER
+                GraphicsSettings.GetGraphicsSettings();
+#else
+                AssetDatabase.LoadAssetAtPath<GraphicsSettings>("ProjectSettings/GraphicsSettings.asset");
+
+#endif
+            SerializedObject serializedObject = new SerializedObject(graphicsSettings);
+            SerializedProperty serializedProperty = serializedObject.FindProperty("m_AlwaysIncludedShaders");
+            if (serializedProperty.isArray)
+            {
+                for (int i = 0; i < serializedProperty.arraySize; i++)
+                {
+                    SerializedProperty property = serializedProperty.GetArrayElementAtIndex(i);
+                    Object shaderInfo = property.objectReferenceValue;
+                    if (!alwaysIncludedShaders.Contains(shaderInfo.name))
+                    {
+                        alwaysIncludedShaders.Add(shaderInfo.name);
+                    }
+                }
+            }
             //记录所有加载路径
             HashSet<string> allAssetLoadPath = new HashSet<string>();
             //构建所有分包
-            foreach (AssetsLoadSetting assetsLoadSetting in assetsLoadSettings)
+            foreach (AssetsSetting assetsSetting in assetsSettings)
             {
-                //获取单个Bundle的配置文件
-                Build(assetLoadTable, assetsLoadSetting, allAssetLoadPath);
-            }
+                if (assetsSetting is AssetsLoadSetting)
+                {
+                    //获取单个Bundle的配置文件
+                    Build(assetLoadTable, assetsSetting as AssetsLoadSetting, allAssetLoadPath, alwaysIncludedShaders);
+                }
+                else
+                {
+                    //处理原生资源
+                    AnalysisOriginFile(assetLoadTable, assetsSetting as AssetsOriginSetting);
 
+                }
+            }
             //生成路径字段代码脚本
             if (assetLoadTable.GeneratePathCode)
             {
@@ -71,14 +108,14 @@ namespace BM
             }
             //构建完成后索引自动+1 需要自己取消注释
             List<int> instanceIds = new List<int>();
-            foreach (AssetsLoadSetting assetsLoadSetting in assetLoadTable.AssetsLoadSettings)
+            foreach (AssetsSetting assetsLoadSetting in assetLoadTable.AssetsSettings)
             {
                 instanceIds.Add(assetsLoadSetting.GetInstanceID());
             }
             //保存配置文件
-            foreach (string guid in  AssetDatabase.FindAssets($"t:{nameof(AssetsLoadSetting)}"))
+            foreach (string guid in AssetDatabase.FindAssets($"t:{nameof(AssetsSetting)}"))
             {
-                var obj = AssetDatabase.LoadAssetAtPath<AssetsLoadSetting>(AssetDatabase.GUIDToAssetPath(guid));
+                var obj = AssetDatabase.LoadAssetAtPath<AssetsSetting>(AssetDatabase.GUIDToAssetPath(guid));
                 if (instanceIds.Contains(obj.GetInstanceID()))
                 {
                     AssetLogHelper.Log($"{obj.BuildName}分包已打包成功，版本索引{obj.BuildIndex}->{++obj.BuildIndex}");
@@ -87,7 +124,9 @@ namespace BM
             }
             AssetDatabase.SaveAssets();
             //打包结束
-            AssetLogHelper.Log("打包结束\n" + assetLoadTable.BuildBundlePath);
+            sw.Stop();
+            AssetLogHelper.Log("打包结束, 耗时" + sw.Elapsed.TotalMilliseconds + " ms \n" + assetLoadTable.BuildBundlePath);
+            AssetLogHelper.Log("打包目录：\n" + assetLoadTable.BuildBundlePath);
             AssetLogHelper.Log("如果使用了加密，将加密目录内的资源传到资源服务器下载路径即可，例如将生成的EncryptAssets下的子目录存入127.0.0.1/Bundles下，" +
                                "然后Updater的baseUrl写http://127.0.0.1/Bundles即可");
             AssetLogHelper.Log("如果没使用加密，将打包出来的未加密目录内的资源传到资源服务器下载路径即可，例如将生成的BuildBundles下的子目录存入127.0.0.1/Bundles下，" +
@@ -103,8 +142,12 @@ namespace BM
             }
             DeleteHelper.DeleteDir(Application.streamingAssetsPath);
             AssetLoadTable assetLoadTable = AssetDatabase.LoadAssetAtPath<AssetLoadTable>(AssetLoadTablePath);
-            foreach (AssetsLoadSetting assetsLoadSetting in assetLoadTable.AssetsLoadSettings)
+            foreach (AssetsSetting assetsSetting in assetLoadTable.AssetsSettings)
             {
+                if (!(assetsSetting is AssetsLoadSetting assetsLoadSetting))
+                {
+                    continue;
+                }
                 string assetPathFolder;
                 if (assetsLoadSetting.EncryptAssets)
                 {
@@ -137,15 +180,42 @@ namespace BM
                     File.Copy(filePath, Path.Combine(directoryPath, fileInfo.Name));
                 }
             }
+            foreach (AssetsSetting assetsSetting in assetLoadTable.AssetsSettings)
+            {
+                if (!(assetsSetting is AssetsOriginSetting assetsOriginSetting))
+                {
+                    continue;
+                }
+                string assetPathFolder = Path.Combine(assetLoadTable.BuildBundlePath, assetsOriginSetting.BuildName);
+                string directoryPath = Path.Combine(Application.streamingAssetsPath, assetsOriginSetting.BuildName);
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                //获取所有资源目录
+                HashSet<string> files = new HashSet<string>();
+                HashSet<string> dirs = new HashSet<string>();
+                BuildAssetsTools.GetOriginsPath(assetPathFolder, files, dirs);
+                //Copy资源
+                foreach (string dir in dirs)
+                {
+                    Directory.CreateDirectory(dir.Replace(assetPathFolder, directoryPath));
+                }
+                foreach (string file in files)
+                {
+                    File.Copy(file, file.Replace(assetPathFolder, directoryPath), true);
+                }
+            }
             AssetDatabase.Refresh();
             AssetLogHelper.Log("已将资源复制到StreamingAssets");
         }
         
-        private static void Build(AssetLoadTable assetLoadTable, AssetsLoadSetting assetsLoadSetting, HashSet<string> assetLoadPath)
+        private static void Build(AssetLoadTable assetLoadTable, AssetsLoadSetting assetsLoadSetting, HashSet<string> assetLoadPath, HashSet<string> alwaysIncludedShaders)
         {
             Dictionary<string, LoadFile> loadFileDic = new Dictionary<string, LoadFile>();
             Dictionary<string, LoadDepend> loadDependDic = new Dictionary<string, LoadDepend>();
-        
+            Dictionary<string, LoadGroup> loadGroupDic = new Dictionary<string, LoadGroup>();
+            
             //需要主动加载的文件的路径以及它的依赖bundle名字
             Dictionary<string, string[]> allLoadBaseAndDepends = new Dictionary<string, string[]>();
             //所有需要主动加载的资源的路径
@@ -171,15 +241,29 @@ namespace BM
                 if (!files.Contains(scenePath))
                 {
                     files.Add(scenePath);
-                    Debug.Log($"打包时自动收集了：{scenePath}");
                 }
+            }
+            //创建组包
+            foreach (string assetGroupPath in assetsLoadSetting.AssetGroupPaths)
+            {
+                LoadGroup loadGroup = new LoadGroup();
+                loadGroup.FilePath = assetGroupPath;
+                loadGroup.AssetBundleName = GetBundleName(assetsLoadSetting, assetGroupPath) + "." + assetsLoadSetting.BundleVariant;
+                loadGroupDic.Add(assetGroupPath, loadGroup);
             }
             //分析所有需要主动加载的资源
             List<string> needRemoveFile = new List<string>();
+            Dictionary<string, List<string>> groupFileToRealDepends = new Dictionary<string, List<string>>();
             foreach (string file in files)
             {
+                //Shader资源单独处理
                 if (BuildAssetsTools.IsShaderAsset(file))
                 {
+                    Shader shaderObj = AssetDatabase.LoadAssetAtPath<Shader>(file);
+                    if (shaderObj != null && alwaysIncludedShaders.Contains(shaderObj.name))
+                    {
+                        continue;
+                    }
                     if (!shaders.Contains(file))
                     {
                         shaders.Add(file);
@@ -190,34 +274,41 @@ namespace BM
                     }
                     continue;
                 }
+                //判断是否是组资源
+                string fileGroupPath = BuildAssetsTools.GetGroupAssetPath(file, assetsLoadSetting);
+                if (fileGroupPath != null)
+                {
+                    needRemoveFile.Add(file);
+                }
+                else
+                {
+                    //创建主动加载文件的加载所需信息
+                    LoadFile loadFile = new LoadFile();
+                    loadFile.FilePath = file;
+                    loadFile.AssetBundleName = GetBundleName(assetsLoadSetting, file) + "." + assetsLoadSetting.BundleVariant;
+                    loadFileDic.Add(file, loadFile);
+                }
                 //获取依赖
                 string[] depends = AssetDatabase.GetDependencies(file);
-                //创建主动加载文件的加载所需信息
-                LoadFile loadFile = new LoadFile();
-                loadFile.FilePath = file;
-                loadFile.AssetBundleName = GetBundleName(assetsLoadSetting, file) + "." + assetsLoadSetting.BundleVariant;
-                loadFileDic.Add(file, loadFile);
                 //过滤出真正需要加载的依赖
                 List<string> realDepends = new List<string>();
                 //分析依赖情况
                 for (int i = 0; i < depends.Length; i++)
                 {
                     string depend = depends[i];
-                    //禁用后缀不能作为依赖
-                    if (assetsLoadSetting.BlacklistExtension.Any(depend.EndsWith))
+                    //脚本不能作为依赖
+                    if (depend.EndsWith(".cs"))
                     {
                         continue;
                     }
-
-                    //禁用文件不能作为依赖
-                    if (assetsLoadSetting.BlacklistFile.Any(depend.Contains))
-                    {
-                        continue;
-                    }
-                    
                     //shader单独进包
                     if (BuildAssetsTools.IsShaderAsset(depend))
                     {
+                        Shader shaderObj = AssetDatabase.LoadAssetAtPath<Shader>(depend);
+                        if (shaderObj != null && alwaysIncludedShaders.Contains(shaderObj.name))
+                        {
+                            continue;
+                        }
                         if (!shaders.Contains(depend))
                         {
                             shaders.Add(depend);
@@ -228,29 +319,102 @@ namespace BM
                     {
                         continue;
                     }
-                    if (files.Contains(depend))
+                    if (!BuildAssetsTools.CantLoadFile(depend, assetsLoadSetting.BlacklistFile))
                     {
-                        if (depend == file)
+                        continue;
+                    }
+                    string dependGroup = BuildAssetsTools.GetGroupAssetPath(depend, assetsLoadSetting);
+                    if (dependGroup != null)
+                    {
+                        if (dependGroup == fileGroupPath)
                         {
                             continue;
+                        }
+                        if (!realDepends.Contains(dependGroup))
+                        {
+                            realDepends.Add(dependGroup);
                         }
                     }
                     else
                     {
-                        //作为依赖计算被依赖的次数
-                        if (dependenciesIndex.ContainsKey(depend))
+                        if (files.Contains(depend))
                         {
-                            dependenciesIndex[depend]++;
+                            if (depend == file)
+                            {
+                                continue;
+                            }
                         }
                         else
                         {
-                            dependenciesIndex.Add(depend, 1);
+                            //作为依赖计算被依赖的次数
+                            if (dependenciesIndex.ContainsKey(depend))
+                            {
+                                dependenciesIndex[depend]++;
+                            }
+                            else
+                            {
+                                dependenciesIndex.Add(depend, 1);
+                            }
                         }
+                        //作为文件被依赖了直接添加就行
+                        realDepends.Add(depend);
                     }
-                    //作为文件被依赖了直接添加就行
-                    realDepends.Add(depend);
                 }
-                allLoadBaseAndDepends.Add(file, realDepends.ToArray());
+                if (fileGroupPath != null)
+                {
+                    loadGroupDic[fileGroupPath].FilePathList.Add(file);
+                    groupFileToRealDepends.Add(file, realDepends);
+                }
+                else
+                {
+                    allLoadBaseAndDepends.Add(file, realDepends.ToArray());
+                }
+            }
+            foreach (LoadGroup loadGroup in loadGroupDic.Values)
+            {
+                foreach (string groupFile in loadGroup.FilePathList)
+                {
+                    foreach (string realDepend in groupFileToRealDepends[groupFile])
+                    {
+                        if (loadGroup.FilePathList.Contains(realDepend))
+                        {
+                            continue;
+                        }
+                        if (!dependenciesIndex.ContainsKey(realDepend))
+                        {
+                            string realDependGroup = BuildAssetsTools.GetGroupAssetPath(realDepend, assetsLoadSetting);
+                            if (realDependGroup != null)
+                            {
+                                if (loadGroup.DependFileName.Contains(realDependGroup))
+                                {
+                                    continue;
+                                }
+                                loadGroup.DependFileName.Add(realDependGroup);
+                            }
+                            continue;
+                        }
+                        if (dependenciesIndex[realDepend] == 1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            //说明这个依赖是单独依赖并且被Group依赖
+                            if (!loadDependDic.ContainsKey(realDepend))
+                            {
+                                LoadDepend loadDepend = new LoadDepend();
+                                loadDepend.FilePath = realDepend;
+                                loadDepend.AssetBundleName = GetBundleName(assetsLoadSetting, realDepend) + "." + assetsLoadSetting.BundleVariant;
+                                loadDependDic.Add(realDepend, loadDepend);
+                            }
+                        }
+                        if (loadGroup.DependFileName.Contains(realDepend))
+                        {
+                            continue;
+                        }
+                        loadGroup.DependFileName.Add(realDepend);
+                    }
+                }
             }
             foreach (string removeFile in needRemoveFile)
             {
@@ -292,6 +456,15 @@ namespace BM
                         {
                             depends.Add(depend);
                         }
+                        //说名这个依赖是一个组资源
+                        string groupPath = BuildAssetsTools.GetGroupAssetPath(depend, assetsLoadSetting);
+                        if (groupPath != null)
+                        {
+                            if (!depends.Contains(groupPath))
+                            {
+                                depends.Add(groupPath);
+                            }
+                        }
                     }
                 }
                 loadFile.DependFileName = depends.ToArray();
@@ -306,13 +479,20 @@ namespace BM
             //添加文件以及依赖的bundle包
             AddToAssetBundleBuilds(assetsLoadSetting, allAssetBundleBuild, files);
             AddToAssetBundleBuilds(assetsLoadSetting, allAssetBundleBuild, compoundDepends);
+            foreach (LoadGroup loadGroup in loadGroupDic.Values)
+            {
+                AssetBundleBuild loadGroupBundle = new AssetBundleBuild();
+                loadGroupBundle.assetBundleName = loadGroup.AssetBundleName;
+                loadGroupBundle.assetNames = loadGroup.FilePathList.ToArray();
+                allAssetBundleBuild.Add(loadGroupBundle);
+            }
             if (!(allAssetBundleBuild.Count > 0))
             {
                 AssetLogHelper.LogError("没有资源: " + assetsLoadSetting.BuildName);
                 return;
             }
             //保存打包Log
-            SaveLoadLog(assetLoadTable, assetsLoadSetting, loadFileDic, loadDependDic);
+            SaveLoadLog(assetLoadTable, assetsLoadSetting, loadFileDic, loadDependDic, loadGroupDic);
             //开始打包
             string bundlePackagePath = Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName);
             AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(bundlePackagePath, allAssetBundleBuild.ToArray(), 
@@ -330,6 +510,7 @@ namespace BM
                 //复制Log信息
                 File.Copy(Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName, "FileLogs.txt"), Path.Combine(encryptAssetPath, "FileLogs.txt"));
                 File.Copy(Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName, "DependLogs.txt"), Path.Combine(encryptAssetPath, "DependLogs.txt"));
+                File.Copy(Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName, "GroupLogs.txt"), Path.Combine(encryptAssetPath, "GroupLogs.txt"));
             }
             //存储记录所有资源的加载路径
             foreach (string assetPath in loadFileDic.Keys)
@@ -337,6 +518,75 @@ namespace BM
                 if (!assetLoadPath.Contains(assetPath))
                 {
                     assetLoadPath.Add(assetPath);
+                }
+            }
+            foreach (LoadGroup loadGroup in loadGroupDic.Values)
+            {
+                foreach (string filePathList in loadGroup.FilePathList)
+                {
+                    if (!assetLoadPath.Contains(filePathList))
+                    {
+                        assetLoadPath.Add(filePathList);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 分析原生资源包
+        /// </summary>
+        private static void AnalysisOriginFile(AssetLoadTable assetLoadTable, AssetsOriginSetting assetsOriginSetting)
+        {
+            string filePath = Path.Combine(assetLoadTable.BuildBundlePath, assetsOriginSetting.BuildName);
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            DeleteHelper.DeleteDir(filePath);
+            //获取所有资源目录
+            HashSet<string> files = new HashSet<string>();
+            HashSet<string> dirs = new HashSet<string>();
+            BuildAssetsTools.GetOriginsPath(assetsOriginSetting.OriginFilePath, files, dirs);
+            List<string> letFilePaths = new List<string>();
+            //Copy资源
+            foreach (string dir in dirs)
+            {
+                CopyDirectory(dir, filePath, true, letFilePaths);
+            }
+            //生成版本文件
+            SaveOriginFileVersionFile(filePath, letFilePaths.ToArray(), assetsOriginSetting);
+        }
+        
+        private static void CopyDirectory(string sourceDir, string destinationDir, bool recursive, List<string> letFilePaths)
+        {
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+                letFilePaths.Add(targetFilePath);
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true, letFilePaths);
                 }
             }
         }
@@ -359,7 +609,7 @@ namespace BM
         /// <summary>
         /// 保存加载用的Log
         /// </summary>
-        private static void SaveLoadLog(AssetLoadTable assetLoadTable, AssetsLoadSetting assetsLoadSetting, Dictionary<string, LoadFile> loadFiles, Dictionary<string, LoadDepend> loadDepends)
+        private static void SaveLoadLog(AssetLoadTable assetLoadTable, AssetsLoadSetting assetsLoadSetting, Dictionary<string, LoadFile> loadFiles, Dictionary<string, LoadDepend> loadDepends, Dictionary<string, LoadGroup> loadGroups)
         {
             if (!Directory.Exists(Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName)))
             {
@@ -391,6 +641,22 @@ namespace BM
                 }
                 sw.WriteLine(sb.ToString());
             }
+            using (StreamWriter sw = new StreamWriter(Path.Combine(assetLoadTable.BuildBundlePath, assetsLoadSetting.BuildName, "GroupLogs.txt")))
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var loadGroup in loadGroups)
+                {
+                    string data = "<" + loadGroup.Key + "|" + loadGroup.Value.AssetBundleName + "|";
+                    foreach (string depend in loadGroup.Value.DependFileName)
+                    {
+                        data += depend + "|";
+                    }
+                    data = data.Substring(0, data.Length - 1);
+                    data += ">" + "\n";
+                    sb.Append(data);
+                }
+                sw.WriteLine(sb.ToString());
+            }
         }
 
         /// <summary>
@@ -414,6 +680,27 @@ namespace BM
                 sw.WriteLine(sb.ToString());
             }
         }
+        
+        /// <summary>
+        /// 保存原始的版本号文件
+        /// </summary>
+        private static void SaveOriginFileVersionFile(string bundlePackagePath, string[] filePaths, AssetsOriginSetting assetsOriginSetting)
+        {
+            using (StreamWriter sw = new StreamWriter(Path.Combine(bundlePackagePath, "VersionLogs.txt")))
+            {
+                StringBuilder sb = new StringBuilder();
+                string versionHandler = System.DateTime.Now + "|" + assetsOriginSetting.BuildIndex + "|" + "origin" + "\n";
+                sb.Append(versionHandler);
+                foreach (string filePath in filePaths)
+                {
+                    string bundlePath = Path.Combine(bundlePackagePath, filePath);
+                    uint crc32 = VerifyHelper.GetCRC32(File.ReadAllBytes(bundlePath));
+                    string info = filePath + "|" + VerifyHelper.GetFileLength(bundlePath) + "|" + crc32 + "\n";
+                    sb.Append(info);
+                }
+                sw.WriteLine(sb.ToString());
+            }
+        }
     
         private static string GetBundleName(AssetsLoadSetting assetsLoadSetting, string filePath)
         {
@@ -426,11 +713,24 @@ namespace BM
             {
                 filePath = filePath.Replace("/", "_");
                 filePath = filePath.Replace(".", "_");
-                filePath = filePath.Replace(" ", "+");
+                filePath = filePath.Replace(" ", "_");
+                // filePath = filePath.Replace("+", "_");
+                // filePath = filePath.Replace("-", "_");
                 filePath = bundlePackageName + "_" + filePath;
                 filePath = filePath.ToLower();
             }
             return filePath;
+        }
+        
+        /// <summary>
+        /// 使用正则表达式替换或去掉半角标点符号(如果资源命名非常混乱可尝试此方法，注意可能会引起文件重名，推荐使用Hash名)
+        /// </summary>
+        private static string RemoveSymbol(string keyText)
+        {
+            string pattern = @"[~!@#\$%\^&\*\(\)\+=\|\\\}\]\{\[:;<,>\?\/""]+";
+            Regex seperatorReg = new Regex(pattern, RegexOptions.IgnorePatternWhitespace);
+            keyText = seperatorReg.Replace(keyText, "__").Trim();
+            return keyText;
         }
     }
 }

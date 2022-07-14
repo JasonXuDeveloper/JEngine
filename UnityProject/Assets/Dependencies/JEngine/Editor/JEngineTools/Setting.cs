@@ -38,67 +38,68 @@ namespace JEngine.Editor
 {
 	internal enum SettingString
 	{
-		JEngineSetting,
-		DisplayLanguage,
-		StartUpScene,
-		LastDLLCleanTime,
-		DateFormat,
-		JumpToStartUpScene,
-		MissingAssembly,
-		MissingAssemblyBtn,
-		ErrorRescueTools,
-		ErrorRescueToolsInfo,
-		InvalidSceneObject,
-		PanelInfo,
-		ScenesTitle,
-		LoadSceneBtn,
-		LoadSceneAdditiveBtn,
-		UnloadSceneBtn,
-		ClassBindTools,
-		LocalJEngine,
-		HotJEngine,
-		ChooseBtn,
-		UpdateJEngine,
-		UpdateHelpBox,
-		DLLConvertLog,
-		DLLCleanLog,
-		DLLNewReferenceLog,
-		DeleteErrorLog,
-		ClassBindErrorTitle,
-		ClassBindErrorContent,
-		ClassBindInvalidField,
-		ClassBindGetAllField,
-		ClassBindGetAllType,
-		ClassBindProgress,
-		ClassBindProgressContentForGetField,
-		ClassBindProgressContentForGetType,
-		Success,
-		Fail,
-		ClassBindResultTitle,
-		ClassBindResultContentForGetType,
-		Done,
-		HotSceneList,
-		ClassBindResultContentForSetField,
-		ClassBindUnableSetFieldValue,
-		MemberVariables,
-		ClassBindIgnorePrivate,
-		ClassBindIgnoreHideInInspector,
-		ClassBindInvalidFieldDeleted,
-		ClassBindRearrange,
-		ClassBindRearrangeResult,
-		ClassBindRearrangeTitle,
-		EncryptDLLPassword,
-		ShortCuts,
-		BuildBundles,
-		GenerateClrBind,
-		GenerateCrossDomainAdapter,
-		OpenJEngineSetting,
-		ClassBindInfo,
-		Notice,
-		NoticeText,
-		MismatchDLLKey,
-		Ok,
-		Ignore,
+		JEngineSetting = 0,
+		DisplayLanguage = 1,
+		StartUpScene = 2,
+		LastDLLCleanTime = 3,
+		DateFormat = 4,
+		JumpToStartUpScene = 5,
+		MissingAssembly = 6,
+		MissingAssemblyBtn = 7,
+		ErrorRescueTools = 8,
+		ErrorRescueToolsInfo = 9,
+		InvalidSceneObject = 10,
+		PanelInfo = 11,
+		ScenesTitle = 12,
+		LoadSceneBtn = 13,
+		LoadSceneAdditiveBtn = 14,
+		UnloadSceneBtn = 15,
+		ClassBindTools = 16,
+		LocalJEngine = 17,
+		HotJEngine = 18,
+		ChooseBtn = 19,
+		UpdateJEngine = 20,
+		UpdateHelpBox = 21,
+		DLLConvertLog = 22,
+		DLLCleanLog = 23,
+		DLLNewReferenceLog = 24,
+		DeleteErrorLog = 25,
+		ClassBindErrorTitle = 26,
+		ClassBindErrorContent = 27,
+		ClassBindInvalidField = 28,
+		ClassBindGetAllField = 29,
+		ClassBindGetAllType = 30,
+		ClassBindProgress = 31,
+		ClassBindProgressContentForGetField = 32,
+		ClassBindProgressContentForGetType = 33,
+		Success = 34,
+		Fail = 35,
+		ClassBindResultTitle = 36,
+		ClassBindResultContentForGetType = 37,
+		Done = 38,
+		HotSceneList = 39,
+		ClassBindResultContentForSetField = 40,
+		ClassBindUnableSetFieldValue = 41,
+		MemberVariables = 42,
+		ClassBindIgnorePrivate = 43,
+		ClassBindIgnoreHideInInspector = 44,
+		ClassBindInvalidFieldDeleted = 45,
+		ClassBindRearrange = 46,
+		ClassBindRearrangeResult = 47,
+		ClassBindRearrangeTitle = 48,
+		EncryptDLLPassword = 49,
+		ShortCuts = 50,
+		BuildBundles = 51,
+		GenerateClrBind = 52,
+		GenerateCrossDomainAdapter = 53,
+		OpenJEngineSetting = 54,
+		ClassBindInfo = 55,
+		Notice = 56,
+		NoticeText = 57,
+		MismatchDLLKeyTitle = 58,
+		MismatchDLLKeyContext = 59,
+		Ok = 60,
+		Ignore = 61,
 	}
 
 	internal class Setting : EditorWindow
@@ -115,89 +116,89 @@ namespace JEngine.Editor
 
 		private static readonly string[][] Texts =
 		{
-			new[] { "JEngine设置面板", "JEngine Setting Panel" },
-			new[] { "显示语言", "Display Language" },
-			new[] { "启动场景", "Start Up Scene" },
-			new[] { "上次处理热更DLL时间", "Last Hot Update DLL clean up time" },
-			new[] { "yyyy年MM月dd日 HH:mm:ss", "MM/dd/yyyy HH:mm:ss" }, //日期格式
-			new[] { "运行后跳转启动场景", "Jump to start up scene when launch" },
+			new[] { "JEngine设置面板", "JEngine Setting Panel" },//JEngineSetting
+			new[] { "显示语言", "Display Language" },//DisplayLanguage
+			new[] { "启动场景", "Start Up Scene" },//StartUpScene
+			new[] { "上次处理热更DLL时间", "Last Hot Update DLL clean up time" },//LastDLLCleanTime
+			new[] { "yyyy年MM月dd日 HH:mm:ss", "MM/dd/yyyy HH:mm:ss" }, //日期格式//DateFormat
+			new[] { "运行后跳转启动场景", "Jump to start up scene when launch" },//JumpToStartUpScene
 			new[]
 			{
 				"修复Dependencies目录下\nType or namespace name\nof ILRuntime等Not found错误",
 				"Fix under Dependencies directory,\nType or namespace name of ILRuntime, etc,\nNot found error"
-			},
-			new[] { "修复", "Fix" },
-			new[] { "错误修复工具", "Error Rescue Tools" }, //修复Bug工具的标题
+			},//MissingAssembly
+			new[] { "修复", "Fix" },//MissingAssemblyBtn
+			new[] { "错误修复工具", "Error Rescue Tools" }, //修复Bug工具的标题//ErrorRescueTools
 			new[]
 			{
 				"一键修复可能会出现的特定错误\n" +
 				"注意：修复中会造成一定时间的无反应，请耐心等待",
 				"Fix errors that might occurs by one click\n" +
 				"Warning: Unity might not be responding while rescuing, just be patient"
-			}, //修复Bug工具的提示
-			new[] { "选择的资源不是场景资源", "Invalid resource type, please choose scene resource" },
+			}, //修复Bug工具的提示//ErrorRescueToolsInfo
+			new[] { "选择的资源不是场景资源", "Invalid resource type, please choose scene resource" },//InvalidSceneObject
 			new[]
 			{
 				"面板上的大部分设置是针对于Unity编辑器的，对打包后的客户端无效",
 				"Most features in the setting panel is editor only, does not effect the built application"
-			}, //面板提示
-			new[] { "热更场景快捷操作", "Hot Update Scenes Shortcuts" },
-			new[] { "打开", "Open" },
-			new[] { "加载", "Load" },
-			new[] { "卸载", "Unload" },
-			new[] { "ClassBind助手", "ClassBind Tools" },
-			new[] { "本地工程JEngine框架路径", "Local JEngine Source Code" },
-			new[] { "热更工程JEngine框架路径", "Hot Update JEngine Source Code" },
-			new[] { "选择", "Choose" },
-			new[] { "更新JEngine", "Update JEngine" },
+			}, //面板提示//PanelInfo
+			new[] { "热更场景快捷操作", "Hot Update Scenes Shortcuts" },//ScenesTitle
+			new[] { "打开", "Open" },//LoadSceneBtn
+			new[] { "加载", "Load" },//LoadSceneAdditiveBtn
+			new[] { "卸载", "Unload" },//UnloadSceneBtn
+			new[] { "ClassBind助手", "ClassBind Tools" },//ClassBindTools
+			new[] { "本地工程JEngine框架路径", "Local JEngine Source Code" },//LocalJEngine
+			new[] { "热更工程JEngine框架路径", "Hot Update JEngine Source Code" },//HotJEngine
+			new[] { "选择", "Choose" },//ChooseBtn
+			new[] { "更新JEngine", "Update JEngine" },//UpdateJEngine
 			new[]
 			{
 				"更新JEngine后会删除热更工程的JEngine源码，如有修改请做好备份后再进行更新操作",
 				"Update JEngine will delete JEngine's source code in hot update solution, " +
 				"please make sure you did a back up before upgrading JEngine."
-			},
-			new[] { "转换热更DLL耗时{0}ms", "Convert DLL in: {0} ms" },
-			new[] { "清理热更工程编译的{0}个文件耗时{1}ms", "Cleaned: {0} files in: {1} ms" },
+			},//UpdateHelpBox
+			new[] { "转换热更DLL耗时{0}ms", "Convert DLL in: {0} ms" },//DLLConvertLog
+			new[] { "清理热更工程编译的{0}个文件耗时{1}ms", "Cleaned: {0} files in: {1} ms" },//DLLCleanLog
 			new[]
 			{
 				"发现新的引用DLL`{0}`，请注意，游戏可能需要重新打包，否则热更代码将有可能无法运行",
 				"Find new referenced dll `{0}`, note that your hot update code may not be able " +
 				"to run without rebuild application"
-			},
-			new[] { "无法删除{0}，请手动删除", "Unable to delete {0}, please delete it manually" },
-			new[] { "ClassBind错误", "ClassBind Error" },
+			},//DLLNewReferenceLog
+			new[] { "无法删除{0}，请手动删除", "Unable to delete {0}, please delete it manually" },//DeleteErrorLog
+			new[] { "ClassBind错误", "ClassBind Error" },//ClassBindErrorTitle
 			new[]
 			{
 				"'{0}'类在热更工程中不存在", "Class {0} does not exist " +
 				                   "in hot update scripts solution!"
-			},
-			new[] { "{0}不存在{1}，已跳过", "{0} does not contain field: {1}, skipped assigning this field" },
-			new[] { "自动匹配全部fields", "Get all fields for ClassBind" },
-			new[] { "自动矫正field的type", "Get all types for ClassBind" },
-			new[] { "ClassBind转换进度", "ClassBind convert progress" },
-			new[] { "正在获取{0}的字段：{1}/{2}", "Getting Field for {0} {1}/{2}" },
-			new[] { "正在获取{0}的字段类型：{1}/{2}", "Getting Field Type for {0} {1}/{2}" },
-			new[] { "成功", "Succeeded" },
-			new[] { "失败", "Failed" },
-			new[] { "ClassBind结果", "ClassBind Result" },
-			new[] { "<{1}>:ClassBind中{0}个fields已自动设置FieldType", "Set {0} fieldTypes into ClassBind: {1}" },
-			new[] { "完成", "Done" },
-			new[] { "热更场景列表", "Hot Update Scene List" },
-			new[] { "<{1}>:ClassBind新增了{0}个fields", "Add {0} fields into ClassBind: {1}" },
-			new[] { "无法对<{0}>ClassBind上{2}({1})进行自动赋值构造值", "Unable to set value for field {1}:{2} on ClassBind:<{0}>" },
-			new[] { "{0}的成员变量", "{0} variables" },
-			new[] { "不匹配Private成员变量", "Banned getting private fields" },
-			new[] { "不匹配带有标签\n[HideInInspector]的变量", "Banned getting fields with\n attribute [HideInInspector]" },
-			new[] { "{0}不存在{1}，已删除该字段", "{0} does not contain field: {1}, deleted this field" },
-			new[] { "正在重新排序字段", "Automatically rearranging fields" },
-			new[] { "<{1}>:ClassBind中{0}个fields已重新排序", "Rearranged {0} fieldTypes from ClassBind: {1}" },
-			new[] { "重新排序全部fields", "Rearrange all fields for ClassBind" },
-			new[] { "加密DLL秘钥", "Encrypt dll password" },
-			new[] { "快捷键", "Shortcuts" },
-			new[] { "生成热更Bundles", "Build Bundles" },
-			new[] { "生成CLR绑定", "Generate CLR Binding" },
-			new[] { "生成跨域适配器", "Generate Cross Domain Adapter" },
-			new[] { "打开JEngine面板", "Open JEngine Setting" },
+			},//ClassBindErrorContent
+			new[] { "{0}不存在{1}，已跳过", "{0} does not contain field: {1}, skipped assigning this field" },//ClassBindInvalidField
+			new[] { "自动匹配全部fields", "Get all fields for ClassBind" },//ClassBindGetAllField
+			new[] { "自动矫正field的type", "Get all types for ClassBind" },//ClassBindGetAllType
+			new[] { "ClassBind转换进度", "ClassBind convert progress" },//ClassBindProgress
+			new[] { "正在获取{0}的字段：{1}/{2}", "Getting Field for {0} {1}/{2}" },//ClassBindProgressContentForGetField
+			new[] { "正在获取{0}的字段类型：{1}/{2}", "Getting Field Type for {0} {1}/{2}" },//ClassBindProgressContentForGetType
+			new[] { "成功", "Succeeded" },//Success
+			new[] { "失败", "Failed" },//Fail
+			new[] { "ClassBind结果", "ClassBind Result" },//ClassBindResultTitle
+			new[] { "<{1}>:ClassBind中{0}个fields已自动设置FieldType", "Set {0} fieldTypes into ClassBind: {1}" },//ClassBindResultContentForGetType
+			new[] { "完成", "Done" },//Done
+			new[] { "热更场景列表", "Hot Update Scene List" },//HotSceneList
+			new[] { "<{1}>:ClassBind新增了{0}个fields", "Add {0} fields into ClassBind: {1}" },//ClassBindResultContentForSetField
+			new[] { "无法对<{0}>ClassBind上{2}({1})进行自动赋值构造值", "Unable to set value for field {1}:{2} on ClassBind:<{0}>" },//ClassBindUnableSetFieldValue
+			new[] { "{0}的成员变量", "{0} variables" },//MemberVariables
+			new[] { "不匹配Private成员变量", "Banned getting private fields" },//ClassBindIgnorePrivate
+			new[] { "不匹配带有标签\n[HideInInspector]的变量", "Banned getting fields with\n attribute [HideInInspector]" },//ClassBindIgnoreHideInInspector
+			new[] { "{0}不存在{1}，已删除该字段", "{0} does not contain field: {1}, deleted this field" },//ClassBindInvalidFieldDeleted
+			new[] { "正在重新排序字段", "Automatically rearranging fields" },//ClassBindRearrange
+			new[] { "<{1}>:ClassBind中{0}个fields已重新排序", "Rearranged {0} fieldTypes from ClassBind: {1}" },//ClassBindRearrangeResult
+			new[] { "重新排序全部fields", "Rearrange all fields for ClassBind" },//ClassBindRearrangeTitle
+			new[] { "加密DLL秘钥", "Encrypt dll password" },//EncryptDLLPassword
+			new[] { "快捷键", "Shortcuts" },//ShortCuts
+			new[] { "生成热更Bundles", "Build Bundles" },//BuildBundles
+			new[] { "生成CLR绑定", "Generate CLR Binding" },//GenerateClrBind
+			new[] { "生成跨域适配器", "Generate Cross Domain Adapter" },//GenerateCrossDomainAdapter
+			new[] { "打开JEngine面板", "Open JEngine Setting" },//OpenJEngineSetting
 			new[]
 			{
 				"\n自动匹配全部fields会匹配对应类型全部没有打[ClassBindIgnore]的字段及属性，同时可以在JEngine面板内选择是否匹配private和打了[HideInInspector]标签的字段及属性，\n" +
@@ -221,15 +222,17 @@ namespace JEngine.Editor
 			new []
 			{
 				"DLL解密秘钥异常",
+				"DLL decrypt key exception",
+			},//mismatchDLLKeyTitle
+			new []
+			{
 				$"面板里配置的加密密码是：{0}\n" +
 				$"游戏场景里配置的解密密码是：{1}\n" +
 				$"点击确定使用面板配置的密码，点击忽略则继续使用当前密码'{1}'",
-				
-				"DLL decrypt key exception",
 				$"DLL Encryption password on JEngine Setting during building Assetbundle is: {0}\n" +
 				$"DLL Encryption password in Updater during runtime is: {1}\n" +
 				$"Press ok to use the password from JEngine setting, press ignore to continue using the current password '{1}'"
-			},//mismatchDLLKey
+			},//mismatchDLLKeyContext
 			new []
 			{
 				"确定",

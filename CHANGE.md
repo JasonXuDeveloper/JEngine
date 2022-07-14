@@ -1,5 +1,21 @@
 ## All Versions
 
+### 0.7.3 (July 14 2022)
+
+- Bug **fixed**
+
+- **Updated** ILRuntime
+
+- **Updated** Bundle Master
+
+- **Enhanced** JBehaviour performance
+
+- **Enhanced** ClassBind runtime performance
+
+- **Almost no GC allocation**  async wait method
+
+  
+
 ### 0.7.2 (May 15 2022)
 
 - Bug **fixed**

@@ -45,7 +45,8 @@ namespace JEngine.Editor
                 if (key != k)
                 {
                     var res = EditorUtility.DisplayDialog(
-                        string.Format(Setting.GetString(SettingString.MismatchDLLKey), k, key),
+                        string.Format(Setting.GetString(SettingString.MismatchDLLKeyTitle), k, key),
+                        string.Format(Setting.GetString(SettingString.MismatchDLLKeyContext), k, key),
                         Setting.GetString(SettingString.Ok), Setting.GetString(SettingString.Ignore));
                     if (res)
                     {

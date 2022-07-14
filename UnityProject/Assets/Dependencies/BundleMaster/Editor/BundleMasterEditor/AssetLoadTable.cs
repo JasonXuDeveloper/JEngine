@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace BM
 {
@@ -63,8 +64,9 @@ namespace BM
             }
         }
         
+        [FormerlySerializedAs("AssetsLoadSettings")]
         [Header("所有分包配置信息")]
         [Tooltip("每一个分包的配置信息")]
-        public List<AssetsLoadSetting> AssetsLoadSettings = new List<AssetsLoadSetting>();
+        public List<AssetsSetting> AssetsSettings = new List<AssetsSetting>();
     }
 }
