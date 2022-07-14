@@ -1,4 +1,6 @@
-﻿using ET;
+﻿using System.Collections.Generic;
+using ET;
+using UnityEngine;
 
 namespace BM
 {
@@ -33,6 +35,31 @@ namespace BM
         /// 是否卸载标记位
         /// </summary>
         protected bool UnloadFinish = false;
+        
+        /// <summary>
+        /// File文件AssetBundle的引用
+        /// </summary>
+        public AssetBundle FileAssetBundle;
+    
+        /// <summary>
+        /// 资源所在的LoadBase包
+        /// </summary>
+        protected LoadBase _loadBase = null;
+    
+        /// <summary>
+        /// 依赖的Bundle包
+        /// </summary>
+        protected List<LoadDepend> _loadDepends = new List<LoadDepend>();
+    
+        /// <summary>
+        /// 依赖的其它File包
+        /// </summary>
+        protected List<LoadFile> _loadDependFiles = new List<LoadFile>();
+        
+        /// <summary>
+        /// 依赖的其它Group包
+        /// </summary>
+        protected List<LoadGroup> _loadDependGroups = new List<LoadGroup>();
         
         /// <summary>
         /// 加载计数器(负责完成所有依赖的Bundle加载完成)

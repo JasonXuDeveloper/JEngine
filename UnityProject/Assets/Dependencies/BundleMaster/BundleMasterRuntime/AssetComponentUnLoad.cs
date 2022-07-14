@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace BM
 {
@@ -48,10 +47,60 @@ namespace BM
             loadHandler.UnLoad();
         }
         
+        public static void UnLoad(LoadHandlerBase loadHandler)
+        {
+            loadHandler.UnLoad();
+        }
+        
         /// <summary>
         /// 卸载所有没卸载的资源
         /// </summary>
         public static void UnLoadAllAssets()
+        {
+            if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
+            {
+                AssetLogHelper.Log("AssetLoadMode = Develop 不需要卸载");
+                return;
+            }
+            BundleRuntimeInfo[] bundleRuntimeInfos = BundleNameToRuntimeInfo.Values.ToArray();
+            for (int i = 0; i < bundleRuntimeInfos.Length; i++)
+            {
+                LoadHandlerBase[] loadHandlers = bundleRuntimeInfos[i].UnLoadHandler.Values.ToArray();
+                for (int j = 0; j < loadHandlers.Length; j++)
+                {
+                    loadHandlers[j].UnLoad();
+                }
+                bundleRuntimeInfos[i].AllAssetLoadHandler.Clear();
+            }
+        }
+
+        /// <summary>
+        /// 卸载一个分包内没卸载的资源
+        /// </summary>
+        public static void UnLoadPackageAssets(string bundlePackageNames)
+        {
+            if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
+            {
+                AssetLogHelper.Log("AssetLoadMode = Develop 不需要卸载");
+                return;
+            }
+            if (!BundleNameToRuntimeInfo.TryGetValue(bundlePackageNames, out BundleRuntimeInfo bundleRuntimeInfo))
+            {
+                AssetLogHelper.Log("没有找到这个初始化的分包: " + bundlePackageNames);
+                return;
+            }
+            LoadHandlerBase[] loadHandlers = bundleRuntimeInfo.UnLoadHandler.Values.ToArray();
+            for (int i = 0; i < loadHandlers.Length; i++)
+            {
+                loadHandlers[i].UnLoad();
+            }
+            bundleRuntimeInfo.AllAssetLoadHandler.Clear();
+        }
+        
+        /// <summary>
+        /// 卸载所有分包内没有返回Handler但是未卸载的资源(场景资源一定有Handler)
+        /// </summary>
+        public static void UnLoadAllNoHandlerAssets()
         {
             if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
             {
@@ -68,7 +117,78 @@ namespace BM
                 }
                 bundleRuntimeInfos[i].AllAssetLoadHandler.Clear();
             }
-            BundleNameToRuntimeInfo.Clear();
+        }
+        
+        /// <summary>
+        /// 卸载一个分包内没有返回Handler但是未卸载的资源(场景资源一定有Handler)
+        /// </summary>
+        public static void UnLoadPackageNoHandlerAssets(string bundlePackageNames)
+        {
+            if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
+            {
+                AssetLogHelper.Log("AssetLoadMode = Develop 不需要卸载");
+                return;
+            }
+            if (!BundleNameToRuntimeInfo.TryGetValue(bundlePackageNames, out BundleRuntimeInfo bundleRuntimeInfo))
+            {
+                AssetLogHelper.Log("没有找到这个初始化的分包: " + bundlePackageNames);
+                return;
+            }
+            LoadHandler[] loadHandlers = bundleRuntimeInfo.AllAssetLoadHandler.Values.ToArray();
+            for (int i = 0; i < loadHandlers.Length; i++)
+            {
+                loadHandlers[i].UnLoad();
+            }
+            bundleRuntimeInfo.AllAssetLoadHandler.Clear();
+        }
+        
+        /// <summary>
+        /// 卸载所有分包内返回了Handler但是没有卸载的资源
+        /// </summary>
+        public static void UnLoadAllHaveHandlerAssets()
+        {
+            if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
+            {
+                AssetLogHelper.Log("AssetLoadMode = Develop 不需要卸载");
+                return;
+            }
+            BundleRuntimeInfo[] bundleRuntimeInfos = BundleNameToRuntimeInfo.Values.ToArray();
+            for (int i = 0; i < bundleRuntimeInfos.Length; i++)
+            {
+                LoadHandlerBase[] loadHandlers = bundleRuntimeInfos[i].UnLoadHandler.Values.ToArray();
+                for (int j = 0; j < loadHandlers.Length; j++)
+                {
+                    if (!loadHandlers[j].HaveHandler)
+                    {
+                        loadHandlers[j].UnLoad();
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 卸载一个分包内返回了Handler但是没有卸载的资源
+        /// </summary>
+        public static void UnLoadPackageHaveHandlerAssets(string bundlePackageNames)
+        {
+            if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Develop)
+            {
+                AssetLogHelper.Log("AssetLoadMode = Develop 不需要卸载");
+                return;
+            }
+            if (!BundleNameToRuntimeInfo.TryGetValue(bundlePackageNames, out BundleRuntimeInfo bundleRuntimeInfo))
+            {
+                AssetLogHelper.Log("没有找到这个初始化的分包: " + bundlePackageNames);
+                return;
+            }
+            LoadHandlerBase[] loadHandlers = bundleRuntimeInfo.UnLoadHandler.Values.ToArray();
+            for (int i = 0; i < loadHandlers.Length; i++)
+            {
+                if (!loadHandlers[i].HaveHandler)
+                {
+                    loadHandlers[i].UnLoad();
+                }
+            }
         }
         
         /// <summary>
@@ -122,25 +242,6 @@ namespace BM
             foreach (var loadBase in PreUnLoadPool)
             {
                 TrueUnLoadPool.Add(loadBase.Key, loadBase.Value);
-            }
-        }
-
-
-        /// <summary>
-        /// 计时
-        /// </summary>
-        private static float _timer = 0;
-        
-        /// <summary>
-        /// 卸载周期计时循环
-        /// </summary>
-        public static void Update()
-        {
-            _timer += Time.deltaTime;
-            if (_timer >= _unLoadCirculateTime)
-            {
-                _timer = 0;
-                AutoAddToTrueUnLoadPool();
             }
         }
 

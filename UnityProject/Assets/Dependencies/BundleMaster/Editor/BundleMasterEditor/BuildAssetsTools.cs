@@ -14,7 +14,8 @@ namespace BM
         /// <summary>
         /// 获取一个目录下所有的子文件
         /// </summary>
-        public static void GetChildFiles(string basePath, HashSet<string> files, List<string> blacklistFile, List<string> blacklistExt)
+        public static void GetChildFiles(string basePath, HashSet<string> files, List<string> blacklistFile,
+            List<string> blacklistExt)
         {
             DirectoryInfo basefolder = new DirectoryInfo(basePath);
             FileInfo[] basefil = basefolder.GetFiles();
@@ -25,7 +26,9 @@ namespace BM
                     files.Add(basePath + "/" + basefil[i].Name);
                 }
             }
+
             Er(basePath);
+
             void Er(string subPath)
             {
                 string[] subfolders = AssetDatabase.GetSubFolders(subPath);
@@ -40,15 +43,38 @@ namespace BM
                             files.Add(subfolders[i] + "/" + fil[j].Name);
                         }
                     }
+
                     Er(subfolders[i]);
                 }
             }
         }
-        
+
+        /// <summary>
+        /// 获取一个文件目录下的所有资源以及路径
+        /// </summary>
+        public static void GetOriginsPath(string originPath, HashSet<string> files, HashSet<string> dirs)
+        {
+            DirectoryInfo buildBundlePath = new DirectoryInfo(originPath);
+            FileSystemInfo[] fileSystemInfos = buildBundlePath.GetFileSystemInfos();
+            foreach (FileSystemInfo fileSystemInfo in fileSystemInfos)
+            {
+                if (fileSystemInfo is DirectoryInfo)
+                {
+                    dirs.Add(fileSystemInfo.FullName);
+                    GetOriginsPath(fileSystemInfo.FullName, files, dirs);
+                }
+                else
+                {
+                    files.Add(fileSystemInfo.FullName);
+                }
+            }
+        }
+
         /// <summary>
         /// 创建加密的AssetBundle
         /// </summary>
-        public static void CreateEncryptAssets(string bundlePackagePath, string encryptAssetPath, AssetBundleManifest manifest, string secretKey)
+        public static void CreateEncryptAssets(string bundlePackagePath, string encryptAssetPath,
+            AssetBundleManifest manifest, string secretKey)
         {
             string[] assetBundles = manifest.GetAllAssetBundles();
             foreach (string assetBundle in assetBundles)
@@ -58,27 +84,30 @@ namespace BM
                 {
                     Directory.CreateDirectory(encryptAssetPath);
                 }
-                using (FileStream fs = new FileStream(Path.Combine(encryptAssetPath, assetBundle), FileMode.OpenOrCreate))
+
+                using (FileStream fs = new FileStream(Path.Combine(encryptAssetPath, assetBundle),
+                    FileMode.OpenOrCreate))
                 {
                     byte[] encryptBytes = VerifyHelper.CreateEncryptData(bundlePath, secretKey);
                     fs.Write(encryptBytes, 0, encryptBytes.Length);
                 }
             }
         }
-        
+
         /// <summary>
         /// 需要忽略加载的格式
         /// </summary>
-        public static bool CantLoadType(string fileFullName, List<string> blacklistFile,List<string> blacklistExt)
+        public static bool CantLoadType(string fileFullName, List<string> blacklistFile, List<string> blacklistExt)
         {
             if (!CantLoadFile(fileFullName, blacklistFile))
             {
                 return false;
             }
+
             string suffix = Path.GetExtension(fileFullName);
             return !blacklistExt.Contains(suffix);
         }
-        
+
         /// <summary>
         /// 不能加载的文件
         /// </summary>
@@ -86,7 +115,7 @@ namespace BM
         {
             return !blacklistFile.Any(fillPathOrName.Contains);
         }
-        
+
         /// <summary>
         /// 是Shader资源
         /// </summary>
@@ -100,6 +129,7 @@ namespace BM
                 case ".shadervariants":
                     return true;
             }
+
             return false;
         }
 
@@ -111,14 +141,17 @@ namespace BM
         public static List<SceneAsset> GetPackageSceneAssets(AssetLoadTable table)
         {
             List<SceneAsset> sceneAssetsLst = new List<SceneAsset>();
-            foreach (var assetsLoadSetting in table.AssetsLoadSettings)
+            foreach (var assetsLoadSetting in table.AssetsSettings)
             {
-                sceneAssetsLst.AddRange(GetPackageSceneAssets(assetsLoadSetting));
+                if (assetsLoadSetting is AssetsLoadSetting s)
+                {
+                    sceneAssetsLst.AddRange(GetPackageSceneAssets(s));
+                }
             }
 
             return sceneAssetsLst;
         }
-        
+
         /// <summary>
         /// 获取分包内的场景
         /// </summary>
@@ -141,7 +174,7 @@ namespace BM
 
             return sceneAssetsLst;
         }
-        
+
         /// <summary>
         /// Adds newly (if not already in the list) found assets.
         /// Returns how many found (not how many added)
@@ -150,9 +183,10 @@ namespace BM
         /// <param name="path"></param>
         /// <param name="assetsFound">Adds to this list if it is not already there</param>
         /// <returns></returns>
-        public static int TryGetUnityObjectsOfTypeFromPath<T>(string path, out List<T> assetsFound) where T : UnityEngine.Object
+        public static int TryGetUnityObjectsOfTypeFromPath<T>(string path, out List<T> assetsFound)
+            where T : UnityEngine.Object
         {
-            string[] filePaths = System.IO.Directory.GetFiles(path,"*",SearchOption.AllDirectories);
+            string[] filePaths = System.IO.Directory.GetFiles(path, "*", SearchOption.AllDirectories);
             int countFound = 0;
             assetsFound = new List<T>();
             if (filePaths.Length > 0)
@@ -170,10 +204,36 @@ namespace BM
                     }
                 }
             }
- 
+
             return countFound;
         }
-        
+
+        public static bool IsGroupAsset(string fileFullName, AssetsLoadSetting assetsLoadSetting)
+        {
+            foreach (string assetGroupPath in assetsLoadSetting.AssetGroupPaths)
+            {
+                if (fileFullName.Contains(assetGroupPath))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static string GetGroupAssetPath(string fileFullName, AssetsLoadSetting assetsLoadSetting)
+        {
+            foreach (string assetGroupPath in assetsLoadSetting.AssetGroupPaths)
+            {
+                if (fileFullName.Contains(assetGroupPath))
+                {
+                    return assetGroupPath;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// 是否生成路径字段代码脚本
         /// </summary>
@@ -198,12 +258,13 @@ namespace BM
                     name = RemoveSymbol(name);
                     sb.Append("\t\tpublic const string " + name + " = \"" + assetPath + "\";\n");
                 }
+
                 sb.Append("\t}\n");
                 sb.Append("}");
                 sw.WriteLine(sb.ToString());
             }
         }
-        
+
         /// <summary>
         /// 使用正则表达式替换或去掉半角标点符号
         /// </summary>

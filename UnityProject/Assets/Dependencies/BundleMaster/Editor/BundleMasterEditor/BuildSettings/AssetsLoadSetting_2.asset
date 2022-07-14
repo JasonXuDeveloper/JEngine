@@ -21,10 +21,11 @@ MonoBehaviour:
   SecretKey: 
   AssetPath:
   - Assets/HotUpdateResources/AddOns/AddOn1
+  AssetGroupPaths: []
   ScenePath:
   - Assets/HotUpdateResources/AddOns/AddOn1
   BlacklistFile:
-  - .DS_store
+  - .DS_Store
   - LightingData.asset
   BlacklistExtension:
   - .dll

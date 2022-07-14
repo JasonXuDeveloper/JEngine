@@ -7,7 +7,7 @@ namespace BM
     {
         public static async ETTask<byte[]> DownloadDataByUrl(string url)
         {
-            for (int i = 0; i < AssetComponentConfig.MaxDownLoadCount; i++)
+            for (int i = 0; i < AssetComponentConfig.ReDownLoadCount; i++)
             {
                 byte[] data = await DownloadData(url);
                 if (data != null)
@@ -36,7 +36,7 @@ namespace BM
                 if (!string.IsNullOrEmpty(webRequest.error))
 #endif
                 {
-                    AssetLogHelper.Log("下载Bundle失败 重试\n" + webRequest.error);
+                    AssetLogHelper.Log("下载Bundle失败 重试\n" + webRequest.error + "\nURL：" + url);
                     return null;
                 }
                 return webRequest.downloadHandler.data;

@@ -111,7 +111,7 @@ public class Updater : MonoBehaviour
         var ver = package.GetVersion(bundlePackageName);
         if (ver == null)
         {
-            throw new InvalidOperationException("Can not find local package version");
+            return -1;
         }
         return ver[0];
     }
@@ -129,7 +129,7 @@ public class Updater : MonoBehaviour
         var ver = package.GetVersion(bundlePackageName);
         if (ver == null)
         {
-            throw new InvalidOperationException("Can not find remote package version");
+            return -1;
         }
         return ver[1];
     }
@@ -150,13 +150,8 @@ public class Updater : MonoBehaviour
         MessageBox.Dispose();
         package = package ?? await CheckPackage(bundlePackageName, checkCRC);
 
-        try
-        {
-            updater.OnVersion("资源版本号: v" + Application.version + "res" +
-                              await GetRemotePackageVersion(bundlePackageName, package));
-        }
-        //can not find remote version
-        catch (InvalidOperationException)
+        var ver = await GetRemotePackageVersion(bundlePackageName, package);
+        if (AssetComponentConfig.AssetLoadMode != AssetLoadMode.Develop && ver < 0)
         {
             var mb = MessageBox.Show("错误", "无法获取服务器信息", "返回", "退出");
 
@@ -174,7 +169,12 @@ public class Updater : MonoBehaviour
             mb.onComplete = ONComplete;
             return;
         }
-        
+        if (ver < 0)
+        {
+            Log.PrintWarning("非Build模式会忽略版本索引");    
+        }
+        updater.OnVersion($"资源版本号: v{Application.version}res{ver}");
+
         async void Init()
         {
             updater.OnProgress(1);
@@ -196,16 +196,11 @@ public class Updater : MonoBehaviour
             {
                 if (ok == MessageBox.EventId.Ok)
                 {
-                    long now = Tools.TimeStamp;
-                    package.OnProgress = info =>
+                    package.ProgressCallback += speed =>
                     {
-                        float diff = Tools.TimeStamp - now;
-                        diff = diff < 1 ? 1 : diff;
-                        diff /= 1000;//s -> ms
-                        var speed = info.FinishUpdateSize / diff;
                         updater.OnMessage(
-                            $"下载中...{Tools.GetDisplaySpeed(speed)}, 进度：{Math.Round(info.Progress, 2)}%");
-                        updater.OnProgress(info.Progress / 100f);
+                            $"下载中...{Tools.GetDisplaySpeed(speed)}, 进度：{Math.Round(package.Progress, 2)}%");
+                        updater.OnProgress(package.Progress / 100f);
                     };
                     await AssetComponent.DownLoadUpdate(package);
                     Init();

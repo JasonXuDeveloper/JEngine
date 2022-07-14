@@ -6,26 +6,6 @@ namespace BM
 {
     public class LoadSceneHandler : LoadHandlerBase
     {
-        /// <summary>
-        /// File文件AssetBundle的引用
-        /// </summary>
-        public AssetBundle FileAssetBundle;
-    
-        /// <summary>
-        /// 资源所在的File包
-        /// </summary>
-        private LoadFile _loadFile = null;
-    
-        /// <summary>
-        /// 依赖的Bundle包
-        /// </summary>
-        private List<LoadDepend> _loadDepends = new List<LoadDepend>();
-    
-        /// <summary>
-        /// 依赖的其它File包
-        /// </summary>
-        private List<LoadFile> _loadDependFiles = new List<LoadFile>();
-        
         public LoadSceneHandler(string scenePath, string bundlePackageName)
         {
             AssetPath = scenePath;
@@ -36,17 +16,51 @@ namespace BM
                 //Develop模式直接返回
                 return;
             }
+            //说明是组里的资源
+            string groupPath = GroupAssetHelper.IsGroupAsset(AssetPath, AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadGroupDicKey);
+            if (groupPath != null)
+            {
+                //先找到对应加载的LoadGroup类
+                if (!AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadGroupDic.TryGetValue(groupPath, out LoadGroup loadGroup))
+                {
+                    AssetLogHelper.LogError("没有找到资源组: " + groupPath);
+                    return;
+                }
+                _loadBase = loadGroup;
+                //需要记录loadGroup的依赖
+                for (int i = 0; i < loadGroup.DependFileName.Count; i++)
+                {
+                    string dependFile = loadGroup.DependFileName[i];
+                    if (AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadDependDic.TryGetValue(dependFile, out LoadDepend loadDepend))
+                    {
+                        _loadDepends.Add(loadDepend);
+                        continue;
+                    }
+                    if (AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadFileDic.TryGetValue(dependFile, out LoadFile loadDependFile))
+                    {
+                        _loadDependFiles.Add(loadDependFile);
+                        continue;
+                    }
+                    if (AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadGroupDic.TryGetValue(dependFile, out LoadGroup loadDependGroup))
+                    {
+                        _loadDependGroups.Add(loadDependGroup);
+                        continue;
+                    }
+                    AssetLogHelper.LogError("场景依赖的资源没有找到对应的类: " + dependFile);
+                }
+                return;
+            }
             //先找到对应加载的LoadFile类
             if (!AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadFileDic.TryGetValue(AssetPath, out LoadFile loadFile))
             {
                 AssetLogHelper.LogError("没有找到资源: " + AssetPath);
                 return;
             }
-            _loadFile = loadFile;
+            _loadBase = loadFile;
             //需要记录loadFile的依赖
-            for (int i = 0; i < _loadFile.DependFileName.Length; i++)
+            for (int i = 0; i < loadFile.DependFileName.Length; i++)
             {
-                string dependFile = _loadFile.DependFileName[i];
+                string dependFile = loadFile.DependFileName[i];
                 if (AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadDependDic.TryGetValue(dependFile, out LoadDepend loadDepend))
                 {
                     _loadDepends.Add(loadDepend);
@@ -57,7 +71,12 @@ namespace BM
                     _loadDependFiles.Add(loadDependFile);
                     continue;
                 }
-                AssetLogHelper.LogError("依赖的资源没有找到对应的类: " + dependFile);
+                if (AssetComponent.BundleNameToRuntimeInfo[BundlePackageName].LoadGroupDic.TryGetValue(dependFile, out LoadGroup loadDependGroup))
+                {
+                    _loadDependGroups.Add(loadDependGroup);
+                    continue;
+                }
+                AssetLogHelper.LogError("场景依赖的资源没有找到对应的类: " + dependFile);
             }
             
         }
@@ -67,7 +86,7 @@ namespace BM
         /// </summary>
         public void LoadSceneBundle()
         {
-            _loadFile.LoadAssetBundle(BundlePackageName);
+            _loadBase.LoadAssetBundle(BundlePackageName);
             for (int i = 0; i < _loadDepends.Count; i++)
             {
                 _loadDepends[i].LoadAssetBundle(BundlePackageName);
@@ -76,7 +95,7 @@ namespace BM
             {
                 _loadDependFiles[i].LoadAssetBundle(BundlePackageName);
             }
-            FileAssetBundle = _loadFile.AssetBundle;
+            FileAssetBundle = _loadBase.AssetBundle;
         }
         
         /// <summary>
@@ -86,8 +105,8 @@ namespace BM
         {
             //计算出所有需要加载的Bundle包的总数
             RefLoadFinishCount = _loadDepends.Count + _loadDependFiles.Count + 1;
-            _loadFile.OpenProgress();
-            LoadAsyncLoader(_loadFile, finishTask).Coroutine();
+            _loadBase.OpenProgress();
+            LoadAsyncLoader(_loadBase, finishTask).Coroutine();
             for (int i = 0; i < _loadDepends.Count; i++)
             {
                 _loadDepends[i].OpenProgress();
@@ -99,7 +118,7 @@ namespace BM
                 LoadAsyncLoader(_loadDependFiles[i], finishTask).Coroutine();
             }
             await finishTask;
-            FileAssetBundle = _loadFile.AssetBundle;
+            FileAssetBundle = _loadBase.AssetBundle;
         }
 
         /// <summary>
@@ -118,7 +137,7 @@ namespace BM
             }
             float progress = 0;
             int loadCount = 1;
-            progress += _loadFile.GetProgress();
+            progress += _loadBase.GetProgress();
             for (int i = 0; i < _loadDepends.Count; i++)
             {
                 progress += _loadDepends[i].GetProgress();
@@ -148,8 +167,8 @@ namespace BM
                 loadDependFiles.SubRefCount();
             }
             _loadDependFiles.Clear();
-            _loadFile.SubRefCount();
-            _loadFile = null;
+            _loadBase.SubRefCount();
+            _loadBase = null;
         }
     }
 }

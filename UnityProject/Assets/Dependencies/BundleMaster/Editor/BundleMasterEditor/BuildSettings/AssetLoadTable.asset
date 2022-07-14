@@ -20,6 +20,7 @@ MonoBehaviour:
   - {fileID: 102900000, guid: 73f345c91023e4a0ea39fc1f7c559b0a, type: 3}
   GeneratePathCode: 1
   GenerateCodeScriptPath: ../HotUpdateScripts
-  AssetsLoadSettings:
+  AssetsSettings:
   - {fileID: 11400000, guid: 0b8c754664ab2214fbfcd1f1a78cf066, type: 2}
   - {fileID: 11400000, guid: e86646ac61bb70c45b2c990888d4e2ec, type: 2}
+  - {fileID: 11400000, guid: 2a712031138b7a04dadc225d45963d58, type: 2}

@@ -39,7 +39,7 @@
 
 
 
-# JENGINE v0.7.3 beta
+# JENGINE v0.7.3
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -151,13 +151,13 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 
 - **更新**ILRuntime
 
-- **优化**ClassBind性能
+- **更新**Bundle Master
 
 - **优化**JBehaviour性能
 
-- **几乎无GC的**异步延时
+- **优化**ClassBind运行性能
 
-- 更新BundleMaster（暂时还没完成）
+- **几乎无GC的**异步延时等待
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

@@ -29,7 +29,6 @@ namespace BM
 		public const string Assets_HotUpdateResources_UI_bg_Title2____png = "Assets/HotUpdateResources/UI/bg_Title2 .png";
 		public const string Assets_HotUpdateResources_UI_small__title02_bg__png = "Assets/HotUpdateResources/UI/small title02_bg.png";
 		public const string Assets_HotUpdateResources_Scene_Game__unity = "Assets/HotUpdateResources/Scene/Game.unity";
-		public const string Assets_HotUpdateResources_AddOns_AddOn1___DS_Store = "Assets/HotUpdateResources/AddOns/AddOn1/.DS_Store";
 		public const string Assets_HotUpdateResources_AddOns_AddOn1_Others_test__txt = "Assets/HotUpdateResources/AddOns/AddOn1/Others/test.txt";
 		public const string Assets_HotUpdateResources_AddOns_AddOn1_Scenes_test__unity = "Assets/HotUpdateResources/AddOns/AddOn1/Scenes/test.unity";
 	}
