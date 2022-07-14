@@ -14,6 +14,7 @@
     {
         Null = 0,
         File = 1,
-        Depend = 2
+        Depend = 2,
+        Group = 3
     }
 }
