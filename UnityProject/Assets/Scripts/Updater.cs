@@ -196,10 +196,10 @@ public class Updater : MonoBehaviour
             {
                 if (ok == MessageBox.EventId.Ok)
                 {
-                    package.ProgressCallback += speed =>
+                    package.ProgressCallback += progress =>
                     {
                         updater.OnMessage(
-                            $"下载中...{Tools.GetDisplaySpeed(speed)}, 进度：{Math.Round(package.Progress, 2)}%");
+                            $"下载中...{Tools.GetDisplaySpeed(package.DownLoadSpeed)}, 进度：{Math.Round(progress, 2)}%");
                         updater.OnProgress(package.Progress / 100f);
                     };
                     await AssetComponent.DownLoadUpdate(package);
