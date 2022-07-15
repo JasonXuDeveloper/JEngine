@@ -537,6 +537,7 @@ namespace BM
         /// </summary>
         private static void AnalysisOriginFile(AssetLoadTable assetLoadTable, AssetsOriginSetting assetsOriginSetting)
         {
+            assetsOriginSetting.OriginFilePath = new DirectoryInfo(assetsOriginSetting.OriginFilePath).FullName;
             string filePath = Path.Combine(assetLoadTable.BuildBundlePath, assetsOriginSetting.BuildName);
             if (!Directory.Exists(filePath))
             {
@@ -547,48 +548,24 @@ namespace BM
             HashSet<string> files = new HashSet<string>();
             HashSet<string> dirs = new HashSet<string>();
             BuildAssetsTools.GetOriginsPath(assetsOriginSetting.OriginFilePath, files, dirs);
-            List<string> letFilePaths = new List<string>();
             //Copy资源
             foreach (string dir in dirs)
             {
-                CopyDirectory(dir, filePath, true, letFilePaths);
+                Directory.CreateDirectory(dir.Replace(assetsOriginSetting.OriginFilePath, filePath));
+            }
+            List<string> letFilePaths = new List<string>();
+            foreach (string file in files)
+            {
+#if !UNITY_EDITOR_OSX
+                string letFilePath = file.Replace(assetsOriginSetting.OriginFilePath + "\\", null);
+#else
+                string letFilePath = file.Replace(assetsOriginSetting.OriginFilePath + "/", null);
+#endif
+                letFilePaths.Add(letFilePath);
+                File.Copy(file, Path.Combine(filePath, letFilePath), true);
             }
             //生成版本文件
             SaveOriginFileVersionFile(filePath, letFilePaths.ToArray(), assetsOriginSetting);
-        }
-        
-        private static void CopyDirectory(string sourceDir, string destinationDir, bool recursive, List<string> letFilePaths)
-        {
-            // Get information about the source directory
-            var dir = new DirectoryInfo(sourceDir);
-
-            // Check if the source directory exists
-            if (!dir.Exists)
-                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
-
-            // Cache directories before we start copying
-            DirectoryInfo[] dirs = dir.GetDirectories();
-
-            // Create the destination directory
-            Directory.CreateDirectory(destinationDir);
-
-            // Get the files in the source directory and copy to the destination directory
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                string targetFilePath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetFilePath);
-                letFilePaths.Add(targetFilePath);
-            }
-
-            // If recursive and copying subdirectories, recursively call this method
-            if (recursive)
-            {
-                foreach (DirectoryInfo subDir in dirs)
-                {
-                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                    CopyDirectory(subDir.FullName, newDestinationDir, true, letFilePaths);
-                }
-            }
         }
         
         /// <summary>

@@ -151,7 +151,7 @@ public class Updater : MonoBehaviour
         package = package ?? await CheckPackage(bundlePackageName, checkCRC);
 
         var ver = await GetRemotePackageVersion(bundlePackageName, package);
-        if (AssetComponentConfig.AssetLoadMode != AssetLoadMode.Develop && ver < 0)
+        if (AssetComponentConfig.AssetLoadMode == AssetLoadMode.Build && ver < 0)
         {
             var mb = MessageBox.Show("错误", "无法获取服务器信息", "返回", "退出");
 
