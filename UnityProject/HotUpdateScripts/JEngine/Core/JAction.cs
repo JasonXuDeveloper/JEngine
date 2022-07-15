@@ -60,6 +60,7 @@ namespace JEngine.Core
             if (Items.Count > 0)
             {
                 _item = Items.Dequeue();
+                _item.cancellationTokenSource = new CancellationTokenSource();
                 _isRecycled = true;
             }
             else
@@ -74,7 +75,7 @@ namespace JEngine.Core
         /// <summary>
         /// 当前任务对象
         /// </summary>
-        private readonly JActionItem _item;
+        private JActionItem _item;
 
         /// <summary>
         /// 名字
@@ -100,6 +101,10 @@ namespace JEngine.Core
         /// 当前执行的任务的index
         /// </summary>
         private int _index;
+
+        public bool executing;
+        public bool parallel;
+        public bool cancel;
 
         /// <summary>
         /// 检测是否被释放
@@ -234,7 +239,7 @@ namespace JEngine.Core
         public JAction Parallel()
         {
             DisposeCheck();
-            _item.Parallel();
+            parallel = true;
             return this;
         }
 
@@ -307,7 +312,7 @@ namespace JEngine.Core
         public JAction Cancel()
         {
             DisposeCheck();
-            _item.cancel = true;
+            cancel = true;
             _item.cancellationTokenSource.Cancel();
             _item.onCancel?.Invoke();
             return this;
@@ -328,7 +333,7 @@ namespace JEngine.Core
             }
             else
             {
-                if (_item.executing)
+                if (executing)
                 {
                     Log.PrintError("JAction is currently executing, if you want to force reset, call Reset(true)");
                 }
@@ -346,9 +351,9 @@ namespace JEngine.Core
         /// </summary>
         private void _reset()
         {
-            _item.executing = false;
-            _item.parallel = false;
-            _item.cancel = false;
+            executing = false;
+            parallel = false;
+            cancel = false;
             _item.toDo.Clear();
             _item.onCancel = null;
             _item.delays.Clear();
@@ -359,7 +364,6 @@ namespace JEngine.Core
             _item.whenCauses.Clear();
             _item.whenFrequency.Clear();
             _item.whenTimeout.Clear();
-            _item.cancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -369,26 +373,27 @@ namespace JEngine.Core
         /// <returns></returns>
         private async ET.ETTask<JAction> Do(bool onMainThread)
         {
-            if (_item.executing && !_item.parallel)
+            if (executing && !parallel)
             {
                 Log.PrintError("JAction is currently executing, if you want to execute JAction multiple times at the same time, call Parallel() before calling Execute()");
                 return this;
             }
 
-            if (!_item.parallel)
+            if (!parallel)
             {
-                _item.executing = true;
+                executing = true;
             }
             _isMainThread = onMainThread;
-            _item.cancel = false;
+            cancel = false;
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Loom.QueueOnMainThread(async () =>
             {
                 for (int i = 0; i < _item.toDo.Count; i++)
                 {
                     _index = i;
+                    executing = true;
 
-                    if (_item.cancel || !Application.isPlaying)
+                    if (cancel || !Application.isPlaying && !_disposed)
                     {
                         tcs.SetResult(false);
                         return;
@@ -416,9 +421,9 @@ namespace JEngine.Core
                     if (_item.waits.ContainsKey(_index))
                     {
                         float time = 0;
-                        while (!_item.waits[_index]() && Application.isPlaying)
+                        while (!_item.waits[_index]() && Application.isPlaying && !_disposed)
                         {
-                            if (_item.cancel)
+                            if (cancel)
                             {
                                 tcs.SetResult(false);
                                 return;
@@ -443,9 +448,9 @@ namespace JEngine.Core
                         float frequency = _item.whenFrequency[_index];
                         float timeout = _item.whenTimeout[_index];
                         Action action = _item.whens[_index];
-                        while (condition() && Application.isPlaying)
+                        while (condition() && Application.isPlaying && !_disposed)
                         {
-                            if (_item.cancel)
+                            if (cancel)
                             {
                                 tcs.SetResult(false);
                                 return;
@@ -495,7 +500,7 @@ namespace JEngine.Core
                 tcs.SetResult(true);
             });
             await tcs.Task;
-            _item.executing = false;
+            executing = false;
             return this;
         }
 
@@ -545,11 +550,9 @@ namespace JEngine.Core
             {
                 return;
             }
-            _disposed = true;
-            _reset();
+            Reset(true);
             Items.Enqueue(_item);
-            GC.Collect();
-            GC.SuppressFinalize(this);
+            _disposed = true;
         }
 
         /// <summary>
@@ -557,10 +560,6 @@ namespace JEngine.Core
         /// </summary>
         private class JActionItem
         {
-            public bool executing;
-            public bool parallel;
-            public bool cancel;
-
             public readonly List<Action> toDo = new List<Action>();
             public Action onCancel = () => { };
 
@@ -644,11 +643,6 @@ namespace JEngine.Core
                 {
                     await action;
                 });
-            }
-
-            public void Parallel()
-            {
-                parallel = true;
             }
 
             public void OnCancel(Action action)
