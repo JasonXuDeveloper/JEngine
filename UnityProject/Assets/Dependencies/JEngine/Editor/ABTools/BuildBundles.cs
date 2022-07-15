@@ -38,15 +38,18 @@ namespace JEngine.Editor
                 watch.Reset();
                 watch.Start();
                 string pdbPath = DllMgr.GetPdbInEditorPath(ConstMgr.MainHotDLLName);
-                bytes = FileMgr.FileToByte(pdbPath);
-                result = FileMgr.ByteToFile(bytes,
-                    DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
-                watch.Stop();
-                Log.Print("Convert PDBs in: " + watch.ElapsedMilliseconds + " ms.");
-                if (!result)
+                if (File.Exists(pdbPath))
                 {
-                    Log.PrintError("PDB转Byte[]出错！");
-                    return;
+                    bytes = FileMgr.FileToByte(pdbPath);
+                    result = FileMgr.ByteToFile(bytes,
+                        DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
+                    watch.Stop();
+                    Log.Print("Convert PDBs in: " + watch.ElapsedMilliseconds + " ms.");
+                    if (!result)
+                    {
+                        Log.PrintError("PDB转Byte[]出错！");
+                        return;
+                    }   
                 }
 
                 Setting.EncryptPassword = s;
