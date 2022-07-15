@@ -447,7 +447,16 @@ namespace JEngine.Core
         public JBehaviour Activate()
         {
             //主线程
-            Loom.QueueOnMainThread(Awake);
+            Loom.QueueOnMainThread(async () =>
+            {
+                Awake();
+                int duration;
+                duration = (int)((1f / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
+                duration = (int)(duration / TimeScale);
+                await TimeMgr.Delay(duration);
+                OnEnable();
+                Start();
+            });
             return this;
         }
         #endregion
@@ -696,10 +705,21 @@ namespace JEngine.Core
 
         private protected static void GameObjectDictCheckNullJBehaviour()
         {
+            bool hasNullKey = false;
             foreach(var k in GameObjectKeys)
             {
+                if (k == null)
+                {
+                    hasNullKey = true;
+                    continue;
+                }
                 var h = GameObjectJBehaviours[k];
                 h.RemoveWhere(j => j is null);
+            }
+            if (hasNullKey)
+            {
+                GameObjectDictCheckNull();
+                GameObjectKeys.RemoveWhere(j => j is null);
             }
         }
 
@@ -709,9 +729,9 @@ namespace JEngine.Core
 
             foreach (var k in GameObjectKeys)
             {
-                var h = GameObjectJBehaviours[k];
                 if (k != null)
                 {
+                    var h = GameObjectJBehaviours[k];
                     s[k] = h;
                 }
             }
