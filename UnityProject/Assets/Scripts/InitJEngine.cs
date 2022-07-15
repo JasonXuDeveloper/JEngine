@@ -103,17 +103,23 @@ public class InitJEngine : MonoBehaviour
         byte[] dll = DllMgr.GetDllBytes(DllName, isEditorMode);
         //pdb默认不存在
         byte[] pdb = ConstMgr.NullBytes;
-        //编辑器下模拟加密dll并读取pdb
+        //编辑器下模拟加密dll
         if (isEditorMode)
         {
             DllMgr.SimulateEncryption(ref dll, key);
-            pdb = DllMgr.GetPdbBytes(DllName);
         }
-        else if (usePdb)
+        if (usePdb)
         {
-            var pdbFileBytes = DllMgr.GetPdbBytes(DllName, false);
-            pdb = new byte[pdbFileBytes.Length];
-            Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
+            try
+            {
+                var pdbFileBytes = DllMgr.GetPdbBytes(DllName, false);
+                pdb = new byte[pdbFileBytes.Length];
+                Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         //生成缓冲区，复制加密dll数据
@@ -131,7 +137,7 @@ public class InitJEngine : MonoBehaviour
             }
 
             //加载dll
-            if (usePdb)
+            if (usePdb && pdb != null)
             {
                 Appdomain.LoadAssembly(_fs, _pdb, new PdbReaderProvider());
             }
