@@ -112,7 +112,7 @@ public class InitJEngine : MonoBehaviour
         {
             try
             {
-                var pdbFileBytes = DllMgr.GetPdbBytes(DllName, false);
+                var pdbFileBytes = DllMgr.GetPdbBytes(DllName, Application.isEditor && !AssetMgr.RuntimeMode);
                 pdb = new byte[pdbFileBytes.Length];
                 Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
             }
