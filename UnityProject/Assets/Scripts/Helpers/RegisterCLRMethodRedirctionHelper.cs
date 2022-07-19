@@ -883,16 +883,16 @@ namespace JEngine.Helper
 
             //获取泛型参数<T>的实际类型
             var genericArguments = __method.GenericArguments;
-            var t = genericArguments[0];
-            
+            var t = genericArguments != null && genericArguments.Length > 0 ? genericArguments[0] : null;
+
             var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
-                t.ReflectionType,
+                t != null ? t.ReflectionType : typeof(UnityEngine.Object),
                 StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
                 0);
             __intp.Free(ptr_of_this_method);
             
             //CLRType
-            if (t is CLRType)
+            if (t != null && t is CLRType)
             {
                 return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original));
             }
@@ -925,10 +925,10 @@ namespace JEngine.Helper
             
             //获取泛型参数<T>的实际类型
             var genericArguments = __method.GenericArguments;
-            var t = genericArguments[0];
-            
+            var t = genericArguments != null && genericArguments.Length > 0 ? genericArguments[0] : null;
+
             var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
-                t.ReflectionType,
+                t != null ? t.ReflectionType : typeof(UnityEngine.Object),
                 StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
                 0);
             __intp.Free(ptr_of_this_method);
@@ -970,16 +970,16 @@ namespace JEngine.Helper
             
             //获取泛型参数<T>的实际类型
             var genericArguments = __method.GenericArguments;
-            var t = genericArguments[0];
-            
+            var t = genericArguments != null && genericArguments.Length > 0 ? genericArguments[0] : null;
+
             var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
-                t.ReflectionType,
+                t != null ? t.ReflectionType : typeof(UnityEngine.Object),
                 StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
                 0);
             __intp.Free(ptr_of_this_method);
             
             //CLRType
-            if (t is CLRType)
+            if (t != null && t is CLRType)
             {
                 return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original, parent, worldPositionStays: worldPositionStays));
             }
@@ -1017,16 +1017,16 @@ namespace JEngine.Helper
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
             //获取泛型参数<T>的实际类型
             var genericArguments = __method.GenericArguments;
-            var t = genericArguments[0];
-            
+            var t = genericArguments != null && genericArguments.Length > 0 ? genericArguments[0] : null;
+
             var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
-                t.ReflectionType,
+                t != null ? t.ReflectionType : typeof(UnityEngine.Object),
                 StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
                 0);
             __intp.Free(ptr_of_this_method);
             
             //CLRType
-            if (t is CLRType)
+            if (t != null && t is CLRType)
             {
                 return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original, position, rotation));
             }
@@ -1070,16 +1070,16 @@ namespace JEngine.Helper
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
             //获取泛型参数<T>的实际类型
             var genericArguments = __method.GenericArguments;
-            var t = genericArguments[0];
-            
+            var t = genericArguments != null && genericArguments.Length > 0 ? genericArguments[0] : null;
+
             var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
-                t.ReflectionType,
+                t != null ? t.ReflectionType : typeof(UnityEngine.Object),
                 StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
                 0);
             __intp.Free(ptr_of_this_method);
             
             //CLRType
-            if (t is CLRType)
+            if (t != null && t is CLRType)
             {
                 return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original,position, rotation, parent));
             }
