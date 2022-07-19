@@ -153,7 +153,9 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         }
 
                         var type = instance.Type.ReflectionType;
-                        LifeCycleMgr.Instance.AddAwakeItem(instance, GetMethodInfo(type, "Awake"));
+                        //直接Invoke
+                        GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
+                        LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
                         //就mono订阅start和update事件
                         if (enabled)
                         {

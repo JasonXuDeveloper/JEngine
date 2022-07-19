@@ -95,11 +95,12 @@ namespace JEngine.Core.DO_NOT_USE
                             }
 
                             var type = _instance.Type.ReflectionType;
-                            LifeCycleMgr.Instance.AddAwakeItem(_instance, GetMethodInfo(type, "Awake"));
+                            GetMethodInfo(type, "Awake")?.Invoke(_instance, ConstMgr.NullObjects);
                             if (isJBehaviour)
                             {
                                 //JBehaviour额外处理
                                 GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
+                                LifeCycleMgr.Instance.AddAwakeItem(_instance,  null);//这一帧空出来
                                 LifeCycleMgr.Instance.AddOnEnableItem(_instance, GetMethodInfo(type, "OnEnable"));
                                 LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
                             }

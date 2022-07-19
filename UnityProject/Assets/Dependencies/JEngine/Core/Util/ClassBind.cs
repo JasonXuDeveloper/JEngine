@@ -437,17 +437,28 @@ namespace JEngine.Core
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
-                //全部ClassBind的clrInstance都是MonoBehaviour
-                var monoB = clrInstance as MonoBehaviour;
-                if (monoB == null)
+                //不管是啥类型，直接invoke这个awake方法
+                var flags = BindingFlags.Default | BindingFlags.Public
+                                                 | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                                 BindingFlags.NonPublic | BindingFlags.Static;
+                var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
+                if (awakeMethod == null)
                 {
-                    Log.PrintError($"ClassBind无法调用{classType}的Awake函数");
+                    awakeMethod = t.GetMethod("Awake", flags);
                 }
                 else
                 {
-                    // ReSharper disable NotResolvedInText
-                    monoB.Invoke("Awake", 0);
-                    // ReSharper restore NotResolvedInText
+                    awakeMethod.Invoke(clrInstance, null);
+                    classData.Activated = true;
+                }
+
+                if (awakeMethod == null)
+                {
+                    Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                }
+                else if (!classData.Activated)
+                {
+                    awakeMethod.Invoke(clrInstance, null);
                 }
 
                 classData.Activated = true;
