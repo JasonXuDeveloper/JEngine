@@ -610,16 +610,18 @@ namespace JEngine.Helper
         }
 
 
+        private static List<ClassBind> _classBinds = new List<ClassBind>();
         private static object DoInstantiate(GameObject ins, GameObject res, AppDomain domain, IType type = null)
         {
             //没adapter不需要注意什么
             if (res.GetComponentsInChildren<CrossBindingAdaptorType>(true).Length == 0)
             {
-                if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
+                _classBinds.Clear();
+                res.GetComponentsInChildren(true, _classBinds);
+                if (_classBinds.Count > 0)
                 {
-                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                    ClassBindMgr.DoBind(_classBinds);
                 }
-
                 return res;
             }
 
@@ -879,8 +881,21 @@ namespace JEngine.Helper
             StackObject* __ret = ILIntepreter.Minus(__esp, 1);
             ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
 
-            object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
+            //获取泛型参数<T>的实际类型
+            var genericArguments = __method.GenericArguments;
+            var t = genericArguments[0];
+            
+            var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
+                t.ReflectionType,
+                StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
+                0);
             __intp.Free(ptr_of_this_method);
+            
+            //CLRType
+            if (t is CLRType)
+            {
+                return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original));
+            }
 
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go);
@@ -907,10 +922,22 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            //获取泛型参数<T>的实际类型
+            var genericArguments = __method.GenericArguments;
+            var t = genericArguments[0];
+            
+            var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
+                t.ReflectionType,
+                StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
+                0);
             __intp.Free(ptr_of_this_method);
+            
+            //CLRType
+            if (t is CLRType)
+            {
+                return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original, parent));
+            }
 
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, parent);
@@ -940,10 +967,22 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            
+            //获取泛型参数<T>的实际类型
+            var genericArguments = __method.GenericArguments;
+            var t = genericArguments[0];
+            
+            var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
+                t.ReflectionType,
+                StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
+                0);
             __intp.Free(ptr_of_this_method);
+            
+            //CLRType
+            if (t is CLRType)
+            {
+                return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original, parent, worldPositionStays: worldPositionStays));
+            }
 
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, parent, worldPositionStays);
@@ -976,10 +1015,21 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            //获取泛型参数<T>的实际类型
+            var genericArguments = __method.GenericArguments;
+            var t = genericArguments[0];
+            
+            var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
+                t.ReflectionType,
+                StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
+                0);
             __intp.Free(ptr_of_this_method);
+            
+            //CLRType
+            if (t is CLRType)
+            {
+                return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original, position, rotation));
+            }
 
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation);
@@ -1018,10 +1068,21 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            //获取泛型参数<T>的实际类型
+            var genericArguments = __method.GenericArguments;
+            var t = genericArguments[0];
+            
+            var original = (UnityEngine.Object)ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(
+                t.ReflectionType,
+                StackObject.ToObject(ptr_of_this_method, __domain, __mStack),
+                0);
             __intp.Free(ptr_of_this_method);
+            
+            //CLRType
+            if (t is CLRType)
+            {
+                return ILIntepreter.PushObject(__ret, __mStack, UnityEngine.Object.Instantiate(original,position, rotation, parent));
+            }
 
             SetGOForInstantiate(original, out var go, out var type);
             var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation, parent);
