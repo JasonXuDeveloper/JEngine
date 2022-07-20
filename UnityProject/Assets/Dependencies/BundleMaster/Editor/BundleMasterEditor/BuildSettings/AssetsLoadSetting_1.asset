@@ -27,6 +27,7 @@ MonoBehaviour:
   - Assets/HotUpdateResources/Prefab
   - Assets/HotUpdateResources/ScriptableObject
   - Assets/HotUpdateResources/TextAsset
+  - Assets/HotUpdateResources/UI
   AssetGroupPaths:
   - Assets/HotUpdateResources/UI
   ScenePath:
