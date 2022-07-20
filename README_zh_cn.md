@@ -107,8 +107,8 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="g1" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/0ac05aa58706032db05c5dbf1df77cf4_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/5c13a62dfeec50334f16e2f31db151e2_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <p align="center">[爱丽丝造梦空间](https://www.taptap.com/app/224117)</p> | <p align="center">[肝到发慌](https://www.taptap.com/app/225175)</p> | <p align="center">[割韭菜](https://www.taptap.com/app/232558)</p> | <p align="center">[明明消消乐](https://www.taptap.com/app/233988)</p> |
-| <img src="https://img.tapimg.com/market/lcs/d561f17020081307ff08366233070d88_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> |                                                              |                                                              |                                                              |
-| <p align="center">[兔子与餐厅](https://www.taptap.com/app/235127)</p> |                                                              |                                                              |                                                              |
+| <img src="https://img.tapimg.com/market/lcs/d561f17020081307ff08366233070d88_360.png?imageMogr2/auto-orient/strip" alt="g2" width="128" height="128" /> | <img src="https://media.9game.cn/gamebase/2022/6/29/a2fabeb2e1f4c048b58a7861d60affc3.png?x-oss-process=image/resize,w_256,m_lfit" alt="hmsj" width="128" height="128" /> |                                                              |                                                              |
+| <p align="center">[兔子与餐厅](https://www.taptap.com/app/235127)</p> | <p align="center">[鸿蒙世界](https://www.9game.cn/hongmengshijie/)</p> |                                                              |                                                              |
 
 
 
@@ -178,6 +178,7 @@ JEngine专业版现已推出，大幅度提高开发效率和底层性能，可�
 - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
 - [TEngine](https://github.com/ALEXTANGXIAO/TEngine ) - Unity框架解决方案
 - [MetaJUI](https://github.com/Meta404Dev/MetaJUI) - MetaJUI是为JEngine定制的UI框架，当然你也可以通过很简单的修改，移植到自己的工程项目
+- [MetaExcelDataTool](https://github.com/Meta404Dev/MetaExcelDataTool) - MetaExcelDataTool是为JEngine定制的Excel导表工具，当然你也可以通过很简单的修改，移植到自己的工程项目
 - [BundleMaster](https://github.com/mister91jiao/BundleMaster) - Unity资源加载大师
 - [Nino](https://github.com/JasonXuDeveloper/Nino) - 实用的高性能C#模块，尤其在Unity平台能带来令人难以置信的效益。
 
