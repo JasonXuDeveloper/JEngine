@@ -133,5 +133,6 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
   - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.
   - [TEngine](https://github.com/ALEXTANGXIAO/TEngine ) - Unity框架解决方案
   - [MetaJUI](https://github.com/Meta404Dev/MetaJUI) - MetaJUI是为JEngine定制的UI框架，当然你也可以通过很简单的修改，移植到自己的工程项目
+  - [MetaExcelDataTool](https://github.com/Meta404Dev/MetaExcelDataTool) - MetaExcelDataTool是为JEngine定制的Excel导表工具，当然你也可以通过很简单的修改，移植到自己的工程项目
   - [BundleMaster](https://github.com/mister91jiao/BundleMaster) - Unity资源加载大师
   - [Nino](https://github.com/JasonXuDeveloper/Nino) - Definitely useful and high performance modules for C# projects, especially for Unity.
