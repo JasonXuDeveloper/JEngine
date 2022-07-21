@@ -95,6 +95,10 @@ namespace BM
             {
                 _loadDependFiles[i].LoadAssetBundle(BundlePackageName);
             }
+            for (int i = 0; i < _loadDependGroups.Count; i++)
+            {
+                _loadDependGroups[i].LoadAssetBundle(BundlePackageName);
+            }
             FileAssetBundle = _loadBase.AssetBundle;
         }
         
@@ -104,7 +108,7 @@ namespace BM
         public async ETTask LoadSceneBundleAsync(ETTask finishTask)
         {
             //计算出所有需要加载的Bundle包的总数
-            RefLoadFinishCount = _loadDepends.Count + _loadDependFiles.Count + 1;
+            RefLoadFinishCount = _loadDepends.Count + _loadDependFiles.Count + _loadDependGroups.Count + 1;
             _loadBase.OpenProgress();
             LoadAsyncLoader(_loadBase, finishTask).Coroutine();
             for (int i = 0; i < _loadDepends.Count; i++)
@@ -116,6 +120,11 @@ namespace BM
             {
                 _loadDependFiles[i].OpenProgress();
                 LoadAsyncLoader(_loadDependFiles[i], finishTask).Coroutine();
+            }
+            for (int i = 0; i < _loadDependGroups.Count; i++)
+            {
+                _loadDependGroups[i].OpenProgress();
+                LoadAsyncLoader(_loadDependGroups[i], finishTask).Coroutine();
             }
             await finishTask;
             FileAssetBundle = _loadBase.AssetBundle;
@@ -148,6 +157,11 @@ namespace BM
                 progress += _loadDependFiles[i].GetProgress();
                 loadCount++;
             }
+            for (int i = 0; i < _loadDependGroups.Count; i++)
+            {
+                progress += _loadDependGroups[i].GetProgress();
+                loadCount++;
+            }
             return progress / loadCount;
         }
         
@@ -167,6 +181,11 @@ namespace BM
                 loadDependFiles.SubRefCount();
             }
             _loadDependFiles.Clear();
+            foreach (LoadGroup loadDependGroups in _loadDependGroups)
+            {
+                loadDependGroups.SubRefCount();
+            }
+            _loadDependGroups.Clear();
             _loadBase.SubRefCount();
             _loadBase = null;
         }
