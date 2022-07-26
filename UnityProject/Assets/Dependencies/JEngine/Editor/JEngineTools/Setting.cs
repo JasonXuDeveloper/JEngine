@@ -100,6 +100,7 @@ namespace JEngine.Editor
 		MismatchDLLKeyContext = 59,
 		Ok = 60,
 		Ignore = 61,
+		ClassBindGetFromBase = 62,
 	}
 
 	internal class Setting : EditorWindow
@@ -243,6 +244,7 @@ namespace JEngine.Editor
 				"忽略",
 				"Ignore"
 			},//Ignore
+			new[] { "匹配基类成员变量", "Get fields from base type" },//ClassBindGetFromBase
 		};
 
 		/// <summary>
@@ -309,6 +311,16 @@ namespace JEngine.Editor
 				_dataPath.Parent?.FullName + "/HotUpdateScripts/JEngine");
 			private set => PlayerPrefs.SetString($"{_prefix}.HotPath", value);
 		}
+
+		/// <summary>
+		/// ClassBind获取基类
+		/// </summary>
+		public static bool ClassBindGetFromBase
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindGetFromBase", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindGetFromBase", value ? "1" : "0");
+		}
+
 
 		/// <summary>
 		/// ClassBind不获取private
@@ -594,6 +606,15 @@ namespace JEngine.Editor
 				};
 				GUILayout.Label(GetString(SettingString.ClassBindTools), textStyle);
 			});
+			GUILayout.Space(10);
+			//是否包含父类
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.ClassBindGetFromBase),
+						GUILayout.MinHeight(20));
+					ClassBindGetFromBase = EditorGUILayout.Toggle(ClassBindGetFromBase, GUILayout.MinHeight(20));
+				});
 			GUILayout.Space(10);
 			//是否跳过private
 			MakeHorizontal(GetSpace(0.1f),
