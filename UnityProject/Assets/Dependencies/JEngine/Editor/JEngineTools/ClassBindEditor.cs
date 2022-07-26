@@ -104,15 +104,24 @@ namespace JEngine.Editor
                     return;
                 }
 
+                var flag =
+                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                    BindingFlags.Static;
+                if (Setting.ClassBindGetFromBase)
+                {
+                    flag |= BindingFlags.FlattenHierarchy;
+                }
+                else
+                {
+                    flag |= BindingFlags.DeclaredOnly;
+                }
+                
                 for (int i = 0; i < data.fields.Count; i++)
                 {
                     var field = data.fields[i];
-                    var fieldType = t.GetField(field.fieldName,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.FieldType ?? t.GetProperty(field.fieldName,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.PropertyType;
-
+                    var fieldType = t.GetField(field.fieldName, flag)?.FieldType ??
+                                    t.GetProperty(field.fieldName, flag)?.PropertyType;
+                    
                     if (fieldType == null)
                     {
                         Log.PrintError(String.Format(Setting.GetString(SettingString.ClassBindInvalidFieldDeleted),
@@ -170,14 +179,23 @@ namespace JEngine.Editor
                             className), "OK");
                     return;
                 }
-
+                
+                var flag =
+                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
+                    BindingFlags.Static;
+                if (Setting.ClassBindGetFromBase)
+                {
+                    flag |= BindingFlags.FlattenHierarchy;
+                }
+                else
+                {
+                    flag |= BindingFlags.DeclaredOnly;
+                }
+                
                 foreach (var field in data.fields)
                 {
-                    var fieldType = t.GetField(field.fieldName,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.FieldType ?? t.GetProperty(field.fieldName,
-                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                        BindingFlags.Static)?.PropertyType;
+                    var fieldType = t.GetField(field.fieldName, flag)?.FieldType ??
+                                    t.GetProperty(field.fieldName, flag)?.PropertyType;
 
                     if (fieldType == null)
                     {
@@ -228,9 +246,21 @@ namespace JEngine.Editor
                 }
                 
                 var fieldsInCb = data.fields.Select(f => f.fieldName).ToList(); //全部已经设置的字段
-                var flag = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic |
+                var flag = BindingFlags.Public | BindingFlags.NonPublic |
                            BindingFlags.SetProperty;
-                var flag4Private = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.SetProperty ;
+                var flag4Private = BindingFlags.Public | BindingFlags.SetProperty;
+
+                if (Setting.ClassBindGetFromBase)
+                {
+                    flag |= BindingFlags.FlattenHierarchy;
+                    flag4Private |= BindingFlags.FlattenHierarchy;
+                }
+                else
+                {
+                    flag |= BindingFlags.DeclaredOnly;
+                    flag4Private |= BindingFlags.DeclaredOnly;
+                }
+
                 var members = new List<MemberInfo>(0);
                 //忽略有ClassBindIgnore标签的
                 var fs = t.GetFields(flag).ToList()

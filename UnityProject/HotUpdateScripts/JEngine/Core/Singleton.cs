@@ -50,7 +50,7 @@ namespace JEngine.Core
     /// 单例Mono基类
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MonoSingleton<T> where T : UnityEngine.Component
+    public class MonoSingleton<T> : MonoBehaviour where T : UnityEngine.Component
     {
         protected MonoSingleton() { }
 

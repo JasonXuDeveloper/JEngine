@@ -460,7 +460,7 @@ namespace JEngine.Core
                 {
                     awakeMethod.Invoke(clrInstance, null);
                 }
-
+                ((MonoBehaviour)clrInstance).enabled = true;
                 classData.Activated = true;
             }
 
