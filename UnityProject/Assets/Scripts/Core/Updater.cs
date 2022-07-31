@@ -6,72 +6,7 @@ using ET;
 using JEngine.Core;
 using UnityEngine;
 
-public interface IUpdater
-    {
-        void OnMessage(string msg);
-
-        void OnProgress(float progress);
-
-        void OnVersion(string ver);
-
-        void OnLoadSceneProgress(float progress);
-
-        void OnLoadSceneFinish();
-
-        void OnUpdateFailed();
-    }
-
-    public class BaseUpdater : IUpdater
-    {
-        public Action<string> onMessage;
-        public void OnMessage(string msg)
-        {
-            onMessage?.Invoke(msg);
-        }
-
-        public Action<float> onProgress;
-        public void OnProgress(float progress)
-        {
-            onProgress?.Invoke(progress);
-        }
-        
-        public Action<string> onVersion;
-        public void OnVersion(string ver)
-        {
-            onVersion?.Invoke(ver);
-        }
-
-        public Action<float> onLoadSceneProgress;
-        public void OnLoadSceneProgress(float progress)
-        {
-            onLoadSceneProgress?.Invoke(progress);
-        }
-
-        public Action onLoadSceneFinish;
-        public void OnLoadSceneFinish()
-        {
-            onLoadSceneFinish?.Invoke();
-        }
-        
-        public Action onUpdateFailed;
-        public void OnUpdateFailed()
-        {
-            onUpdateFailed?.Invoke();
-        }
-        
-
-        public BaseUpdater(Action<string> onMessage, Action<float> onProgress, Action<string> onVersion, Action<float> onLoadSceneProgress, Action onLoadSceneFinish, Action onUpdateFailed)
-        {
-            this.onMessage = onMessage;
-            this.onProgress = onProgress;
-            this.onVersion = onVersion;
-            this.onLoadSceneProgress = onLoadSceneProgress;
-            this.onLoadSceneFinish = onLoadSceneFinish;
-            this.onUpdateFailed = onUpdateFailed;
-        }
-    }
-
-public class Updater : MonoBehaviour
+public partial class Updater : MonoBehaviour
 {
     [SerializeField] private string baseURL = "http://127.0.0.1:7888/DLC/";
     [SerializeField] private string gameScene = "Assets/HotUpdateResources/Scene/Game.unity";
@@ -200,7 +135,7 @@ public class Updater : MonoBehaviour
                     {
                         updater.OnMessage(
                             $"下载中...{Tools.GetDisplaySpeed(package.DownLoadSpeed)}, 进度：{Math.Round(progress, 2)}%");
-                        updater.OnProgress(package.Progress / 100f);
+                        updater.OnProgress(progress / 100f);
                     };
                     await AssetComponent.DownLoadUpdate(package);
                     Init();
@@ -264,27 +199,74 @@ public class Updater : MonoBehaviour
     /// <param name="bundlePackageName"></param>
     public static void ClearPackage(string bundlePackageName)
     {
-        var dir = Path.Combine(Application.persistentDataPath, "bundlePackageName");
-        if(Directory.Exists(dir))
+        var mb = MessageBox.Show("提示", "确定要删除缓存吗");
+
+        void ONComplete(MessageBox.EventId ok)
         {
-            Directory.Delete(dir);
+            if (ok == MessageBox.EventId.Ok)
+            {
+                var dir = Path.Combine(Application.persistentDataPath, bundlePackageName);
+                if(Directory.Exists(dir))
+                {
+                    Directory.Delete(dir, true);
+                }
+            }
         }
+        mb.onComplete = ONComplete;
     }
+
+    /// <summary>
+    /// 给按钮拖拽赋值的点击事件，删除分包
+    /// </summary>
+    /// <param name="bundlePackageName"></param>
+    public void ClearPackageForButton(string bundlePackageName)
+    {
+        ClearPackage(bundlePackageName);
+    }
+    
+    /// <summary>
+    /// 单例
+    /// </summary>
+    private static Updater _instance;
 
     /// <summary>
     /// 更新配置
     /// </summary>
     private void Awake()
     {
+        if (_instance != null)
+        {
+            DestroyImmediate(gameObject);
+            return;
+        }
+
+        Init();
+    }
+
+    /// <summary>
+    /// 初始化配置
+    /// </summary>
+    public void Init()
+    {
         baseURL = baseURL.EndsWith("/") ? baseURL : baseURL + "/";
         AssetComponentConfig.AssetLoadMode = mode;
         AssetComponentConfig.BundleServerUrl = baseURL;
         AssetComponentConfig.DefaultBundlePackageName = mainPackageName;
         DontDestroyOnLoad(gameObject);
+        _instance = this;
     }
 
     /// <summary>
-    /// 下载更新
+    /// 更新
+    /// </summary>
+    private void Update()
+    {
+        //更新BM组件
+        AssetComponent.Update();
+    }
+
+    /// <summary>
+    /// 给按钮拖拽赋值的点击事件，下载更新，用于初始化主包
     /// </summary>
     public void StartUpdate()
     {
