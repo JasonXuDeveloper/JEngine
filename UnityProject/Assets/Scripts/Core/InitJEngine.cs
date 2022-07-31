@@ -7,7 +7,7 @@ using ILRuntime.Mono.Cecil.Pdb;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
-public class InitJEngine : MonoBehaviour
+public partial class InitJEngine : MonoBehaviour
 {
     //单例
     public static InitJEngine Instance;
