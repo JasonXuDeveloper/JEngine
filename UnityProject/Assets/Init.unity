@@ -381,12 +381,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a9e09392b0364e338a196bbe4b3d11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseURL: http://127.0.0.1:7788/DLC/
+  baseURL: http://127.0.0.1:7888/DLC/
   gameScene: Assets/HotUpdateResources/Scene/Game.unity
   mainPackageName: Main
   mainPackageKey: 
   mainPackageCheckCRC: 1
-  mode: 2
+  mode: 0
 --- !u!1 &1033013693
 GameObject:
   m_ObjectHideFlags: 0
