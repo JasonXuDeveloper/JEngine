@@ -58,8 +58,7 @@ namespace JEngine.Core
         private static Object Load(string path, string package, Type type)
         {
             
-            var ret = AssetComponent.Load(out var handler, path, package);
-            AddCache(handler);
+            var ret = AssetComponent.Load(out _, path, package);
             return ret;
         }
 
@@ -85,8 +84,7 @@ namespace JEngine.Core
         private static T Load<T>(string path, string package, Type type)
             where T : Object
         {
-            var ret = AssetComponent.Load<T>(out var handler, path, package);
-            AddCache(handler);
+            var ret = AssetComponent.Load<T>(out _, path, package);
             return ret;
         }
 
@@ -108,8 +106,7 @@ namespace JEngine.Core
 
         private static async ETTask<Object> LoadAsync(string path, string package, Type type)
         {
-            var ret = await AssetComponent.LoadAsync(out var handler, path, package);
-            AddCache(handler);
+            var ret = await AssetComponent.LoadAsync(out _, path, package);
             return ret;
         }
 
@@ -135,8 +132,7 @@ namespace JEngine.Core
         private static async ETTask<T> LoadAsync<T>(string path, string package = null, Type type = null)
             where T : Object
         {
-            var ret = await AssetComponent.LoadAsync<T>(out var handler, path, package);
-            AddCache(handler);
+            var ret = await AssetComponent.LoadAsync<T>(out _, path, package);
             return ret;
         }
 
@@ -185,27 +181,9 @@ namespace JEngine.Core
             };
         }
 
-        private static List<LoadHandler> _cacheAssets = new List<LoadHandler>();
-
-        private static void AddCache(LoadHandler handler)
-        {
-            _cacheAssets.Add(handler);
-        }
-
-        private static void RemoveCache(LoadHandler handler)
-        {
-            _cacheAssets.Remove(handler);
-        }
-
         public static void RemoveUnusedAssets()
         {
-            for (int i = 0, cnt = _cacheAssets.Count; i < cnt; i++)
-            {
-                _cacheAssets[i].UnLoad();
-                _cacheAssets.RemoveAt(i);
-                i--;
-                cnt--;
-            }
+            AssetComponent.ForceUnLoadAll();
         }
     }
 }
