@@ -92,6 +92,22 @@ namespace JEngine.Core
             private void Awake()
             {
                 DontDestroyOnLoad(this);
+                if (JBehaviours == null)
+                {
+                    JBehaviours = new Dictionary<string, JBehaviour>(30);
+                }
+                if (Keys == null)
+                {
+                    Keys = new HashSet<string>();
+                }
+                if (GameObjectJBehaviours == null)
+                {
+                    GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>();
+                }
+                if (GameObjectKeys == null)
+                {
+                    GameObjectKeys = new HashSet<GameObject>();
+                }
             }
 
             /// <summary>
@@ -258,7 +274,7 @@ namespace JEngine.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T FindJBehaviourOfType<T>() where T: JBehaviour
+        public static T FindJBehaviourOfType<T>() where T : JBehaviour
         {
             return (T)JBehaviours.Values.First(j => j is T);
         }
@@ -706,7 +722,7 @@ namespace JEngine.Core
         private protected static void GameObjectDictCheckNullJBehaviour()
         {
             bool hasNullKey = false;
-            foreach(var k in GameObjectKeys)
+            foreach (var k in GameObjectKeys)
             {
                 if (k == null)
                 {
