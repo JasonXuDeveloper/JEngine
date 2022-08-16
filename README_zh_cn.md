@@ -30,7 +30,7 @@
   </a>
   <br>
   <br>
-  <a href="https://xgamedev.uoyou.com/"><strong>框架文档 »</strong></a>
+  <a href="https://xgamedev.net/"><strong>框架文档 »</strong></a>
   <br>
   ·
   <br>
