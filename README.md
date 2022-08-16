@@ -28,7 +28,7 @@
   </a>
   <br>
   <br>
-  <a href="https://xgamedev.uoyou.com/"><strong>Documentation »</strong></a>
+  <a href="https://xgamedev.net/"><strong>Documentation »</strong></a>
   <br>
   <small>(The documentation is yet in Chinese and can use Google Translated version from <a href="https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://xgamedev.net" target="_blank">here</a>)</small>
   <br>
