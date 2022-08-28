@@ -28,7 +28,6 @@ using UnityEngine;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace JEngine.Core
@@ -47,7 +46,7 @@ namespace JEngine.Core
             //添加实例ID
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
-            Keys.Add(_instanceID);
+            JBehavioursList.Add(this);
             LoopAwaitToken = new CancellationTokenSource();
         }
 
@@ -94,19 +93,11 @@ namespace JEngine.Core
                 DontDestroyOnLoad(this);
                 if (JBehaviours == null)
                 {
-                    JBehaviours = new Dictionary<string, JBehaviour>(30);
-                }
-                if (Keys == null)
-                {
-                    Keys = new HashSet<string>();
+                    JBehaviours = new Dictionary<string, JBehaviour>(101);
                 }
                 if (GameObjectJBehaviours == null)
                 {
                     GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>();
-                }
-                if (GameObjectKeys == null)
-                {
-                    GameObjectKeys = new HashSet<GameObject>();
                 }
             }
 
@@ -115,18 +106,27 @@ namespace JEngine.Core
             /// </summary>
             private void Update()
             {
-                foreach (var k in Keys)
+                int cnt = JBehavioursList.Count;
+                for(int i=0;i<cnt;i++)
                 {
-                    if (k == null || !JBehaviours.TryGetValue(k, out var jb))
+                    var jb = JBehavioursList[i];
+                    string k = jb.InstanceID;
+                    if (k == null || !JBehaviours.ContainsKey(k))
                     {
                         JBehavioursCheckNull(k);
                         GameObjectDictCheckNullJBehaviour();
+                        JBehavioursList.RemoveAt(i);
+                        i--;
+                        cnt--;
                         continue;
                     }
                     if (jb == null)
                     {
                         JBehaviours.Remove(k);
                         GameObjectDictCheckNullJBehaviour();
+                        JBehavioursList.RemoveAt(i);
+                        i--;
+                        cnt--;
                         continue;
                     }
                     try
@@ -136,6 +136,9 @@ namespace JEngine.Core
                             GameObjectDictCheckNull();
                             jb.LoopAwaitToken?.Cancel();
                             JBehaviours.Remove(k);
+                            JBehavioursList.RemoveAt(i);
+                            i--;
+                            cnt--;
                         }
                         else
                         {
@@ -157,10 +160,11 @@ namespace JEngine.Core
                     {
                         jb.LoopAwaitToken?.Cancel();
                         JBehaviours.Remove(k);
+                        JBehavioursList.RemoveAt(i);
+                        i--;
+                        cnt--;
                     }
                 }
-                Keys.RemoveWhere(s => string.IsNullOrEmpty(s) || !JBehaviours.ContainsKey(s));
-                GameObjectKeys.RemoveWhere(go => go == null || !GameObjectJBehaviours.ContainsKey(go));
             }
 
             private void OnDestroy()
@@ -237,7 +241,14 @@ namespace JEngine.Core
             {
                 return null;
             }
-            return (T)GameObjectJBehaviours[gameObject].ToList().Find(jb => jb.CanAssignTo(typeof(T)));
+            foreach(var jb in GameObjectJBehaviours[gameObject])
+            {
+                if (jb.CanAssignTo(typeof(T)))
+                {
+                    return (T)jb;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -249,7 +260,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T GetJBehaviour<T>(string instanceID) where T : JBehaviour
         {
-            return (T)JBehaviours.Values.ToList().Find(jb => jb._instanceID == instanceID);
+            return (T)JBehavioursList.Find(jb => jb._instanceID == instanceID);
         }
 
         /// <summary>
@@ -276,7 +287,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T FindJBehaviourOfType<T>() where T : JBehaviour
         {
-            return (T)JBehaviours.Values.First(j => j is T);
+            return (T)JBehavioursList.First(j => j is T);
         }
 
         /// <summary>
@@ -287,7 +298,7 @@ namespace JEngine.Core
         /// <returns></returns>
         public static T[] FindJBehavioursOfType<T>() where T : JBehaviour
         {
-            return (T[])JBehaviours.Values.ToList().FindAll(j => j is T).ToArray();
+            return (T[])JBehavioursList.FindAll(j => j is T).ToArray();
         }
 
         /// <summary>
@@ -313,23 +324,19 @@ namespace JEngine.Core
         /// All JBehaviuours
         /// 全部JBehaviour
         /// </summary>
-        private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(30);
+        private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(101);
 
         /// <summary>
-        /// 全部Key
+        /// All JBehaviours list
+        /// 全部JBehaviour的列表
         /// </summary>
-        private static HashSet<string> Keys = new HashSet<string>();
+        private static List<JBehaviour> JBehavioursList = new List<JBehaviour>(101);
 
         /// <summary>
         /// All JBehaviour in specefic GameObject
         /// 全部在某个GameObject上的JBehaviour
         /// </summary>
         private static Dictionary<GameObject, HashSet<JBehaviour>> GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>();
-
-        /// <summary>
-        /// 全部GameObject Key
-        /// </summary>
-        private static HashSet<GameObject> GameObjectKeys = new HashSet<GameObject>();
 
         /// <summary>
         /// Instance ID
@@ -631,17 +638,20 @@ namespace JEngine.Core
                 {
                     //绑定上去
                     var id = AddClassBind(_gameObject, false, this.GetType());
-
+                    JBehaviours.TryGetValue(InstanceID, out var item);
                     //替换自己本身的id
                     JBehaviours.Remove(_instanceID);//移除构造函数创的自己的JBehaviour
-                    Keys.Remove(_instanceID);
+                    if (item != null)
+                    {
+                        JBehavioursList.Remove(item);
+                    }
                     this._instanceID = id;//更改id
                     this._gameObject.name = id;//改名
                     JBehaviours[id] = this;//覆盖字典里的值
-                    Keys.Add(id);
                 }
             }
             AddJBehaviourToGameObjectDict(_gameObject, this);
+            JBehavioursList.Add(this);
             _checked = true;
         }
 
@@ -699,19 +709,24 @@ namespace JEngine.Core
         private protected static void AddJBehaviourToGameObjectDict(GameObject go, JBehaviour jb)
         {
             GameObjectJBehaviours.TryGetValue(go, out var h);
-            h ??= new HashSet<JBehaviour>();
+            if (h == null)
+            {
+                h = new HashSet<JBehaviour>();
+            }
             if (!h.Contains(jb))
             {
                 h.Add(jb);
             }
             GameObjectJBehaviours[go] = h;
-            GameObjectKeys.Add(go);
         }
 
         private protected static void RemoveJBehaviourToGameObjectDict(GameObject go, JBehaviour jb)
         {
             GameObjectJBehaviours.TryGetValue(go, out var h);
-            h ??= new HashSet<JBehaviour>();
+            if (h == null)
+            {
+                h = new HashSet<JBehaviour>();
+            }
             if (h.Contains(jb))
             {
                 h.Remove(jb);
@@ -722,7 +737,7 @@ namespace JEngine.Core
         private protected static void GameObjectDictCheckNullJBehaviour()
         {
             bool hasNullKey = false;
-            foreach (var k in GameObjectKeys)
+            foreach (var k in GameObjectJBehaviours.Keys)
             {
                 if (k == null)
                 {
@@ -735,15 +750,14 @@ namespace JEngine.Core
             if (hasNullKey)
             {
                 GameObjectDictCheckNull();
-                GameObjectKeys.RemoveWhere(j => j is null);
             }
         }
 
         private protected static void GameObjectDictCheckNull()
         {
-            Dictionary<GameObject, HashSet<JBehaviour>> s = new Dictionary<GameObject, HashSet<JBehaviour>>();
+            Dictionary<GameObject, HashSet<JBehaviour>> s = new Dictionary<GameObject, HashSet<JBehaviour>>(GameObjectJBehaviours.Count);
 
-            foreach (var k in GameObjectKeys)
+            foreach (var k in GameObjectJBehaviours.Keys)
             {
                 if (k != null)
                 {
@@ -764,7 +778,7 @@ namespace JEngine.Core
             _gameObject = go;
             _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
-            Keys.Add(_instanceID);
+            JBehavioursList.Add(this);
 
             LoopAwaitToken = new CancellationTokenSource();
         }
