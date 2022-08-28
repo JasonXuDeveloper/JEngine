@@ -67,7 +67,7 @@ namespace JEngine.Core
             /// <summary>
             /// 是否开始了
             /// </summary>
-            private bool hasStart;
+            private bool _hasStart;
 
             /// <summary>
             /// 构造一个任务，延迟是delay毫秒
@@ -79,12 +79,12 @@ namespace JEngine.Core
                 _ms = delay;
                 _index = Tasks.Count;
                 _ctx = ctx;
-                hasStart = false;
+                _hasStart = false;
                 Tasks.Add(ETTask.Create(true));
                 _timer = new Timer(__ =>
                     {
-                        if (!hasStart) return;
-                        _ctx?.Send(_ => { Tasks[_index].SetResult(); }, null);
+                        if (!_hasStart || Tasks[_index] == null) return;
+                        _ctx?.Send(_ => { Tasks[_index]?.SetResult(); }, null);
                     }, null, _ms,
                     Timeout.Infinite);
             }
@@ -101,7 +101,7 @@ namespace JEngine.Core
                     Tasks[_index] = ETTask.Create(true);
                 }
 
-                hasStart = true;
+                _hasStart = true;
                 _timer.Change(_ms, Timeout.Infinite);
             }
 
@@ -112,7 +112,7 @@ namespace JEngine.Core
             {
                 await Tasks[_index];
                 Tasks[_index] = null;
-                hasStart = false;
+                _hasStart = false;
             }
         }
 
