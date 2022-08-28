@@ -64,17 +64,28 @@ namespace JEngine.Core
             /// 上下文
             /// </summary>
             private SynchronizationContext _ctx;
+            /// <summary>
+            /// 是否开始了
+            /// </summary>
+            private bool hasStart;
 
             /// <summary>
             /// 构造一个任务，延迟是delay毫秒
             /// </summary>
             /// <param name="delay"></param>
-            public TimerWorker(int delay)
+            /// <param name="ctx"></param>
+            public TimerWorker(int delay, SynchronizationContext ctx)
             {
                 _ms = delay;
                 _index = Tasks.Count;
+                _ctx = ctx;
+                hasStart = false;
                 Tasks.Add(ETTask.Create(true));
-                _timer = new Timer(__ => { _ctx?.Send(_ => { Tasks[_index].SetResult(); }, null); }, null, _ms,
+                _timer = new Timer(__ =>
+                    {
+                        if (!hasStart) return;
+                        _ctx?.Send(_ => { Tasks[_index].SetResult(); }, null);
+                    }, null, _ms,
                     Timeout.Infinite);
             }
 
@@ -90,6 +101,7 @@ namespace JEngine.Core
                     Tasks[_index] = ETTask.Create(true);
                 }
 
+                hasStart = true;
                 _timer.Change(_ms, Timeout.Infinite);
             }
 
@@ -100,6 +112,7 @@ namespace JEngine.Core
             {
                 await Tasks[_index];
                 Tasks[_index] = null;
+                hasStart = false;
             }
         }
 
@@ -137,7 +150,7 @@ namespace JEngine.Core
 
             if (worker == null)
             {
-                worker = new TimerWorker(delayInMs);
+                worker = new TimerWorker(delayInMs, cur);
             }
 
             //开始
