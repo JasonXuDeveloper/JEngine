@@ -122,15 +122,11 @@ public partial class InitJEngine : MonoBehaviour
             }
         }
 
-        //生成缓冲区，复制加密dll数据
-        var buffer = new byte[dll.Length];
-        Array.Copy(dll, buffer, dll.Length);
-
         //尝试加载dll
         try
         {
             //这里默认用分块解密，JStream
-            _fs = new JStream(buffer, key);
+            _fs = new JStream(dll, key);
             if (pdb.Length != 0)
             {
                 _pdb = new MemoryStream(pdb);
