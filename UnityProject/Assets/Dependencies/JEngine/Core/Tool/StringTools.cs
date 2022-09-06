@@ -11,21 +11,21 @@ namespace JEngine.Core
         public static long TimeStamp => (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
 
         /// <summary>
-        /// 获取下载速度
+        /// 字节转显示的文本
         /// </summary>
         /// <param name="downloadSpeed"></param>
         /// <returns></returns>
-        public static string GetDisplaySpeed(float downloadSpeed)
+        public static string GetDisplaySize(float downloadSpeed)
         {
             if (downloadSpeed >= 1024 * 1024)
             {
-                return $"{downloadSpeed * ConstMgr.Bytes2Mb:f2}MB/s";
+                return $"{downloadSpeed * ConstMgr.Bytes2Mb:f2}MB";
             }
             if (downloadSpeed >= 1024)
             {
-                return $"{downloadSpeed / 1024:f2}KB/s";
+                return $"{downloadSpeed / 1024:f2}KB";
             }
-            return $"{downloadSpeed:f2}B/s";
+            return $"{downloadSpeed:f2}B";
         }
 
         /// <summary>
@@ -40,24 +40,6 @@ namespace JEngine.Core
             {
                 source += endWith;
             }
-        }
-        
-        /// <summary>
-        /// 获取显示大小
-        /// </summary>
-        /// <param name="downloadSize"></param>
-        /// <returns></returns>
-        public static string GetDisplaySize(long downloadSize)
-        {
-            if (downloadSize >= 1024 * 1024)
-            {
-                return $"{downloadSize * ConstMgr.Bytes2Mb:f2}MB";
-            }
-            if (downloadSize >= 1024)
-            {
-                return $"{downloadSize / 1024:f2}KB";
-            }
-            return $"{downloadSize:f2}B";
         }
     }
 }
