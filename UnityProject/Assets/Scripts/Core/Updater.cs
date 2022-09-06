@@ -134,7 +134,7 @@ public partial class Updater : MonoBehaviour
                     package.ProgressCallback += progress =>
                     {
                         updater.OnMessage(
-                            $"下载中...{Tools.GetDisplaySpeed(package.DownLoadSpeed)}, 进度：{Math.Round(progress, 2)}%");
+                            $"下载中...{Tools.GetDisplaySize(package.DownLoadSpeed)}/s, 进度：{Math.Round(progress, 2)}%");
                         updater.OnProgress(progress / 100f);
                     };
                     await AssetComponent.DownLoadUpdate(package);
