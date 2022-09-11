@@ -45,6 +45,9 @@ namespace JEngine.Editor
 
         private static readonly DirectoryInfo LibraryDirectory =
             new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
+        
+        private static readonly DirectoryInfo PackageDirectory =
+            new DirectoryInfo(Application.dataPath + "/../Library/PackageCache");
 
         private static readonly DirectoryInfo HiddenDirectory =
             new DirectoryInfo(ConstMgr.DLLSourceFolder);
@@ -80,7 +83,12 @@ namespace JEngine.Editor
                 var files = HiddenDirectory.GetFiles();
                 int counts = 0;
                 List<string> fileNames = Directory.GetFiles("Assets/",
-                    "*.dll", SearchOption.AllDirectories).ToList();
+                    "*.dll", SearchOption.AllDirectories).ToList();//白名单DLL
+                //ScriptAssemblies和PackageCache的Dll也应该进白名单
+                fileNames.AddRange(Directory.GetFiles(LibraryDirectory.FullName,
+                    "*.dll", SearchOption.AllDirectories));
+                fileNames.AddRange(Directory.GetFiles(PackageDirectory.FullName,
+                    "*.dll", SearchOption.AllDirectories));
 
                 var watch = new Stopwatch();
                 AssetDatabase.Refresh();
