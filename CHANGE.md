@@ -1,5 +1,15 @@
 ## All Versions
 
+### 0.7.4 (September 22 2022)
+
+- Bug **fixed**
+- **Imported ** high performance C# library Nino
+- **Optimized** JBehaviour performance and GC
+- **Optimized** MonoBehaviour update logics and GC
+- **Optimized** blockwised decrypt intepret module's allocated memroy size and GC
+
+
+
 ### 0.7.3 (July 14 2022)
 
 - Bug **fixed**
