@@ -16,7 +16,7 @@ namespace Nino.Editor
         private static readonly string[] ExternalDLLPath = new string[]
         {
 #if ILRuntime
-            //不建议ILRuntime用代码生成，所以这里不写DLL了
+            "Assets/Nino/Test/Editor/Serialization/Test11.bytes"
 #endif
         };
         
@@ -26,9 +26,9 @@ namespace Nino.Editor
         /// 导出目录，你可以修改这个路径，代码会生成到Assets目录下你指定的这个路径内
         /// 如果需要导出到Assets外部，可以在路径内写入../
         /// </summary>
-        private const string ExportPath = "Dependencies/Nino/Generated";
+        private const string ExportPath = "Nino/Generated";
         
-        [MenuItem("JEngine/Nino/Generator/Serialization Code")]
+        [MenuItem("Nino/Generator/Serialization Code")]
         public static void GenerateSerializationCode()
         {
             var assemblies = System.AppDomain.CurrentDomain.GetAssemblies().ToList();
