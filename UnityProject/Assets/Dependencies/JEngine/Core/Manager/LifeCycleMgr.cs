@@ -38,11 +38,13 @@ namespace JEngine.Core
         {
             public readonly ILTypeInstance ItemInstance;
             public readonly MethodInfo Method;
+            public readonly Func<bool> ExecuteCondition;
 
-            public LifeCycleItem(ILTypeInstance itemInstance, MethodInfo method)
+            public LifeCycleItem(ILTypeInstance itemInstance, MethodInfo method, Func<bool> cond)
             {
                 ItemInstance = itemInstance;
                 Method = method;
+                ExecuteCondition = cond;
             }
         }
 
@@ -113,7 +115,7 @@ namespace JEngine.Core
         /// <param name="method"></param>
         public void AddAwakeItem(ILTypeInstance instance, MethodInfo method)
         {
-            _awakeItems.Add(new LifeCycleItem(instance, method));
+            _awakeItems.Add(new LifeCycleItem(instance, method, () => true));
             _awakeObjs.Add(instance);
         }
 
@@ -124,7 +126,7 @@ namespace JEngine.Core
         /// <param name="method"></param>
         public void AddOnEnableItem(ILTypeInstance instance, MethodInfo method)
         {
-            _enableItems.Add(new LifeCycleItem(instance, method));
+            _enableItems.Add(new LifeCycleItem(instance, method, () => true));
             _enableObjs.Add(instance);
         }
 
@@ -135,7 +137,7 @@ namespace JEngine.Core
         /// <param name="method"></param>
         public void AddStartItem(ILTypeInstance instance, MethodInfo method)
         {
-            _startItems.Add(new LifeCycleItem(instance, method));
+            _startItems.Add(new LifeCycleItem(instance, method, () => true));
             _startObjs.Add(instance);
         }
 
@@ -144,9 +146,21 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should update")]
         public void AddUpdateItem(ILTypeInstance instance, MethodInfo method)
         {
-            _updateItems.Add(new LifeCycleItem(instance, method));
+            _updateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add update task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
+        {
+            _updateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -163,9 +177,21 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should lateUpdate")]
         public void AddLateUpdateItem(ILTypeInstance instance, MethodInfo method)
         {
-            _lateUpdateItems.Add(new LifeCycleItem(instance, method));
+            _lateUpdateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add lateUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddLateUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
+        {
+            _lateUpdateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -182,9 +208,21 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should fixedUpdate")]
         public void AddFixedUpdateItem(ILTypeInstance instance, MethodInfo method)
         {
-            _fixedUpdateItems.Add(new LifeCycleItem(instance, method));
+            _fixedUpdateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add fixedUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddFixedUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
+        {
+            _fixedUpdateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -225,7 +263,7 @@ namespace JEngine.Core
             {
                 var item = items[i];
                 //忽略
-                if (ignoreCondition != null && ignoreCondition(item.ItemInstance))
+                if (ignoreCondition != null && ignoreCondition(item.ItemInstance)|| !item.ExecuteCondition())
                 {
                     continue;
                 }
