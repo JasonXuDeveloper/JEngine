@@ -588,7 +588,6 @@ namespace JEngine.Helper
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="ins"></param>
-        /// <param name="returnScipt"></param>
         /// <param name="returnType"></param>
         private static void SetGOForInstantiate(object instance, out GameObject ins, out ILType returnType)
         {
@@ -882,12 +881,22 @@ namespace JEngine.Helper
             object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             __intp.Free(ptr_of_this_method);
 
-            SetGOForInstantiate(original, out var go, out var type);
-            var result_of_this_method = UnityEngine.Object.Instantiate(go);
-            object res = DoInstantiate(go, result_of_this_method, __domain, type);
-            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+            object res;
+            var genericArgument = __method.GenericArguments;
+            if ((genericArgument != null && genericArgument.Length == 1 && genericArgument[0] is CLRType && !(original is GameObject)) ||
+                (!(original is ILTypeInstance) && !(original is GameObject)))
             {
-                res = gameObject.GetComponent(original.GetType());
+                res = UnityEngine.Object.Instantiate((UnityEngine.Object)original);
+            }
+            else
+            {
+                SetGOForInstantiate(original, out var go, out var type);
+                var result_of_this_method = UnityEngine.Object.Instantiate(go);
+                res = DoInstantiate(go, result_of_this_method, __domain, type);
+                if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+                {
+                    res = gameObject.GetComponent(original.GetType());
+                }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -907,17 +916,26 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             __intp.Free(ptr_of_this_method);
 
-            SetGOForInstantiate(original, out var go, out var type);
-            var result_of_this_method = UnityEngine.Object.Instantiate(go, parent);
-            object res = DoInstantiate(go, result_of_this_method, __domain, type);
-            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+            object res;
+            var genericArgument = __method.GenericArguments;
+            if ((genericArgument != null && genericArgument.Length == 1 && genericArgument[0] is CLRType && !(original is GameObject)) ||
+                (!(original is ILTypeInstance) && !(original is GameObject)))
             {
-                res = gameObject.GetComponent(original.GetType());
+                res = UnityEngine.Object.Instantiate((UnityEngine.Object)original, parent);
+            }
+            else
+            {
+
+                SetGOForInstantiate(original, out var go, out var type);
+                var result_of_this_method = UnityEngine.Object.Instantiate(go, parent);
+                res = DoInstantiate(go, result_of_this_method, __domain, type);
+                if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+                {
+                    res = gameObject.GetComponent(original.GetType());
+                }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -940,17 +958,25 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             __intp.Free(ptr_of_this_method);
 
-            SetGOForInstantiate(original, out var go, out var type);
-            var result_of_this_method = UnityEngine.Object.Instantiate(go, parent, worldPositionStays);
-            object res = DoInstantiate(go, result_of_this_method, __domain, type);
-            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+            object res;
+            var genericArgument = __method.GenericArguments;
+            if ((genericArgument != null && genericArgument.Length == 1 && genericArgument[0] is CLRType && !(original is GameObject)) ||
+                (!(original is ILTypeInstance) && !(original is GameObject)))
             {
-                res = gameObject.GetComponent(original.GetType());
+                res = UnityEngine.Object.Instantiate((UnityEngine.Object)original, parent, worldPositionStays);
+            }
+            else
+            {
+                SetGOForInstantiate(original, out var go, out var type);
+                var result_of_this_method = UnityEngine.Object.Instantiate(go, parent, worldPositionStays);
+                res = DoInstantiate(go, result_of_this_method, __domain, type);
+                if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+                {
+                    res = gameObject.GetComponent(original.GetType());
+                }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -976,17 +1002,26 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             __intp.Free(ptr_of_this_method);
 
-            SetGOForInstantiate(original, out var go, out var type);
-            var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation);
-            object res = DoInstantiate(go, result_of_this_method, __domain, type);
-            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+            object res;
+            var genericArgument = __method.GenericArguments;
+            if ((genericArgument != null && genericArgument.Length == 1 && genericArgument[0] is CLRType && !(original is GameObject)) ||
+                (!(original is ILTypeInstance) && !(original is GameObject)))
             {
-                res = gameObject.GetComponent(original.GetType());
+                
+                res = UnityEngine.Object.Instantiate((UnityEngine.Object)original, position, rotation);
+            }
+            else
+            {
+                SetGOForInstantiate(original, out var go, out var type);
+                var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation);
+                res = DoInstantiate(go, result_of_this_method, __domain, type);
+                if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+                {
+                    res = gameObject.GetComponent(original.GetType());
+                }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -1018,17 +1053,25 @@ namespace JEngine.Helper
             __intp.Free(ptr_of_this_method);
 
             ptr_of_this_method = ILIntepreter.Minus(__esp, 4);
-            GameObject original =
-                (GameObject) typeof(GameObject).CheckCLRTypes(
-                    StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            object original = StackObject.ToObject(ptr_of_this_method, __domain, __mStack);
             __intp.Free(ptr_of_this_method);
 
-            SetGOForInstantiate(original, out var go, out var type);
-            var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation, parent);
-            object res = DoInstantiate(go, result_of_this_method, __domain, type);
-            if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+            object res;
+            var genericArgument = __method.GenericArguments;
+            if ((genericArgument != null && genericArgument.Length == 1 && genericArgument[0] is CLRType && !(original is GameObject)) ||
+                (!(original is ILTypeInstance) && !(original is GameObject)))
             {
-                res = gameObject.GetComponent(original.GetType());
+                res = UnityEngine.Object.Instantiate((UnityEngine.Object)original, position, rotation, parent);
+            }
+            else
+            {
+                SetGOForInstantiate(original, out var go, out var type);
+                var result_of_this_method = UnityEngine.Object.Instantiate(go, position, rotation, parent);
+                res = DoInstantiate(go, result_of_this_method, __domain, type);
+                if (type == null && res is GameObject gameObject && gameObject.GetType() != original.GetType())
+                {
+                    res = gameObject.GetComponent(original.GetType());
+                }
             }
 
             return ILIntepreter.PushObject(__ret, __mStack, res);

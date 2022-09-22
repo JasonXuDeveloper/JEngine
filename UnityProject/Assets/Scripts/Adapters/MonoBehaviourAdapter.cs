@@ -246,7 +246,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             
             if (!_mDestroyMethodGot)
             {
-                _mDestroyMethod = instance.Type.GetMethod("OnDestroy", 0);
+                _mDestroyMethod = instance?.Type?.GetMethod("OnDestroy", 0);
                 _mDestroyMethodGot = true;
             }
 
