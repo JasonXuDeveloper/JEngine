@@ -162,9 +162,9 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                             LifeCycleMgr.Instance.AddOnEnableItem(instance, GetMethodInfo(type, "OnEnable"));
                         }
                         LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
-                        LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"));
-                        LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"));
-                        LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"));
+                        LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
+                        LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
+                        LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"), gameObject);
 
                         isAwaking = false;
                         awaked = true;
