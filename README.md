@@ -38,7 +38,7 @@
 </p>
 
 
-# JENGINE v0.7.3
+# JENGINE v0.7.4
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
@@ -114,14 +114,13 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 
 
-## v0.7.3 New Features
+## v0.7.4 New Features
 
 - Bug **fixed**
-- **Updated** ILRuntime
-- **Updated** Bundle Master
-- **Enhanced** JBehaviour performance
-- **Enhanced** ClassBind runtime performance
-- **Almost no GC allocation**  async wait method
+- **Imported ** high performance C# library Nino
+- **Optimized** JBehaviour performance and GC
+- **Optimized** MonoBehaviour update logics and GC
+- **Optimized** blockwised decrypt intepret module's allocated memroy size and GC
 
 [Click here to see the change log](CHANGE.md)
 
