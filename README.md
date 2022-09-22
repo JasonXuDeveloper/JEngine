@@ -117,7 +117,7 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 ## v0.7.4 New Features
 
 - Bug **fixed**
-- **Imported ** high performance C# library Nino
+- **Imported** high performance C# library Nino
 - **Optimized** JBehaviour performance and GC
 - **Optimized** MonoBehaviour update logics and GC
 - **Optimized** blockwised decrypt intepret module's allocated memroy size and GC
