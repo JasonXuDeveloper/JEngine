@@ -18,9 +18,9 @@ namespace Nino.Serialization
 
 		private const BindingFlags ReflectionFlags =
 			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default;
-
+		
 		private const BindingFlags StaticReflectionFlags = ReflectionFlags | BindingFlags.Static;
-		private const BindingFlags DeclaredOnlyReflectionFlags = ReflectionFlags | BindingFlags.DeclaredOnly;
+		private const BindingFlags FlattenHierarchyReflectionFlags = ReflectionFlags | BindingFlags.FlattenHierarchy;
 		private static Type _ninoSerializeType = typeof(NinoSerializeAttribute);
 		private static Type _ninoMemberType = typeof(NinoMemberAttribute);
 		private static Type _ninoIgnoreType = typeof(NinoIgnoreAttribute);
@@ -226,7 +226,7 @@ namespace Nino.Serialization
 				};
 
 				//include all or not
-				object[] ns = type.GetCustomAttributes(_ninoSerializeType, false);
+				object[] ns = type.GetCustomAttributes(_ninoSerializeType, true);
 				model.IncludeAll = ((NinoSerializeAttribute)ns[0]).IncludeAll;
 
 				//store temp attr
@@ -235,20 +235,20 @@ namespace Nino.Serialization
 				ushort index;
 
 				//fetch fields (only public and private fields that declared in the type)
-				FieldInfo[] fs = type.GetFields(DeclaredOnlyReflectionFlags);
+				FieldInfo[] fs = type.GetFields(FlattenHierarchyReflectionFlags);
 				//iterate fields
 				foreach (var f in fs)
 				{
 					if (model.IncludeAll)
 					{
 						//skip nino ignore
-						var ig = f.GetCustomAttributes(_ninoIgnoreType, false);
+						var ig = f.GetCustomAttributes(_ninoIgnoreType, true);
 						if (ig.Length > 0) continue;
 						index = (ushort)model.Members.Count;
 					}
 					else
 					{
-						sps = f.GetCustomAttributes(_ninoMemberType, false);
+						sps = f.GetCustomAttributes(_ninoMemberType, true);
 						//not fetch all and no attribute => skip this member
 						if (sps.Length != 1) continue;
 						index = ((NinoMemberAttribute)sps[0]).Index;
@@ -282,7 +282,7 @@ namespace Nino.Serialization
 				}
 
 				//fetch properties (only public and private properties that declared in the type)
-				PropertyInfo[] ps = type.GetProperties(DeclaredOnlyReflectionFlags);
+				PropertyInfo[] ps = type.GetProperties(FlattenHierarchyReflectionFlags);
 				//iterate properties
 				foreach (var p in ps)
 				{
@@ -296,13 +296,13 @@ namespace Nino.Serialization
 					if (model.IncludeAll)
 					{
 						//skip nino ignore
-						var ig = p.GetCustomAttributes(_ninoIgnoreType, false);
+						var ig = p.GetCustomAttributes(_ninoIgnoreType, true);
 						if (ig.Length > 0) continue;
 						index = (ushort)model.Members.Count;
 					}
 					else
 					{
-						sps = p.GetCustomAttributes(_ninoMemberType, false);
+						sps = p.GetCustomAttributes(_ninoMemberType, true);
 						//not fetch all and no attribute => skip this member
 						if (sps.Length != 1) continue;
 						index = ((NinoMemberAttribute)sps[0]).Index;

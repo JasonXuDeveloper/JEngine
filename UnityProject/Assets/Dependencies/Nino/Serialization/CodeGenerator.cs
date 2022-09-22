@@ -29,7 +29,7 @@ namespace Nino.Serialization
                 {
                     //find NinoSerializeAttribute
                     NinoSerializeAttribute[] ns =
-                        (NinoSerializeAttribute[])t.GetCustomAttributes(typeof(NinoSerializeAttribute), false);
+                        (NinoSerializeAttribute[])t.GetCustomAttributes(typeof(NinoSerializeAttribute), true);
                     if (ns.Length == 0) return false;
                     return true;
                 }).ToList();
@@ -67,11 +67,11 @@ namespace Nino.Serialization
 
             //find NinoSerializeAttribute
             NinoSerializeAttribute[] ns =
-                (NinoSerializeAttribute[])type.GetCustomAttributes(typeof(NinoSerializeAttribute), false);
+                (NinoSerializeAttribute[])type.GetCustomAttributes(typeof(NinoSerializeAttribute), true);
             if (ns.Length == 0) return false;
 
             CodeGenIgnoreAttribute[] ci =
-                (CodeGenIgnoreAttribute[])type.GetCustomAttributes(typeof(CodeGenIgnoreAttribute), false);
+                (CodeGenIgnoreAttribute[])type.GetCustomAttributes(typeof(CodeGenIgnoreAttribute), true);
             if (ci.Length != 0) return false;
             return true;
         }

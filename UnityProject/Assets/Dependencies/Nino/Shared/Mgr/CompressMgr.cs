@@ -143,7 +143,7 @@ namespace Nino.Shared.Mgr
         }
 
         /// <summary>
-        /// Decompress thr given bytes
+        /// Decompress thr given bytes (NEED TO BE AWARE OF UNMANAGED INTPTR, REMEMBER TO FREE IT)
         /// </summary>
         /// <param name="data"></param>
         /// <param name="outputLength"></param>
@@ -179,6 +179,7 @@ namespace Nino.Shared.Mgr
                     var ptr = DecompressOnNative(data, out var length);
                     byte[] buf = new byte[length];
                     Marshal.Copy(ptr, buf, 0, length);
+                    Marshal.FreeHGlobal(ptr);
                     return buf;
                 }
 
