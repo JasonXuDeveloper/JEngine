@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Linq;
+using Nino.Shared.IO;
 using System.Reflection;
 using ILRuntime.Reflection;
 using ILRuntime.CLR.TypeSystem;
@@ -86,9 +87,39 @@ namespace JEngine.Core
                     .ToList();
             }
 #if INIT_JE
-            return ClassBindMgr.LoadedScenes.SelectMany(scene => scene.GetRootGameObjects())
-                .SelectMany(g => g.GetComponentsInChildren<T>(true))
-                .ToList();
+            List<GameObject> all = null;
+            List<GameObject> temp = null;
+            foreach (var scene in ClassBindMgr.LoadedScenes)
+            {
+                if (all == null)
+                {
+                    all = ObjectPool<List<GameObject>>.Peak() != null ? ObjectPool<List<GameObject>>.Request() : new List<GameObject>(scene.rootCount);
+                    all.Clear();
+                }
+                if (temp == null)
+                {
+                    temp = ObjectPool<List<GameObject>>.Peak() != null ? ObjectPool<List<GameObject>>.Request() : new List<GameObject>(scene.rootCount);
+                }
+                scene.GetRootGameObjects(temp);
+                all.AddRange(temp);
+            }
+            ObjectPool<List<GameObject>>.Return(temp);
+            if (all == null)
+            {
+                return new List<T>();
+            }
+            List<T> lst = ObjectPool<List<T>>.Peak() != null ? ObjectPool<List<T>>.Request() : new List<T>(all.Count);
+            lst.Clear();
+            List<T> tempT = ObjectPool<List<T>>.Peak() != null ? ObjectPool<List<T>>.Request() : new List<T>(all.Count);
+            tempT.Clear();
+            foreach (var gameObject in all)
+            {
+                gameObject.GetComponentsInChildren(true, tempT);
+                lst.AddRange(tempT);
+                tempT.Clear();
+            }
+            ObjectPool<List<T>>.Return(tempT);
+            return lst;
 #endif
             return null;
         }

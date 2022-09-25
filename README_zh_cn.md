@@ -39,7 +39,7 @@
 
 
 
-# JENGINE v0.7.4
+# JENGINE v0.7.5beta1
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -145,19 +145,21 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 **如果你觉得JEngine对你有帮助，请给该框架一个Star！**
 
 
-## v0.7.4 最新功能
+## v0.7.5 最新功能
 
-- Bug**修复**
+- **优化**JStream缓冲池策略
 
-- **更新**ILRuntime
+- **优化**ClassBind性能及GC
 
-- **接入**高性能C#库Nino
+- **优化**框架初始化流程及性能
 
-- **优化**JBehaviour性能及GC
+- **优化**LifeCycleMgr性能及GC
 
-- **优化**MonoBehaviour循环逻辑及GC
+- **优化**```FindObjectsOfType```性能及GC
 
-- **优化**分块解密解释执行所占用的内存及产生的GC
+- **优化**JBehaviour性能及GC，取消其对```MonoBehaviour```的依赖性
+
+- **优化**Loom（主线程执行Actions）性能及GC，取消其对```MonoBehaviour```的依赖性
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

@@ -1,170 +1,150 @@
 ﻿using System;
 using UnityEngine;
-using System.Linq;
-using System.Threading;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace JEngine.Core
 {
-    public class Loom : MonoBehaviour
+    public static class Loom
     {
-        public static int maxThreads = 6;
-        static int numThreads;
-
-        private static Loom _current;
-        private int _count;
-        public static Loom Current => _current;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
+        /// <summary>
+        /// Init loom
+        /// </summary>
+        public static void Initialize()
         {
-            maxThreads = Environment.ProcessorCount;
-            Log.Print($"Loom ProcessorCount, {maxThreads}");
-
-            var go = new GameObject();
-            go.name = "Loom";
-            _current = go.AddComponent<Loom>();
-            DontDestroyOnLoad(go);
+            //注册Update到LifeCycleMgr
+            _updateTaskId = LifeCycleMgr.Instance.AddUpdateTask(Update, () => _active);
+            //默认运行
+            Activate();
         }
 
-        private List<Action> _actions = new List<Action>();
+        /// <summary>
+        /// Task id
+        /// </summary>
+        private static Guid _updateTaskId;
 
-        public struct DelayedQueueItem
+        /// <summary>
+        /// status of activeness
+        /// </summary>
+        private static bool _active;
+
+        /// <summary>
+        /// Activate loom to execute loop
+        /// </summary>
+        public static void Activate()
         {
-            public float time;
-            public Action action;
+            _active = true;
         }
 
-        private List<DelayedQueueItem> _delayed = new List<DelayedQueueItem>();
-
-        public static void QueueOnMainThread(Action action)
+        /// <summary>
+        /// Deactivate loom to stop loop
+        /// </summary>
+        public static void Deactivate()
         {
-            QueueOnMainThread(action, 0f);
+            _active = false;
         }
 
+        /// <summary>
+        /// Stop the current loom, requires re-initialize to rerun
+        /// </summary>
+        public static void Stop()
+        {
+            LifeCycleMgr.Instance.RemoveUpdateItem(_updateTaskId);
+        }
+
+        /// <summary>
+        /// Item to execute
+        /// </summary>
+        private struct DelayedQueueItem
+        {
+            public float Time;
+            public Action Action;
+        }
+
+        /// <summary>
+        /// Actions Queue
+        /// </summary>
+        private static readonly ConcurrentQueue<DelayedQueueItem> Delayed = new ConcurrentQueue<DelayedQueueItem>();
+
+        /// <summary>
+        /// Queue an action with param on main thread to run
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="p"></param>
         public static void QueueOnMainThread(Action<object> action, object p)
         {
             QueueOnMainThread(action, p, 0f);
         }
 
-        public static void QueueOnMainThread(Action action, float time)
-        {
-            if (time > 0f)
-            {
-                lock (Current._delayed)
-                {
-                    Current._delayed.Add(new DelayedQueueItem { time = Time.time + time, action = action });
-                }
-            }
-            else
-            {
-                lock (Current._actions)
-                {
-                    Current._actions.Add(action);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Queue an action with param on main thread to run after specific seconds
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="p"></param>
+        /// <param name="time"></param>
         public static void QueueOnMainThread(Action<object> action, object p, float time)
         {
             QueueOnMainThread(() => action(p), time);
         }
 
-        public static Thread RunAsync(Action a)
+        /// <summary>
+        /// Queue an action on main thread to run
+        /// </summary>
+        /// <param name="action"></param>
+        public static void QueueOnMainThread(Action action)
         {
-            while (numThreads >= maxThreads)
-            {
-                Thread.Sleep(1);
-            }
-
-            Interlocked.Increment(ref numThreads);
-            ThreadPool.QueueUserWorkItem(RunAction, a);
-            return null;
+            QueueOnMainThread(action, 0f);
         }
 
-        private static void RunAction(object action)
+        /// <summary>
+        /// Queue an action on main thread to run after specific seconds
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="time"></param>
+        public static void QueueOnMainThread(Action action, float time)
         {
-            try
-            {
-                ((Action)action)();
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-            finally
-            {
-                Interlocked.Decrement(ref numThreads);
-            }
-
+            Delayed.Enqueue(new DelayedQueueItem { Time = Time.time + time, Action = action });
         }
 
-        private List<Action> curActions = new List<Action>();
+        /// <summary>
+        /// Current actions to process
+        /// </summary>
+        private static readonly List<Action> CurActions = new List<Action>(100);
 
-        private List<DelayedQueueItem> curDelayeds = new List<DelayedQueueItem>();
-
-        // Update is called once per frame
-        void Update()
+        /// <summary>
+        /// Update loop on main thread
+        /// </summary>
+        static void Update()
         {
-            lock (_actions)
+            var i = Delayed.Count;
+            while (i-- > 0)
             {
-                if (_actions.Count > 0)
+                if (Delayed.TryDequeue(out var item))
                 {
-                    curActions.AddRange(_actions);
-                    _actions.Clear();
+                    if (item.Time <= Time.time)
+                    {
+                        CurActions.Add(item.Action);
+                    }
+                    else
+                    {
+                        Delayed.Enqueue(item); 
+                    }
                 }
             }
 
-            if (curActions.Count > 0)
+            foreach (var a in CurActions)
             {
-                foreach (var a in curActions)
+                try
                 {
-                    try
-                    {
-                        a();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                    }
+                    a?.Invoke();
                 }
-
-                curActions.Clear();
-            }
-
-            lock (_delayed)
-            {
-                var i = _delayed.Count - 1;
-                while (i >= 0)
+                catch (Exception e)
                 {
-                    var item = _delayed[i];
-                    if (item.time <= Time.time)
-                    {
-                        curDelayeds.Add(item);
-                        _delayed.RemoveAt(i);
-                    }
-
-                    i--;
+                    Debug.LogException(e);
                 }
             }
 
-            if (curDelayeds.Count > 0)
-            {
-                foreach (var item in curDelayeds)
-                {
-                    try
-                    {
-                        item.action();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                    }
-                }
-
-                curDelayeds.Clear();
-            }
+            CurActions.Clear();
         }
     }
 }

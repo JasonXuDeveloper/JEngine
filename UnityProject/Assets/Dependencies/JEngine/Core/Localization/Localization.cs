@@ -67,7 +67,6 @@ namespace JEngine.Core
             //获取全部行
             List<string> allRows = new List<string>(0);
             byte[] array = Encoding.UTF8.GetBytes(file.text);     
-            AssetMgr.Unload(CsvLoc);
             MemoryStream stream = new MemoryStream(array);
             StreamReader sr = new StreamReader(stream, Encoding.Default);
             String line;

@@ -560,7 +560,7 @@ namespace JEngine.Core
         /// </summary>
         private class JActionItem
         {
-            public readonly List<Action> toDo = new List<Action>();
+            public readonly List<Action> toDo = new List<Action>(10);
             public Action onCancel = () => { };
 
             public readonly Dictionary<int, float> delays = new Dictionary<int, float>();

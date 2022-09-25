@@ -1,5 +1,17 @@
 ## All Versions
 
+### 0.7.5beta1 (September 25 2022)
+
+- **Optimized** JStream buffer strategy
+- **Optimized** ClassBind performance and GC
+- **Optimized** JEngine Initialize procedure and performance
+- **Optimized** LifeCycleMgr performance and GC
+- **Optimized** ```FindObjectsOfType``` performance and GC
+- **Optimized** JBehaviour performance and GC, removed its dependence to ```MonoBehaviour```
+- **Optimized** Loom (Execute Actions on Main Thread) performance and GC, removed its dependence to ```MonoBehaviour```
+
+
+
 ### 0.7.4 (September 22 2022)
 
 - Bug **fixed**

@@ -173,6 +173,7 @@ namespace JEngine.Core
             }
 
             loadingCallback?.Invoke(1);
+            await TimeMgr.Delay(30);//1/30秒的时间去刷新UI
             operation.allowSceneActivation = true;
             operation.completed += asyncOperation =>
             {

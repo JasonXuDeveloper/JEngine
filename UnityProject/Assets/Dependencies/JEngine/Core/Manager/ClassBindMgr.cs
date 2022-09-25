@@ -24,8 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 #if INIT_JE
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 namespace JEngine.Core
@@ -34,8 +34,7 @@ namespace JEngine.Core
     {
         public static void Instantiate()
         {
-            var bindMgr = FindObjectOfType<ClassBindMgr>();
-            if (bindMgr != null)
+            if (_instance != null)
                 return;
 
             _instance = new GameObject("ClassBindMgr").AddComponent<ClassBindMgr>();
@@ -43,25 +42,18 @@ namespace JEngine.Core
         }
 
         private static ClassBindMgr _instance;
-        public static List<Scene> LoadedScenes;
-        private static List<ClassBind> _cbs;
+        public static readonly HashSet<Scene> LoadedScenes = new HashSet<Scene>() {SceneManager.GetActiveScene()};
+        private static readonly List<ClassBind> Cbs = new List<ClassBind>(30);
 
         private void Awake()
         {
             if (_instance != null)
             {
-                Destroy(this);
+                DestroyImmediate(this);
             }
-
-            LoadedScenes = new List<Scene>(0) {SceneManager.GetActiveScene()};
-            _cbs = new List<ClassBind>(0);
 
             SceneManager.sceneLoaded += (scene, mode) =>
             {
-                if (LoadedScenes.Contains(scene))
-                {
-                    LoadedScenes.Remove(scene);
-                }
                 LoadedScenes.Add(scene);
                 DoBind();
             };
@@ -70,6 +62,7 @@ namespace JEngine.Core
             {
                 LoadedScenes.Remove(scene);
             };
+            
             DoBind();
         }
 
@@ -98,11 +91,11 @@ namespace JEngine.Core
                     {
                         continue;
                     }
-
+            
                     cb.SetVal(data);
                 }
             }
-
+            
             //激活
             foreach (var cb in cbs)
             {
@@ -112,7 +105,7 @@ namespace JEngine.Core
                     {
                         continue;
                     }
-
+            
                     cb.Active(data);
                 }
             }
@@ -120,14 +113,15 @@ namespace JEngine.Core
         
         public static void DoBind(ClassBind cb)
         {
-            if (_cbs != null && _cbs.Contains(cb)) return;
+            if (Cbs.Contains(cb)) return;
             DoBind(new List<ClassBind>{cb});
         }
         
         public static void DoBind()
         {
-            _cbs = Tools.FindObjectsOfTypeAll<ClassBind>();
-            DoBind(_cbs);
+            var c = Tools.FindObjectsOfTypeAll<ClassBind>();
+            Cbs.AddRange(c);
+            DoBind(c);
         }
     }
 }

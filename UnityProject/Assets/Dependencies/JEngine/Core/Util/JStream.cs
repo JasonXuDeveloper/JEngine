@@ -28,7 +28,7 @@ namespace JEngine.Core
 
         public JStream(byte[] buffer, string key)
         {
-            _buffer = new ExtensibleBuffer<byte>(1024 * 100);
+            _buffer = new ExtensibleBuffer<byte>(1024 * 512); //512KB的扩容尺寸
             if (buffer != null)
             {
                 _buffer.CopyFrom(buffer, 0, 0, buffer.Length);

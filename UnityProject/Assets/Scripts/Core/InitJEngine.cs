@@ -76,6 +76,8 @@ public partial class InitJEngine : MonoBehaviour
         Instance.LoadHotFixAssembly();
         //初始化LifeCycle
         LifeCycleMgr.Initialize();
+        //初始化Loom
+        Loom.Initialize();
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
 #if INIT_JE
@@ -110,16 +112,9 @@ public partial class InitJEngine : MonoBehaviour
         }
         if (usePdb)
         {
-            try
-            {
-                var pdbFileBytes = DllMgr.GetPdbBytes(DllName, Application.isEditor && !AssetMgr.RuntimeMode);
-                pdb = new byte[pdbFileBytes.Length];
-                Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
-            }
-            catch
-            {
-                //ignore
-            }
+            var pdbFileBytes = DllMgr.GetPdbBytes(DllName, isEditorMode);
+            pdb = new byte[pdbFileBytes.Length];
+            Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
         }
 
         //尝试加载dll
