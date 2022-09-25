@@ -12,6 +12,7 @@ namespace BM
 		public const string Assets_HotUpdateResources_Prefab_Prefab__txt = "Assets/HotUpdateResources/Prefab/Prefab.txt";
 		public const string Assets_HotUpdateResources_ScriptableObject_ScriptableObject__txt = "Assets/HotUpdateResources/ScriptableObject/ScriptableObject.txt";
 		public const string Assets_HotUpdateResources_TextAsset_Localization__csv = "Assets/HotUpdateResources/TextAsset/Localization.csv";
+		public const string Assets_HotUpdateResources_Scene_Game__unity = "Assets/HotUpdateResources/Scene/Game.unity";
 		public const string Assets_HotUpdateResources_UI_Btn_Back_h__png = "Assets/HotUpdateResources/UI/Btn_Back_h.png";
 		public const string Assets_HotUpdateResources_UI_Btn_Buy1_n__png = "Assets/HotUpdateResources/UI/Btn_Buy1_n.png";
 		public const string Assets_HotUpdateResources_UI_Btn_Buy1_p__png = "Assets/HotUpdateResources/UI/Btn_Buy1_p.png";
@@ -28,7 +29,6 @@ namespace BM
 		public const string Assets_HotUpdateResources_UI_bg_Title1__png = "Assets/HotUpdateResources/UI/bg_Title1.png";
 		public const string Assets_HotUpdateResources_UI_bg_Title2____png = "Assets/HotUpdateResources/UI/bg_Title2 .png";
 		public const string Assets_HotUpdateResources_UI_small__title02_bg__png = "Assets/HotUpdateResources/UI/small title02_bg.png";
-		public const string Assets_HotUpdateResources_Scene_Game__unity = "Assets/HotUpdateResources/Scene/Game.unity";
 		public const string Assets_HotUpdateResources_AddOns_AddOn1_Others_test__txt = "Assets/HotUpdateResources/AddOns/AddOn1/Others/test.txt";
 		public const string Assets_HotUpdateResources_AddOns_AddOn1_Scenes_test__unity = "Assets/HotUpdateResources/AddOns/AddOn1/Scenes/test.unity";
 	}

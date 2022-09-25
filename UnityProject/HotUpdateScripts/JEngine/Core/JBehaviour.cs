@@ -44,132 +44,99 @@ namespace JEngine.Core
         public JBehaviour()
         {
             //添加实例ID
-            _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
+            _instanceID = GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
             JBehavioursList.Add(this);
             LoopAwaitToken = new CancellationTokenSource();
         }
 
         /// <summary>
-        /// Manager for JBehaviours
+        /// Get Instance ID for JBehaviour
         /// </summary>
-        private class JBehaviourMgr : MonoBehaviour
+        /// <returns></returns>
+        public static string GetJBehaviourInstanceID()
         {
-            /// <summary>
-            /// JBehaviour管理实例
-            /// </summary>
-            public static JBehaviourMgr Instance
+            var _instanceID = System.Guid.NewGuid().ToString("N");
+            while (JBehaviours.ContainsKey(_instanceID))
             {
-                get
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new GameObject("JBehaviourMgr").AddComponent<JBehaviourMgr>();
-                    }
-                    return _instance;
-                }
+                _instanceID = System.Guid.NewGuid().ToString("N");
             }
-            private static JBehaviourMgr _instance;
+            return _instanceID;
+        }
 
-            /// <summary>
-            /// Get Instance ID for JBehaviour
-            /// </summary>
-            /// <returns></returns>
-            public string GetJBehaviourInstanceID()
-            {
-                var _instanceID = System.Guid.NewGuid().ToString("N");
-                while (JBehaviours.ContainsKey(_instanceID))
-                {
-                    _instanceID = System.Guid.NewGuid().ToString("N");
-                }
-                return _instanceID;
-            }
+        /// <summary>
+        /// 静态构造函数
+        /// </summary>
+        static JBehaviour()
+        {
+            //注册检查
+            LifeCycleMgr.Instance.AddUpdateTask(UpdateCheck, () => Application.isPlaying);
+        }
 
-            /// <summary>
-            /// Create new thread to cancel JEngine.Core.TimeMgr.Delay
-            /// </summary>
-            private void Awake()
-            {
-                DontDestroyOnLoad(this);
-                if (JBehaviours == null)
-                {
-                    JBehaviours = new Dictionary<string, JBehaviour>(101);
-                }
-                if (GameObjectJBehaviours == null)
-                {
-                    GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>();
-                }
-            }
 
-            /// <summary>
-            /// Check and cancel JEngine.Core.TimeMgr.Delay
-            /// </summary>
-            private void Update()
+        /// <summary>
+        /// Check and cancel JEngine.Core.TimeMgr.Delay
+        /// </summary>
+        private static void UpdateCheck()
+        {
+            int cnt = JBehavioursList.Count;
+            for (int i = 0; i < cnt; i++)
             {
-                int cnt = JBehavioursList.Count;
-                for(int i=0;i<cnt;i++)
+                var jb = JBehavioursList[i];
+                string k = jb.InstanceID;
+                if (k == null || !JBehaviours.ContainsKey(k))
                 {
-                    var jb = JBehavioursList[i];
-                    string k = jb.InstanceID;
-                    if (k == null || !JBehaviours.ContainsKey(k))
+                    JBehavioursCheckNull(k);
+                    GameObjectDictCheckNullJBehaviour();
+                    JBehavioursList.RemoveAt(i);
+                    i--;
+                    cnt--;
+                    continue;
+                }
+                if (jb == null)
+                {
+                    JBehaviours.Remove(k);
+                    GameObjectDictCheckNullJBehaviour();
+                    JBehavioursList.RemoveAt(i);
+                    i--;
+                    cnt--;
+                    continue;
+                }
+                try
+                {
+                    if (jb._gameObject == null)
                     {
-                        JBehavioursCheckNull(k);
-                        GameObjectDictCheckNullJBehaviour();
-                        JBehavioursList.RemoveAt(i);
-                        i--;
-                        cnt--;
-                        continue;
-                    }
-                    if (jb == null)
-                    {
-                        JBehaviours.Remove(k);
-                        GameObjectDictCheckNullJBehaviour();
-                        JBehavioursList.RemoveAt(i);
-                        i--;
-                        cnt--;
-                        continue;
-                    }
-                    try
-                    {
-                        if (jb._gameObject == null)
-                        {
-                            GameObjectDictCheckNull();
-                            jb.LoopAwaitToken?.Cancel();
-                            JBehaviours.Remove(k);
-                            JBehavioursList.RemoveAt(i);
-                            i--;
-                            cnt--;
-                        }
-                        else
-                        {
-                            if (jb.EnableHiddenMonitoring && jb._gameObject.activeInHierarchy == jb.Hidden)
-                            {
-                                if (jb.Hidden)
-                                {
-                                    jb.OnShow();
-                                }
-                                else
-                                {
-                                    jb.OnHide();
-                                }
-                                jb.Hidden = !jb.Hidden;
-                            }
-                        }
-                    }
-                    catch (MissingReferenceException)
-                    {
+                        GameObjectDictCheckNull();
                         jb.LoopAwaitToken?.Cancel();
                         JBehaviours.Remove(k);
                         JBehavioursList.RemoveAt(i);
                         i--;
                         cnt--;
                     }
+                    else
+                    {
+                        if (jb.EnableHiddenMonitoring && jb._gameObject.activeInHierarchy == jb.Hidden)
+                        {
+                            if (jb.Hidden)
+                            {
+                                jb.OnShow();
+                            }
+                            else
+                            {
+                                jb.OnHide();
+                            }
+                            jb.Hidden = !jb.Hidden;
+                        }
+                    }
                 }
-            }
-
-            private void OnDestroy()
-            {
-                JBehaviours = null;
+                catch (MissingReferenceException)
+                {
+                    jb.LoopAwaitToken?.Cancel();
+                    JBehaviours.Remove(k);
+                    JBehavioursList.RemoveAt(i);
+                    i--;
+                    cnt--;
+                }
             }
         }
 
@@ -324,19 +291,19 @@ namespace JEngine.Core
         /// All JBehaviuours
         /// 全部JBehaviour
         /// </summary>
-        private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(101);
+        private static Dictionary<string, JBehaviour> JBehaviours = new Dictionary<string, JBehaviour>(17);
 
         /// <summary>
         /// All JBehaviours list
         /// 全部JBehaviour的列表
         /// </summary>
-        private static List<JBehaviour> JBehavioursList = new List<JBehaviour>(101);
+        private static List<JBehaviour> JBehavioursList = new List<JBehaviour>(17);
 
         /// <summary>
         /// All JBehaviour in specefic GameObject
         /// 全部在某个GameObject上的JBehaviour
         /// </summary>
-        private static Dictionary<GameObject, HashSet<JBehaviour>> GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>();
+        private static Dictionary<GameObject, HashSet<JBehaviour>> GameObjectJBehaviours = new Dictionary<GameObject, HashSet<JBehaviour>>(17);
 
         /// <summary>
         /// Instance ID
@@ -776,7 +743,7 @@ namespace JEngine.Core
         private void ResetJBehaviour(GameObject go)
         {
             _gameObject = go;
-            _instanceID = JBehaviourMgr.Instance.GetJBehaviourInstanceID();
+            _instanceID = GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
             JBehavioursList.Add(this);
 

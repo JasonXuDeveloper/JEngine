@@ -48,7 +48,7 @@ namespace ProjectAdapter
                             {
                                 while (Application.isPlaying && !_destoryed && !gameObject.activeInHierarchy)
                                 {
-                                    await TimeMgr.Delay(1);
+                                    await JEngine.Core.TimeMgr.Delay(1);
                                 }
                             }
                             catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
@@ -62,16 +62,18 @@ namespace ProjectAdapter
                             }
     
                             var type = instance.Type.ReflectionType;
-                            LifeCycleMgr.Instance.AddAwakeItem(instance, GetMethodInfo(type, "Awake"));
+                            //直接Invoke
+                            GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
+                            LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
                             //就mono订阅start和update事件
                             if (enabled)
                             {
                                 LifeCycleMgr.Instance.AddOnEnableItem(instance, GetMethodInfo(type, "OnEnable"));
                             }
                             LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
-                            LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"));
-                            LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"));
-                            LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"));
+                            LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
+                            LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
+                            LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"), gameObject);
     
                             isAwaking = false;
                             awaked = true;
@@ -153,7 +155,7 @@ namespace ProjectAdapter
                 
                 if (!_mDestroyMethodGot)
                 {
-                    _mDestroyMethod = instance.Type.GetMethod("OnDestroy", 0);
+                    _mDestroyMethod = instance?.Type?.GetMethod("OnDestroy", 0);
                     _mDestroyMethodGot = true;
                 }
     

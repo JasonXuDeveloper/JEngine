@@ -28,7 +28,6 @@ using System;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
-using ILRuntime.Runtime.Intepreter;
 
 namespace JEngine.Core
 {
@@ -36,202 +35,16 @@ namespace JEngine.Core
     {
         private class LifeCycleItem
         {
-            public readonly ILTypeInstance ItemInstance;
-            public readonly MethodInfo Method;
+            public readonly object ItemInstance;
+            public readonly Action Action;
             public readonly Func<bool> ExecuteCondition;
 
-            public LifeCycleItem(ILTypeInstance itemInstance, MethodInfo method, Func<bool> cond)
+            public LifeCycleItem(object itemInstance, Action action, Func<bool> cond)
             {
                 ItemInstance = itemInstance;
-                Method = method;
+                Action = action;
                 ExecuteCondition = cond;
             }
-        }
-
-        /// <summary>
-        /// 单例
-        /// </summary>
-        private static LifeCycleMgr _instance;
-
-        /// <summary>
-        /// 单例
-        /// </summary>
-        public static LifeCycleMgr Instance => _instance;
-
-        /// <summary>
-        /// 单帧处理过的对象
-        /// </summary>
-        private readonly List<object> _instances = new List<object>(1000);
-
-        /// <summary>
-        /// All awake methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _awakeItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// All on enable methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _enableItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// All start methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _startItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// All fixed update methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _fixedUpdateItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// All update methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _updateItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// All late update methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _lateUpdateItems = new List<LifeCycleItem>(1000);
-
-        /// <summary>
-        /// no gc search for awake objs
-        /// </summary>
-        private readonly HashSet<ILTypeInstance> _awakeObjs = new HashSet<ILTypeInstance>();
-        
-        /// <summary>
-        /// no gc search for enable objs
-        /// </summary>
-        private readonly HashSet<ILTypeInstance> _enableObjs = new HashSet<ILTypeInstance>();
-        
-        /// <summary>
-        /// no gc search for start objs
-        /// </summary>
-        private readonly HashSet<ILTypeInstance> _startObjs = new HashSet<ILTypeInstance>();
-
-        /// <summary>
-        /// Add awake task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        public void AddAwakeItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _awakeItems.Add(new LifeCycleItem(instance, method, () => true));
-            _awakeObjs.Add(instance);
-        }
-
-        /// <summary>
-        /// Add enable task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        public void AddOnEnableItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _enableItems.Add(new LifeCycleItem(instance, method, () => true));
-            _enableObjs.Add(instance);
-        }
-
-        /// <summary>
-        /// Add start task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        public void AddStartItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _startItems.Add(new LifeCycleItem(instance, method, () => true));
-            _startObjs.Add(instance);
-        }
-
-        /// <summary>
-        /// Add update task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should update")]
-        public void AddUpdateItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _updateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
-        }
-
-        /// <summary>
-        /// Add update task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        /// <param name="parent"></param>
-        public void AddUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
-        {
-            _updateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
-        }
-
-        /// <summary>
-        /// Remove update task
-        /// </summary>
-        /// <param name="instance"></param>
-        public void RemoveUpdateItem(ILTypeInstance instance)
-        {
-            _updateItems.RemoveAll(i => ReferenceEquals(i.ItemInstance, instance));
-        }
-
-        /// <summary>
-        /// Add lateUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should lateUpdate")]
-        public void AddLateUpdateItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _lateUpdateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
-        }
-
-        /// <summary>
-        /// Add lateUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        /// <param name="parent"></param>
-        public void AddLateUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
-        {
-            _lateUpdateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
-        }
-
-        /// <summary>
-        /// Remove lateUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        public void RemoveLateUpdateItem(ILTypeInstance instance)
-        {
-            _lateUpdateItems.RemoveAll(i => ReferenceEquals(i.ItemInstance, instance));
-        }
-
-        /// <summary>
-        /// Add fixedUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should fixedUpdate")]
-        public void AddFixedUpdateItem(ILTypeInstance instance, MethodInfo method)
-        {
-            _fixedUpdateItems.Add(new LifeCycleItem(instance, method, () => (instance.GetGameObject().gameObject.activeInHierarchy)));
-        }
-
-        /// <summary>
-        /// Add fixedUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        /// <param name="parent"></param>
-        public void AddFixedUpdateItem(ILTypeInstance instance, MethodInfo method, GameObject parent)
-        {
-            _fixedUpdateItems.Add(new LifeCycleItem(instance, method, () => parent.activeInHierarchy));
-        }
-
-        /// <summary>
-        /// Remove fixedUpdate task
-        /// </summary>
-        /// <param name="instance"></param>
-        public void RemoveFixedUpdateItem(ILTypeInstance instance)
-        {
-            _fixedUpdateItems.RemoveAll(i => ReferenceEquals(i.ItemInstance, instance));
         }
 
         /// <summary>
@@ -249,64 +62,298 @@ namespace JEngine.Core
         }
 
         /// <summary>
+        /// 单例
+        /// </summary>
+        private static LifeCycleMgr _instance;
+
+        /// <summary>
+        /// 单例
+        /// </summary>
+        public static LifeCycleMgr Instance => _instance;
+        
+        
+        /// <summary>
+        /// unity周期
+        /// </summary>
+        private void Awake()
+        {
+            //只允许自己存在
+            if (Instance != null)
+            {
+                DestroyImmediate(this);
+            }
+            _ignoreWithoutInInstancesFunc = IgnoreWithoutInInstances;
+            _ignoreWithInInstancesFunc = IgnoreWithInInstances;
+        }
+
+        /// <summary>
+        /// 单帧处理过的对象
+        /// </summary>
+        private readonly List<object> _instances = new List<object>(100);
+
+        /// <summary>
+        /// All awake methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _awakeItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// All on enable methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _enableItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// All start methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _startItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// All fixed update methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _fixedUpdateItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// All update methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _updateItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// All late update methods
+        /// </summary>
+        private readonly List<LifeCycleItem> _lateUpdateItems = new List<LifeCycleItem>(100);
+
+        /// <summary>
+        /// no gc search for awake objs
+        /// </summary>
+        private readonly HashSet<object> _awakeObjs = new HashSet<object>();
+        
+        /// <summary>
+        /// no gc search for enable objs
+        /// </summary>
+        private readonly HashSet<object> _enableObjs = new HashSet<object>();
+        
+        /// <summary>
+        /// no gc search for start objs
+        /// </summary>
+        private readonly HashSet<object> _startObjs = new HashSet<object>();
+
+        /// <summary>
+        /// Add awake task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        public void AddAwakeItem(object instance, MethodInfo method)
+        {
+            _awakeItems.Add(
+                new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
+            _awakeObjs.Add(instance);
+        }
+
+        /// <summary>
+        /// Add enable task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        public void AddOnEnableItem(object instance, MethodInfo method)
+        {
+            _enableItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
+            _enableObjs.Add(instance);
+        }
+
+        /// <summary>
+        /// Add start task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        public void AddStartItem(object instance, MethodInfo method)
+        {
+            _startItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
+            _startObjs.Add(instance);
+        }
+
+        /// <summary>
+        /// Add update task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should update")]
+        public void AddUpdateItem(object instance, MethodInfo method)
+        {
+            _updateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add update task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddUpdateItem(object instance, MethodInfo method, GameObject parent)
+        {
+            _updateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+        }
+
+        /// <summary>
+        /// Add a task that will always update each frame in the main thread
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public Guid AddUpdateTask(Action action)
+        {
+            Guid guid = Guid.NewGuid();
+            _updateItems.Add(new LifeCycleItem(guid, action, () => true));
+            return guid;
+        }
+
+        /// <summary>
+        /// Add a task that will update each frame in the main thread when condition is true
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public Guid AddUpdateTask(Action action, Func<bool> condition)
+        {
+            Guid guid = Guid.NewGuid();
+            while (_updateItems.Exists(i => (Guid)i.ItemInstance == guid))
+            {
+                guid = Guid.NewGuid();
+            }
+            _updateItems.Add(new LifeCycleItem(guid, action, condition));
+            return guid;
+        }
+
+        /// <summary>
+        /// Remove update task
+        /// </summary>
+        /// <param name="instance"></param>
+        public void RemoveUpdateItem(object instance)
+        {
+            _updateItems.RemoveAll(i => i.ItemInstance == instance);
+        }
+
+        /// <summary>
+        /// Add lateUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should lateUpdate")]
+        public void AddLateUpdateItem(object instance, MethodInfo method)
+        {
+            _lateUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add lateUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddLateUpdateItem(object instance, MethodInfo method, GameObject parent)
+        {
+            _lateUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+        }
+
+        /// <summary>
+        /// Remove lateUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        public void RemoveLateUpdateItem(object instance)
+        {
+            _lateUpdateItems.RemoveAll(i => i.ItemInstance == instance);
+        }
+
+        /// <summary>
+        /// Add fixedUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should fixedUpdate")]
+        public void AddFixedUpdateItem(object instance, MethodInfo method)
+        {
+            _fixedUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+        }
+
+        /// <summary>
+        /// Add fixedUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="method"></param>
+        /// <param name="parent"></param>
+        public void AddFixedUpdateItem(object instance, MethodInfo method, GameObject parent)
+        {
+            _fixedUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+        }
+
+        /// <summary>
+        /// Remove fixedUpdate task
+        /// </summary>
+        /// <param name="instance"></param>
+        public void RemoveFixedUpdateItem(object instance)
+        {
+            _fixedUpdateItems.RemoveAll(i => i.ItemInstance == instance);
+        }
+
+        /// <summary>
         /// 执行Item
         /// </summary>
         /// <param name="items"></param>
         /// <param name="removeAfterInvoke"></param>
         /// <param name="ignoreCondition"></param>
         private void ExecuteItems(List<LifeCycleItem> items, bool removeAfterInvoke = true,
-            Func<ILTypeInstance, bool> ignoreCondition = null)
+            Func<object, bool> ignoreCondition = null)
         {
-            int count = items.Count;
-            //遍历
-            for (int i = 0; i < count; i++)
+            lock (items)
             {
-                var item = items[i];
-                //忽略
-                if (ignoreCondition != null && ignoreCondition(item.ItemInstance)|| !item.ExecuteCondition())
+                int count = items.Count;
+                //遍历
+                for (int i = 0; i < count; i++)
                 {
-                    continue;
-                }
-
-                //执行
-                if (item.ItemInstance != null && item.Method != null)
-                {
-                    try
+                    var item = items[i];
+                    //忽略
+                    if (ignoreCondition != null && ignoreCondition(item.ItemInstance)|| !item.ExecuteCondition())
                     {
-                        item.Method.Invoke(item.ItemInstance, ConstMgr.NullObjects);
+                        continue;
                     }
-                    catch (Exception ex)
-                    {
-                        Debug.LogException(ex);
-                    }
-                }
 
-                //删了这个
-                if (removeAfterInvoke)
-                {
-                    items.RemoveAt(i);
-                    i--;
-                    count--;
-                }
+                    //执行
+                    if (item.ItemInstance != null)
+                    {
+                        try
+                        {
+                            item.Action?.Invoke();
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogException(ex);
+                        }
+                    }
+
+                    //删了这个
+                    if (removeAfterInvoke)
+                    {
+                        items.RemoveAt(i);
+                        i--;
+                        count--;
+                    }
+                } 
             }
         }
 
         /// <summary>
         /// IgnoreWithoutInInstances func obj
         /// </summary>
-        private Func<ILTypeInstance, bool> _ignoreWithoutInInstancesFunc;
-        
+        private static Func<object, bool> _ignoreWithoutInInstancesFunc;
+
         /// <summary>
         /// IgnoreWithInInstances func obj
         /// </summary>
-        private Func<ILTypeInstance, bool> _ignoreWithInInstancesFunc;
+        private static Func<object, bool> _ignoreWithInInstancesFunc;
         
         /// <summary>
         /// whether or not ignore this obj
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private bool IgnoreWithoutInInstances(ILTypeInstance obj)
+        private bool IgnoreWithoutInInstances(object obj)
         {
             return _instances.Contains(obj) || _awakeObjs.Contains(obj)
                                             || _startObjs.Contains(obj)
@@ -318,27 +365,11 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private bool IgnoreWithInInstances(ILTypeInstance obj)
+        private bool IgnoreWithInInstances(object obj)
         {
             return _awakeObjs.Contains(obj)
                    || _startObjs.Contains(obj)
                    || _enableObjs.Contains(obj);
-        }
-
-
-        /// <summary>
-        /// unity周期
-        /// </summary>
-        private void Awake()
-        {
-            //只允许自己存在
-            if (FindObjectsOfType<LifeCycleMgr>().Length > 1)
-            {
-                DestroyImmediate(this);
-            }
-            //申明函数
-            _ignoreWithoutInInstancesFunc = IgnoreWithoutInInstances;
-            _ignoreWithInInstancesFunc = IgnoreWithInInstances;
         }
 
         /// <summary>
@@ -415,8 +446,15 @@ namespace JEngine.Core
                 }
                 
                 //清理
-                _awakeObjs.RemoveWhere(_instances.Contains);
-                _enableObjs.RemoveWhere(_instances.Contains);
+                lock (_awakeObjs)
+                {
+                    _awakeObjs.RemoveWhere(_instances.Contains);
+                }
+
+                lock (_enableObjs)
+                {
+                    _enableObjs.RemoveWhere(_instances.Contains);
+                }
             }
 
             //如果有enable（这些是没awake的enable）
@@ -451,7 +489,10 @@ namespace JEngine.Core
                     ExecuteItems(_enableItems);
                 }
                 //清理
-                _enableObjs.RemoveWhere(_instances.Contains);
+                lock (_enableObjs)
+                {
+                    _enableObjs.RemoveWhere(_instances.Contains);
+                }
             }
 
             //如果有start
@@ -486,7 +527,10 @@ namespace JEngine.Core
                     ExecuteItems(_startItems);
                 }
                 //清理
-                _startObjs.RemoveWhere(_instances.Contains);
+                lock (_startObjs)
+                {
+                    _startObjs.RemoveWhere(_instances.Contains);
+                }
             }
 
             //处理late update

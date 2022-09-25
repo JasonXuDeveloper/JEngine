@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -124,6 +123,14 @@ namespace JEngine.Core.DO_NOT_USE
                 }
 
                 return null;
+            }
+            
+
+            void OnDestroy()
+            {
+                _destoryed = true;
+                //销毁ILTypeIns
+                _instance = null;
             }
 
             IMethod _mToStringMethod;

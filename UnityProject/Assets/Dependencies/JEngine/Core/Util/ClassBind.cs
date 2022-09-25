@@ -30,6 +30,12 @@ namespace JEngine.Core
             ClassBindMgr.DoBind(this);
         }
 
+        private static readonly Type MonoType = typeof(MonoBehaviour);
+        private static readonly Type AdapterInterfaceType = typeof(CrossBindingAdaptorType);
+        private static readonly Type MonoAdapterType = typeof(MonoBehaviourAdapter.Adaptor);
+        private static readonly Type ILTypeInstanceType = typeof(ILTypeInstance);
+        private static readonly Type AppdomainType = typeof(AppDomain);
+
         /// <summary>
         /// Add class
         /// </summary>
@@ -39,7 +45,8 @@ namespace JEngine.Core
         {
             //添加脚本
             string classType =
-                $"{classData.classNamespace + (string.IsNullOrEmpty(classData.classNamespace) ? "" : ".")}{classData.className}";
+                $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
+
             if (!InitJEngine.Appdomain.LoadedTypes.TryGetValue(classType, out var type))
             {
                 Log.PrintError($"自动绑定{name}出错：{classType}不存在，已跳过");
@@ -52,12 +59,11 @@ namespace JEngine.Core
                 t.BaseType is ILRuntimeWrapperType wrapperType
                     ? wrapperType.RealType
                     : t.BaseType; //这个地方太坑了 你一旦热更工程代码写的骚 就会导致ILWrapperType这个问题出现 一般人还真不容易发现这个坑
-            Type monoType = typeof(MonoBehaviour);
 
             //JBehaviour需自动赋值一个值
-            bool isMono = t.IsSubclassOf(monoType) || (baseType != null && baseType.IsSubclassOf(monoType));
+            bool isMono = t.IsSubclassOf(MonoType) || (baseType?.IsSubclassOf(MonoType)).GetValueOrDefault();
             bool needAdapter = baseType != null &&
-                               baseType.GetInterfaces().Contains(typeof(CrossBindingAdaptorType));
+                               baseType.GetInterfaces().Contains(AdapterInterfaceType);
 
             ILTypeInstance instance = isMono
                 ? new ILTypeInstance(type as ILType, false)
@@ -73,7 +79,7 @@ namespace JEngine.Core
              * 主工程多重继承后再跨域多重继承的应该还不支持
              */
             //主工程多重继承后跨域继承的生成适配器后用这个
-            if (needAdapter && isMono && baseType != typeof(MonoBehaviourAdapter.Adaptor))
+            if (needAdapter && isMono && baseType != MonoAdapterType)
             {
                 Type adapterType = Type.GetType(baseType.FullName ?? string.Empty);
                 if (adapterType == null)
@@ -87,10 +93,10 @@ namespace JEngine.Core
 
                 var clrILInstance = t.GetFields(
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                    .First(f => f.Name == "instance" && f.FieldType == typeof(ILTypeInstance));
+                    .First(f => f.Name == "instance" && f.FieldType == ILTypeInstanceType);
                 var clrAppDomain = t.GetFields(
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
-                    .First(f => f.Name == "appdomain" && f.FieldType == typeof(AppDomain));
+                    .First(f => f.Name == "appdomain" && f.FieldType == AppdomainType);
                 if (!(clrInstance is null))
                 {
                     clrInstance.enabled = false;
@@ -128,8 +134,11 @@ namespace JEngine.Core
                     classData.Added = true;
 
                     //JBehaviour额外处理
-                    var go = t.GetField("_gameObject", BindingFlags.Public| BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
-                    go?.SetValue(clrInstance.ILInstance, gameObject);
+                    if (clrInstance.isJBehaviour)
+                    {
+                        var go = t.GetField("_gameObject", BindingFlags.Public| BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
+                        go?.SetValue(clrInstance.ILInstance, gameObject);
+                    }
                 }
             }
 
@@ -153,7 +162,7 @@ namespace JEngine.Core
         public void SetVal(ClassData classData)
         {
             string classType =
-                $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
+                $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
             Type t = classData.ClassType; //获取实际属性
             var clrInstance = classData.ClrInstance;
             //绑定数据
@@ -425,7 +434,7 @@ namespace JEngine.Core
         public void Active(ClassData classData)
         {
             string classType =
-                $"{classData.classNamespace + (classData.classNamespace == "" ? "" : ".")}{classData.className}";
+                $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
             Type t = classData.ClassType; //获取实际属性
             var clrInstance = classData.ClrInstance;
             //是否激活
