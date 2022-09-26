@@ -103,14 +103,15 @@ namespace JEngine.Core
                 scene.GetRootGameObjects(temp);
                 all.AddRange(temp);
             }
-            ObjectPool<List<GameObject>>.Return(temp);
             if (all == null)
             {
                 return new List<T>();
             }
+            temp.Clear();
+            ObjectPool<List<GameObject>>.Return(temp);
             List<T> lst = ObjectPool<List<T>>.Peak() != null ? ObjectPool<List<T>>.Request() : new List<T>(all.Count);
-            lst.Clear();
             List<T> tempT = ObjectPool<List<T>>.Peak() != null ? ObjectPool<List<T>>.Request() : new List<T>(all.Count);
+            lst.Clear();
             tempT.Clear();
             foreach (var gameObject in all)
             {
@@ -118,6 +119,8 @@ namespace JEngine.Core
                 lst.AddRange(tempT);
                 tempT.Clear();
             }
+            all.Clear();
+            ObjectPool<List<GameObject>>.Return(all);
             ObjectPool<List<T>>.Return(tempT);
             return lst;
 #endif
