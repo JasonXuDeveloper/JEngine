@@ -42,7 +42,7 @@ namespace JEngine.Core
         }
 
         private static ClassBindMgr _instance;
-        public static readonly HashSet<Scene> LoadedScenes = new HashSet<Scene>() {SceneManager.GetActiveScene()};
+        public static readonly HashSet<Scene> LoadedScenes = new HashSet<Scene>() { };
         private static readonly List<ClassBind> Cbs = new List<ClassBind>(30);
 
         private void Awake()
@@ -52,18 +52,33 @@ namespace JEngine.Core
                 DestroyImmediate(this);
             }
 
-            SceneManager.sceneLoaded += (scene, mode) =>
-            {
-                LoadedScenes.Add(scene);
-                DoBind();
-            };
-            
-            SceneManager.sceneUnloaded+=scene =>
-            {
-                LoadedScenes.Remove(scene);
-            };
-            
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            LoadedScenes.Add(SceneManager.GetActiveScene());
             DoBind();
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            LoadedScenes.Add(scene);
+            DoBind();
+        }
+
+        private void OnSceneUnloaded(Scene scene)
+        {
+            LoadedScenes.Remove(scene);
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+                SceneManager.sceneUnloaded -= OnSceneUnloaded;
+                LoadedScenes.Clear();
+                Cbs.Clear();
+            }
         }
 
         public static void DoBind(List<ClassBind> cbs)
@@ -91,32 +106,32 @@ namespace JEngine.Core
                     {
                         continue;
                     }
-            
+
                     cb.SetVal(data);
                 }
             }
-            
+
             //激活
             foreach (var cb in cbs)
             {
                 foreach (ClassData data in cb.scriptsToBind)
                 {
-                    if (data == null ||data.Activated)
+                    if (data == null || data.Activated)
                     {
                         continue;
                     }
-            
+
                     cb.Active(data);
                 }
             }
         }
-        
+
         public static void DoBind(ClassBind cb)
         {
             if (Cbs.Contains(cb)) return;
-            DoBind(new List<ClassBind>{cb});
+            DoBind(new List<ClassBind> { cb });
         }
-        
+
         public static void DoBind()
         {
             var c = Tools.FindObjectsOfTypeAll<ClassBind>();
