@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -103,25 +102,31 @@ namespace JEngine.Core
         /// <param name="time"></param>
         public static void QueueOnMainThread(Action action, float time)
         {
-            Delayed.Enqueue(new DelayedQueueItem { Time = Time.time + time, Action = action });
+            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = action });
         }
 
         /// <summary>
         /// Current actions to process
         /// </summary>
         private static readonly List<Action> CurActions = new List<Action>(100);
+        
+        /// <summary>
+        /// Current time
+        /// </summary>
+        private static float _curTime;
 
         /// <summary>
         /// Update loop on main thread
         /// </summary>
         static void Update()
         {
+            _curTime = UnityEngine.Time.time;
             var i = Delayed.Count;
             while (i-- > 0)
             {
                 if (Delayed.TryDequeue(out var item))
                 {
-                    if (item.Time <= Time.time)
+                    if (item.Time <= _curTime)
                     {
                         CurActions.Add(item.Action);
                     }
@@ -140,7 +145,7 @@ namespace JEngine.Core
                 }
                 catch (Exception e)
                 {
-                    Debug.LogException(e);
+                    UnityEngine.Debug.LogException(e);
                 }
             }
 
