@@ -59,7 +59,7 @@ namespace JEngine.Editor
             var group = BuildPipeline.GetBuildTargetGroup(target);
             var org = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
             var d = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-            string[] Symbols = new string[] { "INIT_JE" };
+            string[] Symbols = new string[] { "INIT_JE", "ILRuntime" };
             List<string> dfList = d.Split(';').ToList();
             dfList.AddRange(Symbols.Except(dfList));
             d = string.Join(";", dfList.Distinct().ToArray());
