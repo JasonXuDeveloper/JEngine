@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using JEngine.Helper;
-using LitJson;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class LoadILRuntime
@@ -24,7 +23,9 @@ public static class LoadILRuntime
         //Protobuf适配
         ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
         //LitJson适配
-        JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
+        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
+        //Nino适配
+        Nino.Serialization.ILRuntimeResolver.RegisterILRuntimeClrRedirection(appdomain);
 #endif
 
         //CLR绑定（有再去绑定）
