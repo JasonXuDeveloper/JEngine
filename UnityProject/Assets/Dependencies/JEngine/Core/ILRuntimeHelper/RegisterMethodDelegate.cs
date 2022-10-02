@@ -10,21 +10,10 @@ using WebSocketSharp;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Object = System.Object;
 
-namespace JEngine.Helper
+namespace JEngine.Core
 {
-    public class RegisterMethodDelegateHelper : IRegisterHelper
+    public class RegisterMethodDelegate : IRegisterHelper
     {
-        private static RegisterMethodDelegateHelper Instance;
-
-        public static void HelperRegister(AppDomain appdomain)
-        {
-            if (Instance == null)
-            {
-                Instance = new RegisterMethodDelegateHelper();
-            }
-            Instance.Register(appdomain);
-        }
-
         public void Register(AppDomain appdomain)
         {
             appdomain.DelegateManager.RegisterMethodDelegate<object>();

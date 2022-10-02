@@ -29,22 +29,10 @@ using AutoList = System.Collections.Generic.List<object>;
 using AutoList = ILRuntime.Other.UncheckedList<object>;
 #endif
 
-namespace JEngine.Helper
+namespace JEngine.Core
 {
-    public class RegisterCLRMethodRedirectionHelper : IRegisterHelper
+    public class RegisterMethodRedirection : IRegisterHelper
     {
-        private static RegisterCLRMethodRedirectionHelper Instance;
-
-        public static void HelperRegister(AppDomain appdomain)
-        {
-            if (Instance == null)
-            {
-                Instance = new RegisterCLRMethodRedirectionHelper();
-            }
-
-            Instance.Register(appdomain);
-        }
-
         public unsafe void Register(AppDomain appdomain)
         {
             //从自动生成的里面复制的需要这个

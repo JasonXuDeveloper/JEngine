@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using JEngine.Helper;
+using JEngine.Interface;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 public static class LoadILRuntime
@@ -13,29 +13,28 @@ public static class LoadILRuntime
         appdomain.DebugService.StartDebugService(56000);
 #endif
 #if INIT_JE
-        RegisterCrossBindingAdaptorHelper.HelperRegister(appdomain);
-        RegisterCLRMethodRedirectionHelper.HelperRegister(appdomain);
-        RegisterMethodDelegateHelper.HelperRegister(appdomain);
-        RegisterFunctionDelegateHelper.HelperRegister(appdomain);
-        RegisterDelegateConvertorHelper.HelperRegister(appdomain);
-        RegisterLitJsonHelper.HelperRegister(appdomain);
-        RegisterValueTypeBinderHelper.HelperRegister(appdomain);
-        //Protobuf适配
-        ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
-        //LitJson适配
-        LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
-        //Nino适配
-        Nino.Serialization.ILRuntimeResolver.RegisterILRuntimeClrRedirection(appdomain);
-#endif
-
-        //CLR绑定（有再去绑定）
-        Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
-        if (t != null)
+        var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+        var helperInterface = typeof(IRegisterHelper);
+        //全部程序集
+        foreach (var assembly in assemblies)
         {
-            t.GetMethod("Initialize")?.Invoke(null, new object[]
+            var types = assembly.GetTypes();
+            //全部类型
+            foreach (var type in types)
             {
-                appdomain
-            });
+                var interfaces = type.GetInterfaces();
+                //继承接口
+                foreach (var @interface in interfaces)
+                {
+                    if (@interface == helperInterface)
+                    {
+                        //注册
+                        var helper = (IRegisterHelper)Activator.CreateInstance(type);
+                        helper.Register(appdomain);
+                    }
+                }
+            }
         }
+#endif
     }
 }

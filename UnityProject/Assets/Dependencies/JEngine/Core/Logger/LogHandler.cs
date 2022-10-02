@@ -156,10 +156,10 @@ namespace JEngine.Core
         {
             if (logEnabled)
             {
-                exception = exception.Demystify();
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
+                    exception = exception.Demystify();
                     string s = GetAllExceptionStackTrace(exception);
                     //能反射就反射
                     if (_stackTraceString != null)
@@ -181,10 +181,10 @@ namespace JEngine.Core
         {
             if (logEnabled)
             {
-                exception = exception.Demystify();
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
+                    exception = exception.Demystify();
                     string s = GetAllExceptionStackTrace(exception);
                     //能反射就反射
                     if (_stackTraceString != null)
