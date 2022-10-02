@@ -4,21 +4,10 @@ using JEngine.Core;
 using JEngine.Interface;
 using LitJson;
 
-namespace JEngine.Helper
+namespace JEngine.Core
 {
-    public class RegisterLitJsonHelper : IRegisterHelper
+    public class RegisterLitJson : IRegisterHelper
     {
-        private static RegisterLitJsonHelper Instance;
-
-        public static void HelperRegister(AppDomain appdomain)
-        {
-            if (Instance == null)
-            {
-                Instance = new RegisterLitJsonHelper();
-            }
-            Instance.Register(appdomain);
-        }
-
         public void Register(AppDomain appdomain)
         {
             JsonMapper.RegisterExporter<float>((obj, writer) => writer.Write(double.Parse(obj.ToString()))); //float->double

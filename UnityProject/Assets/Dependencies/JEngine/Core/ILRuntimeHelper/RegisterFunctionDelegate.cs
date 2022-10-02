@@ -6,21 +6,10 @@ using ILRuntime.Runtime.Intepreter;
 using JEngine.Interface;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
-namespace JEngine.Helper
+namespace JEngine.Core
 {
-    public class RegisterFunctionDelegateHelper : IRegisterHelper
+    public class RegisterFunctionDelegate : IRegisterHelper
     {
-        private static RegisterFunctionDelegateHelper Instance;
-
-        public static void HelperRegister(AppDomain appdomain)
-        {
-            if (Instance == null)
-            {
-                Instance = new RegisterFunctionDelegateHelper();
-            }
-            Instance.Register(appdomain);
-        }
-        
         public void Register(AppDomain appdomain)
         {
             appdomain.DelegateManager.RegisterFunctionDelegate<String, Boolean>();
