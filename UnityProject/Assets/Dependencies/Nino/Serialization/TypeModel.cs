@@ -257,15 +257,8 @@ namespace Nino.Serialization
 					//record field
 					model.Members.Add(index, f);
 #if ILRuntime
-				var t = f.FieldType;
-				if (t.IsGenericType)
-				{
-					model.Types.Add(index, t);
-				}
-				else
-				{
+					var t = f.FieldType;
 					model.Types.Add(index, t.ResolveRealType());
-				}
 #else
 					model.Types.Add(index, f.FieldType);
 #endif

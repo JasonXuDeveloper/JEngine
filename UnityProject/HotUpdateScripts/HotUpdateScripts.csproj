@@ -128,6 +128,12 @@
     <Reference Include="Ben.Demystifier">
       <HintPath>..\Assets\Dependencies\Ben.Demystifier\Ben.Demystifier.dll</HintPath>
     </Reference>
+    <Reference Include="Nino.Serialization">
+      <HintPath>..\Library\ScriptAssemblies\Nino.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Nino.Shared">
+      <HintPath>..\Library\ScriptAssemblies\Nino.Shared.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Proto2cs\" />

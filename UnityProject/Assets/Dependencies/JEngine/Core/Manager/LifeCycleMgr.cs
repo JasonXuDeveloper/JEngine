@@ -396,8 +396,6 @@ namespace JEngine.Core
         /// </summary>
         private void Update()
         {
-            _instances.Clear();
-
             //处理update
             //确保本帧没处理过这些对象
             if (_instances.Count > 0)
@@ -410,6 +408,7 @@ namespace JEngine.Core
                 //调用update
                 ExecuteItems(_updateItems, false, _ignoreWithInInstancesFunc);
             }
+            _instances.Clear();
         }
 
         /// <summary>
@@ -433,61 +432,28 @@ namespace JEngine.Core
                 }
 
                 ExecuteItems(_awakeItems);
-
-                //如果有enable，那么在awake的同一帧也该调用enable
-                if (_enableItems.Count > 0)
-                {
-                    //确保本帧没处理过这些对象
-                    if (_instances.Count > 0)
-                    {
-                        //调用执行过awake的对象的enable
-                        ExecuteItems(_enableItems, true, s => !_instances.Contains(s));
-                    }
-                }
                 
                 //清理
                 lock (_awakeObjs)
                 {
                     _awakeObjs.RemoveWhere(_instances.Contains);
                 }
-
-                lock (_enableObjs)
-                {
-                    _enableObjs.RemoveWhere(_instances.Contains);
-                }
             }
 
-            //如果有enable（这些是没awake的enable）
+            //如果有enable（和awake一样最优先处理）
             if (_enableItems.Count > 0)
             {
-                //确保本帧没处理过这些对象
-                if (_instances.Count > 0)
+                //调用enable，并记录本帧处理的对象
+                cnt = _enableItems.Count;
+                for (i = 0; i < cnt; i++)
                 {
-                    //调用enable，并记录本帧处理的对象
-                    cnt = _enableItems.Count;
-                    for (i = 0; i < cnt; i++)
+                    item = _enableItems[i];
+                    if (!_instances.Contains(item.ItemInstance))
                     {
-                        item = _enableItems[i];
-                        if (!_instances.Contains(item.ItemInstance))
-                        {
-                            _instances.Add(item.ItemInstance);
-                        }
-                    }
-
-                    ExecuteItems(_enableItems, true, _instances.Contains);
-                }
-                else
-                {
-                    //调用enable，并记录本帧处理的对象
-                    cnt = _enableItems.Count;
-                    for (i = 0; i < cnt; i++)
-                    {
-                        item = _enableItems[i];
                         _instances.Add(item.ItemInstance);
                     }
-
-                    ExecuteItems(_enableItems);
                 }
+                ExecuteItems(_enableItems);
                 //清理
                 lock (_enableObjs)
                 {
@@ -502,6 +468,8 @@ namespace JEngine.Core
                 if (_instances.Count > 0)
                 {
                     //调用start，并记录本帧处理的对象
+                    ExecuteItems(_startItems, true, _instances.Contains);
+
                     cnt = _startItems.Count;
                     for (i = 0; i < cnt; i++)
                     {
@@ -511,11 +479,11 @@ namespace JEngine.Core
                             _instances.Add(item.ItemInstance);
                         }
                     }
-
-                    ExecuteItems(_startItems, true, _instances.Contains);
                 }
                 else
                 {
+                    ExecuteItems(_startItems);
+                    
                     //调用start，并记录本帧处理的对象
                     cnt = _startItems.Count;
                     for (i = 0; i < cnt; i++)
@@ -523,8 +491,6 @@ namespace JEngine.Core
                         item = _startItems[i];
                         _instances.Add(item.ItemInstance);
                     }
-
-                    ExecuteItems(_startItems);
                 }
                 //清理
                 lock (_startObjs)
