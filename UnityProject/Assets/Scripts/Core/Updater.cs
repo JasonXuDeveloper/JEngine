@@ -90,18 +90,18 @@ public partial class Updater : MonoBehaviour
         {
             var mb = MessageBox.Show("错误", "无法获取服务器信息", "返回", "退出");
 
-            void ONComplete(MessageBox.EventId ok)
+            void OnComplete(MessageBox.EventId ok)
             {
                 if (ok == MessageBox.EventId.Ok)
                 {
-                    updater.OnUpdateFailed();
+                    updater.OnUpdateFinish(false);
                 }
                 else
                 {
                     Quit();
                 }
             }
-            mb.onComplete = ONComplete;
+            mb.onComplete = OnComplete;
             return;
         }
         if (ver < 0)
@@ -115,6 +115,8 @@ public partial class Updater : MonoBehaviour
             updater.OnProgress(1);
             updater.OnMessage("下载完成");
             await AssetComponent.Initialize(bundlePackageName, key);
+            //直接调用热更完成
+            updater.OnUpdateFinish(true);
             if (string.IsNullOrEmpty(nextScene)) return;
             updater.OnMessage("加载场景");
             AssetMgr.LoadSceneAsync(nextScene, false, bundlePackageName, updater.OnLoadSceneProgress,
@@ -127,7 +129,7 @@ public partial class Updater : MonoBehaviour
             var tips = $"发现{package.NeedDownLoadBundleCount}个资源有更新，总计需要下载 {Tools.GetDisplaySize(package.NeedUpdateSize)}";
             var mb = MessageBox.Show("提示", tips, "下载", "退出");
 
-            async void ONComplete(MessageBox.EventId ok)
+            async void OnComplete(MessageBox.EventId ok)
             {
                 if (ok == MessageBox.EventId.Ok)
                 {
@@ -145,7 +147,7 @@ public partial class Updater : MonoBehaviour
                     Quit();
                 }
             }
-            mb.onComplete = ONComplete;
+            mb.onComplete = OnComplete;
         }
         else
         {
@@ -181,15 +183,15 @@ public partial class Updater : MonoBehaviour
     /// <param name="onVersion"></param>
     /// <param name="onLoadSceneProgress"></param>
     /// <param name="onLoadSceneFinished"></param>
-    /// <param name="onUpdateFailed"></param>
+    /// <param name="onUpdateFinished"></param>
     public static void UpdatePackage(string bundlePackageName, bool checkCRC = true,
         UpdateBundleDataInfo package = null, string key = null,
         string nextScene = null,
         Action<string> onMessage = null, Action<float> onProgress = null, Action<string> onVersion = null,
-        Action<float> onLoadSceneProgress = null, Action onLoadSceneFinished = null, Action onUpdateFailed = null)
+        Action<float> onLoadSceneProgress = null, Action onLoadSceneFinished = null, Action<bool> onUpdateFinished = null)
     {
         BaseUpdater updater =
-            new BaseUpdater(onMessage, onProgress, onVersion, onLoadSceneProgress, onLoadSceneFinished, onUpdateFailed);
+            new BaseUpdater(onMessage, onProgress, onVersion, onLoadSceneProgress, onLoadSceneFinished, onUpdateFinished);
         UpdatePackage(bundlePackageName, updater, checkCRC, package, key, nextScene);
     }
 
@@ -201,7 +203,7 @@ public partial class Updater : MonoBehaviour
     {
         var mb = MessageBox.Show("提示", "确定要删除缓存吗");
 
-        void ONComplete(MessageBox.EventId ok)
+        void OnComplete(MessageBox.EventId ok)
         {
             if (ok == MessageBox.EventId.Ok)
             {
@@ -212,7 +214,7 @@ public partial class Updater : MonoBehaviour
                 }
             }
         }
-        mb.onComplete = ONComplete;
+        mb.onComplete = OnComplete;
     }
 
     /// <summary>

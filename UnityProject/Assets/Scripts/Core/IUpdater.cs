@@ -5,10 +5,10 @@ public interface IUpdater
     void OnProgress(float progress);
 
     void OnVersion(string ver);
-
+    
     void OnLoadSceneProgress(float progress);
 
     void OnLoadSceneFinish();
-
-    void OnUpdateFailed();
+    
+    void OnUpdateFinish(bool result);
 }
