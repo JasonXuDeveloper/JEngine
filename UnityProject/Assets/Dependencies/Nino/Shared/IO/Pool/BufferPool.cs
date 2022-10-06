@@ -13,29 +13,25 @@ namespace Nino.Shared.IO
         private static readonly UncheckedStack<byte[]> Buffers = new UncheckedStack<byte[]>(3);
 
         /// <summary>
-        /// lock obj
-        /// </summary>
-        private static readonly object Lock = new object();
-
-        /// <summary>
         /// Request a buffer
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
         public static byte[] RequestBuffer(int size = 0)
         {
-            lock (Lock)
+            lock (Buffers)
             {
                 byte[] ret;
                 if (Buffers.Count > 0)
                 {
-                    ret = Buffers.Pop();
+                    ret = Buffers.Peek();
                     if (ret.Length < size)
                     {
                         byte[] buffer = new byte[size];
-                        ReturnBuffer(ret);
                         return buffer;
                     }
+
+                    ret = Buffers.Pop();
                 }
                 else
                 {
@@ -43,19 +39,6 @@ namespace Nino.Shared.IO
                 }
 
                 return ret;
-            }
-        }
-
-        /// <summary>
-        /// Preview next cache buffer's length
-        /// </summary>
-        /// <returns></returns>
-        public static int PreviewNextCacheBufferLength()
-        {
-            lock (Lock)
-            {
-                if (Buffers.Count == 0) return 0;
-                return Buffers.Peek().Length;
             }
         }
         
@@ -80,7 +63,8 @@ namespace Nino.Shared.IO
         public static byte[] RequestBuffer(int len, byte[] original)
         {
             byte[] ret = RequestBuffer(len);
-            Buffer.BlockCopy(original,0,ret,0,original.Length);
+            var bLen = Math.Min(original.Length, len);
+            Buffer.BlockCopy(original,0,ret,0,bLen);
             return ret;
         }
 
@@ -90,7 +74,7 @@ namespace Nino.Shared.IO
         /// <param name="buffer"></param>
         public static void ReturnBuffer(byte[] buffer)
         {
-            lock (Lock)
+            lock (Buffers)
             {
                 Buffers.Push(buffer);
             }

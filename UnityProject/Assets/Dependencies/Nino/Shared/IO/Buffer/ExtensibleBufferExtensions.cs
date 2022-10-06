@@ -16,12 +16,12 @@ namespace Nino.Shared.IO
         /// <param name="length"></param>
         public static void WriteToStream(this ExtensibleBuffer<byte> buffer, Stream stream, int length)
         {
-            byte[] bytes = BufferPool.RequestBuffer(4096);
+            byte[] bytes = ArrayPool<byte>.Request(4096);
             if (length <= 4096)
             {
                 buffer.CopyTo(ref bytes, 0, length);
                 stream.Write(bytes, 0, length);
-                BufferPool.ReturnBuffer(bytes);
+                ArrayPool<byte>.Return(bytes);
                 return;
             }
 
@@ -34,7 +34,7 @@ namespace Nino.Shared.IO
                 length -= sizeToWrite;
                 wrote += sizeToWrite;
             }
-            BufferPool.ReturnBuffer(bytes);
+            ArrayPool<byte>.Return(bytes);
         }
         
         /// <summary>

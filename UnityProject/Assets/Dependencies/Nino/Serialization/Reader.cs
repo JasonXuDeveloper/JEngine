@@ -119,7 +119,34 @@ namespace Nino.Serialization
 		}
 
 		/// <summary>
-		/// Create a nino read
+		/// Create a nino reader
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="outputLength"></param>
+		/// <param name="encoding"></param>
+		/// <param name="compressOption"></param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Init(Span<byte> data, int outputLength, Encoding encoding, CompressOption compressOption)
+		{
+			switch (compressOption)
+			{
+				case CompressOption.NoCompression:
+					fixed (byte* ptr = &data.GetPinnableReference())
+					{
+						Init((IntPtr)ptr, ref outputLength, encoding, compressOption);
+					}
+
+					break;
+				case CompressOption.Lz4:
+					throw new NotSupportedException("not support lz4 yet");
+				case CompressOption.Zlib:
+					Init(CompressMgr.Decompress(data.ToArray(), out var length), ref length, encoding, compressOption);
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Create a nino reader
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="outputLength"></param>

@@ -86,6 +86,45 @@ namespace Nino.Serialization
 		/// <summary>
 		/// Deserialize a NinoSerialize object
 		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data"></param>
+		/// <param name="encoding"></param>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public static T Deserialize<T>(ArraySegment<byte> data, Encoding encoding = null,
+			CompressOption option = CompressOption.Zlib)
+		{
+			Type type = typeof(T);
+
+			Reader reader = ObjectPool<Reader>.Request();
+			reader.Init(data, data.Count, encoding ?? DefaultEncoding,
+				TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+
+			//basic type
+			if (WrapperManifest.TryGetWrapper(type, out var wrapper))
+			{
+				var ret = ((NinoWrapperBase<T>)wrapper).Deserialize(reader);
+				ObjectPool<Reader>.Return(reader);
+				return ret;
+			}
+
+			//code generated type
+			if (TypeModel.TryGetWrapper(type, out wrapper))
+			{
+				//add wrapper
+				WrapperManifest.AddWrapper(type, wrapper);
+				//start Deserialize
+				var ret = ((NinoWrapperBase<T>)wrapper).Deserialize(reader);
+				ObjectPool<Reader>.Return(reader);
+				return ret;
+			}
+
+			return (T)Deserialize(type, null, data, encoding ?? DefaultEncoding, reader, true, true, true);
+		}
+
+		/// <summary>
+		/// Deserialize a NinoSerialize object
+		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="data"></param>
 		/// <param name="encoding"></param>
@@ -117,7 +156,44 @@ namespace Nino.Serialization
 				return ret;
 			}
 
-			return Deserialize(type, null, data, encoding ?? DefaultEncoding, reader, option, true, true, true);
+			return Deserialize(type, null, data, encoding ?? DefaultEncoding, reader, true, true, true);
+		}
+
+		/// <summary>
+		/// Deserialize a NinoSerialize object
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="data"></param>
+		/// <param name="encoding"></param>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public static object Deserialize(Type type, ArraySegment<byte> data, Encoding encoding = null,
+			CompressOption option = CompressOption.Zlib)
+		{
+			Reader reader = ObjectPool<Reader>.Request();
+			reader.Init(data, data.Count, encoding ?? DefaultEncoding,
+				TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+
+			//basic type
+			if (WrapperManifest.TryGetWrapper(type, out var wrapper))
+			{
+				var ret = wrapper.Deserialize(reader);
+				ObjectPool<Reader>.Return(reader);
+				return ret;
+			}
+
+			//code generated type
+			if (TypeModel.TryGetWrapper(type, out wrapper))
+			{
+				//add wrapper
+				WrapperManifest.AddWrapper(type, wrapper);
+				//start Deserialize
+				var ret = wrapper.Deserialize(reader);
+				ObjectPool<Reader>.Return(reader);
+				return ret;
+			}
+
+			return Deserialize(type, null, data, encoding ?? DefaultEncoding, reader, true, true, true);
 		}
 
 		/// <summary>
@@ -153,6 +229,39 @@ namespace Nino.Serialization
 					TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
 			}
 
+			return Deserialize(type, val, (Span<byte>)data, encoding, reader, returnDispose, skipBasicCheck,
+				skipCodeGenCheck, skipGenericCheck, skipEnumCheck);
+		}
+
+		/// <summary>
+		/// Deserialize a NinoSerialize object
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="val"></param>
+		/// <param name="data"></param>
+		/// <param name="encoding"></param>
+		/// <param name="reader"></param>
+		/// <param name="returnDispose"></param>
+		/// <param name="skipBasicCheck"></param>
+		/// <param name="skipCodeGenCheck"></param>
+		/// <param name="skipGenericCheck"></param>
+		/// <param name="skipEnumCheck"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="NullReferenceException"></exception>
+		// ReSharper disable CognitiveComplexity
+		internal static object Deserialize(Type type, object val, Span<byte> data, Encoding encoding, Reader reader,
+				bool returnDispose = true, bool skipBasicCheck = false,
+				bool skipCodeGenCheck = false, bool skipGenericCheck = false, bool skipEnumCheck = false)
+			// ReSharper restore CognitiveComplexity
+		{
+			//prevent null encoding
+			encoding = encoding ?? DefaultEncoding;
+			
+#if ILRuntime
+			type = type.ResolveRealType();			
+#endif
+
 			//basic type
 			if (!skipBasicCheck && WrapperManifest.TryGetWrapper(type, out var wrapper))
 			{
@@ -169,7 +278,7 @@ namespace Nino.Serialization
 			if (!skipEnumCheck && TypeModel.IsEnum(type))
 			{
 
-				var ret = Deserialize(Enum.GetUnderlyingType(type), null, data, encoding, null, option, returnDispose);
+				var ret = Deserialize(Enum.GetUnderlyingType(type), null, data, encoding, reader, returnDispose);
 #if ILRuntime
 				if (type is ILRuntime.Reflection.ILRuntimeType)
 				{

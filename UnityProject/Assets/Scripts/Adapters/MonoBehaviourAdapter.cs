@@ -205,6 +205,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 {
                     _mOnEnableMethod = instance.Type.GetMethod("OnEnable", 0);
                     _mOnEnableMethodGot = true;
+                    return;//第一次让LifeCycleMgr管理
                 }
 
                 if (_mOnEnableMethod != null && awaked)
