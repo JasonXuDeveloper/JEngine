@@ -694,7 +694,10 @@ namespace Nino.Serialization
 				elemType = wt?.CLRType.GenericArguments[0].Value.ReflectionType;
 			}
 
-			elemType = elemType.ResolveRealType();
+			if(!elemType.IsGenericType)
+			{
+				elemType = elemType.ResolveRealType();
+			}
 #endif
 
 			//read len
@@ -735,8 +738,11 @@ namespace Nino.Serialization
 			{
 				keyType = wt?.CLRType.GenericArguments[0].Value.ReflectionType;
 			}
-			
-			keyType = keyType.ResolveRealType();
+
+			if(!keyType.IsGenericType)
+			{
+				keyType = keyType.ResolveRealType();
+			}
 #endif
 			Type valueType = args[1];
 #if ILRuntime
@@ -745,7 +751,10 @@ namespace Nino.Serialization
 				valueType = wt2?.CLRType.GenericArguments[1].Value.ReflectionType;
 			}
 			
-			valueType = valueType.ResolveRealType();
+			if(!valueType.IsGenericType)
+			{
+				valueType = valueType.ResolveRealType();
+			}
 #endif
 
 			var dict = Activator.CreateInstance(type) as IDictionary;
