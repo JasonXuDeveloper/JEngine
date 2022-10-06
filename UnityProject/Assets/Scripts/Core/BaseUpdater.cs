@@ -26,26 +26,26 @@ public class BaseUpdater : IUpdater
         onLoadSceneProgress?.Invoke(progress);
     }
 
+    public Action<bool> onUpdateFinish;
+    public void OnUpdateFinish(bool result)
+    {
+        onUpdateFinish?.Invoke(result);
+    }
+
     public Action onLoadSceneFinish;
     public void OnLoadSceneFinish()
     {
         onLoadSceneFinish?.Invoke();
     }
-        
-    public Action onUpdateFailed;
-    public void OnUpdateFailed()
-    {
-        onUpdateFailed?.Invoke();
-    }
-        
 
-    public BaseUpdater(Action<string> onMessage, Action<float> onProgress, Action<string> onVersion, Action<float> onLoadSceneProgress, Action onLoadSceneFinish, Action onUpdateFailed)
+
+    public BaseUpdater(Action<string> onMessage, Action<float> onProgress, Action<string> onVersion, Action<float> onLoadSceneProgress,Action onLoadSceneFinish, Action<bool> onUpdateFinish)
     {
         this.onMessage = onMessage;
         this.onProgress = onProgress;
         this.onVersion = onVersion;
         this.onLoadSceneProgress = onLoadSceneProgress;
+        this.onUpdateFinish = onUpdateFinish;
         this.onLoadSceneFinish = onLoadSceneFinish;
-        this.onUpdateFailed = onUpdateFailed;
     }
 }
