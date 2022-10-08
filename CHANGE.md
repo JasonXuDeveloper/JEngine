@@ -1,6 +1,6 @@
 ## All Versions
 
-### 0.7.5beta (September 25 2022)
+### 0.7.5 (September 25 2022)
 
 - **Updated** ILRuntime to v2.1.0
 - **Optimized** code register workflow
