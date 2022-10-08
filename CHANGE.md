@@ -1,7 +1,9 @@
 ## All Versions
 
-### 0.7.5beta1 (September 25 2022)
+### 0.7.5beta (September 25 2022)
 
+- **Updated** ILRuntime to v2.1.0
+- **Optimized** code register workflow
 - **Optimized** JStream buffer strategy
 - **Optimized** ClassBind performance and GC
 - **Optimized** JEngine Initialize procedure and performance

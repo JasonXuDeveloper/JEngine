@@ -38,7 +38,7 @@
 </p>
 
 
-# JENGINE v0.7.5beta1
+# JENGINE v0.7.5
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
@@ -116,6 +116,8 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 ## v0.7.5 New Features
 
+- **Updated** ILRuntime to v2.1.0
+- **Optimized** code register workflow
 - **Optimized** JStream buffer strategy
 - **Optimized** ClassBind performance and GC
 - **Optimized** JEngine Initialize procedure and performance

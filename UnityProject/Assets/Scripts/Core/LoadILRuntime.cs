@@ -35,6 +35,15 @@ public static class LoadILRuntime
                 }
             }
         }
+        //CLR绑定（有再去绑定），这个要在最后
+        Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
+        if (t != null)
+        {
+            t.GetMethod("Initialize")?.Invoke(null, new object[]
+            {
+                appdomain
+            });
+        }
 #endif
     }
 }
