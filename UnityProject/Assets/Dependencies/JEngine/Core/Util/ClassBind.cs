@@ -35,6 +35,9 @@ namespace JEngine.Core
         private static readonly Type MonoAdapterType = typeof(MonoBehaviourAdapter.Adaptor);
         private static readonly Type ILTypeInstanceType = typeof(ILTypeInstance);
         private static readonly Type AppdomainType = typeof(AppDomain);
+        private const BindingFlags AllBindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
+                                                     BindingFlags.Instance | BindingFlags.Static |
+                                                     BindingFlags.FlattenHierarchy | BindingFlags.Default;
 
         /// <summary>
         /// Add class
@@ -91,11 +94,9 @@ namespace JEngine.Core
                 //直接反射赋值一波了
                 var clrInstance = gameObject.AddComponent(adapterType) as MonoBehaviour;
 
-                var clrILInstance = t.GetFields(
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                var clrILInstance = t.GetFields(AllBindingFlags)
                     .First(f => f.Name == "instance" && f.FieldType == ILTypeInstanceType);
-                var clrAppDomain = t.GetFields(
-                        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                var clrAppDomain = t.GetFields(AllBindingFlags)
                     .First(f => f.Name == "appdomain" && f.FieldType == AppdomainType);
                 if (!(clrInstance is null))
                 {
@@ -136,7 +137,7 @@ namespace JEngine.Core
                     //JBehaviour额外处理
                     if (clrInstance.isJBehaviour)
                     {
-                        var go = t.GetField("_gameObject", BindingFlags.Public| BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
+                        var go = t.GetField("_gameObject", AllBindingFlags);
                         go?.SetValue(clrInstance.ILInstance, gameObject);
                     }
                 }
@@ -168,8 +169,6 @@ namespace JEngine.Core
             //绑定数据
             classData.BoundData = false;
             var fields = classData.fields.ToArray();
-            var bindingAttr = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-                              BindingFlags.Static | BindingFlags.DeclaredOnly;
 
             foreach (ClassField field in fields)
             {
@@ -180,10 +179,10 @@ namespace JEngine.Core
                 {
                     if (field.fieldType == ClassField.FieldType.Number)
                     {
-                        var fieldType = t.GetField(field.fieldName, bindingAttr)?.FieldType ??
-                                        (t.BaseType?.GetField(field.fieldName, bindingAttr)?.FieldType ??
-                                         (t.GetProperty(field.fieldName, bindingAttr)?.PropertyType ??
-                                          t.BaseType?.GetProperty(field.fieldName, bindingAttr)?.PropertyType));
+                        var fieldType = t.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
+                                        (t.BaseType?.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
+                                         (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
+                                          t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
 
                         if (fieldType == typeof(SByte))
@@ -352,16 +351,16 @@ namespace JEngine.Core
                             }
                         }
 
-                        var tp = t.GetField(field.fieldName, bindingAttr);
-                        if (tp == null) tp = t.BaseType?.GetField(field.fieldName, bindingAttr);
+                        var tp = t.GetField(field.fieldName, AllBindingFlags);
+                        if (tp == null) tp = t.BaseType?.GetField(field.fieldName, AllBindingFlags);
                         if (tp != null)
                         {
                             SetField(tp.FieldType);
                         }
                         else
                         {
-                            var pi = t.GetProperty(field.fieldName, bindingAttr);
-                            if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
+                            var pi = t.GetProperty(field.fieldName, AllBindingFlags);
+                            if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, AllBindingFlags);
                             if (pi != null)
                             {
                                 SetField(pi.PropertyType);
@@ -411,16 +410,16 @@ namespace JEngine.Core
                         }
                     }
 
-                    var fi = t.GetField(field.fieldName, bindingAttr);
-                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, bindingAttr);
+                    var fi = t.GetField(field.fieldName, AllBindingFlags);
+                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, AllBindingFlags);
                     if (fi != null)
                     {
                         BindVal(fi);
                     }
                     else
                     {
-                        var pi = t.GetProperty(field.fieldName, bindingAttr);
-                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, bindingAttr);
+                        var pi = t.GetProperty(field.fieldName, AllBindingFlags);
+                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, AllBindingFlags);
                         BindVal(pi);
                     }
                 }
