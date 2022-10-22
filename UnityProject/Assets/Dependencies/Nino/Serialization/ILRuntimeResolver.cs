@@ -180,9 +180,7 @@ namespace Nino.Serialization
             intp.Free(ptrOfThisMethod);
 
             ptrOfThisMethod = ILRuntime.Runtime.Intepreter.ILIntepreter.Minus(esp, 3);
-            var @data = (System.Byte[])ILRuntime.CLR.Utils.Extensions.CheckCLRTypes(typeof(System.Byte[]),
-                ILRuntime.Runtime.Stack.StackObject.ToObject(ptrOfThisMethod, domain, mStack),
-                0);
+            var @data = ILRuntime.Runtime.Stack.StackObject.ToObject(ptrOfThisMethod, domain, mStack);
             intp.Free(ptrOfThisMethod);
 
             //获取泛型参数<T>的实际类型
@@ -198,9 +196,19 @@ namespace Nino.Serialization
                 r = ((ILRuntime.CLR.TypeSystem.ILType)t).Instantiate();
             }
 
-            var resultOfThisMethod =
-                Nino.Serialization.Deserializer.Deserialize(t.ReflectionType, r, @data,
-                    @encoding ?? Encoding.UTF8, null, option);
+            object resultOfThisMethod = null;
+            if (@data is byte[] buf)
+            {
+                resultOfThisMethod =
+                    Nino.Serialization.Deserializer.Deserialize(t.ReflectionType, r, buf,
+                        @encoding ?? Encoding.UTF8, null, option);
+            }
+            else if (@data is ArraySegment<byte> seg)
+            {
+                resultOfThisMethod =
+                    Nino.Serialization.Deserializer.Deserialize(t.ReflectionType, r, seg,
+                        @encoding ?? Encoding.UTF8, null, option);
+            }
 
             return ILRuntime.Runtime.Intepreter.ILIntepreter.PushObject(ret, mStack, resultOfThisMethod);
         }

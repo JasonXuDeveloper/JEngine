@@ -241,6 +241,43 @@ namespace Nino.Serialization
 		/// <param name="data"></param>
 		/// <param name="encoding"></param>
 		/// <param name="reader"></param>
+		/// <param name="option"></param>
+		/// <param name="returnDispose"></param>
+		/// <param name="skipBasicCheck"></param>
+		/// <param name="skipCodeGenCheck"></param>
+		/// <param name="skipGenericCheck"></param>
+		/// <param name="skipEnumCheck"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		/// <exception cref="NullReferenceException"></exception>
+		// ReSharper disable CognitiveComplexity
+		internal static object Deserialize(Type type, object val, ArraySegment<byte> data, Encoding encoding, Reader reader,
+				CompressOption option = CompressOption.Zlib, bool returnDispose = true, bool skipBasicCheck = false,
+				bool skipCodeGenCheck = false, bool skipGenericCheck = false, bool skipEnumCheck = false)
+			// ReSharper restore CognitiveComplexity
+		{
+			//prevent null encoding
+			encoding = encoding ?? DefaultEncoding;
+
+			if (reader == null)
+			{
+				reader = ObjectPool<Reader>.Request();
+				reader.Init(data, data.Count, encoding ?? DefaultEncoding,
+					TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+			}
+
+			return Deserialize(type, val, data, encoding, reader, returnDispose, skipBasicCheck,
+				skipCodeGenCheck, skipGenericCheck, skipEnumCheck);
+		}
+
+		/// <summary>
+		/// Deserialize a NinoSerialize object
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="val"></param>
+		/// <param name="data"></param>
+		/// <param name="encoding"></param>
+		/// <param name="reader"></param>
 		/// <param name="returnDispose"></param>
 		/// <param name="skipBasicCheck"></param>
 		/// <param name="skipCodeGenCheck"></param>
