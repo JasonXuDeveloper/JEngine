@@ -129,7 +129,7 @@ namespace JEngine.Core
             }
             try
             {
-                string strData = StringifyHelper.JSONSerliaze(val);
+                string strData = StringifyHelper.JSONSerialize(val);
                 var result = CryptoMgr.EncryptStr(strData, encryptKey);
                 PlayerPrefs.SetString(dataName, result);
                 AddJSaverKeys(dataName);
@@ -315,7 +315,7 @@ namespace JEngine.Core
             try
             {
                 result = CryptoMgr.DecryptStr(result, encryptKey);
-                return StringifyHelper.JSONDeSerliaze<T>(result);
+                return StringifyHelper.JSONDeSerialize<T>(result);
             }
             catch (Exception ex)
             {
