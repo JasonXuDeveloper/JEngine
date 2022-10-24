@@ -105,7 +105,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string JSONSerliaze(object value)
+        public static string JSONSerialize(object value)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T JSONDeSerliaze<T>(string value)
+        public static T JSONDeSerialize<T>(string value)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T JSONDeSerliazeFromFile<T>(string path)
+        public static T JSONDeSerializeFromFile<T>(string path)
         {
             try
             {
