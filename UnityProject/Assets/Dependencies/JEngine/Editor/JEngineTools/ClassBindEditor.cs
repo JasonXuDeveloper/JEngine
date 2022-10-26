@@ -29,7 +29,7 @@ namespace JEngine.Editor
         {
             _classBinds = new ReorderableList(serializedObject.FindProperty("scriptsToBind"))
             {
-                elementNameProperty = "Class",
+                elementNameProperty = "className",
                 sortable = true,
                 multipleSelection = true,
             };
