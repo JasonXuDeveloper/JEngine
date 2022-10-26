@@ -97,11 +97,6 @@ namespace JEngine.Core
         private readonly List<LifeCycleItem> _awakeItems = new List<LifeCycleItem>(100);
 
         /// <summary>
-        /// All on enable methods
-        /// </summary>
-        private readonly List<LifeCycleItem> _enableItems = new List<LifeCycleItem>(100);
-
-        /// <summary>
         /// All start methods
         /// </summary>
         private readonly List<LifeCycleItem> _startItems = new List<LifeCycleItem>(100);
@@ -127,11 +122,6 @@ namespace JEngine.Core
         private readonly HashSet<object> _awakeObjs = new HashSet<object>();
         
         /// <summary>
-        /// no gc search for enable objs
-        /// </summary>
-        private readonly HashSet<object> _enableObjs = new HashSet<object>();
-        
-        /// <summary>
         /// no gc search for start objs
         /// </summary>
         private readonly HashSet<object> _startObjs = new HashSet<object>();
@@ -146,17 +136,6 @@ namespace JEngine.Core
             _awakeItems.Add(
                 new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
             _awakeObjs.Add(instance);
-        }
-
-        /// <summary>
-        /// Add enable task
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="method"></param>
-        public void AddOnEnableItem(object instance, MethodInfo method)
-        {
-            _enableItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
-            _enableObjs.Add(instance);
         }
 
         /// <summary>
@@ -356,8 +335,7 @@ namespace JEngine.Core
         private bool IgnoreWithoutInInstances(object obj)
         {
             return _instances.Contains(obj) || _awakeObjs.Contains(obj)
-                                            || _startObjs.Contains(obj)
-                                            || _enableObjs.Contains(obj);
+                                            || _startObjs.Contains(obj);
         }
 
         /// <summary>
@@ -368,8 +346,7 @@ namespace JEngine.Core
         private bool IgnoreWithInInstances(object obj)
         {
             return _awakeObjs.Contains(obj)
-                   || _startObjs.Contains(obj)
-                   || _enableObjs.Contains(obj);
+                   || _startObjs.Contains(obj);
         }
 
         /// <summary>
@@ -437,27 +414,6 @@ namespace JEngine.Core
                 lock (_awakeObjs)
                 {
                     _awakeObjs.RemoveWhere(_instances.Contains);
-                }
-            }
-
-            //如果有enable（和awake一样最优先处理）
-            if (_enableItems.Count > 0)
-            {
-                //调用enable，并记录本帧处理的对象
-                cnt = _enableItems.Count;
-                for (i = 0; i < cnt; i++)
-                {
-                    item = _enableItems[i];
-                    if (!_instances.Contains(item.ItemInstance))
-                    {
-                        _instances.Add(item.ItemInstance);
-                    }
-                }
-                ExecuteItems(_enableItems);
-                //清理
-                lock (_enableObjs)
-                {
-                    _enableObjs.RemoveWhere(_instances.Contains);
                 }
             }
 

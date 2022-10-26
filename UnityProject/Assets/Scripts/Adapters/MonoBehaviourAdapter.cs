@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using ILRuntime.CLR.Method;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
@@ -157,10 +156,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
                         LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
                         //就mono订阅start和update事件
-                        if (enabled)
-                        {
-                            LifeCycleMgr.Instance.AddOnEnableItem(instance, GetMethodInfo(type, "OnEnable"));
-                        }
                         LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
                         LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
                         LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
@@ -196,20 +191,35 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         IMethod _mOnEnableMethod;
         bool _mOnEnableMethodGot;
-
-        void OnEnable()
+        
+        async void OnEnable()
         {
-            if (instance != null && awaked)
+            if (instance != null)
             {
                 if (!_mOnEnableMethodGot)
                 {
                     _mOnEnableMethod = instance.Type.GetMethod("OnEnable", 0);
                     _mOnEnableMethodGot = true;
-                    return;//第一次让LifeCycleMgr管理
                 }
 
-                if (_mOnEnableMethod != null && awaked)
+                if (_mOnEnableMethod != null)
                 {
+                    try
+                    {
+                        while (Application.isPlaying && !awaked)
+                        {
+                            await TimeMgr.Delay(1);
+                        }
+                    }
+                    catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                    {
+                        return;
+                    }
+
+                    if (_destoryed || !Application.isPlaying)
+                    {
+                        return;
+                    }
                     appdomain.Invoke(_mOnEnableMethod, instance, ConstMgr.NullObjects);
                 }
             }

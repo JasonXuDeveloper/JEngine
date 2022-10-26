@@ -6,7 +6,6 @@ using UnityEngine;
 using JEngine.Core;
 using System.Reflection;
 using ILRuntime.CLR.Method;
-using System.Threading.Tasks;
 
 namespace ProjectAdapter
 {
@@ -66,10 +65,6 @@ namespace ProjectAdapter
                             GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
                             LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
                             //就mono订阅start和update事件
-                            if (enabled)
-                            {
-                                LifeCycleMgr.Instance.AddOnEnableItem(instance, GetMethodInfo(type, "OnEnable"));
-                            }
                             LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
                             LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
                             LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
@@ -106,9 +101,9 @@ namespace ProjectAdapter
             IMethod _mOnEnableMethod;
             bool _mOnEnableMethodGot;
     
-            void OnEnable()
+            async void OnEnable()
             {
-                if (instance != null && awaked)
+                if (instance != null)
                 {
                     if (!_mOnEnableMethodGot)
                     {
@@ -116,8 +111,24 @@ namespace ProjectAdapter
                         _mOnEnableMethodGot = true;
                     }
     
-                    if (_mOnEnableMethod != null && awaked)
+                    if (_mOnEnableMethod != null)
                     {
+                        try
+                        {
+                            while (Application.isPlaying && !awaked)
+                            {
+                                await TimeMgr.Delay(1);
+                            }
+                        }
+                        catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+                        {
+                            return;
+                        }
+    
+                        if (_destoryed || !Application.isPlaying)
+                        {
+                            return;
+                        }
                         appdomain.Invoke(_mOnEnableMethod, instance, ConstMgr.NullObjects);
                     }
                 }
