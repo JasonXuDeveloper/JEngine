@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -505,6 +506,11 @@ namespace JEngine.Core
         }
 
         /// <summary>
+        /// 复用拼接字符串的builder
+        /// </summary>
+        private StringBuilder sb = new StringBuilder();
+
+        /// <summary>
         /// 执行任务
         /// </summary>
         /// <param name="act"></param>
@@ -516,11 +522,14 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                if (e.InnerException != null)
+                sb.Clear();
+                sb.Append(e.Message).Append(", ").Append(e.Data["StackTrace"]).Append("\n");
+                while (e.InnerException != null)
                 {
                     e = e.InnerException;
+                    sb.Append(e.Message).Append(", ").Append(e.Data["StackTrace"]).Append("\n");
                 }
-                Log.PrintError($"{_name} 错误: {e.Message}, {e.Data["StackTrace"]}，已跳过");
+                Log.PrintError($"{_name} 错误: {sb}");
             }
         }
 

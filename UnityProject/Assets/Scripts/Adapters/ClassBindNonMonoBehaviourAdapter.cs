@@ -100,7 +100,7 @@ namespace JEngine.Core.DO_NOT_USE
                                 //JBehaviour额外处理
                                 GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
                                 LifeCycleMgr.Instance.AddAwakeItem(_instance,  null);//这一帧空出来
-                                LifeCycleMgr.Instance.AddOnEnableItem(_instance, GetMethodInfo(type, "OnEnable"));
+                                GetMethodInfo(type, "OnEnable")?.Invoke(_instance, ConstMgr.NullObjects);
                                 LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
                             }
                             isAwaking = false;
