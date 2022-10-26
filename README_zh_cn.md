@@ -145,6 +145,14 @@ JEngine非常适合中小型项目，尤其是对于独立游戏开发者而言�
 **如果你觉得JEngine对你有帮助，请给该框架一个Star！**
 
 
+
+## 贡献成员
+
+<img src="https://contrib.rocks/image?repo=JasonXuDeveloper/JEngine"/>
+
+
+
+
 ## v0.7.5 最新功能
 
 - **更新**ILRuntimev2.1.0

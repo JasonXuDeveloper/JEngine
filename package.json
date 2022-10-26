@@ -1,6 +1,6 @@
 {
   "name": "com.jasonxudeveloper.jengine",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "displayName": "JEngine",
   "description": "The solution that allows unity games update in runtime.",
   "license": "MIT",
@@ -17,6 +17,6 @@
     "url": "https://github.com/JasonXuDeveloper"
   },
   "dependencies": {
-    "com.ourpalm.ilruntime": "2.0.2"
+    "com.ourpalm.ilruntime": "2.1.0"
   }
 }
