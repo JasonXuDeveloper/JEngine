@@ -251,9 +251,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         void OnDestroy()
         {
             _destoryed = true;
-            LifeCycleMgr.Instance.RemoveUpdateItem(instance);
-            LifeCycleMgr.Instance.RemoveFixedUpdateItem(instance);
-            LifeCycleMgr.Instance.RemoveLateUpdateItem(instance);
             
             if (!_mDestroyMethodGot)
             {
@@ -264,6 +261,13 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             if (_mDestroyMethod != null)
             {
                 appdomain.Invoke(_mDestroyMethod, instance, ConstMgr.NullObjects);
+            }
+
+            if (Application.isPlaying)
+            {
+                LifeCycleMgr.Instance.RemoveUpdateItem(instance);
+                LifeCycleMgr.Instance.RemoveFixedUpdateItem(instance);
+                LifeCycleMgr.Instance.RemoveLateUpdateItem(instance);
             }
             
             //销毁ILTypeIns
