@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Nino.Shared.IO;
 
 namespace JEngine.Core
@@ -185,6 +186,7 @@ namespace JEngine.Core
             else
             {
                 //没加密的直接读就好
+#if INIT_JE
                 unsafe
                 {
                     fixed (byte* dst = buffer)
@@ -192,6 +194,7 @@ namespace JEngine.Core
                         _buffer.CopyTo(dst + offset, _position, n);
                     }
                 }
+#endif
             }
 
             _position += n;
