@@ -2,7 +2,7 @@ using JEngine.Interface;
 
 namespace JEngine.Core
 {
-    public class RegisterLibraries: IRegisterHelper
+    public class RegisterLibraries : IRegisterHelper
     {
         public void Register(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
         {
@@ -11,8 +11,10 @@ namespace JEngine.Core
             ProtoBuf.PType.RegisterILRuntimeCLRRedirection(appdomain);
             //LitJson适配
             LitJson.JsonMapper.RegisterILRuntimeCLRRedirection(appdomain);
+#if ILRuntime
             //Nino适配
             Nino.Serialization.ILRuntimeResolver.RegisterILRuntimeClrRedirection(appdomain);
+#endif
 #endif
         }
     }

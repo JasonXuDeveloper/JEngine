@@ -18,12 +18,12 @@ using AutoList = ILRuntime.Other.UncheckedList<object>;
 
 namespace Nino.Serialization
 {
+#if ILRuntime
     /// <summary>
     /// ILRuntime helper
     /// </summary>
     public static class ILRuntimeResolver
     {
-#if ILRuntime
         internal static ILRuntime.Runtime.Enviorment.AppDomain appDomain;
 
         private static readonly Dictionary<string, Type> IlRuntimeTypes = new Dictionary<string, Type>();
@@ -278,12 +278,10 @@ namespace Nino.Serialization
 
             return type;
         }
-#endif
     }
 
     public class SerializationHelper1ILTypeInstanceAdapter : ILRuntime.Runtime.Enviorment.CrossBindingAdaptor
     {
-#if ILRuntime
         public override Type BaseCLRType
         {
             get { return typeof(Nino.Serialization.NinoWrapperBase<ILRuntime.Runtime.Intepreter.ILTypeInstance>); }
@@ -384,6 +382,6 @@ namespace Nino.Serialization
                     return instance.Type.FullName;
             }
         }
-#endif
     }
+#endif
 }
