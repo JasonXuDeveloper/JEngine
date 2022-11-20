@@ -12,19 +12,47 @@ namespace JEngine.Examples
     {
         [global::ProtoBuf.ProtoMember(1)]
         [global::System.ComponentModel.DefaultValue(0)]
-        public int id = 0;
+        public int id
+        {
+            get { return __pbn__id ?? 0; }
+            set { __pbn__id = value; }
+        }
+        public bool ShouldSerializeid() => __pbn__id != null;
+        public void Resetid() => __pbn__id = null;
+        private int? __pbn__id;
 
         [global::ProtoBuf.ProtoMember(2)]
         [global::System.ComponentModel.DefaultValue("")]
-        public string name = "";
+        public string name
+        {
+            get { return __pbn__name ?? ""; }
+            set { __pbn__name = value; }
+        }
+        public bool ShouldSerializename() => __pbn__name != null;
+        public void Resetname() => __pbn__name = null;
+        private string __pbn__name;
 
         [global::ProtoBuf.ProtoMember(3)]
         [global::System.ComponentModel.DefaultValue(0)]
-        public long money = 0;
+        public long money
+        {
+            get { return __pbn__money ?? 0; }
+            set { __pbn__money = value; }
+        }
+        public bool ShouldSerializemoney() => __pbn__money != null;
+        public void Resetmoney() => __pbn__money = null;
+        private long? __pbn__money;
 
         [global::ProtoBuf.ProtoMember(4)]
         [global::System.ComponentModel.DefaultValue(false)]
-        public bool gm = false;
+        public bool gm
+        {
+            get { return __pbn__gm ?? false; }
+            set { __pbn__gm = value; }
+        }
+        public bool ShouldSerializegm() => __pbn__gm != null;
+        public void Resetgm() => __pbn__gm = null;
+        private bool? __pbn__gm;
 
         [global::ProtoBuf.ProtoMember(5, TypeName = "JEngine.Examples.DataClass.DataEntry")]
         [global::ProtoBuf.ProtoMap]
