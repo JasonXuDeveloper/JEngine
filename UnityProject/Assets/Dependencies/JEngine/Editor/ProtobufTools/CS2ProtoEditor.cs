@@ -30,6 +30,7 @@ using System.IO;
 using System.Reflection;
 using JEngine.Core;
 using ProtoBuf;
+using ProtoBuf.Meta;
 using UnityEditor;
 using UnityEngine;
 
@@ -115,8 +116,7 @@ namespace JEngine.Editor
 				return;
 			}
 
-			var mi = typeof(Serializer).GetMethod("GetProto",new Type[] {})?.MakeGenericMethod(t);
-			string proto = (string)mi?.Invoke(null,null);
+			string proto = RuntimeTypeModel.Default.GetSchema(t, ProtoSyntax.Proto2);
 			
 			//如果有先删除
 			if (File.Exists($"{OUTPUT_PATH}/{_class.Replace('.','_')}.proto"))
