@@ -80,6 +80,23 @@ namespace JEngine.Examples
         {
             Debug.Log(gameObject.GetJBehaviour<ClassBindDemo1>() == null);
             Log.Print("[ClassBindDemo2] ClassBindDemo2::Start");
+            StartCoroutine(CoroutineDemo(1f));
+            StartCoroutine(nameof(CoroutineDemo2));
+            StartCoroutine(nameof(CoroutineDemo), 3f);
+            StopCoroutine(nameof(CoroutineDemo2));
+        }
+
+        public System.Collections.IEnumerator CoroutineDemo(float time)
+        {
+            yield return new WaitForSeconds(time);
+            Log.Print($"[ClassBindDemo2] Coroutine Demo, waited for {time} sec");
+        }
+
+        public System.Collections.IEnumerator CoroutineDemo2()
+        {
+            var time = 2;
+            yield return new WaitForSeconds(time);
+            Log.Print($"[ClassBindDemo2] Coroutine Demo, waited for {time} sec");
         }
 
         //太多log看着头大，先关了

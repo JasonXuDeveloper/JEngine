@@ -1,5 +1,7 @@
 #if INIT_JE
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -181,8 +183,19 @@ namespace JEngine.Core
             var printErrorMethod = printType.GetMethod("PrintError", new[] {typeof(object)});
             appdomain.RegisterCLRMethodRedirection(printErrorMethod, PrintError);
 
-            //注册Invoke
+            //注册StartCoroutine
             Type monoType = typeof(MonoBehaviour);
+            args = new Type[]{typeof(System.String)};
+            var startMethod = monoType.GetMethod("StartCoroutine", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(startMethod, StartCoroutine_6);
+            args = new Type[]{typeof(System.String), typeof(System.Object)};
+            startMethod = monoType.GetMethod("StartCoroutine", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(startMethod, StartCoroutine_7);
+            args = new Type[]{typeof(System.String)};
+            var stopMethod = monoType.GetMethod("StopCoroutine", flag, null, args, null);
+            appdomain.RegisterCLRMethodRedirection(stopMethod, StopCoroutine_8);
+            
+            //注册Invoke
             args = new[] {typeof(String), typeof(Single)};
             var invokeMethod = monoType.GetMethod("Invoke", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(invokeMethod, Invoke_1);
@@ -357,6 +370,86 @@ namespace JEngine.Core
             appdomain.RegisterCLRMethodRedirection(getValueOrDefaultMethod, GetValueOrDefault_2);
             appdomain.RegisterCLRCreateDefaultInstance(type, () => new System.Nullable<System.UInt64>());
 
+        }
+        
+        /// <summary>
+        /// 执行过的迭代器
+        /// </summary>
+        private static ConcurrentDictionary<(int, string), Coroutine> _coroutineMap = new ConcurrentDictionary<(int, string), Coroutine>();
+
+        private static unsafe StackObject* StartCoroutine_6(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour) typeof(MonoBehaviour).CheckCLRTypes(val);
+            __intp.Free(ptr_of_this_method);
+
+            //反射获取迭代器对象
+            var method = val.Type.ReflectionType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (method == null) throw new Exception("找不到方法:" + methodName);
+            var iterator = (IEnumerator)method.Invoke(val, null);
+            var result_of_this_method = adapter.StartCoroutine(iterator);
+            _coroutineMap[(adapter.GetInstanceID(), methodName)] = result_of_this_method;
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        private static unsafe StackObject* StartCoroutine_7(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 3);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.Object @value = (System.Object)typeof(System.Object).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 3);
+            ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour) typeof(MonoBehaviour).CheckCLRTypes(val);
+            __intp.Free(ptr_of_this_method);
+
+            //反射获取迭代器对象
+            var method = val.Type.ReflectionType.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (method == null) throw new Exception("找不到方法:" + methodName);
+            var iterator =
+                (IEnumerator)method.Invoke(val, value == null ? null : new object[] { value });
+            var result_of_this_method = adapter.StartCoroutine(iterator);
+            _coroutineMap[(adapter.GetInstanceID(), methodName)] = result_of_this_method;
+
+            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
+        }
+
+        private static unsafe StackObject* StopCoroutine_8(ILIntepreter __intp, StackObject* __esp, AutoList __mStack, CLRMethod __method, bool isNewObj)
+        {
+            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
+            StackObject* ptr_of_this_method;
+            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
+            System.String @methodName = (System.String)typeof(System.String).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack), (Extensions.TypeFlags)0);
+            __intp.Free(ptr_of_this_method);
+
+            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
+            ILTypeInstance val = (ILTypeInstance) (StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
+            MonoBehaviour adapter = (MonoBehaviour) typeof(MonoBehaviour).CheckCLRTypes(val);
+            __intp.Free(ptr_of_this_method);
+            if (!_coroutineMap.TryGetValue((adapter.GetInstanceID(), methodName), out var coroutine)) return __ret;
+            adapter.StopCoroutine(coroutine);
+
+            return __ret;
         }
         
         private static unsafe void WriteBackInstance(ILRuntime.Runtime.Enviorment.AppDomain __domain, StackObject* ptr_of_this_method, AutoList __mStack, ref System.Nullable<System.UInt64> instance_of_this_method)
