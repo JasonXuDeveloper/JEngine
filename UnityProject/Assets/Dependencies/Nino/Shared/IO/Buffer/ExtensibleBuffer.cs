@@ -47,7 +47,7 @@ namespace Nino.Shared.IO
         /// Init extensible buffer with a capacity
         /// </summary>
         /// <param name="size"></param>
-        public ExtensibleBuffer(int size = DefaultBufferSize)
+        public ExtensibleBuffer([In] int size = DefaultBufferSize)
         {
             sizeOfT = (byte)sizeof(T);
             ExpandSize = size;
@@ -60,15 +60,15 @@ namespace Nino.Shared.IO
         /// Get element at index
         /// </summary>
         /// <param name="index"></param>
-        public T this[int index]
+        public T this[in int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Data[index];
+            get => *(Data + index);
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                EnsureCapacity(ref index);
-                Data[index] = value;
+                EnsureCapacity(in index);
+                *(Data + index) = value;
             }
         }
 
@@ -76,15 +76,16 @@ namespace Nino.Shared.IO
         /// Ensure index exists
         /// </summary>
         /// <param name="index"></param>
-        private void EnsureCapacity(ref int index)
+        private void EnsureCapacity(in int index)
         {
             if (index < TotalLength) return;
+            GC.RemoveMemoryPressure(TotalLength * sizeOfT);
             while (index >= TotalLength)
             {
                 TotalLength += ExpandSize;
-                GC.AddMemoryPressure(sizeOfT * ExpandSize);
             }
             Extend();
+            GC.AddMemoryPressure(TotalLength * sizeOfT);
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace Nino.Shared.IO
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public T[] ToArray(int startIndex, int length)
+        public T[] ToArray([In] int startIndex, [In] int length)
         {
             T[] ret = new T[length];
             CopyTo(ref ret, startIndex, length);
@@ -115,11 +116,11 @@ namespace Nino.Shared.IO
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Span<T> AsSpan(int startIndex, int length)
+        public Span<T> AsSpan([In] int startIndex, [In] int length)
         {
             var l = startIndex + length;
             //size check
-            EnsureCapacity(ref l);
+            EnsureCapacity(in l);
             return new Span<T>(Data + startIndex, length);
         }
 
@@ -138,7 +139,7 @@ namespace Nino.Shared.IO
         /// <param name="dstIndex"></param>
         /// <param name="length"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void CopyFrom(T[] src, int srcIndex, int dstIndex, int length)
+        public void CopyFrom(T[] src, [In] int srcIndex, [In] int dstIndex, [In] int length)
         {
             fixed (T* ptr = src)
             {
@@ -155,11 +156,11 @@ namespace Nino.Shared.IO
         /// <param name="dstIndex"></param>
         /// <param name="length"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public void CopyFrom(T* src, int srcIndex, int dstIndex, int length)
+        public void CopyFrom([In] T* src, [In] int srcIndex, [In] int dstIndex, [In] int length)
         {
             var l = dstIndex + length;
             //size check
-            EnsureCapacity(ref l);
+            EnsureCapacity(in l);
             //copy
             Unsafe.CopyBlockUnaligned(Data + dstIndex, src + srcIndex, (uint)length);
         }
@@ -171,7 +172,7 @@ namespace Nino.Shared.IO
         /// <param name="srcIndex"></param>
         /// <param name="length"></param>
         /// <exception cref="OverflowException"></exception>
-        public void CopyTo(ref T[] dst, int srcIndex, int length)
+        public void CopyTo(ref T[] dst, [In] int srcIndex, [In] int length)
         {
             fixed (T* ptr = dst)
             {
@@ -186,11 +187,11 @@ namespace Nino.Shared.IO
         /// <param name="srcIndex"></param>
         /// <param name="length"></param>
         /// <exception cref="OverflowException"></exception>
-        public void CopyTo(T* dst, int srcIndex, int length)
+        public void CopyTo([In] T* dst, [In] int srcIndex, [In] int length)
         {
             var l = srcIndex + length;
             //size check
-            EnsureCapacity(ref l);
+            EnsureCapacity(in l);
             //copy
             Unsafe.CopyBlockUnaligned(dst, Data + srcIndex, (uint)length);
         }
