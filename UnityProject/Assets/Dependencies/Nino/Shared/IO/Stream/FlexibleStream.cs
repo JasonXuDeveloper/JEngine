@@ -26,14 +26,21 @@ namespace Nino.Shared.IO
         private readonly uint maxLength = 2147483648;
         private const int MemStreamMaxLength = Int32.MaxValue;
 
-        public void ChangeBuffer(byte[] data)
+        public void ChangeBuffer(byte[] data, int offset, int count)
         {
             Reset();
             internalBuffer = data;
+            origin = offset;
+            position = offset;
             length = data.Length;
             capacity = length;
         }
-        
+
+        public void ChangeBuffer(ArraySegment<byte> data)
+        {
+            ChangeBuffer(data.Array, data.Offset, data.Count);
+        }
+
         public void Reset()
         {
             position = 0;
@@ -56,6 +63,17 @@ namespace Nino.Shared.IO
             expandable = true;
             isOpen = true;
             origin = 0;
+        }
+
+        public FlexibleStream(ArraySegment<byte> internalBuffer)
+        {
+            this.internalBuffer = internalBuffer.Array ?? throw new ArgumentNullException(nameof(internalBuffer), "buffer == null");
+            length = capacity = internalBuffer.Array.Length;
+            exposable = true;
+            expandable = true;
+            isOpen = true;
+            origin = internalBuffer.Offset;
+            position = internalBuffer.Offset;
         }
         
         public override bool CanRead => isOpen;

@@ -194,6 +194,18 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         
         async void OnEnable()
         {
+            try
+            {
+                while (Application.isPlaying && !awaked)
+                {
+                    await TimeMgr.Delay(1);
+                }
+            }
+            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
+            {
+                return;
+            }
+
             if (instance != null)
             {
                 if (!_mOnEnableMethodGot)
@@ -204,18 +216,6 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
                 if (_mOnEnableMethod != null)
                 {
-                    try
-                    {
-                        while (Application.isPlaying && !awaked)
-                        {
-                            await TimeMgr.Delay(1);
-                        }
-                    }
-                    catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
-                    {
-                        return;
-                    }
-
                     if (_destoryed || !Application.isPlaying)
                     {
                         return;

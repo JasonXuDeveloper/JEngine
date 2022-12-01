@@ -22,7 +22,7 @@ namespace Nino.Shared.Mgr
             var compressedStream = new FlexibleStream(BufferPool.RequestBuffer(10240));
             var zipStream = new DeflateStream(compressedStream, CompressionMode.Compress, true);
             CompressStreams.Push(zipStream);
-            var empty = Array.Empty<byte>();
+            var empty = new ArraySegment<byte>(Array.Empty<byte>());
             GetDecompressInformation(out _, ref empty);
             compressedStream = new FlexibleStream(BufferPool.RequestBuffer(10240));
             zipStream = new DeflateStream(compressedStream, CompressionMode.Decompress, true);
@@ -57,26 +57,27 @@ namespace Nino.Shared.Mgr
         /// <returns></returns>
         public static byte[] Compress(byte[] data)
         {
-            return Compress(data, data.Length);
+            return Compress(new ArraySegment<byte>(data));
         }
 
         /// <summary>
         /// Compress the given bytes
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="length"></param>
         /// <returns></returns>
-        public static byte[] Compress(byte[] data, int length)
+        public static byte[] Compress(ArraySegment<byte> data)
         {
             lock (CompressedLock)
             {
                 if (!ConstMgr.EnableNativeDeflate)
                 {
-                    return CompressOnNative(data, length);
+                    return CompressOnNative(data);
                 }
 
                 GetCompressInformation(out var zipStream, out var compressedStream);
-                zipStream.Write(data, 0, length);
+                // ReSharper disable AssignNullToNotNullAttribute
+                zipStream.Write(data.Array, data.Offset, data.Count);
+                // ReSharper restore AssignNullToNotNullAttribute
                 return GetCompressBytes(zipStream, compressedStream);
             }
         }
@@ -152,13 +153,37 @@ namespace Nino.Shared.Mgr
         {
             lock (DecompressedLock)
             {
+                var seg = new ArraySegment<byte>(data);
+                if (!ConstMgr.EnableNativeDeflate)
+                {
+                    return DecompressOnNative(seg, out outputLength);
+                }
+
+                GetDecompressInformation(out var zipStream, ref seg);
+                var ret = zipStream.GetDecompressedBytes(out outputLength, data.Length);
+                //push
+                DecompressStreams.Push(zipStream);
+                return ret;
+            }
+        }
+
+        /// <summary>
+        /// Decompress thr given bytes (NEED TO BE AWARE OF UNMANAGED INTPTR, REMEMBER TO FREE IT)
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="outputLength"></param>
+        /// <returns></returns>
+        public static IntPtr Decompress(ArraySegment<byte> data, out int outputLength)
+        {
+            lock (DecompressedLock)
+            {
                 if (!ConstMgr.EnableNativeDeflate)
                 {
                     return DecompressOnNative(data, out outputLength);
                 }
 
                 GetDecompressInformation(out var zipStream, ref data);
-                var ret = zipStream.GetDecompressedBytes(out outputLength, data.Length);
+                var ret = zipStream.GetDecompressedBytes(out outputLength, data.Count);
                 //push
                 DecompressStreams.Push(zipStream);
                 return ret;
@@ -174,6 +199,36 @@ namespace Nino.Shared.Mgr
         {
             lock (DecompressedLock)
             {
+                var seg = new ArraySegment<byte>(data);
+                if (!ConstMgr.EnableNativeDeflate)
+                {
+                    var ptr = DecompressOnNative(seg, out var length);
+                    byte[] buf = new byte[length];
+                    Marshal.Copy(ptr, buf, 0, length);
+                    Marshal.FreeHGlobal(ptr);
+                    return buf;
+                }
+
+                GetDecompressInformation(out var zipStream, ref seg);
+                var ret = zipStream.GetDecompressedBytes(out var len, data.Length);
+                //push
+                DecompressStreams.Push(zipStream);
+                var buffer = new byte[len];
+                Marshal.Copy(ret, buffer, 0, len);
+                Marshal.FreeHGlobal(ret);
+                return buffer;
+            }
+        }
+
+        /// <summary>
+        /// Decompress thr given bytes
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static byte[] Decompress(ArraySegment<byte> data)
+        {
+            lock (DecompressedLock)
+            {
                 if (!ConstMgr.EnableNativeDeflate)
                 {
                     var ptr = DecompressOnNative(data, out var length);
@@ -184,7 +239,7 @@ namespace Nino.Shared.Mgr
                 }
 
                 GetDecompressInformation(out var zipStream, ref data);
-                var ret = zipStream.GetDecompressedBytes(out var len, data.Length);
+                var ret = zipStream.GetDecompressedBytes(out var len, data.Count);
                 //push
                 DecompressStreams.Push(zipStream);
                 var buffer = new byte[len];
@@ -200,7 +255,7 @@ namespace Nino.Shared.Mgr
         /// </summary>
         /// <param name="zipStream"></param>
         /// <param name="data"></param>
-        private static void GetDecompressInformation(out DeflateStream zipStream, ref byte[] data)
+        private static void GetDecompressInformation(out DeflateStream zipStream, ref ArraySegment<byte> data)
         {
             lock (DecompressedLock)
             {
@@ -227,14 +282,15 @@ namespace Nino.Shared.Mgr
         /// Compress the given bytes
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="length"></param>
         /// <returns></returns>
-        private static byte[] CompressOnNative(byte[] data, int length)
+        private static byte[] CompressOnNative(ArraySegment<byte> data)
         {
             using (var compressedStream = new MemoryStream())
             using (var zipStream = new System.IO.Compression.DeflateStream(compressedStream, CompressionMode.Compress))
             {
-                zipStream.Write(data, 0, length);
+                // ReSharper disable AssignNullToNotNullAttribute
+                zipStream.Write(data.Array, data.Offset, data.Count);
+                // ReSharper restore AssignNullToNotNullAttribute
                 zipStream.Close();
                 return compressedStream.ToArray();
             }
@@ -263,7 +319,7 @@ namespace Nino.Shared.Mgr
         /// <param name="data"></param>
         /// <param name="len"></param>
         /// <returns></returns>
-        private static IntPtr DecompressOnNative(byte[] data, out int len)
+        private static IntPtr DecompressOnNative(ArraySegment<byte> data, out int len)
         {
             FlexibleStream result = ObjectPool<FlexibleStream>.Request();
             result.Reset();
@@ -271,7 +327,7 @@ namespace Nino.Shared.Mgr
             if (ObjectPool<FlexibleStream>.Peak() != null)
             {
                 compressedStream = ObjectPool<FlexibleStream>.Request();
-                compressedStream.ChangeBuffer(data);
+                compressedStream.ChangeBuffer(data.Array, data.Offset, data.Count);
             }
             else
             {
