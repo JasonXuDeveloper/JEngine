@@ -79,6 +79,7 @@
     <Compile Include="JEngine\Examples\Core\ValidationDemo.cs" />
     <Compile Include="JEngine\Examples\Core\AddOnDemo.cs" />
     <Compile Include="BPath.cs" />
+    <Compile Include="JEngine\Examples\Core\NinoDemo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">

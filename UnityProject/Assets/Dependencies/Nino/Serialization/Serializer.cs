@@ -69,7 +69,8 @@ namespace Nino.Serialization
 		/// <param name="option"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static byte[] Serialize(object val, Encoding encoding = null, CompressOption option = CompressOption.Zlib)
+		public static byte[] Serialize(object val, Encoding encoding = null,
+			CompressOption option = CompressOption.Zlib)
 		{
 			encoding = encoding ?? DefaultEncoding;
 			Writer writer = ObjectPool<Writer>.Request();
@@ -85,13 +86,20 @@ namespace Nino.Serialization
 		/// <param name="encoding"></param>
 		/// <param name="writer"></param>
 		/// <param name="option"></param>
+		/// <param name="returnValue"></param>
 		/// <returns></returns>
-		private static byte[] Serialize<T>(T val, Encoding encoding, Writer writer, CompressOption option)
+		internal static byte[] Serialize<T>(T val, Encoding encoding, Writer writer, CompressOption option,
+			bool returnValue = true)
 		{
 			Type type = typeof(T);
 			bool boxed = false;
-			if (type == typeof(Object))
+			if (type == ConstMgr.ObjectType)
 			{
+				if (val == null)
+				{
+					throw new InvalidOperationException("Failed to retrieve unbox type");
+				}
+
 				type = val.GetType();
 				boxed = true;
 			}
@@ -99,7 +107,12 @@ namespace Nino.Serialization
 			//basic type
 			if (WrapperManifest.TryGetWrapper(type, out var wrapper))
 			{
-				writer.Init(encoding, TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+				if (returnValue)
+				{
+					writer.Init(encoding,
+						TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+				}
+
 				if (boxed)
 				{
 					wrapper.Serialize(val, writer);
@@ -108,8 +121,14 @@ namespace Nino.Serialization
 				{
 					((NinoWrapperBase<T>)wrapper).Serialize(val, writer);
 				}
-				var ret = writer.ToBytes();
-				ObjectPool<Writer>.Return(writer);
+
+				byte[] ret = ConstMgr.Null;
+				if (returnValue)
+				{
+					ret = writer.ToBytes();
+					ObjectPool<Writer>.Return(writer);
+				}
+
 				return ret;
 			}
 
@@ -127,14 +146,20 @@ namespace Nino.Serialization
 				{
 					((NinoWrapperBase<T>)wrapper).Serialize(val, writer);
 				}
+
 				//compress it
-				var ret = writer.ToBytes();
-				ObjectPool<Writer>.Return(writer);
+				byte[] ret = ConstMgr.Null;
+				if (returnValue)
+				{
+					ret = writer.ToBytes();
+					ObjectPool<Writer>.Return(writer);
+				}
+
 				return ret;
 			}
 
 			//reflection type
-			return Serialize(type, val, encoding ?? DefaultEncoding, writer, option, true, true, true);
+			return Serialize(type, val, encoding ?? DefaultEncoding, writer, option, returnValue, true, true);
 		}
 
 		/// <summary>
@@ -154,12 +179,14 @@ namespace Nino.Serialization
 		/// <exception cref="InvalidOperationException"></exception>
 		/// <exception cref="NullReferenceException"></exception>
 		// ReSharper disable CognitiveComplexity
-		internal static byte[] Serialize(Type type, object value, Encoding encoding, Writer writer,
+		internal static byte[] Serialize<T>(Type type, T value, Encoding encoding, Writer writer,
 				CompressOption option = CompressOption.Zlib, bool returnValue = true, bool skipBasicCheck = false,
 				bool skipCodeGenCheck = false,
 				bool skipGenericCheck = false, bool skipEnumCheck = false)
 			// ReSharper restore CognitiveComplexity
 		{
+			bool boxed = typeof(T) != type;
+
 			//ILRuntime
 #if ILRuntime
 			if(value is ILRuntime.Runtime.Intepreter.ILTypeInstance ins)
@@ -170,17 +197,29 @@ namespace Nino.Serialization
 			type = type.ResolveRealType();
 #endif
 
-			if (writer == null)
-			{
-				writer = ObjectPool<Writer>.Request();
-				writer.Init(encoding, option);
-			}
-
 			//basic type
 			if (!skipBasicCheck && WrapperManifest.TryGetWrapper(type, out var wrapper))
 			{
-				writer.Init(encoding, TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
-				wrapper.Serialize(value, writer);
+				if (writer == null)
+				{
+					writer = ObjectPool<Writer>.Request();
+				}
+
+				if (returnValue)
+				{
+					writer.Init(encoding,
+						TypeModel.IsNonCompressibleType(type) ? CompressOption.NoCompression : option);
+				}
+
+				if (boxed)
+				{
+					wrapper.Serialize(value, writer);
+				}
+				else
+				{
+					((NinoWrapperBase<T>)wrapper).Serialize(value, writer);
+				}
+
 				byte[] ret = ConstMgr.Null;
 				if (returnValue)
 				{
@@ -189,6 +228,12 @@ namespace Nino.Serialization
 				}
 
 				return ret;
+			}
+
+			if (writer == null)
+			{
+				writer = ObjectPool<Writer>.Request();
+				writer.Init(encoding, option);
 			}
 
 			//enum			
@@ -204,7 +249,16 @@ namespace Nino.Serialization
 				//add wrapper
 				WrapperManifest.AddWrapper(type, wrapper);
 				//start serialize
-				wrapper.Serialize(value, writer);
+
+				if (boxed)
+				{
+					wrapper.Serialize(value, writer);
+				}
+				else
+				{
+					((NinoWrapperBase<T>)wrapper).Serialize(value, writer);
+				}
+
 				byte[] ret = ConstMgr.Null;
 				if (returnValue)
 				{
@@ -216,27 +270,12 @@ namespace Nino.Serialization
 			}
 
 			//array
-			if (!skipGenericCheck && type.IsArray)
+			if (!skipGenericCheck)
 			{
-				writer.Write((Array)value);
-				byte[] ret = ConstMgr.Null;
-				if (returnValue)
+				//array
+				if (value is Array arr)
 				{
-					ret = writer.ToBytes();
-					ObjectPool<Writer>.Return(writer);
-				}
-
-				return ret;
-			}
-
-			//list, dict
-			if (!skipGenericCheck && type.IsGenericType)
-			{
-				var genericDefType = type.GetGenericTypeDefinition();
-				//不是list和dict就再见了
-				if (genericDefType == ConstMgr.ListDefType)
-				{
-					writer.Write((IList)value);
+					writer.Write(arr);
 					byte[] ret = ConstMgr.Null;
 					if (returnValue)
 					{
@@ -247,9 +286,19 @@ namespace Nino.Serialization
 					return ret;
 				}
 
-				if (genericDefType == ConstMgr.DictDefType)
+				//list, dict
+				if (type.IsGenericType)
 				{
-					writer.Write((IDictionary)value);
+					switch (value)
+					{
+						case IList lst:
+							writer.Write(lst);
+							break;
+						case IDictionary dict:
+							writer.Write(dict);
+							break;
+					}
+
 					byte[] ret = ConstMgr.Null;
 					if (returnValue)
 					{
@@ -306,7 +355,7 @@ namespace Nino.Serialization
 					{
 						var needToStore = model.Members[min];
 						writer.Write(needToStore.Name);
-						writer.Write(type.FullName);
+						writer.Write(type.AssemblyQualifiedName);
 					}
 
 					//try code gen, if no code gen then reflection
@@ -329,7 +378,7 @@ namespace Nino.Serialization
 							$"{type.FullName}.{model.Members[min].Name} is null, cannot serialize");
 					}
 
-					writer.WriteCommonVal(type, val);
+					Serialize(val, encoding, writer, option, false);
 					min++;
 				}
 			}
