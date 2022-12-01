@@ -70,7 +70,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(sbyte[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 fixed (sbyte* ptr = val)
@@ -144,7 +144,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(short[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 2;
@@ -218,7 +218,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(ushort[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 2;
@@ -278,12 +278,12 @@ namespace Nino.Serialization
     {
         public override void Serialize(int val, Writer writer)
         {
-            writer.CompressAndWrite(val);
+            writer.CompressAndWrite(ref val);
         }
 
         public override int Deserialize(Reader reader)
         {
-            return (int)reader.DecompressAndReadNumber();
+            return reader.DecompressAndReadNumber<int>();
         }
     }
 
@@ -306,7 +306,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i < len)
             {
-                arr[i++] = (int)reader.DecompressAndReadNumber();
+                reader.DecompressAndReadNumber(ref arr[i++]);
             }
             return arr;
         }
@@ -331,7 +331,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i++ < len)
             {
-                arr.Add((int)reader.DecompressAndReadNumber());
+                arr.Add(reader.DecompressAndReadNumber<int>());
             }
             return arr;
         }
@@ -341,12 +341,12 @@ namespace Nino.Serialization
     {
         public override void Serialize(uint val, Writer writer)
         {
-            writer.CompressAndWrite(val);
+            writer.CompressAndWrite(ref val);
         }
 
         public override uint Deserialize(Reader reader)
         {
-            return (uint)reader.DecompressAndReadNumber();
+            return reader.DecompressAndReadNumber<uint>();
         }
     }
 
@@ -369,7 +369,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i < len)
             {
-                arr[i++] = (uint)reader.DecompressAndReadNumber();
+                reader.DecompressAndReadNumber(ref arr[i++]);
             }
             return arr;
         }
@@ -394,7 +394,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i++ < len)
             {
-                arr.Add((uint)reader.DecompressAndReadNumber());
+                arr.Add(reader.DecompressAndReadNumber<uint>());
             }
             return arr;
         }
@@ -404,12 +404,12 @@ namespace Nino.Serialization
     {
         public override void Serialize(long val, Writer writer)
         {
-            writer.CompressAndWrite(val);
+            writer.CompressAndWrite(ref val);
         }
 
         public override long Deserialize(Reader reader)
         {
-            return (long)reader.DecompressAndReadNumber();
+            return reader.DecompressAndReadNumber<long>();
         }
     }
 
@@ -432,7 +432,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i < len)
             {
-                arr[i++] = (long)reader.DecompressAndReadNumber();
+                reader.DecompressAndReadNumber(ref arr[i++]);
             }
             return arr;
         }
@@ -457,7 +457,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i++ < len)
             {
-                arr.Add((long)reader.DecompressAndReadNumber());
+                arr.Add(reader.DecompressAndReadNumber<long>());
             }
             return arr;
         }
@@ -467,12 +467,12 @@ namespace Nino.Serialization
     {
         public override void Serialize(ulong val, Writer writer)
         {
-            writer.CompressAndWrite(val);
+            writer.CompressAndWrite(ref val);
         }
 
         public override ulong Deserialize(Reader reader)
         {
-            return reader.DecompressAndReadNumber();
+            return reader.DecompressAndReadNumber<ulong>();
         }
     }
 
@@ -495,7 +495,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i < len)
             {
-                arr[i++] = reader.DecompressAndReadNumber();
+                reader.DecompressAndReadNumber(ref arr[i++]);
             }
             return arr;
         }
@@ -520,7 +520,7 @@ namespace Nino.Serialization
             int i = 0;
             while (i++ < len)
             {
-                arr.Add(reader.DecompressAndReadNumber());
+                arr.Add(reader.DecompressAndReadNumber<ulong>());
             }
             return arr;
         }

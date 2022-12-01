@@ -21,7 +21,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(bool[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 fixed (bool* ptr = val)
@@ -95,7 +95,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(char[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 2;

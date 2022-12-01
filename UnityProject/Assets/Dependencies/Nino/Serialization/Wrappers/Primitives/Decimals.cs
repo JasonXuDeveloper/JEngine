@@ -21,7 +21,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(float[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 4;
@@ -94,7 +94,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(double[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 8;
@@ -167,7 +167,7 @@ namespace Nino.Serialization
         public override unsafe void Serialize(decimal[] val, Writer writer)
         {
             int len = val.Length;
-            writer.CompressAndWrite(len);
+            writer.CompressAndWrite(ref len);
             if (len > 0)
             {
                 len *= 16;
