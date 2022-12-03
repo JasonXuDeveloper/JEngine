@@ -83,6 +83,7 @@ namespace JEngine.Net
 		private volatile bool thPinging;
 		private volatile bool thPong;
 		private volatile bool wsConnected;
+		private volatile bool inGame;
 
 		private Thread socketThread;
 		private Thread pingThread;
@@ -223,6 +224,11 @@ namespace JEngine.Net
 			{
 				pingThread.Abort();
 			}
+		}
+
+		private void OnApplicationPause(bool pauseStatus)
+		{
+			inGame = !pauseStatus;
 		}
 
 		public void OnApplicationQuit()
@@ -419,7 +425,7 @@ namespace JEngine.Net
 			WebSocket webSocket = (WebSocket) obj;
 			while (connected)
 			{
-				if (webSocket.IsConnected)
+				if (webSocket.IsConnected || !inGame)
 				{
 					await TimeMgr.Delay(config.reconnectDelay);
 				}
