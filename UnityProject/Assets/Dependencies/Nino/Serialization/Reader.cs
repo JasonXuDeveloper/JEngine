@@ -259,8 +259,19 @@ namespace Nino.Serialization
 					Unsafe.As<T, byte>(ref result) = ReadByte();
 					return;
 				case CompressType.SByte:
-					Unsafe.As<T, sbyte>(ref result) = ReadSByte();
-					return;
+					switch (result)
+					{
+						case int _:
+							var temp = (int)ReadSByte();
+							Unsafe.As<T, int>(ref result) = temp;
+							return;
+						case long _:
+							var temp2 = (long)ReadSByte();
+							Unsafe.As<T, long>(ref result) = temp2;
+							return;
+						default:
+							throw new InvalidOperationException("invalid compress type");
+					}
 				case CompressType.Int16:
 					Unsafe.As<T, short>(ref result) = ReadInt16();
 					return;
