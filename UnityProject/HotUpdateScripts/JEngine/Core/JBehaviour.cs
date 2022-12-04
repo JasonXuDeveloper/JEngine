@@ -69,6 +69,8 @@ namespace JEngine.Core
         /// </summary>
         static JBehaviour()
         {
+            //注册循环
+            Loom.QueueOnMainThread(_ => JBehavioursLoop(), null);
             //注册检查
             LifeCycleMgr.Instance.AddUpdateTask(UpdateCheck, () => Application.isPlaying);
         }
@@ -136,6 +138,95 @@ namespace JEngine.Core
                     JBehavioursList.RemoveAt(i);
                     i--;
                     cnt--;
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Do the loop
+        /// </summary>
+        private static async void JBehavioursLoop()
+        {
+            Stopwatch sw = new Stopwatch();
+            JBehaviour jb;
+            for(; ; )
+            {
+                if (!Application.isPlaying) break;
+                await TimeMgr.Delay(1);
+                int cnt = LoopJBehaviours.Count;
+                for (int i = 0; i < cnt; i++)
+                {
+                    jb = LoopJBehaviours[i];
+                    if (jb._gameObject != null && !jb.LoopAwaitToken.IsCancellationRequested)
+                    {
+                        if (jb.Paused || jb.Hidden)
+                        {
+                            continue;
+                        }
+
+
+                        //调整参数
+                        if (jb.TimeScale < 0.001f)
+                        {
+                            jb.TimeScale = 1;
+                        }
+                        if (jb.Frequency <= 0)
+                        {
+                            jb.Frequency = 1;
+                        }
+
+                        int duration;
+                        if (jb.FrameMode)//等待
+                        {
+                            duration = (int)(jb.Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate) * 1000f);
+                            duration = (int)(duration / jb.TimeScale);
+                        }
+                        else
+                        {
+                            duration = jb.Frequency;
+                            duration = (int)(duration / jb.TimeScale);
+                        }
+                        if (duration < -1)
+                        {
+                            duration = 1;
+                        }
+
+                        if (Time.realtimeSinceStartup - jb.CurTime < duration / 1000f)
+                        {
+                            continue;
+                        }
+
+                        jb.CurTime = Time.realtimeSinceStartup;
+
+                        sw.Reset();
+                        sw.Start();
+
+                        try//循环
+                        {
+                            jb.Loop();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.PrintError($"{jb._gameObject.name}<{jb._instanceID}> Loop failed: {ex.Message}, {ex.Data["StackTrace"]}");
+                        }
+
+                        sw.Stop();
+
+                        //操作时间
+                        var time = sw.ElapsedMilliseconds / 1000f + duration / 1000f + 0.001f;
+                        jb.LoopCounts++;
+                        jb.LoopDeltaTime = time;
+                        jb.TotalTime += time;
+                    }
+                    else
+                    {
+                        jb.Destroy();
+                        LoopJBehaviours.RemoveAt(i);
+                        i--;
+                        cnt = LoopJBehaviours.Count;
+                    }
                 }
             }
         }
@@ -300,6 +391,12 @@ namespace JEngine.Core
         private static List<JBehaviour> JBehavioursList = new List<JBehaviour>(17);
 
         /// <summary>
+        /// All JBehaviours to loop
+        /// 全部待循环的JBehaviour
+        /// </summary>
+        private static List<JBehaviour> LoopJBehaviours = new List<JBehaviour>(17);
+
+        /// <summary>
         /// All JBehaviour in specefic GameObject
         /// 全部在某个GameObject上的JBehaviour
         /// </summary>
@@ -375,6 +472,13 @@ namespace JEngine.Core
         /// 是否监听Hidden
         /// </summary>
         [ClassBindIgnore] private bool EnableHiddenMonitoring = false;
+
+        /// <summary>
+        /// Current loop time
+        /// 当前循环的时间
+        /// </summary>
+        [ClassBindIgnore] private float CurTime = 0;
+        
 
         #endregion
 
@@ -507,74 +611,6 @@ namespace JEngine.Core
         [ClassBindIgnore] private CancellationTokenSource LoopAwaitToken;
 
         /// <summary>
-        /// Do the loop
-        /// </summary>
-        private protected async void DoLoop()
-        {
-            Stopwatch sw = new Stopwatch();
-
-            while (_gameObject != null && !LoopAwaitToken.IsCancellationRequested)
-            {
-                if (Paused || Hidden)//暂停或没Active
-                {
-                    await JEngine.Core.TimeMgr.Delay(10);
-                    continue;
-                }
-
-
-                //调整参数
-                if (TimeScale < 0.001f)
-                {
-                    TimeScale = 1;
-                }
-                if (Frequency <= 0)
-                {
-                    Frequency = 1;
-                }
-
-                sw.Reset();
-                sw.Start();
-
-                try//循环
-                {
-                    Loop();
-                }
-                catch (Exception ex)
-                {
-                    Log.PrintError($"{_gameObject.name}<{_instanceID}> Loop failed: {ex.Message}, {ex.Data["StackTrace"]}");
-                    return;
-                }
-
-                int duration;
-                if (FrameMode)//等待
-                {
-                    duration = (int)(((float)Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
-                    duration = (int)(duration / TimeScale);
-                }
-                else
-                {
-                    duration = Frequency;
-                    duration = (int)(duration / TimeScale);
-                }
-                if (duration < -1)
-                {
-                    duration = 1;
-                }
-
-                await JEngine.Core.TimeMgr.Delay(duration);
-
-                sw.Stop();
-
-                //操作时间
-                var time = sw.ElapsedMilliseconds / 1000f;
-                LoopCounts++;
-                LoopDeltaTime = time;
-                TotalTime += time;
-            }
-            Destroy();
-        }
-
-        /// <summary>
         /// Call end method
         /// 调用周期销毁
         /// </summary>
@@ -670,7 +706,7 @@ namespace JEngine.Core
         /// </summary>
         private protected void Start()
         {
-            DoLoop();
+            LoopJBehaviours.Add(this);
         }
 
         private protected static void AddJBehaviourToGameObjectDict(GameObject go, JBehaviour jb)
