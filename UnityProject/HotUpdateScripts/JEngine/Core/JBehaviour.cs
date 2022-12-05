@@ -151,6 +151,7 @@ namespace JEngine.Core
         {
             Stopwatch sw = new Stopwatch();
             JBehaviour jb;
+            float duration, time;
             for(; ; )
             {
                 if (!Application.isPlaying) break;
@@ -177,7 +178,6 @@ namespace JEngine.Core
                             jb.Frequency = 1;
                         }
 
-                        int duration;
                         if (jb.FrameMode)//等待
                         {
                             duration = (int)(jb.Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate) * 1000f);
@@ -193,7 +193,9 @@ namespace JEngine.Core
                             duration = 1;
                         }
 
-                        if (Time.realtimeSinceStartup - jb.CurTime < duration / 1000f)
+                        duration /= 1000f;
+
+                        if (Time.realtimeSinceStartup - jb.CurTime < duration)
                         {
                             continue;
                         }
@@ -215,7 +217,7 @@ namespace JEngine.Core
                         sw.Stop();
 
                         //操作时间
-                        var time = sw.ElapsedMilliseconds / 1000f + duration / 1000f + 0.001f;
+                        time = sw.ElapsedMilliseconds / 1000f + 0.001f + duration;
                         jb.LoopCounts++;
                         jb.LoopDeltaTime = time;
                         jb.TotalTime += time;
