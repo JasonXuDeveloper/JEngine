@@ -63,7 +63,7 @@ namespace JEngine.Examples
             });
             _list.Add(new NinoTestData
             {
-                sex = NinoTestData.Sex.Male,
+                sex = NinoTestData.Sex.Female,
                 name = "B",
                 id = 1,
                 isHasPet = true
@@ -93,7 +93,7 @@ namespace JEngine.Examples
             };
             _arr[1] = new NinoTestData
             {
-                sex = NinoTestData.Sex.Male,
+                sex = NinoTestData.Sex.Female,
                 name = "D",
                 id = 3,
                 isHasPet = false
@@ -102,8 +102,8 @@ namespace JEngine.Examples
             buf = Serializer.Serialize(_arr);
             Log.Print($"Nino 将_arr数据序列化为了 {buf.Length} bytes");
 
-            var _arr2 = Deserializer.Deserialize<List<NinoTestData>>(buf);
-            Log.Print($"Nino 反序列化了一个_arr2，内部有{_arr2.Count}个元素");
+            var _arr2 = Deserializer.Deserialize<NinoTestData[]> (buf);
+            Log.Print($"Nino 反序列化了一个_arr2，内部有{_arr2.Length}个元素");
             Log.Print($"_arr2[0].sex = {_arr2[0].sex}\n" +
                 $"_arr2[0].name = {_arr2[0].name}\n" +
                 $"_arr2[0].id = {_arr2[0].id}\n" +
