@@ -67,7 +67,7 @@ namespace JEngine.Editor
                     //ignored
                 }
 
-                await TimeMgr.Delay(500);
+                await Task.Delay(500);
             }
         }
 

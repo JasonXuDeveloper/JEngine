@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace JEngine.Core
 {
@@ -155,7 +156,7 @@ namespace JEngine.Core
             for(; ; )
             {
                 if (!Application.isPlaying) break;
-                await TimeMgr.Delay(1);
+                await Task.Delay(1);
                 int cnt = LoopJBehaviours.Count;
                 for (int i = 0; i < cnt; i++)
                 {
@@ -549,7 +550,7 @@ namespace JEngine.Core
                 int duration;
                 duration = (int)((1f / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
                 duration = (int)(duration / TimeScale);
-                await TimeMgr.Delay(duration);
+                await Task.Delay(duration);
                 OnEnable();
                 Start();
             });
@@ -572,7 +573,7 @@ namespace JEngine.Core
                     break;
                 }
 
-                await JEngine.Core.TimeMgr.Delay(1);
+                await Task.Delay(1);
             }
 
             if (JBehaviours is null || _gameObject is null)
