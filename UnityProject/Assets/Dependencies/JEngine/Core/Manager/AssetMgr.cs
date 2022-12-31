@@ -169,11 +169,11 @@ namespace JEngine.Core
             while (!operation.isDone && operation.progress < 0.9f)
             {
                 loadingCallback?.Invoke(operation.progress);
-                await TimeMgr.Delay(1);
+                await Task.Delay(1);
             }
 
             loadingCallback?.Invoke(1);
-            await TimeMgr.Delay(30);//1/30秒的时间去刷新UI
+            await Task.Delay(30);//1/30秒的时间去刷新UI
             operation.allowSceneActivation = true;
             operation.completed += asyncOperation =>
             {

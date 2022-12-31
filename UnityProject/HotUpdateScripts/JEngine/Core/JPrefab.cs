@@ -97,10 +97,10 @@ namespace JEngine.Core
         {
             if (!AssetMgr.RuntimeMode)
             {
-                await JEngine.Core.TimeMgr.Delay(1);
+                await Task.Delay(1);
                 while (!Loaded)
                 {
-                    await JEngine.Core.TimeMgr.Delay(10);
+                    await Task.Delay(10);
                 }
             }
             else

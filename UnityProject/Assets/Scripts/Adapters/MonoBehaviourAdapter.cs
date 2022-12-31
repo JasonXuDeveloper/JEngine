@@ -138,7 +138,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                         {
                             while (Application.isPlaying && !_destoryed && !gameObject.activeInHierarchy)
                             {
-                                await TimeMgr.Delay(1);
+                                await System.Threading.Tasks.Task.Delay(1);
                             }
                         }
                         catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
@@ -198,7 +198,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 while (Application.isPlaying && !awaked)
                 {
-                    await TimeMgr.Delay(1);
+                    await System.Threading.Tasks.Task.Delay(1);
                 }
             }
             catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了

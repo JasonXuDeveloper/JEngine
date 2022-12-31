@@ -248,7 +248,7 @@ namespace BM
         {
             if (AssetComponentConfig.AssetLoadMode != AssetLoadMode.Build)
             {
-                AssetLogHelper.LogError("仅Build模式可用获取版本索引");
+                AssetLogHelper.Log("仅Build模式可用获取版本索引");
                 return null;
             }
             if (!PackageToVersion.TryGetValue(bundlePackageName, out int[] versionData))

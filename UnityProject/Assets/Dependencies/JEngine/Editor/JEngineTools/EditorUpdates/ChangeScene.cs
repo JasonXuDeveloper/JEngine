@@ -29,7 +29,7 @@ namespace JEngine.Editor
                 while (SceneManager.GetActiveScene().name != name)
                 {
                     if (!Application.isPlaying) return;
-                    await TimeMgr.Delay(10);
+                    await Task.Delay(10);
                 }
                 DynamicGI.UpdateEnvironment();
             }

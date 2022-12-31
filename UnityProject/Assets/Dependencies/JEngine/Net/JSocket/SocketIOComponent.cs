@@ -427,7 +427,7 @@ namespace JEngine.Net
 			{
 				if (webSocket.IsConnected || !inGame)
 				{
-					await TimeMgr.Delay(config.reconnectDelay);
+					await Task.Delay(config.reconnectDelay);
 				}
 				else
 				{
@@ -451,7 +451,7 @@ namespace JEngine.Net
 			{
 				if (!wsConnected)
 				{
-					await TimeMgr.Delay(
+					await Task.Delay(
 						config.reconnectDelay);
 				}
 				else
@@ -465,7 +465,7 @@ namespace JEngine.Net
 					while (webSocket.IsConnected && thPinging &&
 					       (DateTime.Now.Subtract(pingStart).TotalSeconds < timeoutMilis))
 					{
-						await TimeMgr.Delay(200);
+						await Task.Delay(200);
 					}
 
 					if (!thPong)
@@ -473,7 +473,7 @@ namespace JEngine.Net
 						webSocket.Close();
 					}
 
-					await TimeMgr.Delay(intervalMilis);
+					await Task.Delay(intervalMilis);
 				}
 			}
 		}
@@ -566,7 +566,7 @@ namespace JEngine.Net
 
 			while (wsConnected && !complete)
 			{
-				await TimeMgr.Delay(10);
+				await Task.Delay(10);
 			}
 
 			return result;
