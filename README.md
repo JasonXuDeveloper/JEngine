@@ -38,7 +38,7 @@
 </p>
 
 
-# JENGINE v0.8 preview
+# JENGINE v0.8.0 preview
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
@@ -58,17 +58,17 @@ The ``development`` branch is the development branch. You are welcome to make ch
 
 Different built-in and additional packages for JEngine
 
-| Package Name         | Description                                                  | Type       | Link                                        |
-| -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------- |
-| JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | https://github.com/JasonXuDeveloper/JEngine |
-| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                         |
-| JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | N/A                                         |
-| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                         |
-| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                         |
-| LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | N/A                                         |
-| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                         |
-| Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | N/A                                         |
-| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                         |
+| Package Name         | Description                                                  | Type       | Link                                                   |
+| -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------------------ |
+| JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | [JEngine](https://github.com/JasonXuDeveloper/JEngine) |
+| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                                    |
+| JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | N/A                                                    |
+| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                                    |
+| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                                    |
+| LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | N/A                                                    |
+| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                                    |
+| Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | N/A                                                    |
+| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                                    |
 
 
 
@@ -112,19 +112,13 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 <img src="https://contrib.rocks/image?repo=JasonXuDeveloper/JEngine"/>
 
-## v0.7.5 New Features
+## v0.8.0 New Features
 
-- **Updated** ILRuntime to v2.1.0
-- **Optimized** code register workflow
-- **Optimized** JStream buffer strategy
-- **Optimized** ClassBind performance and GC
-- **Optimized** JEngine Initialize procedure and performance
-- **Optimized** LifeCycleMgr performance and GC
-- **Optimized** ```FindObjectsOfType``` performance and GC
-- **Optimized** JBehaviour performance and GC, removed its dependence to ```MonoBehaviour```
-- **Optimized** Loom (Execute Actions on Main Thread) performance and GC, removed its dependence to ```MonoBehaviour```
-
-
+- **Optimized** LifeCycleMgr Performance
+- **Optimized** ThreadMgr features
+- **Optimized** JStream performance
+- **Optimized** FpsMonitor performance
+- **Removed** ALL unneccessary packages
 
 [Click here to see the change log](CHANGE.md)
 
