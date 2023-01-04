@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Linq;
-using Nino.Shared.IO;
 using System.Reflection;
 using ILRuntime.Reflection;
 using ILRuntime.CLR.TypeSystem;
@@ -11,6 +10,10 @@ using UnityEngine.SceneManagement;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using Component = UnityEngine.Component;
+
+#if PLUGIN_NINO
+using Nino.Shared.IO;
+#endif
 
 namespace JEngine.Core
 {
@@ -78,7 +81,7 @@ namespace JEngine.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> FindObjectsOfTypeAll<T>()
+        public static List<T> FindObjectsOfTypeAll<T>() where T: Object
         {
             if (!Application.isPlaying)
             {
@@ -86,7 +89,7 @@ namespace JEngine.Core
                     .SelectMany(g => g.GetComponentsInChildren<T>(true))
                     .ToList();
             }
-#if INIT_JE
+#if PLUGIN_NINO
             List<GameObject> all = null;
             List<GameObject> temp = null;
             foreach (var scene in ClassBindMgr.LoadedScenes)
@@ -124,7 +127,7 @@ namespace JEngine.Core
             ObjectPool<List<T>>.Return(tempT);
             return lst;
 #endif
-            return null;
+            return Object.FindObjectsOfType<T>().ToList();
         }
 
         /// <summary>

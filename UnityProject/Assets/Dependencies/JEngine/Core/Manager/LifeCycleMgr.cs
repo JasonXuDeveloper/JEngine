@@ -28,22 +28,36 @@ using System;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
-    public partial class LifeCycleMgr : MonoBehaviour
+    public unsafe partial class LifeCycleMgr : MonoBehaviour
     {
-        private class LifeCycleItem
+        private readonly struct LifeCycleItem : IDisposable
         {
-            public readonly object ItemInstance;
+            public readonly IntPtr InstancePtr;
+            private readonly bool _hasGCHandle;
+            private readonly ulong _gcHandleAddress;
             public readonly Action Action;
             public readonly Func<bool> ExecuteCondition;
 
-            public LifeCycleItem(object itemInstance, Action action, Func<bool> cond)
+            public LifeCycleItem(void* instancePtr, bool hasHandle, ulong gcAddr, Action action, Func<bool> cond)
             {
-                ItemInstance = itemInstance;
+                InstancePtr = (IntPtr)instancePtr;
+                _hasGCHandle = hasHandle;
+                _gcHandleAddress = gcAddr;
                 Action = action;
                 ExecuteCondition = cond;
+            }
+
+            public void Dispose()
+            {
+                if (_hasGCHandle)
+                {
+                    UnsafeUtility.ReleaseGCObject(_gcHandleAddress);
+                }
             }
         }
 
@@ -70,8 +84,8 @@ namespace JEngine.Core
         /// 单例
         /// </summary>
         public static LifeCycleMgr Instance => _instance;
-        
-        
+
+
         /// <summary>
         /// unity周期
         /// </summary>
@@ -82,6 +96,7 @@ namespace JEngine.Core
             {
                 DestroyImmediate(this);
             }
+
             _ignoreWithoutInInstancesFunc = IgnoreWithoutInInstances;
             _ignoreWithInInstancesFunc = IgnoreWithInInstances;
         }
@@ -89,7 +104,7 @@ namespace JEngine.Core
         /// <summary>
         /// 单帧处理过的对象
         /// </summary>
-        private readonly List<object> _instances = new List<object>(100);
+        private readonly List<IntPtr> _instances = new List<IntPtr>(100);
 
         /// <summary>
         /// All awake methods
@@ -120,21 +135,33 @@ namespace JEngine.Core
         /// no gc search for awake objs
         /// </summary>
         private readonly HashSet<object> _awakeObjs = new HashSet<object>();
-        
+
         /// <summary>
         /// no gc search for start objs
         /// </summary>
         private readonly HashSet<object> _startObjs = new HashSet<object>();
 
         /// <summary>
+        /// Create lifecycle item
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <param name="hasGCHandle"></param>
+        /// <param name="gcAddr"></param>
+        /// <param name="action"></param>
+        /// <param name="cond"></param>
+        private static LifeCycleItem GetLifeCycleItem(void* addr, bool hasGCHandle, ulong gcAddr, Action action,
+            Func<bool> cond) => new LifeCycleItem(addr, hasGCHandle, gcAddr, action, cond);
+
+        /// <summary>
         /// Add awake task
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
-        public void AddAwakeItem(object instance, MethodInfo method)
+        public void AddAwakeItem<T>(T instance, MethodInfo method) where T : class
         {
-            _awakeItems.Add(
-                new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _awakeItems.Add(GetLifeCycleItem(ptr, true, address, () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => true));
             _awakeObjs.Add(instance);
         }
 
@@ -143,9 +170,11 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
-        public void AddStartItem(object instance, MethodInfo method)
+        public void AddStartItem<T>(T instance, MethodInfo method) where T : class
         {
-            _startItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => true));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _startItems.Add(GetLifeCycleItem(ptr, true, address, () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => true));
             _startObjs.Add(instance);
         }
 
@@ -154,10 +183,13 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should update")]
+        [Obsolete(
+            "Please provide a gameObject that holds this instance to be able to monitor whether or not it should update")]
         public void AddUpdateItem(object instance, MethodInfo method)
         {
-            _updateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _updateItems.Add(GetLifeCycleItem(ptr, true, address, () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => (instance.GetGameObject().gameObject.activeInHierarchy)));
         }
 
         /// <summary>
@@ -168,7 +200,9 @@ namespace JEngine.Core
         /// <param name="parent"></param>
         public void AddUpdateItem(object instance, MethodInfo method, GameObject parent)
         {
-            _updateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _updateItems.Add(GetLifeCycleItem(ptr, true, address, () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -179,7 +213,7 @@ namespace JEngine.Core
         public Guid AddUpdateTask(Action action)
         {
             Guid guid = Guid.NewGuid();
-            _updateItems.Add(new LifeCycleItem(guid, action, () => true));
+            _updateItems.Add(GetLifeCycleItem(&guid, false, 0, action, () => true));
             return guid;
         }
 
@@ -192,11 +226,13 @@ namespace JEngine.Core
         public Guid AddUpdateTask(Action action, Func<bool> condition)
         {
             Guid guid = Guid.NewGuid();
-            while (_updateItems.Exists(i => (Guid)i.ItemInstance == guid))
+            var guidPtr = &guid;
+            while (_updateItems.Exists(i => i.InstancePtr == (IntPtr)guidPtr))
             {
                 guid = Guid.NewGuid();
             }
-            _updateItems.Add(new LifeCycleItem(guid, action, condition));
+
+            _updateItems.Add(GetLifeCycleItem(&guid, false, 0, action, condition));
             return guid;
         }
 
@@ -204,9 +240,17 @@ namespace JEngine.Core
         /// Remove update task
         /// </summary>
         /// <param name="instance"></param>
-        public void RemoveUpdateItem(object instance)
+        public void RemoveUpdateItem<T>(T instance)
         {
-            _updateItems.RemoveAll(i => i.ItemInstance == instance);
+            if (typeof(T).IsClass)
+            {
+                void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+                _updateItems.RemoveAll(i => i.InstancePtr == (IntPtr)ptr);
+            }
+            else
+            {
+                _updateItems.RemoveAll(i => i.InstancePtr == (IntPtr)Unsafe.AsPointer(ref instance));
+            }
         }
 
         /// <summary>
@@ -214,10 +258,14 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should lateUpdate")]
+        [Obsolete(
+            "Please provide a gameObject that holds this instance to be able to monitor whether or not it should lateUpdate")]
         public void AddLateUpdateItem(object instance, MethodInfo method)
         {
-            _lateUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _lateUpdateItems.Add(GetLifeCycleItem(ptr, true, address,
+                () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => (instance.GetGameObject().gameObject.activeInHierarchy)));
         }
 
         /// <summary>
@@ -228,7 +276,9 @@ namespace JEngine.Core
         /// <param name="parent"></param>
         public void AddLateUpdateItem(object instance, MethodInfo method, GameObject parent)
         {
-            _lateUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _lateUpdateItems.Add(GetLifeCycleItem(ptr, true, address,
+                () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -237,7 +287,8 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveLateUpdateItem(object instance)
         {
-            _lateUpdateItems.RemoveAll(i => i.ItemInstance == instance);
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+            _lateUpdateItems.RemoveAll(i => i.InstancePtr == (IntPtr)ptr);
         }
 
         /// <summary>
@@ -245,10 +296,14 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="method"></param>
-        [Obsolete("Please provide a gameObject that holds this instance to be able to monitor whether or not it should fixedUpdate")]
+        [Obsolete(
+            "Please provide a gameObject that holds this instance to be able to monitor whether or not it should fixedUpdate")]
         public void AddFixedUpdateItem(object instance, MethodInfo method)
         {
-            _fixedUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => (instance.GetGameObject().gameObject.activeInHierarchy)));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _fixedUpdateItems.Add(GetLifeCycleItem(ptr, true, address,
+                () => method?.Invoke(instance, ConstMgr.NullObjects),
+                () => (instance.GetGameObject().gameObject.activeInHierarchy)));
         }
 
         /// <summary>
@@ -259,7 +314,9 @@ namespace JEngine.Core
         /// <param name="parent"></param>
         public void AddFixedUpdateItem(object instance, MethodInfo method, GameObject parent)
         {
-            _fixedUpdateItems.Add(new LifeCycleItem(instance, () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _fixedUpdateItems.Add(GetLifeCycleItem(ptr, true, address,
+                () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
         }
 
         /// <summary>
@@ -268,7 +325,8 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveFixedUpdateItem(object instance)
         {
-            _fixedUpdateItems.RemoveAll(i => i.ItemInstance == instance);
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+            _fixedUpdateItems.RemoveAll(i => i.InstancePtr == (IntPtr)ptr);
         }
 
         /// <summary>
@@ -278,61 +336,57 @@ namespace JEngine.Core
         /// <param name="removeAfterInvoke"></param>
         /// <param name="ignoreCondition"></param>
         private void ExecuteItems(List<LifeCycleItem> items, bool removeAfterInvoke = true,
-            Func<object, bool> ignoreCondition = null)
+            Func<IntPtr, bool> ignoreCondition = null)
         {
-            lock (items)
+            int count = items.Count;
+            //遍历
+            for (int i = 0; i < count; i++)
             {
-                int count = items.Count;
-                //遍历
-                for (int i = 0; i < count; i++)
+                var item = items[i];
+                //忽略
+                if (ignoreCondition != null && ignoreCondition(item.InstancePtr) ||
+                    !item.ExecuteCondition())
                 {
-                    var item = items[i];
-                    //忽略
-                    if (ignoreCondition != null && ignoreCondition(item.ItemInstance)|| !item.ExecuteCondition())
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    //执行
-                    if (item.ItemInstance != null)
+                //执行
+                if (item.InstancePtr != IntPtr.Zero)
+                {
+                    try
                     {
-                        try
-                        {
-                            item.Action?.Invoke();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogException(ex);
-                        }
+                        item.Action?.Invoke();
                     }
+                    catch (Exception ex)
+                    {
+                        Debug.LogException(ex);
+                    }
+                }
 
-                    //删了这个
-                    if (removeAfterInvoke)
-                    {
-                        items.RemoveAt(i);
-                        i--;
-                        count--;
-                    }
-                } 
+                //删了这个
+                if (!removeAfterInvoke) continue;
+                items.RemoveAt(i);
+                i--;
+                count--;
             }
         }
 
         /// <summary>
         /// IgnoreWithoutInInstances func obj
         /// </summary>
-        private static Func<object, bool> _ignoreWithoutInInstancesFunc;
+        private static Func<IntPtr, bool> _ignoreWithoutInInstancesFunc;
 
         /// <summary>
         /// IgnoreWithInInstances func obj
         /// </summary>
-        private static Func<object, bool> _ignoreWithInInstancesFunc;
-        
+        private static Func<IntPtr, bool> _ignoreWithInInstancesFunc;
+
         /// <summary>
         /// whether or not ignore this obj
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private bool IgnoreWithoutInInstances(object obj)
+        private bool IgnoreWithoutInInstances(IntPtr obj)
         {
             return _instances.Contains(obj) || _awakeObjs.Contains(obj)
                                             || _startObjs.Contains(obj);
@@ -343,11 +397,27 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private bool IgnoreWithInInstances(object obj)
+        private bool IgnoreWithInInstances(IntPtr obj)
         {
             return _awakeObjs.Contains(obj)
                    || _startObjs.Contains(obj);
         }
+
+        /// <summary>
+        /// remove obj from instances
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private bool RemoveInstanceIfContains(object obj)
+        {
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(obj, out _);
+            return _instances.Contains((IntPtr)ptr);
+        }
+
+        /// <summary>
+        /// remove obj from instances
+        /// </summary>
+        private Predicate<object> RemoveInstanceIfContainsPredicate => RemoveInstanceIfContains;
 
         /// <summary>
         /// unity周期
@@ -356,18 +426,12 @@ namespace JEngine.Core
         {
             //处理fixed update
             //确保本帧没处理过这些对象
-            if (_instances.Count > 0)
-            {
+            //调用fixed update
+            ExecuteItems(_fixedUpdateItems, false,
                 //调用fixed update
-                ExecuteItems(_fixedUpdateItems, false, _ignoreWithoutInInstancesFunc);
-            }
-            else
-            {
-                //调用fixed update
-                ExecuteItems(_fixedUpdateItems, false, _ignoreWithInInstancesFunc);
-            }
+                _instances.Count > 0 ? _ignoreWithoutInInstancesFunc : _ignoreWithInInstancesFunc);
         }
-        
+
         /// <summary>
         /// unity周期
         /// </summary>
@@ -375,16 +439,11 @@ namespace JEngine.Core
         {
             //处理update
             //确保本帧没处理过这些对象
-            if (_instances.Count > 0)
-            {
+            //调用update
+            ExecuteItems(_updateItems, false,
                 //调用update
-                ExecuteItems(_updateItems, false, _ignoreWithoutInInstancesFunc);
-            }
-            else
-            {
-                //调用update
-                ExecuteItems(_updateItems, false, _ignoreWithInInstancesFunc);
-            }
+                _instances.Count > 0 ? _ignoreWithoutInInstancesFunc : _ignoreWithInInstancesFunc);
+
             _instances.Clear();
         }
 
@@ -396,7 +455,7 @@ namespace JEngine.Core
             //temp val
             int cnt, i;
             LifeCycleItem item;
-            
+
             //如果有awake
             if (_awakeItems.Count > 0)
             {
@@ -405,15 +464,15 @@ namespace JEngine.Core
                 for (i = 0; i < cnt; i++)
                 {
                     item = _awakeItems[i];
-                    _instances.Add(item.ItemInstance);
+                    _instances.Add(item.InstancePtr);
                 }
 
                 ExecuteItems(_awakeItems);
-                
+
                 //清理
                 lock (_awakeObjs)
                 {
-                    _awakeObjs.RemoveWhere(_instances.Contains);
+                    _awakeObjs.RemoveWhere(RemoveInstanceIfContainsPredicate);
                 }
             }
 
@@ -430,43 +489,38 @@ namespace JEngine.Core
                     for (i = 0; i < cnt; i++)
                     {
                         item = _startItems[i];
-                        if (!_instances.Contains(item.ItemInstance))
+                        if (!_instances.Contains(item.InstancePtr))
                         {
-                            _instances.Add(item.ItemInstance);
+                            _instances.Add(item.InstancePtr);
                         }
                     }
                 }
                 else
                 {
                     ExecuteItems(_startItems);
-                    
+
                     //调用start，并记录本帧处理的对象
                     cnt = _startItems.Count;
                     for (i = 0; i < cnt; i++)
                     {
                         item = _startItems[i];
-                        _instances.Add(item.ItemInstance);
+                        _instances.Add(item.InstancePtr);
                     }
                 }
+
                 //清理
                 lock (_startObjs)
                 {
-                    _startObjs.RemoveWhere(_instances.Contains);
+                    _startObjs.RemoveWhere(RemoveInstanceIfContainsPredicate);
                 }
             }
 
             //处理late update
             //确保本帧没处理过这些对象
-            if (_instances.Count > 0)
-            {
+            //调用late update
+            ExecuteItems(_lateUpdateItems, false,
                 //调用late update
-                ExecuteItems(_lateUpdateItems, false, _ignoreWithoutInInstancesFunc);
-            }
-            else
-            {
-                //调用late update
-                ExecuteItems(_lateUpdateItems, false, _ignoreWithInInstancesFunc);
-            }
+                _instances.Count > 0 ? _ignoreWithoutInInstancesFunc : _ignoreWithInInstancesFunc);
         }
     }
 }

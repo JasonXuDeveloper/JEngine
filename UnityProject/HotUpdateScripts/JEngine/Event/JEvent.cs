@@ -89,10 +89,10 @@ namespace JEngine.Event
                         if (allParams != types) continue;
                         var method = td.Item2;
                         //丢主线程去分配Invoke，不然无法执行
-                        Loom.QueueOnMainThread(obj =>
+                        ThreadMgr.QueueOnMainThread(() =>
                         {
                             method.Invoke(val, parameters);
-                        }, null);
+                        });
                         //这边不log的时候，空标签会报错，于是我选择了log
                         //Log.Print($"[JEvent] <color=#ffa673>广播参数为：'{allParams}'的方法，目前进度" +
                         //        $"{i + 1}/{todo.Count}</color>");

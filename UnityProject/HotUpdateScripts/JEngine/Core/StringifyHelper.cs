@@ -23,7 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.IO;
+using System;
 using LitJson;
 using UnityEngine;
 
@@ -48,8 +48,9 @@ namespace JEngine.Core
                     return stream.ToArray();
                 }
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -69,8 +70,9 @@ namespace JEngine.Core
                 var res = (TextAsset) AssetMgr.Load(path);
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(res.bytes)) as T;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -89,8 +91,9 @@ namespace JEngine.Core
             {
                 return ProtoBuf.Serializer.Deserialize(typeof(T), new System.IO.MemoryStream(msg)) as T;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -112,8 +115,9 @@ namespace JEngine.Core
                 var json = JsonMapper.ToJson(value);
                 return json;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -132,8 +136,9 @@ namespace JEngine.Core
                 var jsonObj = JsonMapper.ToObject<T>(value);
                 return jsonObj;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }
@@ -161,8 +166,9 @@ namespace JEngine.Core
                 var jsonObj = JsonMapper.ToObject<T>(textAsset.text);
                 return jsonObj;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return default(T);
             }

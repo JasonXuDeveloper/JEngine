@@ -103,6 +103,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -137,6 +138,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
                 return null;
             }
@@ -176,6 +178,7 @@ namespace JEngine.Core
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null) ex = ex.InnerException;
                 Log.PrintError($"can not decrypt <{dataName}>, error message: {ex.Message}, returns local data: {result}" +
                     $"无法解密<{dataName}>，错误：{ex.Message}，已返回本地数据：{result}");
                 return result;

@@ -93,7 +93,7 @@ namespace JEngine.Core
                 //判断有没有dll
                 if (File.Exists(path))
                 {
-                    return FileMgr.FileToByte(path);
+                    return FileMgr.FileToBytes(path);
                 }
 
                 throw new FileNotFoundException($"DLL not found in: {path}");
@@ -130,7 +130,7 @@ namespace JEngine.Core
                 if (File.Exists(path) &&
                     (File.GetLastWriteTime(dllPath) - File.GetLastWriteTime(path)).Seconds < 30)
                 {
-                    return FileMgr.FileToByte(path);
+                    return FileMgr.FileToBytes(path);
                 }
 
                 throw new InvalidOperationException("Pdb is invalid");

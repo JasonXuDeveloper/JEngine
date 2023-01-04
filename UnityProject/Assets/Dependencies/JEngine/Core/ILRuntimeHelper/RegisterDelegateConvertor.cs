@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.Interface;
-using LitJson;
 using UnityEngine.Events;
 using WebSocketSharp;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -77,10 +75,6 @@ namespace JEngine.Core
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction<Int32>>(act =>
             {
                 return new UnityAction<Int32>(arg0 => { ((Action<Int32>)act)(arg0); });
-            });
-            appdomain.DelegateManager.RegisterDelegateConvertor<Action<JsonData>>(action =>
-            {
-                return new Action<JsonData>(a => { ((Action<JsonData>)action)(a); });
             });
             appdomain.DelegateManager.RegisterDelegateConvertor<UnityAction>(act =>
             {

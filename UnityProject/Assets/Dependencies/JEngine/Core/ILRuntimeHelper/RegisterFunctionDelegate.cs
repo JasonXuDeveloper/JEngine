@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.Interface;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Core

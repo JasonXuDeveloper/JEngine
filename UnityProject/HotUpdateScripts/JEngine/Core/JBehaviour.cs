@@ -71,7 +71,7 @@ namespace JEngine.Core
         static JBehaviour()
         {
             //注册循环
-            Loom.QueueOnMainThread(_ => JBehavioursLoop(), null);
+            ThreadMgr.QueueOnMainThread(JBehavioursLoop);
             //注册检查
             LifeCycleMgr.Instance.AddUpdateTask(UpdateCheck, () => Application.isPlaying);
         }
@@ -181,7 +181,7 @@ namespace JEngine.Core
 
                         if (jb.FrameMode)//等待
                         {
-                            duration = (int)(jb.Frequency / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate) * 1000f);
+                            duration = (int)(jb.Frequency / ((float)Application.targetFrameRate <= 0 ? FpsMonitor.FPS : Application.targetFrameRate) * 1000f);
                             duration = (int)(duration / jb.TimeScale);
                         }
                         else
@@ -544,11 +544,11 @@ namespace JEngine.Core
         public JBehaviour Activate()
         {
             //主线程
-            Loom.QueueOnMainThread(async () =>
+            ThreadMgr.QueueOnMainThread(async () =>
             {
                 Awake();
                 int duration;
-                duration = (int)((1f / ((float)Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate)) * 1000f);
+                duration = (int)((1f / ((float)Application.targetFrameRate <= 0 ? FpsMonitor.FPS : Application.targetFrameRate)) * 1000f);
                 duration = (int)(duration / TimeScale);
                 await Task.Delay(duration);
                 OnEnable();

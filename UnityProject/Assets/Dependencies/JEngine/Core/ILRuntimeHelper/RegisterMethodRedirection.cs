@@ -18,7 +18,6 @@ using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
-using JEngine.Interface;
 using ProtoBuf;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -1530,8 +1529,7 @@ namespace JEngine.Core
                 {
                     if (go != null)
                     {
-                        Loom.QueueOnMainThread(o =>
-                            methodInfo?.Invoke(val, null), null);
+                        ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
                     }
                     else
                     {
@@ -1624,8 +1622,7 @@ namespace JEngine.Core
             {
                 if (go != null)
                 {
-                    Loom.QueueOnMainThread(o =>
-                        methodInfo?.Invoke(val, null), null);
+                    ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
                     _invokeTokens.Remove(methodInfo);
                 }
             }

@@ -1,10 +1,10 @@
 ﻿//
-// DataClass.cs
+// BindableProperty.cs
 //
 // Author:
-//        JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
+//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
 //
-// Copyright (c) 2020 
+// Copyright (c) 2020 JEngine
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,44 +23,57 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using JEngine.Core;
-using JEngine.Misc;
-namespace JEngine.Examples
+
+using System;
+
+namespace JEngine.Misc
 {
-    public partial class DataClass
+    public class BindableProperty<T>
     {
-        /// <summary>
-        /// Property which holds the real value
-        /// </summary>
-        public long Money
+        // public delegate void onChange(T val);
+        // public delegate void onChangeWithOldVal(T oldVal, T newVal);
+        public Action<T> OnChange;
+        public Action<T,T> OnChangeWithOldVal;
+
+        private T _value;
+        public T Value
         {
             get
             {
-                return money;
+                return _value;
             }
             set
             {
-                money = value;
-                if (BindableMoney != null)
+                if (!Equals(_value, value))
                 {
-                    BindableMoney.Value = value;
-                }
-                else
-                {
-                    BindableMoney = new BindableProperty<long>(value);
+                    T oldValue = _value;
+                    _value = value;
+                    OnChange?.Invoke(_value);
+                    OnChangeWithOldVal?.Invoke(oldValue, _value);
                 }
             }
         }
 
-        /*
-        * Fields to bind
-        */
-        public BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
-
-
-        public void Awake()
+        public BindableProperty(T val)
         {
-            Log.Print("[DataClass] DataClass 被 Active After了");
+            _value = val;
+        }
+
+        public override string ToString()
+        {
+            return (Value != null ? Convert.ToString(Value) : "null");
+        }
+
+        public void Clear()
+        {
+            _value = default(T);
+        }
+
+        public static implicit operator T(BindableProperty<T> t)
+        {
+            return t.Value;
         }
     }
+
+
 }

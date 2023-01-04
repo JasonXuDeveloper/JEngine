@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
-using System.Runtime.CompilerServices;
-using Nino.Shared.IO;
 
 namespace JEngine.Core
 {
     public class JStream : Stream
     {
-        private ExtensibleBuffer<byte> _buffer; // Either allocated internally or externally.
+        private byte[] _buffer; // Either allocated internally or externally.
         private readonly int _origin; // For user-provided arrays, start at this origin
         private int _position; // read/write head.
         private int _length; // Number of bytes within the memory stream
@@ -29,16 +28,9 @@ namespace JEngine.Core
 
         public JStream(byte[] buffer, string key)
         {
-            _buffer = new ExtensibleBuffer<byte>(1024 * 512); //512KB的扩容尺寸
-            if (buffer != null)
-            {
-                _buffer.CopyFrom(buffer, 0, 0, buffer.Length);
-                _length = _capacity = buffer.Length;
-            }
-            else
-            {
-                _length = 0;
-            }
+            _buffer = new byte[buffer.Length];
+            buffer.AsSpan().CopyTo(_buffer);
+            _length = _capacity = buffer.Length;
 
             _exposable = false;
             _origin = 0;
@@ -83,7 +75,7 @@ namespace JEngine.Core
             if (!_exposable)
                 throw new UnauthorizedAccessException("UnauthorizedAccess to get member buffer");
             if (_buffer == null) return Array.Empty<byte>();
-            return _buffer.ToArray(0, _length);
+            return _buffer;
         }
 
         public virtual bool TryGetBuffer(out ArraySegment<byte> buffer)
@@ -100,7 +92,7 @@ namespace JEngine.Core
                 return false;
             }
 
-            buffer = new ArraySegment<byte>(_buffer.ToArray(0, _length), _origin, (_length - _origin));
+            buffer = new ArraySegment<byte>(_buffer, _origin, (_length - _origin));
             return true;
         }
 
@@ -173,9 +165,9 @@ namespace JEngine.Core
                 try
                 {
                     var decrypted = GetBytesAt(_position, count);
-                    Buffer.BlockCopy(decrypted, 0, buffer, offset, n); //复制过去
+                    decrypted.AsSpan(0, n).CopyTo(buffer.AsSpan(offset)); //复制过去
                     //返还借的数组
-                    ArrayPool<byte>.Return(decrypted);
+                    ArrayPool<byte>.Shared.Return(decrypted);
                 }
                 catch (Exception ex)
                 {
@@ -186,15 +178,7 @@ namespace JEngine.Core
             else
             {
                 //没加密的直接读就好
-#if INIT_JE
-                unsafe
-                {
-                    fixed (byte* dst = buffer)
-                    {
-                        _buffer.CopyTo(dst + offset, _position, n);
-                    }
-                }
-#endif
+                _buffer.AsSpan(_position, n).CopyTo(buffer.AsSpan(offset));
             }
 
             _position += n;
@@ -215,23 +199,22 @@ namespace JEngine.Core
             int count = length +
                         (32 - length %
                             16); //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77/16的余数） = 77 + （32-13） = 77 + 19 = 96，多16位确保不丢东西
-            var result = ArrayPool<byte>.Request(length); //返回值，长度为length
-            Array.Clear(result, 0, length);
+            var result = ArrayPool<byte>.Shared.Rent(length); //返回值，长度为length
 
             //现在需要将buffer切割，从offset开始，到count为止
-            var encryptedData = ArrayPool<byte>.Request(count); //创建加密数据数组
+            var encryptedData = ArrayPool<byte>.Shared.Rent(count); //创建加密数据数组
             Array.Clear(encryptedData, 0, count);
             var l = _length - offset;
             if (count > l) count = l;
-            _buffer.CopyTo(ref encryptedData, offset, count); //从原始数据里分割出来
+            _buffer.AsSpan(offset, count).CopyTo(encryptedData); //从原始数据里分割出来
 
             //给encryptedData解密
-            var decrypt = CryptoMgr.AesDecryptWithNoPadding(encryptedData, _key);
+            var decrypt = CryptoMgr.AesDecryptWithNoPadding(encryptedData, 0, count, _key);
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
             offset = remainder;
 
             //返还借的数组
-            ArrayPool<byte>.Return(encryptedData);
+            ArrayPool<byte>.Shared.Return(encryptedData);
 
             //这里有个问题，比如decrypt有16字节，而result是12字节，offset是8，那么12+8 > 16，就会出现错误
             //所以这里要改一下
@@ -242,10 +225,7 @@ namespace JEngine.Core
                 length = decrypt.Length;
             }
 
-            Buffer.BlockCopy(decrypt, offset, result, 0, length);
-            //返还借的数组
-            ArrayPool<byte>.Return(decrypt);
-
+            decrypt.AsSpan(offset, length).CopyTo(result.AsSpan());
             return result;
         }
 

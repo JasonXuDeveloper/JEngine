@@ -145,7 +145,7 @@ namespace JEngine.Core
         }
         
         /// <summary>
-        /// AES 算法加密(ECB模式) 无padding填充，用于分块解密
+        /// AES 算法加密(ECB模式) 无padding填充
         /// </summary>
         /// <param name="toEncryptArray">明文</param>
         /// <param name="key">密钥</param>
@@ -172,14 +172,25 @@ namespace JEngine.Core
                 return null;
             }
         }
-        
+
         /// <summary>
-        /// AES 算法解密(ECB模式) 无padding填充，用于分块解密
+        /// AES 算法解密(ECB模式) 无padding填充
         /// </summary>
         /// <param name="toDecryptArray">密文</param>
         /// <param name="key">密钥</param>
         /// <returns>明文</returns>
-        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string key)
+        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string key) =>
+            AesDecryptWithNoPadding(toDecryptArray, 0, toDecryptArray.Length, key);
+        
+        /// <summary>
+        /// AES 算法解密(ECB模式) 无padding填充
+        /// </summary>
+        /// <param name="toDecryptArray">密文</param>
+        /// <param name="offset">偏移</param>
+        /// <param name="count">长度</param>
+        /// <param name="key">密钥</param>
+        /// <returns>明文</returns>
+        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, int offset, int count, string key)
         {
             try
             {
@@ -191,7 +202,7 @@ namespace JEngine.Core
                 rDel.Padding = PaddingMode.None;
 
                 ICryptoTransform cTransform = rDel.CreateDecryptor();
-                byte[] resultArray = cTransform.TransformFinalBlock(toDecryptArray, 0, toDecryptArray.Length);
+                byte[] resultArray = cTransform.TransformFinalBlock(toDecryptArray, offset, count);
                 return resultArray;
             }
             catch (Exception ex)

@@ -2,7 +2,6 @@
 using ILRuntime.Runtime.Enviorment;
 using JEngine.AntiCheat;
 using JEngine.AntiCheat.ValueTypeBinders;
-using JEngine.Interface;
 using UnityEngine;
 
 namespace JEngine.Core

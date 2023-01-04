@@ -38,11 +38,13 @@
 </p>
 
 
-# JENGINE v0.7.5
+# JENGINE v0.8 preview
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated hotly.**
 
-The ```master``` branch is the latest version that the developers think can be used normally and will not have too many problems. It is recommended to use and has the most powerful functions (fixes bugs in versions 0.6 and 0.5 at the same time);
+The ```master``` branch is the latest version that the developers think can be used normally and will not have too many problems. It is recommended to use and has the most powerful functions (also it fixes the bugs in the old versions);
+
+The ```0.7.x``` branch is the most popular version in 2022 with various useful and high performance features, <u>this branch will not be updated or maintained any more</u>;
 
 The ```0.6.x``` branch is currently in use by most commercial projects, <u>complete content, sufficient documentation and videos, and will not be updated or maintained any more</u>;
 
@@ -52,31 +54,23 @@ The ``development`` branch is the development branch. You are welcome to make ch
 
 
 
+## Packages
 
-## How to Download (VERY IMPORTANT)
+Different built-in and additional packages for JEngine
 
-> Because JEngine uses Git's Submodule module to install submodules, downloading the source code of this framework is not recommended to download zip directly from the website. There are currently 3 download methods:
+| Package Name         | Description                                                  | Type       | Link                                        |
+| -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------- |
+| JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | https://github.com/JasonXuDeveloper/JEngine |
+| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                         |
+| JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | N/A                                         |
+| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                         |
+| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                         |
+| LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | N/A                                         |
+| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                         |
+| Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | N/A                                         |
+| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                         |
 
-1. Method 1, download the zip directly, then go to UnityProject/Assets/Dependencies, unzip the zip inside (must do if you download the zip archive)
 
-1. Method 2, first git clone and then install the submodule
-
-    ```bash
-    git clone git@github.com:JasonXuDeveloper/JEngine.git
-    cd JEngine
-    git submodule init
-    git submodule update
-    ````
-
-2. Method 3, install submodules along with git clone (recommended)
-
-    ```bash
-    git clone git@github.com:JasonXuDeveloper/JEngine.git --recursive
-    ````
-
-> Note, the github address here can be replaced with a gitee address
->
-> If an error is reported when installing the submodule, you need to configure the ssh key of Github (or Gitee)
 
 
 
@@ -136,7 +130,7 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 
 
-## Suggestions
+## Recommendations
 
   - [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
   - [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework.

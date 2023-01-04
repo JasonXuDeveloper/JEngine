@@ -1,10 +1,10 @@
 ﻿//
-// DataClass.cs
+// LocalizedText.cs
 //
 // Author:
-//        JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
+//       JasonXuDeveloper（傑） <jasonxudeveloper@gmail.com>
 //
-// Copyright (c) 2020 
+// Copyright (c) 2020 JEngine
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,44 +23,32 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using JEngine.Core;
-using JEngine.Misc;
-namespace JEngine.Examples
+
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+
+namespace JEngine.Localization
 {
-    public partial class DataClass
+    [RequireComponent(typeof(Text))]
+    public class LocalizedText : MonoBehaviour
     {
-        /// <summary>
-        /// Property which holds the real value
-        /// </summary>
-        public long Money
+        public string key;
+
+        [FormerlySerializedAs("_text")] [HideInInspector]public Text text;
+
+        private void Start()
         {
-            get
-            {
-                return money;
-            }
-            set
-            {
-                money = value;
-                if (BindableMoney != null)
-                {
-                    BindableMoney.Value = value;
-                }
-                else
-                {
-                    BindableMoney = new BindableProperty<long>(value);
-                }
-            }
+            Localization.AddText(this);
+            text = gameObject.GetComponent<Text>();
+            SetText();
         }
 
-        /*
-        * Fields to bind
-        */
-        public BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
-
-
-        public void Awake()
+        public async void SetText()
         {
-            Log.Print("[DataClass] DataClass 被 Active After了");
+            await Task.Delay(100);
+            text.text = Localization.GetString(key);
         }
     }
 }

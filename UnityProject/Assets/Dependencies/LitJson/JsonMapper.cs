@@ -1108,8 +1108,6 @@ namespace LitJson
             custom_importers_table.Clear ();
         }
         
-        #if INIT_JE
-
         public unsafe static void RegisterILRuntimeCLRRedirection(ILRuntime.Runtime.Enviorment.AppDomain appdomain)
         {
             foreach(var i in typeof(JsonMapper).GetMethods())
@@ -1174,6 +1172,5 @@ namespace LitJson
 
             return ILIntepreter.PushObject(__ret, mStack, result_of_this_method);
         }
-        #endif
     }
 }

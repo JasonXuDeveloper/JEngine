@@ -53,11 +53,9 @@ namespace JEngine.Core
                 File.Delete(path);
             }
 
-            if (Directory.Exists(path))
-            {
-                DirectoryInfo di = new DirectoryInfo(path);
-                di.Delete(true);
-            }
+            if (!Directory.Exists(path)) return;
+            var di = new DirectoryInfo(path);
+            di.Delete(true);
         }
 
         /// <summary>
@@ -65,16 +63,11 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="fileUrl">文件路径文件名称</param>
         /// <returns>byte[]数组</returns>
-        public static byte[] FileToByte(string fileUrl)
+        public static byte[] FileToBytes(string fileUrl)
         {
             try
             {
-                using (FileStream fs = new FileStream(fileUrl, FileMode.Open, FileAccess.Read))
-                {
-                    byte[] byteArray = new byte[fs.Length];
-                    fs.Read(byteArray, 0, byteArray.Length);
-                    return byteArray;
-                }
+                return File.ReadAllBytes(fileUrl);
             }
             catch(Exception ex)
             {
@@ -89,16 +82,12 @@ namespace JEngine.Core
         /// <param name="byteArray">byte[]数组</param>
         /// <param name="fileName">保存至硬盘的文件路径</param>
         /// <returns></returns>
-        public static bool ByteToFile(byte[] byteArray, string fileName)
+        public static bool BytesToFile(byte[] byteArray, string fileName)
         {
-            bool result;
+            var result = true;
             try
             {
-                using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
-                {
-                    fs.Write(byteArray, 0, byteArray.Length);
-                    result = true;
-                }
+                File.WriteAllBytes(fileName, byteArray);
             }
             catch(Exception ex)
             {

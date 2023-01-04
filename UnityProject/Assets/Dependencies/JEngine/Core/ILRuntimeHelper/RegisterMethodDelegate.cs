@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.Interface;
 using JEngine.Net;
 using UnityEngine;
 using UnityEngine.EventSystems;

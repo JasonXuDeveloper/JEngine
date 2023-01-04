@@ -24,8 +24,8 @@ namespace JEngine.Editor
                 var watch = new Stopwatch();
                 watch.Start();
                 string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
-                var bytes = FileMgr.FileToByte(dllPath);
-                var result = FileMgr.ByteToFile(CryptoMgr.AesEncrypt(bytes, s),
+                var bytes = FileMgr.FileToBytes(dllPath);
+                var result = FileMgr.BytesToFile(CryptoMgr.AesEncrypt(bytes, s),
                     DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
                 watch.Stop();
                 Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
@@ -40,8 +40,8 @@ namespace JEngine.Editor
                 string pdbPath = DllMgr.GetPdbInEditorPath(ConstMgr.MainHotDLLName);
                 if (File.Exists(pdbPath))
                 {
-                    bytes = FileMgr.FileToByte(pdbPath);
-                    result = FileMgr.ByteToFile(bytes,
+                    bytes = FileMgr.FileToBytes(pdbPath);
+                    result = FileMgr.BytesToFile(bytes,
                         DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
                     watch.Stop();
                     Log.Print("Convert PDBs in: " + watch.ElapsedMilliseconds + " ms.");

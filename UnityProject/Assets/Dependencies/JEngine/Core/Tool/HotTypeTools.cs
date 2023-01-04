@@ -36,7 +36,7 @@ namespace JEngine.Core
                 _cacheDomain = new AppDomain();
                 _cacheDomain.LoadAssembly(new MemoryStream(DllMgr.GetDllBytes(ConstMgr.MainHotDLLName, true)), null,
                     new PdbReaderProvider());
-                LoadILRuntime.InitializeILRuntime(_cacheDomain);
+                InitJEngine.InitializeILRuntime(_cacheDomain);
                 return _cacheDomain;
             }
         }
