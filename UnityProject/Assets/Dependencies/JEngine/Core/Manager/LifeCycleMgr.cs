@@ -252,14 +252,14 @@ namespace JEngine.Core
         {
             if (typeof(T).IsClass)
             {
-                void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+                void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
                 _updateItems.RemoveAll(i =>
                 {
                     if (i.InstancePtr != (IntPtr)ptr) return false;
                     i.Dispose();
                     return true;
-
                 });
+                UnsafeUtility.ReleaseGCObject(address);
             }
             else
             {
@@ -301,13 +301,14 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveLateUpdateItem(object instance)
         {
-            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _lateUpdateItems.RemoveAll(i =>
             {
                 if (i.InstancePtr != (IntPtr)ptr) return false;
                 i.Dispose();
                 return true;
             });
+            UnsafeUtility.ReleaseGCObject(address);
         }
 
         /// <summary>
@@ -344,13 +345,14 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveFixedUpdateItem(object instance)
         {
-            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out _);
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _fixedUpdateItems.RemoveAll(i =>
             {
                 if (i.InstancePtr != (IntPtr)ptr) return false;
                 i.Dispose();
                 return true;
             });
+            UnsafeUtility.ReleaseGCObject(address);
         }
 
         /// <summary>
@@ -359,8 +361,8 @@ namespace JEngine.Core
         /// <param name="items"></param>
         /// <param name="removeAfterInvoke"></param>
         /// <param name="ignoreCondition"></param>
-        private void ExecuteItems(List<LifeCycleItem> items, bool removeAfterInvoke = true,
-            Func<IntPtr, bool> ignoreCondition = null)
+        private void ExecuteItems(List<LifeCycleItem> items, in bool removeAfterInvoke = true,
+            Func<LifeCycleItem, bool> ignoreCondition = null)
         {
             int count = items.Count;
             //遍历
@@ -379,7 +381,7 @@ namespace JEngine.Core
                 }
 
                 //忽略
-                if (ignoreCondition != null && ignoreCondition(item.InstancePtr) ||
+                if (ignoreCondition != null && ignoreCondition(item) ||
                     !item.ExecuteCondition())
                 {
                     continue;
@@ -407,33 +409,33 @@ namespace JEngine.Core
         /// <summary>
         /// IgnoreWithoutInInstances func obj
         /// </summary>
-        private static Func<IntPtr, bool> _ignoreWithoutInInstancesFunc;
+        private static Func<LifeCycleItem, bool> _ignoreWithoutInInstancesFunc;
 
         /// <summary>
         /// IgnoreWithInInstances func obj
         /// </summary>
-        private static Func<IntPtr, bool> _ignoreWithInInstancesFunc;
+        private static Func<LifeCycleItem, bool> _ignoreWithInInstancesFunc;
 
         /// <summary>
         /// whether or not ignore this obj
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        private bool IgnoreWithoutInInstances(IntPtr obj)
+        private bool IgnoreWithoutInInstances(LifeCycleItem item)
         {
-            return _instances.Contains(obj) || _awakeObjs.Contains(obj)
-                                            || _startObjs.Contains(obj);
+            return _instances.Contains(item.InstancePtr) || _awakeObjs.Contains(item.InstanceObj)
+                                            || _startObjs.Contains(item.InstanceObj);
         }
 
         /// <summary>
         /// whether or not ignore this obj
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        private bool IgnoreWithInInstances(IntPtr obj)
+        private bool IgnoreWithInInstances(LifeCycleItem item)
         {
-            return _awakeObjs.Contains(obj)
-                   || _startObjs.Contains(obj);
+            return _awakeObjs.Contains(item.InstanceObj)
+                   || _startObjs.Contains(item.InstanceObj);
         }
 
         /// <summary>
@@ -443,8 +445,10 @@ namespace JEngine.Core
         /// <returns></returns>
         private bool RemoveInstanceIfContains(object obj)
         {
-            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(obj, out _);
-            return _instances.Contains((IntPtr)ptr);
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(obj, out var address);
+            var ret = _instances.Contains((IntPtr)ptr);
+            UnsafeUtility.ReleaseGCObject(address);
+            return ret;
         }
 
         /// <summary>
@@ -513,7 +517,7 @@ namespace JEngine.Core
                 if (_instances.Count > 0)
                 {
                     //调用start，并记录本帧处理的对象
-                    ExecuteItems(_startItems, true, _instances.Contains);
+                    ExecuteItems(_startItems, true, lci => _instances.Contains(lci.InstancePtr));
 
                     cnt = _startItems.Count;
                     for (i = 0; i < cnt; i++)
