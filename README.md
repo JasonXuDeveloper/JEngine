@@ -118,7 +118,8 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance
 - **Optimized** FpsMonitor performance
-- **Removed** ALL unneccessary packages
+- **Optimized** CryptoMgr interfaces
+- **Seperate** JEngine source code to multiple packages
 
 [Click here to see the change log](CHANGE.md)
 
