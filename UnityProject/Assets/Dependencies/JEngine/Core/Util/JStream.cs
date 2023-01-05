@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace JEngine.Core
 {
@@ -11,7 +13,7 @@ namespace JEngine.Core
         private int _position; // read/write head.
         private int _length; // Number of bytes within the memory stream
         private int _capacity; // length of usable portion of buffer for stream
-        private string _key; //解密密码
+        private byte[] _key; //解密密码
         private string _defaultKey = "hello_JEngine_!_";
 
         private bool _encrypted = true; //是否aes加密了
@@ -35,11 +37,12 @@ namespace JEngine.Core
             _exposable = false;
             _origin = 0;
             _isOpen = true;
-            _key = key;
-            if (_key.Length < 16)
+            if (key.Length < 16)
             {
-                _key = InitJEngine.Instance.key.Length < 16 ? _defaultKey : InitJEngine.Instance.key;
+                key = InitJEngine.Instance.key.Length < 16 ? _defaultKey : InitJEngine.Instance.key;
             }
+
+            _key = Encoding.UTF8.GetBytes(key);
         }
 
         public override bool CanRead => _isOpen;
@@ -209,7 +212,7 @@ namespace JEngine.Core
             _buffer.AsSpan(offset, count).CopyTo(encryptedData); //从原始数据里分割出来
 
             //给encryptedData解密
-            var decrypt = CryptoMgr.AesDecryptWithNoPadding(encryptedData, 0, count, _key);
+            var decrypt = CryptoMgr.AesDecrypt(encryptedData, _key, 0, count, CipherMode.ECB, PaddingMode.None);
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
             offset = remainder;
 

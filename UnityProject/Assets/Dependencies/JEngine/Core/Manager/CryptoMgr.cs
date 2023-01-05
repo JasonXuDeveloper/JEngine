@@ -72,6 +72,21 @@ namespace JEngine.Core
         /// <param name="paddingMode">填充方式</param>
         /// <returns>加密后base64编码的密文</returns>
         public static byte[] AesEncrypt(byte[] data, byte[] key, CipherMode cipherMode = CipherMode.ECB,
+            PaddingMode paddingMode = PaddingMode.PKCS7) =>
+            AesEncrypt(data, key, 0, data.Length, cipherMode, paddingMode);
+
+        /// <summary>
+        /// AES 算法加密 将明文加密
+        /// </summary>
+        /// <param name="data">明文</param>
+        /// <param name="key">密钥</param>
+        /// <param name="offset">明文数据偏移</param>
+        /// <param name="length">明文数据长度</param>
+        /// <param name="cipherMode">加密模式</param>
+        /// <param name="paddingMode">填充方式</param>
+        /// <returns>加密后base64编码的密文</returns>
+        public static byte[] AesEncrypt(byte[] data, byte[] key, int offset, int length,
+            CipherMode cipherMode = CipherMode.ECB,
             PaddingMode paddingMode = PaddingMode.PKCS7)
         {
             try
@@ -80,12 +95,12 @@ namespace JEngine.Core
                 rDel.Key = key;
                 rDel.Mode = cipherMode;
                 rDel.Padding = paddingMode;
-                return rDel.CreateEncryptor().TransformFinalBlock(data, 0, data.Length);
+                return rDel.CreateEncryptor().TransformFinalBlock(data, offset, length);
             }
             catch (Exception ex)
             {
                 Log.PrintError(ex);
-                return Array.Empty<byte>();
+                return ConstMgr.NullBytes;
             }
         }
 
@@ -110,6 +125,21 @@ namespace JEngine.Core
         /// <param name="paddingMode">填充方式</param>
         /// <returns>明文</returns>
         public static byte[] AesDecrypt(byte[] data, byte[] key, CipherMode cipherMode = CipherMode.ECB,
+            PaddingMode paddingMode = PaddingMode.PKCS7) =>
+            AesDecrypt(data, key, 0, data.Length, cipherMode, paddingMode);
+
+        /// <summary>
+        /// AES 算法解密 将密文解码进行解密，返回明文
+        /// </summary>
+        /// <param name="data">密文</param>
+        /// <param name="key">密钥</param>
+        /// <param name="offset">明文数据偏移</param>
+        /// <param name="length">明文数据长度</param>
+        /// <param name="cipherMode">加密模式</param>
+        /// <param name="paddingMode">填充方式</param>
+        /// <returns>明文</returns>
+        public static byte[] AesDecrypt(byte[] data, byte[] key, int offset, int length,
+            CipherMode cipherMode = CipherMode.ECB,
             PaddingMode paddingMode = PaddingMode.PKCS7)
         {
             try
@@ -118,77 +148,12 @@ namespace JEngine.Core
                 rDel.Key = key;
                 rDel.Mode = cipherMode;
                 rDel.Padding = paddingMode;
-                return rDel.CreateDecryptor().TransformFinalBlock(data, 0, data.Length);
+                return rDel.CreateDecryptor().TransformFinalBlock(data, offset, length);
             }
             catch (Exception ex)
             {
                 Log.PrintError(ex);
-                return Array.Empty<byte>();
-            }
-        }
-
-        /// <summary>
-        /// AES 算法加密(ECB模式) 无padding填充
-        /// </summary>
-        /// <param name="data">明文</param>
-        /// <param name="key">密钥</param>
-        /// <returns>加密后base64编码的密文</returns>
-        public static byte[] AesEncryptWithNoPadding(byte[] data, string key)
-        {
-            try
-            {
-                byte[] keyArray = Encoding.UTF8.GetBytes(key);
-
-                RijndaelManaged rDel = new RijndaelManaged();
-                rDel.Key = keyArray;
-                rDel.Mode = CipherMode.ECB;
-                rDel.Padding = PaddingMode.None;
-
-                ICryptoTransform cTransform = rDel.CreateEncryptor();
-                return cTransform.TransformFinalBlock(data, 0, data.Length);
-            }
-            catch (Exception ex)
-            {
-                Log.PrintError(ex);
-                return Array.Empty<byte>();
-            }
-        }
-
-        /// <summary>
-        /// AES 算法解密(ECB模式) 无padding填充
-        /// </summary>
-        /// <param name="toDecryptArray">密文</param>
-        /// <param name="key">密钥</param>
-        /// <returns>明文</returns>
-        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, string key) =>
-            AesDecryptWithNoPadding(toDecryptArray, 0, toDecryptArray.Length, key);
-
-        /// <summary>
-        /// AES 算法解密(ECB模式) 无padding填充
-        /// </summary>
-        /// <param name="toDecryptArray">密文</param>
-        /// <param name="offset">偏移</param>
-        /// <param name="count">长度</param>
-        /// <param name="key">密钥</param>
-        /// <returns>明文</returns>
-        public static byte[] AesDecryptWithNoPadding(byte[] toDecryptArray, int offset, int count, string key)
-        {
-            try
-            {
-                byte[] keyArray = Encoding.UTF8.GetBytes(key);
-
-                RijndaelManaged rDel = new RijndaelManaged();
-                rDel.Key = keyArray;
-                rDel.Mode = CipherMode.ECB;
-                rDel.Padding = PaddingMode.None;
-
-                ICryptoTransform cTransform = rDel.CreateDecryptor();
-                return cTransform.TransformFinalBlock(toDecryptArray, offset, count);
-            }
-            catch (Exception ex)
-            {
-                Log.PrintError(ex);
-                return Array.Empty<byte>();
+                return ConstMgr.NullBytes;
             }
         }
     }
