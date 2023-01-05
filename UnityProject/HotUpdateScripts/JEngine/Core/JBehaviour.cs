@@ -48,7 +48,6 @@ namespace JEngine.Core
             _instanceID = GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
             JBehavioursList.Add(this);
-            LoopAwaitToken = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -72,78 +71,7 @@ namespace JEngine.Core
         {
             //注册循环
             ThreadMgr.QueueOnMainThread(JBehavioursLoop);
-            //注册检查
-            LifeCycleMgr.Instance.AddUpdateTask(UpdateCheck, () => Application.isPlaying);
         }
-
-
-        /// <summary>
-        /// Check and cancel JEngine.Core.TimeMgr.Delay
-        /// </summary>
-        private static void UpdateCheck()
-        {
-            int cnt = JBehavioursList.Count;
-            for (int i = 0; i < cnt; i++)
-            {
-                var jb = JBehavioursList[i];
-                string k = jb.InstanceID;
-                if (k == null || !JBehaviours.ContainsKey(k))
-                {
-                    JBehavioursCheckNull(k);
-                    GameObjectDictCheckNullJBehaviour();
-                    JBehavioursList.RemoveAt(i);
-                    i--;
-                    cnt--;
-                    continue;
-                }
-                if (jb == null)
-                {
-                    JBehaviours.Remove(k);
-                    GameObjectDictCheckNullJBehaviour();
-                    JBehavioursList.RemoveAt(i);
-                    i--;
-                    cnt--;
-                    continue;
-                }
-                try
-                {
-                    if (jb._gameObject == null)
-                    {
-                        GameObjectDictCheckNull();
-                        jb.LoopAwaitToken?.Cancel();
-                        JBehaviours.Remove(k);
-                        JBehavioursList.RemoveAt(i);
-                        i--;
-                        cnt--;
-                    }
-                    else
-                    {
-                        if (jb.EnableHiddenMonitoring && jb._gameObject.activeInHierarchy == jb.Hidden)
-                        {
-                            if (jb.Hidden)
-                            {
-                                jb.OnShow();
-                            }
-                            else
-                            {
-                                jb.OnHide();
-                            }
-                            jb.Hidden = !jb.Hidden;
-                        }
-                    }
-                }
-                catch (MissingReferenceException)
-                {
-                    jb.LoopAwaitToken?.Cancel();
-                    JBehaviours.Remove(k);
-                    JBehavioursList.RemoveAt(i);
-                    i--;
-                    cnt--;
-                }
-            }
-        }
-
-
 
         /// <summary>
         /// Do the loop
@@ -161,8 +89,20 @@ namespace JEngine.Core
                 for (int i = 0; i < cnt; i++)
                 {
                     jb = LoopJBehaviours[i];
-                    if (jb._gameObject != null && !jb.LoopAwaitToken.IsCancellationRequested)
+                    if (jb._gameObject != null)
                     {
+                        if (jb._gameObject.activeInHierarchy == jb.Hidden)
+                        {
+                            if (jb.Hidden)
+                            {
+                                jb.OnShow();
+                            }
+                            else
+                            {
+                                jb.OnHide();
+                            }
+                            jb.Hidden = !jb.Hidden;
+                        }
                         if (jb.Paused || jb.Hidden)
                         {
                             continue;
@@ -218,17 +158,17 @@ namespace JEngine.Core
                         sw.Stop();
 
                         //操作时间
-                        time = sw.ElapsedMilliseconds / 1000f + 0.001f + duration;
+                        time = sw.ElapsedMilliseconds / 1000f + duration;
                         jb.LoopCounts++;
                         jb.LoopDeltaTime = time;
                         jb.TotalTime += time;
                     }
                     else
                     {
-                        jb.Destroy();
                         LoopJBehaviours.RemoveAt(i);
                         i--;
                         cnt = LoopJBehaviours.Count;
+                        jb.Destroy();
                     }
                 }
             }
@@ -449,7 +389,6 @@ namespace JEngine.Core
         /// </summary>
         [ClassBindIgnore] public long LoopCounts = 0;
 
-
         /// <summary>
         /// Time scale
         /// 时间倍速
@@ -462,19 +401,11 @@ namespace JEngine.Core
         /// </summary>
         [ClassBindIgnore] private bool Paused = false;
 
-
         /// <summary>
         /// Is gameObject hidden
         /// 是否隐藏
         /// </summary>
         [ClassBindIgnore] private bool Hidden = false;
-
-
-        /// <summary>
-        /// Whether or not monitoring hidden status
-        /// 是否监听Hidden
-        /// </summary>
-        [ClassBindIgnore] private bool EnableHiddenMonitoring = false;
 
         /// <summary>
         /// Current loop time
@@ -566,7 +497,7 @@ namespace JEngine.Core
         /// </summary>
         private protected async void Launch()
         {
-            while (!LoopAwaitToken.IsCancellationRequested)
+            while (!Application.isPlaying)
             {
                 if (JBehaviours is null || _gameObject.activeSelf)
                 {
@@ -600,27 +531,19 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 设置Hidden状态监听
-        /// </summary>
-        private protected void SetHiddenMonitoring(bool enable)
-        {
-            EnableHiddenMonitoring = enable;
-        }
-
-        /// <summary>
-        /// Cancel delay
-        /// 取消延迟
-        /// </summary>
-        [ClassBindIgnore] private CancellationTokenSource LoopAwaitToken;
-
-        /// <summary>
         /// Call end method
         /// 调用周期销毁
         /// </summary>
         private protected void Destroy()
         {
+            var index = LoopJBehaviours.IndexOf(this);
+            if (index != -1)
+            {
+                LoopJBehaviours.RemoveAt(index);
+            }
+            JBehaviours.Remove(_instanceID);
+            GameObjectJBehaviours.Remove(_gameObject);
             _gameObject = null;
-            LoopAwaitToken = null;
             if (Application.isPlaying)
             {
                 End();
@@ -656,8 +579,10 @@ namespace JEngine.Core
                     JBehaviours[id] = this;//覆盖字典里的值
                 }
             }
-            AddJBehaviourToGameObjectDict(_gameObject, this);
-            JBehavioursList.Add(this);
+            if (!JBehavioursList.Contains(this))
+            {
+                JBehavioursList.Add(this);
+            }
             _checked = true;
         }
 
@@ -667,7 +592,6 @@ namespace JEngine.Core
         /// </summary>
         private protected void Awake()
         {
-            SetHiddenMonitoring(false);
             Launch();
         }
 
@@ -692,7 +616,6 @@ namespace JEngine.Core
             {
                 Log.PrintError($"{_gameObject.name}<{_instanceID}> OnShow/OnHide failed: {e.Message}, {e.Data["StackTrace"]}, skipped OnShow/OnHide");
             }
-            SetHiddenMonitoring(true);
 
             try
             {
@@ -712,81 +635,12 @@ namespace JEngine.Core
             LoopJBehaviours.Add(this);
         }
 
-        private protected static void AddJBehaviourToGameObjectDict(GameObject go, JBehaviour jb)
-        {
-            GameObjectJBehaviours.TryGetValue(go, out var h);
-            if (h == null)
-            {
-                h = new HashSet<JBehaviour>();
-            }
-            if (!h.Contains(jb))
-            {
-                h.Add(jb);
-            }
-            GameObjectJBehaviours[go] = h;
-        }
-
-        private protected static void RemoveJBehaviourToGameObjectDict(GameObject go, JBehaviour jb)
-        {
-            GameObjectJBehaviours.TryGetValue(go, out var h);
-            if (h == null)
-            {
-                h = new HashSet<JBehaviour>();
-            }
-            if (h.Contains(jb))
-            {
-                h.Remove(jb);
-            }
-            GameObjectJBehaviours[go] = h;
-        }
-
-        private protected static void GameObjectDictCheckNullJBehaviour()
-        {
-            bool hasNullKey = false;
-            foreach (var k in GameObjectJBehaviours.Keys)
-            {
-                if (k == null)
-                {
-                    hasNullKey = true;
-                    continue;
-                }
-                var h = GameObjectJBehaviours[k];
-                h.RemoveWhere(j => j is null);
-            }
-            if (hasNullKey)
-            {
-                GameObjectDictCheckNull();
-            }
-        }
-
-        private protected static void GameObjectDictCheckNull()
-        {
-            Dictionary<GameObject, HashSet<JBehaviour>> s = new Dictionary<GameObject, HashSet<JBehaviour>>(GameObjectJBehaviours.Count);
-
-            foreach (var k in GameObjectJBehaviours.Keys)
-            {
-                if (k != null)
-                {
-                    var h = GameObjectJBehaviours[k];
-                    s[k] = h;
-                }
-            }
-            GameObjectJBehaviours = s;
-        }
-
-        private protected static void JBehavioursCheckNull(string key)
-        {
-            JBehaviours.Remove(key);
-        }
-
         private void ResetJBehaviour(GameObject go)
         {
             _gameObject = go;
             _instanceID = GetJBehaviourInstanceID();
             JBehaviours.Add(_instanceID, this);
             JBehavioursList.Add(this);
-
-            LoopAwaitToken = new CancellationTokenSource();
         }
         #endregion
 

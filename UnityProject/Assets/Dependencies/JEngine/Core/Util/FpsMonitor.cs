@@ -14,7 +14,7 @@ namespace JEngine.Core
 
         public static void Initialize()
         {
-            LifeCycleMgr.Instance.AddUpdateTask(Update);
+            _ = LifeCycleMgr.Instance.AddUpdateTask(Update);
         }
 
         private static void Update()

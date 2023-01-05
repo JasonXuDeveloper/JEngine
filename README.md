@@ -117,6 +117,7 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 - **Optimized** LifeCycleMgr Performance
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance
+- **Optimized** JBehaviour performance
 - **Optimized** FpsMonitor performance
 - **Optimized** CryptoMgr interfaces
 - **Seperate** JEngine source code to multiple packages

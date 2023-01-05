@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
-    public class JStream : Stream
+    public unsafe class JStream : Stream
     {
-        private byte[] _buffer; // Either allocated internally or externally.
+        private byte* _buffer; // Either allocated internally or externally.
         private readonly int _origin; // For user-provided arrays, start at this origin
         private int _position; // read/write head.
         private int _length; // Number of bytes within the memory stream
@@ -17,7 +20,6 @@ namespace JEngine.Core
         private string _defaultKey = "hello_JEngine_!_";
 
         private bool _encrypted = true; //是否aes加密了
-        private readonly bool _exposable; // Whether the array can be returned to the user.
         private bool _isOpen; // Is this stream open or closed?
 
         private const int MemStreamMaxLength = Int32.MaxValue;
@@ -30,11 +32,10 @@ namespace JEngine.Core
 
         public JStream(byte[] buffer, string key)
         {
-            _buffer = new byte[buffer.Length];
-            buffer.AsSpan().CopyTo(_buffer);
+            _buffer = (byte*)UnsafeUtility.Malloc(buffer.Length, 1, Allocator.Persistent);
+            buffer.AsSpan().CopyTo(new Span<byte>(_buffer, buffer.Length));
             _length = _capacity = buffer.Length;
 
-            _exposable = false;
             _origin = 0;
             _isOpen = true;
             if (key.Length < 16)
@@ -58,6 +59,7 @@ namespace JEngine.Core
                 if (disposing)
                 {
                     _isOpen = false;
+                    UnsafeUtility.Free(_buffer, Allocator.Persistent);
                     _buffer = null;
                 }
             }
@@ -71,34 +73,7 @@ namespace JEngine.Core
         public override void Flush()
         {
         }
-
-
-        public virtual byte[] GetBuffer()
-        {
-            if (!_exposable)
-                throw new UnauthorizedAccessException("UnauthorizedAccess to get member buffer");
-            if (_buffer == null) return Array.Empty<byte>();
-            return _buffer;
-        }
-
-        public virtual bool TryGetBuffer(out ArraySegment<byte> buffer)
-        {
-            if (!_exposable)
-            {
-                buffer = default(ArraySegment<byte>);
-                return false;
-            }
-
-            if (_buffer == null)
-            {
-                buffer = new ArraySegment<byte>(Array.Empty<byte>());
-                return false;
-            }
-
-            buffer = new ArraySegment<byte>(_buffer, _origin, (_length - _origin));
-            return true;
-        }
-
+        
         // Gets & sets the capacity (number of bytes allocated) for this stream.
         // The capacity cannot be set to a value less than the current length
         // of the stream.
@@ -181,7 +156,7 @@ namespace JEngine.Core
             else
             {
                 //没加密的直接读就好
-                _buffer.AsSpan(_position, n).CopyTo(buffer.AsSpan(offset));
+                Unsafe.CopyBlockUnaligned(ref buffer[offset], ref _buffer[_position], (uint)n);
             }
 
             _position += n;
@@ -209,7 +184,7 @@ namespace JEngine.Core
             Array.Clear(encryptedData, 0, count);
             var l = _length - offset;
             if (count > l) count = l;
-            _buffer.AsSpan(offset, count).CopyTo(encryptedData); //从原始数据里分割出来
+            Unsafe.CopyBlockUnaligned(ref encryptedData[0], ref _buffer[offset], (uint)count); //从原始数据里分割出来
 
             //给encryptedData解密
             var decrypt = CryptoMgr.AesDecrypt(encryptedData, _key, 0, count, CipherMode.ECB, PaddingMode.None);
