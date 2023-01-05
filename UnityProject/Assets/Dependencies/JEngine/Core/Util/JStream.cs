@@ -73,7 +73,7 @@ namespace JEngine.Core
         public override void Flush()
         {
         }
-        
+
         // Gets & sets the capacity (number of bytes allocated) for this stream.
         // The capacity cannot be set to a value less than the current length
         // of the stream.
@@ -117,17 +117,6 @@ namespace JEngine.Core
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer), "buffer == null");
-            if (offset < 0)
-                throw new ArgumentOutOfRangeException(nameof(offset), "offset < 0");
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count), "count < 0");
-            if (buffer.Length - offset < count)
-                throw new ArgumentException("invalid buffer length");
-
-            if (!_isOpen || _buffer == null) throw new EndOfStreamException("stream is closed");
-
             int n = _length - _position;
             if (n > count) n = count;
             if (n <= 0)
@@ -142,10 +131,10 @@ namespace JEngine.Core
             {
                 try
                 {
-                    var decrypted = GetBytesAt(_position, count);
-                    decrypted.AsSpan(0, n).CopyTo(buffer.AsSpan(offset)); //复制过去
-                    //返还借的数组
-                    ArrayPool<byte>.Shared.Return(decrypted);
+                    fixed (byte* ptr = &buffer[offset])
+                    {
+                        GetBytesAt(in _position, in count, in ptr);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -169,15 +158,13 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="start"></param>
         /// <param name="length"></param>
+        /// <param name="ret"></param>
         /// <returns></returns>
-        private byte[] GetBytesAt(int start, int length)
+        private void GetBytesAt(in int start, in int length, in byte* ret)
         {
-            int remainder = start % 16; // 余数
-            int offset = start - remainder; // 偏移值，截取开始的地方，比如 67 变 64
-            int count = length +
-                        (32 - length %
-                            16); //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77/16的余数） = 77 + （32-13） = 77 + 19 = 96，多16位确保不丢东西
-            var result = ArrayPool<byte>.Shared.Rent(length); //返回值，长度为length
+            int offset = start >> 4 << 4; // 偏移值，截取开始的地方，比如 67 变 64，相当于start - start % 16
+            int count = 32 + length >> 4 << 4; //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77/16的余数）
+            //= 77 + （32-13） = 77 + 19 = 96，多16位确保不丢东西，相当于length +(32 - length % 16);
 
             //现在需要将buffer切割，从offset开始，到count为止
             var encryptedData = ArrayPool<byte>.Shared.Rent(count); //创建加密数据数组
@@ -189,22 +176,20 @@ namespace JEngine.Core
             //给encryptedData解密
             var decrypt = CryptoMgr.AesDecrypt(encryptedData, _key, 0, count, CipherMode.ECB, PaddingMode.None);
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
-            offset = remainder;
+            offset = start ^ offset; //相当于start % 16
 
             //返还借的数组
             ArrayPool<byte>.Shared.Return(encryptedData);
 
             //这里有个问题，比如decrypt有16字节，而result是12字节，offset是8，那么12+8 > 16，就会出现错误
             //所以这里要改一下
-            var total = offset + length;
-            var dLength = decrypt.Length;
-            if (total > dLength)
-            {
-                length = decrypt.Length;
-            }
-
-            decrypt.AsSpan(offset, length).CopyTo(result.AsSpan());
-            return result;
+            // var total = offset + length;
+            // if (total > decrypt.Length)
+            // {
+            //     Unsafe.CopyBlockUnaligned(ref ret[0], ref decrypt[offset], (uint)(decrypt.Length));
+            // }
+            //直接操作指针，可以略过边界检查
+            Unsafe.CopyBlockUnaligned(ref ret[0], ref decrypt[offset], (uint)length);
         }
 
         public override long Seek(long offset, SeekOrigin loc)
