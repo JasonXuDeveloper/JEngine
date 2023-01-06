@@ -58,17 +58,17 @@ The ``development`` branch is the development branch. You are welcome to make ch
 
 Different built-in and additional packages for JEngine
 
-| Package Name         | Description                                                  | Type       | Link                                                   |
-| -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------------------ |
-| JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | [JEngine](https://github.com/JasonXuDeveloper/JEngine) |
-| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                                    |
-| JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | N/A                                                    |
-| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                                    |
-| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                                    |
-| LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | N/A                                                    |
-| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                                    |
-| Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | N/A                                                    |
-| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                                    |
+| Package Name         | Description                                                  | Type       | Link                                                         |
+| -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
+| JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | [JEngine](https://github.com/JasonXuDeveloper/JEngine)       |
+| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                                          |
+| JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | N/A                                                          |
+| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                                          |
+| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                                          |
+| LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | [JEngine.LitJson](https://github.com/JasonXuDeveloper/JEngine.LitJson) |
+| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                                          |
+| Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | N/A                                                          |
+| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                                          |
 
 
 

@@ -17,7 +17,7 @@ namespace JEngine.Core
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public void* GetPtr<T>(T obj) => objectToVoidPtr(obj);
+        public void* GetPtr<T>(T obj) => _objectToVoidPtr(obj);
         
         /// <summary>
         /// Get object from pointer
@@ -25,27 +25,21 @@ namespace JEngine.Core
         /// <param name="ptr"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T FromPtr<T>(void* ptr) => (T)voidPtrToObject(ptr);
+        public T FromPtr<T>(void* ptr) => (T)_voidPtrToObject(ptr);
 
-        private delegate void* ObjectToVoidPtr(object obj);
-
-        [FieldOffset(0)] private ObjectToVoidPtr objectToVoidPtr;
+        private delegate void* ObjectToVoidPtrDelegate(object obj);
+        private delegate object VoidPtrToObjectDelegate(void* ptr);
+        [FieldOffset(0)] private readonly ObjectToVoidPtrDelegate _objectToVoidPtr;
+        [FieldOffset(0)] private readonly VoidPtrToObjectDelegate _voidPtrToObject;
         [FieldOffset(0)] Func<object, object> func;
-
-        private delegate object VoidPtrToObject(void* ptr);
-
-        [FieldOffset(0)] private VoidPtrToObject voidPtrToObject;
-        [FieldOffset(0)] Func<object, object> func2;
 
         private UnsafeMgr()
         {
+            _objectToVoidPtr = null;
+            _voidPtrToObject = null;
             func = Out;
-            func2 = Out;
         }
 
-        private object Out(object o)
-        {
-            return o;
-        }
+        private static object Out(object o) => o;
     }
 }
