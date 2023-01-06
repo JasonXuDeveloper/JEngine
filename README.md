@@ -114,12 +114,13 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 
 ## v0.8.0 New Features
 
-- **Optimized** LifeCycleMgr Performance
+- **Optimized** LifeCycleMgr performance
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance
 - **Optimized** JBehaviour performance
 - **Optimized** FpsMonitor performance
 - **Optimized** CryptoMgr interfaces
+- **UnsafeMgr** provides unsafe features 
 - **Seperate** JEngine source code to multiple packages
 
 [Click here to see the change log](CHANGE.md)

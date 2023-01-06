@@ -35,7 +35,6 @@ namespace JEngine.Examples
         {
             var packageName = "AddOn1";
             var package = await Updater.CheckPackage(packageName);
-            Debug.Log(StringifyHelper.JSONSerialize(package));
             Updater.UpdatePackage("AddOn1", package: package, nextScene: BM.BPath.Assets_HotUpdateResources_AddOns_AddOn1_Scenes_test__unity, onLoadSceneFinished: () =>
             {
                 Debug.Log("进入分包场景");

@@ -43,7 +43,6 @@ namespace JEngine.Examples
          * 3 ways to store data
          */
         public Button SaveAsStrBtn;
-        public Button SaveAsJSONBtn;
         public Button SaveAsProtobufBtn;
 
         /// <summary>
@@ -53,29 +52,7 @@ namespace JEngine.Examples
         public override void Init()
         {
             SaveAsStrBtn.onClick.AddListener(SaveAsString);
-            SaveAsJSONBtn.onClick.AddListener(SaveAsJSON);
             SaveAsProtobufBtn.onClick.AddListener(SaveAsProtobuf);
-
-            Log.Print("这里测试一个加密转JSON保存一个本地类型");
-            JSONTest test = new JSONTest
-            {
-                a = 10,
-                b = 1.2f,
-                c = 2.4d,
-                d = true,
-                e = "JEngine"
-            };
-            var json = JSaver.SaveAsJSON("testCase", test);
-            Log.Print($"转JSON结果：{LitJson.JsonMapper.ToJson(test)}");
-            Log.Print($"加密后将这个存本地了：{json}");
-            Log.Print("现在开始尝试解密获取");
-            var result = JSaver.GetObjectFromJSON<JSONTest>("testCase");
-            Log.Print("解密结果：");
-            Log.Print($"a: {result.a}");
-            Log.Print($"b: {result.b}");
-            Log.Print($"c: {result.c}");
-            Log.Print($"d: {result.d}");
-            Log.Print($"e: {result.e}");
         }
 
         /// <summary>
@@ -88,31 +65,6 @@ namespace JEngine.Examples
             Value.text = $"字符串已以字符串存到本地，\n\n" +
                 $"本地存储文件内数据为：\n{PlayerPrefs.GetString("牛皮语句")}\n\n" +
                 $"JSaver获取后，数据为：\n{JSaver.GetString("牛皮语句")}";
-        }
-
-        /// <summary>
-        /// 通过JSON存数据
-        /// Store value as JSON
-        /// </summary>
-        public void SaveAsJSON()
-        {
-            DataClass data = new DataClass
-            {
-                id = 666,
-                name = "JSaver - JSON",
-                data = new System.Collections.Generic.Dictionary<string, string>()
-                {
-                    {"test","112233" }
-                }
-            };
-            JSaver.SaveAsJSON("数据存JSON", data);
-            Value.text = $"测试数据已以JSON存到本地，\n\n" +
-                $"本地存储文件内数据为：\n{PlayerPrefs.GetString("数据存JSON")}\n\n" +
-                $"JSaver获取后，数据为：\n{JSaver.GetString("数据存JSON")}\n\n" +
-                $"JSON转对象：\n"+
-                $"data.id = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").id}\n" +
-                $"data.name = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").name}" +
-                $"data.data['test'] = {JSaver.GetObjectFromJSON<DataClass>("数据存JSON").data["test"]}";
         }
 
         /// <summary>

@@ -127,11 +127,6 @@ namespace JEngine.Net
             socket.socket.Send(Data);
         }
 
-        public void SendToServerAsJson<T>(T Data)
-        {
-            socket.socket.Send(StringifyHelper.JSONSerialize(Data));
-        }
-
         public void SendToServerAsProtobuf<T>(T Data) where T : class
         {
             socket.socket.Send(StringifyHelper.ProtoSerialize(Data));

@@ -66,7 +66,6 @@
     <Compile Include="JEngine\Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Examples\Net\JWebSocketDemo.cs" />
     <Compile Include="JEngine\Examples\UI\JUIExample.cs" />
-    <Compile Include="JEngine\Examples\Core\ComplexLitJsonDemo.cs" />
     <Compile Include="JEngine\Examples\Data\HotData.cs" />
     <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
     <Compile Include="JEngine\UI\JUI.cs" />
@@ -127,12 +126,6 @@
     </Reference>
     <Reference Include="Ben.Demystifier">
       <HintPath>..\Assets\Dependencies\Ben.Demystifier\Ben.Demystifier.dll</HintPath>
-    </Reference>
-    <Reference Include="Nino.Serialization">
-      <HintPath>..\Library\ScriptAssemblies\Nino.Serialization.dll</HintPath>
-    </Reference>
-    <Reference Include="Nino.Shared">
-      <HintPath>..\Library\ScriptAssemblies\Nino.Shared.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

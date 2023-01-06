@@ -110,41 +110,6 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Save a data to local storage as JSON
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="val"></param>
-        /// <param name="encryptKey"></param>
-        /// <returns>Saved value</returns>
-        public static string SaveAsJSON<T>(string dataName, T val, string encryptKey = null)
-        {
-            if(String.IsNullOrEmpty(encryptKey))
-            {
-                encryptKey = defaultEncryptKey;
-            }
-            if (encryptKey.Length != 16)
-            {
-                var ex = new Exception("encryptKey needs to be 16 characters!");
-                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return null;
-            }
-            try
-            {
-                string strData = StringifyHelper.JSONSerialize(val);
-                var result = CryptoMgr.EncryptStr(strData, encryptKey);
-                PlayerPrefs.SetString(dataName, result);
-                AddJSaverKeys(dataName);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null) ex = ex.InnerException;
-                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Get string from local storage
         /// </summary>
         /// <param name="val"></param>
@@ -288,43 +253,6 @@ namespace JEngine.Core
                 return result;
             }
             return defaultValue;
-        }
-
-        /// <summary>
-        /// Get object from local storage from JSON
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="val"></param>
-        /// <param name="encryptKey"></param>
-        /// <returns>Saved value</returns>
-        public static T GetObjectFromJSON<T>(string dataName, string encryptKey = null) where T: class
-        {
-            if (!HasData(dataName))
-            {
-                var ex = new Exception($"<{dataName}> does not exist\n" +
-                    $"<{dataName}>不存在");
-                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return null;
-            }
-            if (String.IsNullOrEmpty(encryptKey))
-            {
-                encryptKey = defaultEncryptKey;
-            }
-            if (encryptKey.Length != 16)
-            {
-                throw new Exception("encryptKey needs to be 16 characters!");
-            }
-            var result = PlayerPrefs.GetString(dataName);
-            try
-            {
-                result = CryptoMgr.DecryptStr(result, encryptKey);
-                return StringifyHelper.JSONDeSerialize<T>(result);
-            }
-            catch (Exception ex)
-            {
-                Log.PrintError($"[JSaver] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return default(T);
-            }
         }
 
         /// <summary>

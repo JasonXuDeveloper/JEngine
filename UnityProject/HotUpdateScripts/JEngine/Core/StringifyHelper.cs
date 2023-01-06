@@ -24,12 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using LitJson;
 using UnityEngine;
 
 namespace JEngine.Core
 {
-    public class StringifyHelper
+    public partial class StringifyHelper
     {
         #region Protobuf
         /// <summary>
@@ -99,80 +98,6 @@ namespace JEngine.Core
             }
         }
 
-        #endregion
-
-        #region JSON
-        /// <summary>
-        /// 将类转换至JSON字符串
-        /// Convert object to JSON string
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string JSONSerialize(object value)
-        {
-            try
-            {
-                var json = JsonMapper.ToJson(value);
-                return json;
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null) ex = ex.InnerException;
-                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 将JSON字符串转类
-        /// Convert JSON string to Class
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static T JSONDeSerialize<T>(string value)
-        {
-            try
-            {
-                var jsonObj = JsonMapper.ToObject<T>(value);
-                return jsonObj;
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null) ex = ex.InnerException;
-                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return default(T);
-            }
-        }
-
-        /// <summary>
-        /// 将文件中的JSON字符串转类（仅限热更资源）
-        /// Convert JSON string from file to class (only hot update files)
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static T JSONDeSerializeFromFile<T>(string path)
-        {
-            try
-            {
-                var res = AssetMgr.Load(path);
-                TextAsset textAsset = (TextAsset)res;
-
-                if (textAsset == null)
-                {
-                    Log.PrintError("cant load TextAsset: " + path);
-                    return default(T);
-                }
-
-                var jsonObj = JsonMapper.ToObject<T>(textAsset.text);
-                return jsonObj;
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null) ex = ex.InnerException;
-                Log.PrintError($"[StringifyHelper] 错误：{ex.Message}, {ex.Data["StackTrace"]}");
-                return default(T);
-            }
-        }
         #endregion
     }
 }
