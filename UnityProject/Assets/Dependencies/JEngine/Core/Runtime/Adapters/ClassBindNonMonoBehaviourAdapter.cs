@@ -67,42 +67,29 @@ namespace JEngine.Core.DO_NOT_USE
                     return;
                 }
 
-                LifeCycleMgr.Instance.AddTask(() =>
+                //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
+                if (_instance != null)
                 {
-                    try
+                    if (isAwaking) return;
+                    isAwaking = true;
+                    LifeCycleMgr.Instance.AddTask(() =>
                     {
-                        //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
-                        if (_instance != null)
+                        if (_destoryed) return;
+                        var type = _instance.Type.ReflectionType;
+                        GetMethodInfo(type, "Awake")?.Invoke(_instance, ConstMgr.NullObjects);
+                        if (isJBehaviour)
                         {
-                            if (!isAwaking)
-                            {
-                                isAwaking = true;
-                                if (_destoryed || !Application.isPlaying)
-                                {
-                                    return;
-                                }
-
-                                var type = _instance.Type.ReflectionType;
-                                GetMethodInfo(type, "Awake")?.Invoke(_instance, ConstMgr.NullObjects);
-                                if (isJBehaviour)
-                                {
-                                    //JBehaviour额外处理
-                                    GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
-                                    LifeCycleMgr.Instance.AddAwakeItem(_instance,  null);//这一帧空出来
-                                    GetMethodInfo(type, "OnEnable")?.Invoke(_instance, ConstMgr.NullObjects);
-                                    LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
-                                }
-                                isAwaking = false;
-                                awaked = true;
-                            }
+                            //JBehaviour额外处理
+                            GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
+                            LifeCycleMgr.Instance.AddAwakeItem(_instance, null); //这一帧空出来
+                            GetMethodInfo(type, "OnEnable")?.Invoke(_instance, ConstMgr.NullObjects);
+                            LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
                         }
-                    }
-                    catch (NullReferenceException)
-                    {
-                        //如果出现了Null，那就重新Awake
-                        Awake();
-                    }
-                }, ()=> Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
+
+                        isAwaking = false;
+                        awaked = true;
+                    }, () => Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
+                }
             }
 
             private MethodInfo GetMethodInfo(Type type, string funcName)

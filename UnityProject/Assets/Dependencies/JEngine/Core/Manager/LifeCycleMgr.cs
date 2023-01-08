@@ -237,12 +237,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public Guid AddUpdateTask(Action action)
-        {
-            Guid guid = Guid.NewGuid();
-            _updateItems.Add(GetLifeCycleItem(&guid, 0, action, () => true));
-            return guid;
-        }
+        public Guid AddUpdateTask(Action action) => AddUpdateTask(action, () => true);
 
         /// <summary>
         /// Add a task that will update each frame in the main thread when condition is true
@@ -253,13 +248,14 @@ namespace JEngine.Core
         public Guid AddUpdateTask(Action action, Func<bool> condition)
         {
             Guid guid = Guid.NewGuid();
-            var guidPtr = &guid;
-            while (_updateItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == (IntPtr)guidPtr))
+            var guidIdent = new IntPtr(guid.GetHashCode());
+            while (_updateItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == guidIdent))
             {
                 guid = Guid.NewGuid();
+                guidIdent = new IntPtr(guid.GetHashCode());
             }
 
-            _updateItems.Add(GetLifeCycleItem(&guid, 0, action, condition));
+            _updateItems.Add(GetLifeCycleItem((void*)guidIdent, 0, action, condition));
             return guid;
         }
 
@@ -269,7 +265,9 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         public void RemoveUpdateItem<T>(T instance)
         {
-            void* ptr = typeof(T).IsClass ? UnsafeMgr.Instance.GetPtr(instance) : Unsafe.AsPointer(ref instance);
+            void* ptr = typeof(T).IsClass
+                ? UnsafeMgr.Instance.GetPtr(instance)
+                : (void*)new IntPtr(instance.GetHashCode());
             _updateItems.RemoveAll(i =>
             {
                 LifeCycleItem* iPtr = (LifeCycleItem*)i;
@@ -372,12 +370,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public Guid AddTask(Action action)
-        {
-            Guid guid = Guid.NewGuid();
-            _onceTaskItems.Add(GetLifeCycleItem(&guid, 0, action, () => true));
-            return guid;
-        }
+        public Guid AddTask(Action action) => AddTask(action, () => true);
 
         /// <summary>
         /// Add a task that will call once in the main thread when condition is true
@@ -388,14 +381,31 @@ namespace JEngine.Core
         public Guid AddTask(Action action, Func<bool> condition)
         {
             Guid guid = Guid.NewGuid();
-            var guidPtr = &guid;
-            while (_onceTaskItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == (IntPtr)guidPtr))
+            var guidIdent = new IntPtr(guid.GetHashCode());
+            while (_onceTaskItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == guidIdent))
             {
                 guid = Guid.NewGuid();
+                guidIdent = new IntPtr(guid.GetHashCode());
             }
 
-            _onceTaskItems.Add(GetLifeCycleItem(&guid, 0, action, condition));
+            _onceTaskItems.Add(GetLifeCycleItem((void*)guidIdent, 0, action, condition));
             return guid;
+        }
+        
+        /// <summary>
+        /// Remove a task that will call once in the main thread
+        /// </summary>
+        /// <param name="guid"></param>
+        public void RemoveTask(in Guid guid)
+        {
+            var guidIdent = new IntPtr(guid.GetHashCode());
+            _onceTaskItems.RemoveAll(i =>
+            {
+                LifeCycleItem* iPtr = (LifeCycleItem*)i;
+                if (iPtr->InstancePtr != guidIdent) return false;
+                iPtr->Dispose();
+                return true;
+            });
         }
 
         /// <summary>

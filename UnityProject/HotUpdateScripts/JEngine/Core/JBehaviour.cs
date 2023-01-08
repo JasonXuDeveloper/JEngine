@@ -75,7 +75,6 @@ namespace JEngine.Core
             ThreadMgr.QueueOnMainThread(() =>
             {
                 LifeCycleMgr.Instance.StartCoroutine(JBehavioursLoop());
-                Log.Print("注册了");
             });
         }
 

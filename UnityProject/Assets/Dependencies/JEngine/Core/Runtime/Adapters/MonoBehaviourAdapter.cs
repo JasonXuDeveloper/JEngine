@@ -125,42 +125,30 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
                 return;
             }
 
-            LifeCycleMgr.Instance.AddTask(() =>
+            //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
+            if (instance != null)
             {
-                try
+                if (isAwaking) return;
+                isAwaking = true;
+                LifeCycleMgr.Instance.AddTask(() =>
                 {
-                    //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
-                    if (instance != null)
-                    {
-                        if (!isAwaking)
-                        {
-                            isAwaking = true;
-                            if (_destoryed || !Application.isPlaying)
-                            {
-                                return;
-                            }
+                    if (_destoryed) return;
+                    var type = instance.Type.ReflectionType;
+                    //直接Invoke
+                    GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
+                    LifeCycleMgr.Instance.AddAwakeItem(instance, null); //这一帧空出来
+                    //就mono订阅start和update事件
+                    LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
+                    LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"),
+                        gameObject);
+                    LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
+                    LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"),
+                        gameObject);
 
-                            var type = instance.Type.ReflectionType;
-                            //直接Invoke
-                            GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
-                            LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
-                            //就mono订阅start和update事件
-                            LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
-                            LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
-                            LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
-                            LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"), gameObject);
-
-                            isAwaking = false;
-                            awaked = true;
-                        }
-                    }
-                }
-                catch (NullReferenceException)
-                {
-                    //如果出现了Null，那就重新Awake
-                    Awake();
-                }
-            }, ()=> Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
+                    isAwaking = false;
+                    awaked = true;
+                }, () => Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
+            }
         }
 
         /// <summary>
@@ -182,37 +170,28 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         IMethod _mOnEnableMethod;
         bool _mOnEnableMethodGot;
         
-        async void OnEnable()
+        void OnEnable()
         {
-            try
+            LifeCycleMgr.Instance.AddTask(() =>
             {
-                while (Application.isPlaying && !awaked)
+                if (instance != null)
                 {
-                    await System.Threading.Tasks.Task.Delay(1);
-                }
-            }
-            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
-            {
-                return;
-            }
-
-            if (instance != null)
-            {
-                if (!_mOnEnableMethodGot)
-                {
-                    _mOnEnableMethod = instance.Type.GetMethod("OnEnable", 0);
-                    _mOnEnableMethodGot = true;
-                }
-
-                if (_mOnEnableMethod != null)
-                {
-                    if (_destoryed || !Application.isPlaying)
+                    if (!_mOnEnableMethodGot)
                     {
-                        return;
+                        _mOnEnableMethod = instance.Type.GetMethod("OnEnable", 0);
+                        _mOnEnableMethodGot = true;
                     }
-                    appdomain.Invoke(_mOnEnableMethod, instance, ConstMgr.NullObjects);
+
+                    if (_mOnEnableMethod != null)
+                    {
+                        if (_destoryed || !Application.isPlaying)
+                        {
+                            return;
+                        }
+                        appdomain.Invoke(_mOnEnableMethod, instance, ConstMgr.NullObjects);
+                    }
                 }
-            }
+            }, () => Application.isPlaying && awaked);
         }
 
         IMethod _mOnDisableMethod;
