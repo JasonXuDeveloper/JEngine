@@ -118,10 +118,12 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance
 - **Optimized** JBehaviour performance
+- **Optimized** MonoBehaviour performance
 - **Optimized** FpsMonitor performance
 - **Optimized** CryptoMgr interfaces
-- **UnsafeMgr** provides unsafe features 
-- **Seperate** JEngine source code to multiple packages
+- **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
+- **NEW FEATURE** UnsafeMgr which provides unsafe features 
+- **NEW STRUCTURE** Split JEngine source code to multiple packages
 
 [Click here to see the change log](CHANGE.md)
 
