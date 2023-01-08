@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -42,5 +43,7 @@ namespace JEngine.Core
         
         public static byte[] NullBytes => Array.Empty<byte>();
         public static object[] NullObjects => Array.Empty<object>();
+        
+        public static WaitForSecondsRealtime WaitFor1Sec = new WaitForSecondsRealtime(0.001f);
     }
 }

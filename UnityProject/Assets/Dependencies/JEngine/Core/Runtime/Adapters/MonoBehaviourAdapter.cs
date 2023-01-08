@@ -118,59 +118,49 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         public bool awaked;
         public bool isAwaking;
 
-        public async void Awake()
+        public void Awake()
         {
             if (awaked)
             {
                 return;
             }
 
-            try
+            LifeCycleMgr.Instance.AddTask(() =>
             {
-                //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
-                if (instance != null)
+                try
                 {
-                    if (!isAwaking)
+                    //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
+                    if (instance != null)
                     {
-                        isAwaking = true;
-                        //没激活就别awake
-                        try
+                        if (!isAwaking)
                         {
-                            while (Application.isPlaying && !_destoryed && !gameObject.activeInHierarchy)
+                            isAwaking = true;
+                            if (_destoryed || !Application.isPlaying)
                             {
-                                await System.Threading.Tasks.Task.Delay(1);
+                                return;
                             }
-                        }
-                        catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
-                        {
-                            return;
-                        }
 
-                        if (_destoryed || !Application.isPlaying)
-                        {
-                            return;
+                            var type = instance.Type.ReflectionType;
+                            //直接Invoke
+                            GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
+                            LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
+                            //就mono订阅start和update事件
+                            LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
+                            LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
+                            LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
+                            LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"), gameObject);
+
+                            isAwaking = false;
+                            awaked = true;
                         }
-
-                        var type = instance.Type.ReflectionType;
-                        //直接Invoke
-                        GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
-                        LifeCycleMgr.Instance.AddAwakeItem(instance,  null);//这一帧空出来
-                        //就mono订阅start和update事件
-                        LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
-                        LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"), gameObject);
-                        LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
-                        LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"), gameObject);
-
-                        isAwaking = false;
-                        awaked = true;
                     }
                 }
-            }
-            catch (NullReferenceException)
-            {
-                //如果出现了Null，那就重新Awake
-                Awake();
-            }
+                catch (NullReferenceException)
+                {
+                    //如果出现了Null，那就重新Awake
+                    Awake();
+                }
+            }, ()=> Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
         }
 
         /// <summary>

@@ -151,6 +151,11 @@ namespace JEngine.Core
         private readonly List<IntPtr> _lateUpdateItems = new List<IntPtr>(100);
 
         /// <summary>
+        /// All once task methods
+        /// </summary>
+        private readonly List<IntPtr> _onceTaskItems = new List<IntPtr>(100);
+
+        /// <summary>
         /// no gc search for awake objs
         /// </summary>
         private readonly HashSet<IntPtr> _awakeObjs = new HashSet<IntPtr>();
@@ -363,6 +368,37 @@ namespace JEngine.Core
         }
 
         /// <summary>
+        /// Add a task that will call once in the main thread
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public Guid AddTask(Action action)
+        {
+            Guid guid = Guid.NewGuid();
+            _onceTaskItems.Add(GetLifeCycleItem(&guid, 0, action, () => true));
+            return guid;
+        }
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when condition is true
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public Guid AddTask(Action action, Func<bool> condition)
+        {
+            Guid guid = Guid.NewGuid();
+            var guidPtr = &guid;
+            while (_onceTaskItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == (IntPtr)guidPtr))
+            {
+                guid = Guid.NewGuid();
+            }
+
+            _onceTaskItems.Add(GetLifeCycleItem(&guid, 0, action, condition));
+            return guid;
+        }
+
+        /// <summary>
         /// 执行Item
         /// </summary>
         /// <param name="items"></param>
@@ -495,6 +531,8 @@ namespace JEngine.Core
         /// </summary>
         private void Update()
         {
+            //处理只调用一次的任务
+            ExecuteItems(_onceTaskItems);
             //处理update
             //确保本帧没处理过这些对象
             //调用update

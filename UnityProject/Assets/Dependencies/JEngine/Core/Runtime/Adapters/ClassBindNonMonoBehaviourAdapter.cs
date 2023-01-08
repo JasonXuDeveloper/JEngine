@@ -60,59 +60,49 @@ namespace JEngine.Core.DO_NOT_USE
             public bool awaked;
             public bool isAwaking;
 
-            public async void Awake()
+            public void Awake()
             {
                 if (awaked)
                 {
                     return;
                 }
 
-                try
+                LifeCycleMgr.Instance.AddTask(() =>
                 {
-                    //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
-                    if (_instance != null)
+                    try
                     {
-                        if (!isAwaking)
+                        //Unity会在ILRuntime准备好这个实例前调用Awake，所以这里暂时先不掉用
+                        if (_instance != null)
                         {
-                            isAwaking = true;
-                            //没激活就别awake
-                            try
+                            if (!isAwaking)
                             {
-                                while (Application.isPlaying && !_destoryed && !gameObject.activeInHierarchy)
+                                isAwaking = true;
+                                if (_destoryed || !Application.isPlaying)
                                 {
-                                    await System.Threading.Tasks.Task.Delay(1);
+                                    return;
                                 }
-                            }
-                            catch (MissingReferenceException) //如果gameObject被删了，就会触发这个，这个时候就直接return了
-                            {
-                                return;
-                            }
 
-                            if (_destoryed || !Application.isPlaying)
-                            {
-                                return;
+                                var type = _instance.Type.ReflectionType;
+                                GetMethodInfo(type, "Awake")?.Invoke(_instance, ConstMgr.NullObjects);
+                                if (isJBehaviour)
+                                {
+                                    //JBehaviour额外处理
+                                    GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
+                                    LifeCycleMgr.Instance.AddAwakeItem(_instance,  null);//这一帧空出来
+                                    GetMethodInfo(type, "OnEnable")?.Invoke(_instance, ConstMgr.NullObjects);
+                                    LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
+                                }
+                                isAwaking = false;
+                                awaked = true;
                             }
-
-                            var type = _instance.Type.ReflectionType;
-                            GetMethodInfo(type, "Awake")?.Invoke(_instance, ConstMgr.NullObjects);
-                            if (isJBehaviour)
-                            {
-                                //JBehaviour额外处理
-                                GetMethodInfo(type, "Check").Invoke(_instance, ConstMgr.NullObjects);
-                                LifeCycleMgr.Instance.AddAwakeItem(_instance,  null);//这一帧空出来
-                                GetMethodInfo(type, "OnEnable")?.Invoke(_instance, ConstMgr.NullObjects);
-                                LifeCycleMgr.Instance.AddStartItem(_instance, GetMethodInfo(type, "Start"));
-                            }
-                            isAwaking = false;
-                            awaked = true;
                         }
                     }
-                }
-                catch (NullReferenceException)
-                {
-                    //如果出现了Null，那就重新Awake
-                    Awake();
-                }
+                    catch (NullReferenceException)
+                    {
+                        //如果出现了Null，那就重新Awake
+                        Awake();
+                    }
+                }, ()=> Application.isPlaying && !_destoryed && gameObject.activeInHierarchy);
             }
 
             private MethodInfo GetMethodInfo(Type type, string funcName)
