@@ -1515,46 +1515,40 @@ namespace JEngine.Core
         private static Dictionary<MethodInfo, CancellationTokenSource> _invokeTokens =
             new Dictionary<MethodInfo, CancellationTokenSource>(0);
 
-        private static async void DoInvokeRepeating<T>(T val, MethodInfo methodInfo, float time, float duration,
+        private static void DoInvokeRepeating<T>(T val, MethodInfo methodInfo, float time, float duration,
             GameObject go)
         {
-            if (time > 0)
+            ThreadMgr.QueueOnMainThread(() =>
             {
-                await Wait(time, _invokeRepeatingTokens[methodInfo].Token, go);
-            }
-
-            while (!_invokeRepeatingTokens[methodInfo].IsCancellationRequested)
-            {
-                try
+                void Queue()
                 {
-                    if (go != null)
+                    if (!_invokeRepeatingTokens[methodInfo].IsCancellationRequested)
                     {
-                        ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
+                        try
+                        {
+                            if (go != null)
+                            {
+                                ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
+                            }
+                            else
+                            {
+                                _invokeRepeatingTokens[methodInfo].Cancel();
+                            }
+                        }
+                        catch (MissingReferenceException)
+                        {
+                            _invokeRepeatingTokens[methodInfo].Cancel();
+                        }
+                        
+                        ThreadMgr.QueueOnMainThread(Queue, duration);
                     }
                     else
                     {
-                        _invokeRepeatingTokens[methodInfo].Cancel();
+                        _invokeRepeatingTokens.Remove(methodInfo);
                     }
                 }
-                catch (MissingReferenceException)
-                {
-                    _invokeRepeatingTokens[methodInfo].Cancel();
-                }
-
-                try
-                {
-                    if (duration > 0)
-                    {
-                        await Wait(duration, _invokeRepeatingTokens[methodInfo].Token, go);
-                    }
-                }
-                catch (TaskCanceledException)
-                {
-                    //会抛出TaskCanceledException，表示等待被取消
-                }
-            }
-
-            _invokeRepeatingTokens.Remove(methodInfo);
+                ThreadMgr.QueueOnMainThread(Queue);
+            }, time);
         }
 
 
@@ -1611,18 +1605,13 @@ namespace JEngine.Core
             return __ret;
         }
 
-        private static async void DoInvoke<T>(T val, MethodInfo methodInfo, float time, GameObject go)
+        private static void DoInvoke<T>(T val, MethodInfo methodInfo, float time, GameObject go)
         {
-            if (time > 0)
-            {
-                await Wait(time, _invokeTokens[methodInfo].Token, go);
-            }
-
             try
             {
                 if (go != null)
                 {
-                    ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
+                    ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null), time);
                     _invokeTokens.Remove(methodInfo);
                 }
             }
@@ -1631,49 +1620,6 @@ namespace JEngine.Core
                 _invokeTokens[methodInfo].Cancel();
             }
         }
-
-        /// <summary>
-        /// 等待一定时间（针对Invoke设计）
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="token"></param>
-        /// <param name="go"></param>
-        /// <returns></returns>
-        private static async Task Wait(float time, CancellationToken token, GameObject go)
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            try
-            {
-                //当没取消的时候继续等
-                while (!token.IsCancellationRequested && go != null)
-                {
-                    //当计时器的时间小于暂停时间转毫秒除以时间系数时，等待1帧
-                    if (Time.timeScale == 0 || sw.ElapsedMilliseconds < (time * 1000) / Time.timeScale)
-                    {
-                        await Task.Delay(1);
-                    }
-                    else //不满足条件就结束了
-                    {
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //会抛出TaskCanceledException，表示等待被取消，直接返回
-                //MissingReference是GO销毁
-                if (ex is TaskCanceledException || ex is MissingReferenceException)
-                {
-                    sw.Stop();
-                    return;
-                }
-            }
-
-            sw.Stop();
-        }
-
-
 
         /// <summary>
         /// 处理热更的SendMessage
