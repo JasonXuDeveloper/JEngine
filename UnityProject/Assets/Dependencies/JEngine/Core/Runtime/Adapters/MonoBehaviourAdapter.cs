@@ -130,7 +130,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 if (isAwaking) return;
                 isAwaking = true;
-                LifeCycleMgr.Instance.AddTask(() =>
+                LifeCycleMgr.Instance.AddTask(instance, () =>
                 {
                     if (_destoryed) return;
                     var type = instance.Type.ReflectionType;

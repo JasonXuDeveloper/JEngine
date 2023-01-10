@@ -72,7 +72,7 @@ namespace JEngine.Core.DO_NOT_USE
                 {
                     if (isAwaking) return;
                     isAwaking = true;
-                    LifeCycleMgr.Instance.AddTask(() =>
+                    LifeCycleMgr.Instance.AddTask(_instance, () =>
                     {
                         if (_destoryed) return;
                         var type = _instance.Type.ReflectionType;

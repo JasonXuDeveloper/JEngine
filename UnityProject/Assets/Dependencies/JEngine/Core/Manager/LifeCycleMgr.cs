@@ -29,7 +29,6 @@ using UnityEngine;
 using Unity.Collections;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
@@ -391,7 +390,28 @@ namespace JEngine.Core
             _onceTaskItems.Add(GetLifeCycleItem((void*)guidIdent, 0, action, condition));
             return guid;
         }
-        
+
+        /// <summary>
+        /// Add a task that will call once in the main thread
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public void AddTask<T>(T instance, Action action) => AddTask(action, () => true);
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when condition is true
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="action"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public void AddTask<T>(T instance, Action action, Func<bool> condition) where T : class
+        {
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _onceTaskItems.Add(GetLifeCycleItem(in ptr, in address, action, condition));
+        }
+
         /// <summary>
         /// Remove a task that will call once in the main thread
         /// </summary>
@@ -403,6 +423,22 @@ namespace JEngine.Core
             {
                 LifeCycleItem* iPtr = (LifeCycleItem*)i;
                 if (iPtr->InstancePtr != guidIdent) return false;
+                iPtr->Dispose();
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Remove one time task
+        /// </summary>
+        /// <param name="instance"></param>
+        public void RemoveTask<T>(T instance) where T : class
+        {
+            void* ptr = UnsafeMgr.Instance.GetPtr(instance);
+            _onceTaskItems.RemoveAll(i =>
+            {
+                LifeCycleItem* iPtr = (LifeCycleItem*)i;
+                if (iPtr->InstancePtr != (IntPtr)ptr) return false;
                 iPtr->Dispose();
                 return true;
             });
@@ -422,10 +458,26 @@ namespace JEngine.Core
             int i = 0;
             while (i < count)
             {
+                count = items.Count;
+                if (i >= count) break;
                 var item = (LifeCycleItem*)items[i];
+                bool earlyQuit = item->IsObject && item->InstanceObj == null;
+                bool cond = false;
+                if (!earlyQuit)
+                {
+                    try
+                    {
+                        cond = item->ExecuteCondition();
+                    }
+                    catch
+                    {
+                        //条件判断有报错-> 删除该任务
+                        earlyQuit = true;
+                    }
+                }
 
                 //检查是否存在
-                if (item->IsObject && item->InstanceObj == null)
+                if (earlyQuit)
                 {
                     //删了这个
                     item->Dispose();
@@ -435,8 +487,7 @@ namespace JEngine.Core
                 }
 
                 //忽略
-                if (ignoreCondition != null && ignoreCondition(item) ||
-                    !item->ExecuteCondition())
+                if ((ignoreCondition != null && ignoreCondition(item)) || !cond)
                 {
                     i++;
                     continue;
