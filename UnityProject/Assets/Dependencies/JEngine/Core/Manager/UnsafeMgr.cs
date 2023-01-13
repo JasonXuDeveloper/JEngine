@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace JEngine.Core
 {
+#if INIT_JE
     [StructLayout(LayoutKind.Explicit)]
     public unsafe class UnsafeMgr
     {
@@ -42,4 +43,5 @@ namespace JEngine.Core
 
         private static object Out(object o) => o;
     }
+#endif
 }

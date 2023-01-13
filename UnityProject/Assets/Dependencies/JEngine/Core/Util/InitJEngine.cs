@@ -116,6 +116,7 @@ public partial class InitJEngine : MonoBehaviour
             Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
         }
 
+#if INIT_JE
         //尝试加载dll
         try
         {
@@ -154,7 +155,7 @@ public partial class InitJEngine : MonoBehaviour
 
             return;
         }
-
+#endif
         //成功加载热更dll
         Success = true;
         //初始化ILRuntime

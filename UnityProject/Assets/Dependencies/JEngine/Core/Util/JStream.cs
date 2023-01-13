@@ -9,6 +9,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
+#if INIT_JE
     public unsafe class JStream : Stream
     {
         private byte* _buffer; // Either allocated internally or externally.
@@ -241,4 +242,5 @@ namespace JEngine.Core
             throw new NotSupportedException("JStream does not support write method!");
         }
     }
+#endif
 }

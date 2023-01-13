@@ -44,9 +44,9 @@
 
 The ```master``` branch is the latest version that the developers think can be used normally and will not have too many problems. It is recommended to use and has the most powerful functions (also it fixes the bugs in the old versions);
 
-The ```0.7.x``` branch is the most popular version in 2022 with various useful and high performance features, <u>this branch will not be updated or maintained any more</u>;
+The ```0.7.x``` branch is currently in use by most commercial projects, it is the most popular version in 2022 with various useful and high performance features, <u>this branch will not be updated or maintained any more</u> (this branch has complete documentations but few official tutorial videos);
 
-The ```0.6.x``` branch is currently in use by most commercial projects, <u>complete content, sufficient documentation and videos, and will not be updated or maintained any more</u>;
+The ```0.6.x``` branch was used by most commercial projects, it has <u>complete content, sufficient documentation and videos, and will not be updated or maintained any more</u>;
 
 The ``0.5.x`` branch is being used by some commercial projects, <u>will not be updated or maintained</u>;
 

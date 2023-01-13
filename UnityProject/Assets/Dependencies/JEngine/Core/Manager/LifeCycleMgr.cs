@@ -33,6 +33,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
+#if INIT_JE
     public unsafe partial class LifeCycleMgr : MonoBehaviour
     {
         private struct LifeCycleItem
@@ -674,4 +675,73 @@ namespace JEngine.Core
                 _instances.Count > 0 ? _ignoreWithoutInInstancesFunc : _ignoreWithInInstancesFunc);
         }
     }
+#else
+    public partial class LifeCycleMgr : MonoBehaviour
+    {
+        public static LifeCycleMgr Instance { get; private set; }
+
+        public static void Initialize()
+        {
+            //placeholder
+        }
+
+        public Guid AddUpdateTask(Action act, Func<bool> cond = null)
+        {
+            //placeholder
+            return Guid.Empty;
+        }
+
+        public void RemoveUpdateItem<T>(T id)
+        {
+            //placeholder
+        }
+
+        public void RemoveFixedUpdateItem<T>(T id)
+        {
+            //placeholder
+        }
+
+        public void RemoveLateUpdateItem<T>(T id)
+        {
+            //placeholder
+        }
+        
+        public Guid AddTask<T>(T ins, Action act, Func<bool> cond = null)
+        {
+            //placeholder
+            return Guid.Empty;
+        }
+        
+        public Guid AddTask(Action act, Func<bool> cond = null)
+        {
+            //placeholder
+            return Guid.Empty;
+        }
+
+        public void AddAwakeItem<T>(T ins, MethodInfo info, Func<bool> cond = null)
+        {
+            
+        }
+
+        public void AddStartItem<T>(T ins, MethodInfo info, GameObject cond = null)
+        {
+            
+        }
+
+        public void AddFixedUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
+        {
+            
+        }
+
+        public void AddUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
+        {
+            
+        }
+
+        public void AddLateUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
+        {
+            
+        }
+    }
+#endif
 }
