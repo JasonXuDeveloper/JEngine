@@ -29,6 +29,8 @@ namespace JEngine.Examples
 {
     public partial class DataClass
     {
+        private long money;
+
         /// <summary>
         /// Property which holds the real value
         /// </summary>

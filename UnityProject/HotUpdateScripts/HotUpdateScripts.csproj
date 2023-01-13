@@ -48,7 +48,6 @@
     <Compile Include="JEngine\Core\JObjectPool.cs" />
     <Compile Include="JEngine\Core\JBehaviour.cs" />
     <Compile Include="JEngine\Core\JAction.cs" />
-    <Compile Include="JEngine\Core\StringifyHelper.cs" />
     <Compile Include="JEngine\Core\JPrefab.cs" />
     <Compile Include="JEngine\Core\Singleton.cs" />
     <Compile Include="JEngine\Event\JEvent.cs" />
@@ -60,19 +59,14 @@
     <Compile Include="JEngine\Examples\Core\CrossDomainDemo.cs" />
     <Compile Include="JEngine\Examples\Core\InstantiateDemo.cs" />
     <Compile Include="JEngine\Examples\Core\JBehaviourExample.cs" />
-    <Compile Include="JEngine\Examples\Core\JSaverExample.cs" />
     <Compile Include="JEngine\Examples\Data\DataClass.cs" />
-    <Compile Include="JEngine\Examples\Data\SafeData.cs" />
     <Compile Include="JEngine\Examples\Event\EventDemo.cs" />
     <Compile Include="JEngine\Examples\Net\JWebSocketDemo.cs" />
     <Compile Include="JEngine\Examples\UI\JUIExample.cs" />
-    <Compile Include="JEngine\Examples\Data\HotData.cs" />
-    <Compile Include="JEngine\Examples\Core\ProtobufDemo.cs" />
     <Compile Include="JEngine\UI\JUI.cs" />
     <Compile Include="JEngine\Examples\Core\AntiCheatDemo.cs" />
     <Compile Include="JEngine\Examples\Core\MultiInheritenceDemo.cs" />
     <Compile Include="JEngine\Examples\Core\ClassBindDemo.cs" />
-    <Compile Include="Proto2cs\JEngine_Examples_DataClass.cs" />
     <Compile Include="JEngine\UI\JUIExtensions.cs" />
     <Compile Include="JEngine\Core\JValidation.cs" />
     <Compile Include="JEngine\Examples\Core\ValidationDemo.cs" />

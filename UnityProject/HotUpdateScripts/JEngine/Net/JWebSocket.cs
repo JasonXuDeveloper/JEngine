@@ -127,11 +127,6 @@ namespace JEngine.Net
             socket.socket.Send(Data);
         }
 
-        public void SendToServerAsProtobuf<T>(T Data) where T : class
-        {
-            socket.socket.Send(StringifyHelper.ProtoSerialize(Data));
-        }
-
         public void SendToServer(byte[] Data)
         {
             socket.socket.Send(Data);
