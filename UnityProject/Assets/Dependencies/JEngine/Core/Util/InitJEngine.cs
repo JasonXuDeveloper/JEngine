@@ -73,6 +73,8 @@ public partial class InitJEngine : MonoBehaviour
         Instance.LoadHotFixAssembly();
         //初始化LifeCycle
         LifeCycleMgr.Initialize();
+        //初始化CoroutineMgr
+        CoroutineMgr.Initialize();
         //初始化ThreadMgr
         ThreadMgr.Initialize();
         //初始化Fps监听

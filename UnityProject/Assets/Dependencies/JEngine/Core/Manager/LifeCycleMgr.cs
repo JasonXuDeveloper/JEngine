@@ -26,7 +26,6 @@
 
 using System;
 using UnityEngine;
-using Unity.Collections;
 using System.Reflection;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
@@ -55,8 +54,7 @@ namespace JEngine.Core
 
             public static LifeCycleItem* Create(in void* instancePtr, in ulong gcAddr, Action action, Func<bool> cond)
             {
-                LifeCycleItem* item =
-                    (LifeCycleItem*)UnsafeUtility.Malloc(sizeof(LifeCycleItem), IntPtr.Size, Allocator.Persistent);
+                LifeCycleItem* item = (LifeCycleItem*)_pool.Allocate(sizeof(LifeCycleItem));
                 item->InstancePtr = (IntPtr)instancePtr;
                 item->_instanceGCHandleAddress = gcAddr;
                 item->_actionPtr = UnsafeUtility.PinGCObjectAndGetAddress(action, out item->_actionGCHandleAddress);
@@ -75,7 +73,7 @@ namespace JEngine.Core
                 UnsafeUtility.ReleaseGCObject(_condGCHandleAddress);
                 fixed (LifeCycleItem* ptr = &this)
                 {
-                    UnsafeUtility.Free(ptr, Allocator.Persistent);
+                    _pool.Free((byte*)ptr);
                 }
             }
         }
@@ -103,7 +101,12 @@ namespace JEngine.Core
         /// 单例
         /// </summary>
         public static LifeCycleMgr Instance => _instance;
-
+        
+        /// <summary>
+        /// 非托管内存池
+        /// 最多同时10240个被占用的任务（480KB内存）
+        /// </summary>
+        private static readonly UnmanagedMemoryPool _pool = new UnmanagedMemoryPool(sizeof(LifeCycleItem) * 10240);
 
         /// <summary>
         /// unity周期

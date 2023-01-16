@@ -6016,7 +6016,7 @@ MonoBehaviour:
         gameObject: {fileID: 0}
       - fieldType: 5
         fieldName: txtFile
-        value: Assets/HotUpdateResources/TextAsset/Localization.csv
+        value: Assets/HotUpdateResources/ScriptableObject/ScriptableObject.txt
         gameObject: {fileID: 0}
   - classNamespace: JEngine.Examples
     className: ClassBindDemo3

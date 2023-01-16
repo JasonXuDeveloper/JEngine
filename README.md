@@ -123,6 +123,8 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 - **Optimized** CryptoMgr interfaces
 - **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
 - **NEW FEATURE** UnsafeMgr which provides unsafe features 
+- **NEW FEATURE** UnmanagedMemoryPool which supports allocating unmanaged memory with pooling
+- **NEW FEATURE** CoroutineMgr which supports executing/stopping coroutines from non-MonoBehaviour class
 - **NEW STRUCTURE** Split JEngine source code to multiple packages
 
 [Click here to see the change log](CHANGE.md)
