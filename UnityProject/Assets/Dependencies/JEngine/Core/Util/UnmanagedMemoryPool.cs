@@ -80,19 +80,24 @@ namespace JEngine.Core
                 {
                     //if the block is not in use, check if the size is enough
                     long len = *(long*)(ptr + 1);
+                    byte* next = ptr + 9 + len;
                     //ensure won't cross the boundary
-                    if (ptr + 9 + len > _memory + _memoryLength)
+                    if (next > _memory + _memoryLength)
                     {
                         //no enough allocated memory
                         throw new OutOfMemoryException("memory pool out of memory");
                     }
-                    if (len == 0 || len >= size)//0 -> uninitialized
+                    //ensure not intersecting with the next block
+                    if (*next == 0)
                     {
-                        //if the size is enough, mark the block as in use
-                        *ptr = 1;
-                        //mark size
-                        *(long*)(ptr + 1) = size;
-                        return ptr + 9;
+                        if (len == 0 || len >= size)//0 -> uninitialized
+                        {
+                            //if the size is enough, mark the block as in use
+                            *ptr = 1;
+                            //mark size
+                            *(long*)(ptr + 1) = size;
+                            return ptr + 9;
+                        }
                     }
                 }
 
