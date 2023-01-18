@@ -45,6 +45,21 @@ namespace JEngine.Core
             }
 
             _key = Encoding.UTF8.GetBytes(key);
+            Xor();
+        }
+
+        private void Xor()
+        {
+            var cnt = _key.Length;
+            var i = 0;
+            fixed (byte* ptr = _key)
+            {
+                while(i < cnt)
+                {
+                    *(ptr + i) = (byte)(*(ptr + i) ^ i);
+                    i++;
+                }
+            }
         }
 
         public override bool CanRead => _isOpen;
@@ -132,6 +147,7 @@ namespace JEngine.Core
             {
                 try
                 {
+                    Xor();
                     fixed (byte* ptr = &buffer[offset])
                     {
                         GetBytesAt(in _position, in count, in ptr);
@@ -141,6 +157,10 @@ namespace JEngine.Core
                 {
                     Log.PrintError(ex);
                     throw;
+                }
+                finally
+                {
+                    Xor();
                 }
             }
             else
