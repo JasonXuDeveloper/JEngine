@@ -54,14 +54,11 @@ Different built-in and additional packages for JEngine
 | Package Name         | Description                                                  | Type       | Link                                                         |
 | -------------------- | ------------------------------------------------------------ | ---------- | ------------------------------------------------------------ |
 | JEngine.Core         | Supports hot update in runtime. <br />In addition, it provides secure, high performance features. | Built-in   | [JEngine](https://github.com/JasonXuDeveloper/JEngine)       |
-| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | N/A                                                          |
+| JEngine.AntiCheat    | Prevents memory hack<br />(i.e. using GameGuardian to dump and modify memory). | Additional | [JEngine.AntiCheat](https://github.com/JasonXuDeveloper/JEngine.AntiCheat) |
 | JEngine.Localization | Provides multi-lnguage feature in game.                      | Additional | [JEngine.Localization](https://github.com/JasonXuDeveloper/JEngine.Localization) |
-| JEngine.Misc         | Additional miscellaneous features.                           | Additional | N/A                                                          |
-| JEngine.Net          | Provides network clients for different protocols.            | Additional | N/A                                                          |
+| JEngine.Misc         | Additional miscellaneous features.                           | Additional | [JEngine.Misc](https://github.com/JasonXuDeveloper/JEngine.Misc) |
 | LitJson              | Supports JSON serialization/deserialization<br />(as C# objects or JsonData) | Additional | [JEngine.LitJson](https://github.com/JasonXuDeveloper/JEngine.LitJson) |
-| JSONObject           | Supports JSON serialization/deserialization<br />(as JsonObject, not C# objects) | Additional | N/A                                                          |
 | Protobuf-net         | Supports protobuf serilization/deserialization               | Additional | [JEngine.Protobuf-net](https://github.com/JasonXuDeveloper/JEngine.Protobuf-net) |
-| Nino                 | Definitely useful and high performance modules for C# projects, especially for Unity. | Additional | N/A                                                          |
 | MetaJUI              | MetaJUI is a UI framework customized for JEngine. Of course, you can also transplant it to your own engineering projects through simple modifications. | Additional | [MetaJUI](https://github.com/Meta404Dev/MetaJUI)             |
 | MetaExcelDataTool    | MetaExcelDataTool is an Excel table guide tool customized for JEngine. Of course, you can also transplant it to your own project through simple modifications. | Additional | [MetaExcelDataTool](https://github.com/Meta404Dev/MetaExcelDataTool) |
 
@@ -117,6 +114,7 @@ For new projects, you only need to pull a copy of the JEngine source code, then 
 - **Optimized** FpsMonitor performance
 - **Optimized** CryptoMgr interfaces
 - **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
+- **Removed** JUI (will be redesigned shortly)
 - **NEW FEATURE** UnsafeMgr which provides unsafe features 
 - **NEW FEATURE** UnmanagedMemoryPool which supports allocating unmanaged memory with pooling
 - **NEW FEATURE** CoroutineMgr which supports executing/stopping coroutines from non-MonoBehaviour class

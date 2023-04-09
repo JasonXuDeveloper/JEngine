@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -159,7 +158,6 @@ namespace JEngine.Core
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
-                    exception = exception.Demystify();
                     string s = GetAllExceptionStackTrace(exception);
                     //能反射就反射
                     if (_stackTraceString != null)
@@ -184,7 +182,6 @@ namespace JEngine.Core
                 var d = exception.Data["StackTrace"];
                 if (d != null)
                 {
-                    exception = exception.Demystify();
                     string s = GetAllExceptionStackTrace(exception);
                     //能反射就反射
                     if (_stackTraceString != null)

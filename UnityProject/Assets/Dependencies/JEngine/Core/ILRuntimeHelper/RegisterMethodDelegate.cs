@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using ILRuntime.Runtime.Intepreter;
-using JEngine.Net;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using WebSocketSharp;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Object = System.Object;
 
@@ -20,10 +18,8 @@ namespace JEngine.Core
             appdomain.DelegateManager.RegisterMethodDelegate<object, object, object>();
             appdomain.DelegateManager.RegisterMethodDelegate<object, object, object, object>();
             appdomain.DelegateManager.RegisterMethodDelegate<System.Int64>();
-            appdomain.DelegateManager.RegisterMethodDelegate<Object, MessageEventArgs>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object, ElapsedEventArgs>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object[]>();
-            appdomain.DelegateManager.RegisterMethodDelegate<SocketIOEvent>();
             appdomain.DelegateManager.RegisterMethodDelegate<UnityEngine.Object>();
             appdomain.DelegateManager.RegisterMethodDelegate<Object>();
             appdomain.DelegateManager
