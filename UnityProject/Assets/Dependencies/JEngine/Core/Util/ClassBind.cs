@@ -375,12 +375,12 @@ namespace JEngine.Core
                     else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
                     {
                         //Unity 编辑器下AssetDatabase读取图片会变texture2d导致无法给sprite赋值
-                        var o = AssetMgr.Load(field.value);
                         var fieldType = t.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
                                         (t.BaseType?.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
                                          (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
                                           t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
+                        var o = AssetMgr.Load(field.value, fieldType);
                         if (fieldType == typeof(Sprite) && o is Texture2D tx)
                         {
                             o = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f),

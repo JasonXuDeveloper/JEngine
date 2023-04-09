@@ -264,7 +264,7 @@ namespace JEngine.Core
         public JAction Execute(bool onMainThread = false)
         {
             DisposeCheck();
-            Do(onMainThread).Coroutine();
+            _ = Do(onMainThread);
             return this;
         }
 
@@ -277,7 +277,7 @@ namespace JEngine.Core
         public JAction ExecuteAsyncParallel(Action callback = null, bool onMainThread = false)
         {
             DisposeCheck();
-            _ExecuteAsync(callback, onMainThread).Coroutine();
+            _ = _ExecuteAsync(callback, onMainThread);
             return this;
         }
 
@@ -286,7 +286,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        public async ET.ETTask<JAction> ExecuteAsync(bool onMainThread = false)
+        public async Task<JAction> ExecuteAsync(bool onMainThread = false)
         {
             DisposeCheck();
             return await Do(onMainThread);
@@ -298,7 +298,7 @@ namespace JEngine.Core
         /// <param name="callback"></param>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        private async ET.ETTask<JAction> _ExecuteAsync(Action callback, bool onMainThread)
+        private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
         {
             DisposeCheck();
             await Do(onMainThread);
@@ -372,7 +372,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        private async ET.ETTask<JAction> Do(bool onMainThread)
+        private async Task<JAction> Do(bool onMainThread)
         {
             if (executing && !parallel)
             {

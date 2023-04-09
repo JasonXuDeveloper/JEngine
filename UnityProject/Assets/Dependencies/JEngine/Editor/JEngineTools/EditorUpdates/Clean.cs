@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
@@ -55,6 +56,11 @@ namespace JEngine.Editor
         public delegate void PostCleanEvent(int count);
 
         public static event PostCleanEvent onPostClean;
+
+        static Clean()
+        {
+            onPostClean += cnt => MakeBytes();
+        }
 
         public static void Update()
         {
@@ -157,8 +163,63 @@ namespace JEngine.Editor
                         watch.ElapsedMilliseconds));
                     onPostClean?.Invoke(counts);
                 }
-
+                
                 _isDone = true;
+            }
+        }
+
+        private static void MakeBytes()
+        {
+            FileMgr.Delete(DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
+            FileMgr.Delete(DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
+
+            Action<string> buildAct = async s =>
+            {
+                var watch = new Stopwatch();
+                watch.Start();
+                string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
+                var bytes = FileMgr.FileToBytes(dllPath);
+                var result = FileMgr.BytesToFile(CryptoMgr.AesEncrypt(bytes, s),
+                    DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
+                watch.Stop();
+                Log.Print("Convert Dlls in: " + watch.ElapsedMilliseconds + " ms.");
+                if (!result)
+                {
+                    Log.PrintError("DLL转Byte[]出错！");
+                    return;
+                }
+
+                watch.Reset();
+                watch.Start();
+                string pdbPath = DllMgr.GetPdbInEditorPath(ConstMgr.MainHotDLLName);
+                if (File.Exists(pdbPath))
+                {
+                    bytes = FileMgr.FileToBytes(pdbPath);
+                    result = FileMgr.BytesToFile(bytes,
+                        DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
+                    watch.Stop();
+                    Log.Print("Convert PDBs in: " + watch.ElapsedMilliseconds + " ms.");
+                    if (!result)
+                    {
+                        Log.PrintError("PDB转Byte[]出错！");
+                        return;
+                    }   
+                }
+
+                Setting.EncryptPassword = s;
+
+                await Task.Delay(3);
+                AssetDatabase.Refresh();
+            };
+
+            if (string.IsNullOrEmpty(Setting.EncryptPassword))
+            {
+                CryptoWindow.ShowWindow();
+                CryptoWindow.Build = buildAct;
+            }
+            else
+            {
+                buildAct.Invoke(Setting.EncryptPassword);
             }
         }
     }

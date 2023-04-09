@@ -1,0 +1,129 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185f6993d5150494d98da50e26cb1c25, type: 3}
+  m_Name: AssetBundleCollectorSetting
+  m_EditorClassIdentifier: 
+  ShowPackageView: 1
+  EnableAddressable: 0
+  UniqueBundleName: 0
+  ShowEditorAlias: 1
+  Packages:
+  - PackageName: Main
+    PackageDesc: "\u4E3B\u5206\u5305\uFF0C\u70ED\u66F4\u4EE3\u7801\u5FC5\u987B\u5728\u8FD9\u4E2A\u5305\u5185"
+    Groups:
+    - GroupName: Scene
+      GroupDesc: "\u573A\u666F\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Scene
+        CollectorGUID: fb8c8dc3987ba4ed2b5db5eca74b0330
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectScene
+        AssetTags: 
+        UserData: 
+    - GroupName: Dll
+      GroupDesc: "\u70ED\u66F4\u4EE3\u7801"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Dll
+        CollectorGUID: 01b2fbf7a6f704a2686595ccdb3a192f
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+    - GroupName: Common
+      GroupDesc: "\u5E38\u7528\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Common
+        CollectorGUID: 4166cf94c38a84be2982a8afcd5b9cb7
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackTopDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+    - GroupName: Other
+      GroupDesc: "\u5176\u4ED6\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Other
+        CollectorGUID: 63a5ada31f2e64544a40b2a2ae31cbdd
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackSeparately
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+    - GroupName: Shader
+      GroupDesc: "Shader\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Shader
+        CollectorGUID: af3fab857f2914d3f8697644432c024e
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackShaderVariants
+        FilterRuleName: CollectShaderVariants
+        AssetTags: 
+        UserData: 
+    - GroupName: Raw
+      GroupDesc: "\u539F\u751F\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Main/Raw
+        CollectorGUID: f81b15da1e2b64733af61d0154dc8d4d
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackRawFile
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+  - PackageName: AddOn1
+    PackageDesc: "\u5206\u53051"
+    Groups:
+    - GroupName: Scene
+      GroupDesc: "\u573A\u666F\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/AddOn1/Scene
+        CollectorGUID: a41f124d141514fdaa4b4ebd36f6737f
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectScene
+        AssetTags: 
+        UserData: 
+    - GroupName: Other
+      GroupDesc: "\u5176\u4ED6\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/AddOn1/Other
+        CollectorGUID: f8a4b740986e54ff6854ab0c64e04f68
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

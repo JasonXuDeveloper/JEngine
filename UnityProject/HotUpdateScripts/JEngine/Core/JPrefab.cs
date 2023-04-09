@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using YooAsset;
 using System.Text;
 using UnityEngine;
 using System.Collections.Generic;
@@ -78,11 +79,11 @@ namespace JEngine.Core
             }
             if (async)
             {
-                LoadPrefabAsync(path, package, complete).Coroutine();
+                _ = LoadPrefabAsync(path, package, complete);
             }
             else
             {
-                var obj = AssetMgr.Load<GameObject>(path, package);
+                var obj = AssetMgr.Load<GameObject>(path, package, out handle);
                 Instance = obj;
                 Loaded = true;
             }
@@ -105,25 +106,26 @@ namespace JEngine.Core
             }
             else
             {
-                await ET.ETTaskHelper.WaitAll(new ET.ETTask[] { LoadTask });
+                await LoadTask.Task;
             }
         }
 
 
-        private ET.ETTask LoadTask;
+        private TaskCompletionSource<bool> LoadTask;
 
 
-        private async ET.ETTask LoadPrefabAsync(string path, string package, Action<bool, JPrefab> callback)
+        private async Task LoadPrefabAsync(string path, string package, Action<bool, JPrefab> callback)
         {
-            LoadTask = ET.ETTask.Create(true);
-            var obj = await AssetMgr.LoadAsync<GameObject>(path, package);
+            LoadTask = new TaskCompletionSource<bool>();
+            var (obj, handle) = await AssetMgr.LoadAsyncWithHandle<GameObject>(path, package);
             Instance = obj;
             Loaded = true;
             callback?.Invoke(!Error, this);
-            LoadTask.SetResult();
+            LoadTask.SetResult(true);
         }
 
         private string path;
+        private AssetOperationHandle handle;
 
         /// <summary>
         /// If the prefab has loaded or not (if it has error, it will still be loaded)
@@ -332,7 +334,7 @@ namespace JEngine.Core
             }
             DestroyAllInstantiatedObjects();
             _instantiatedGameObjects.Clear();
-            AssetMgr.Unload(path);
+            handle.Release();
             Instance = null;
             GC.Collect();
             GC.SuppressFinalize(this);

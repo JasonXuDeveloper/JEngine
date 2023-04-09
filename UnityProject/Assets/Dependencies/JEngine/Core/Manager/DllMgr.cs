@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using BM;
 using System;
 using System.IO;
 using UnityEngine;
@@ -100,8 +99,7 @@ namespace JEngine.Core
             }
 
             path = GetDllInRuntimePath(name);
-            var dllFile = (TextAsset)AssetMgr.Load(path,
-                AssetComponentConfig.DefaultBundlePackageName);
+            var dllFile = AssetMgr.Load<TextAsset>(path);
             if (dllFile == null)
             {
                 throw new FileNotFoundException($"DLL not found in: {path}");
@@ -137,8 +135,7 @@ namespace JEngine.Core
             }
 
             var pdbPath = GetPdbInRuntimePath(name);
-            var pdbFile = (TextAsset)AssetMgr.Load(pdbPath,
-                AssetComponentConfig.DefaultBundlePackageName);
+            var pdbFile = AssetMgr.Load<TextAsset>(pdbPath);
             if (pdbFile == null)
             {
                 throw new FileNotFoundException($"Pdb not found in: {pdbPath}");

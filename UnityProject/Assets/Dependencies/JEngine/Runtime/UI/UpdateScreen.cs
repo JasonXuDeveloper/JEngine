@@ -24,8 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using BM;
+using JEngine.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +34,7 @@ public class UpdateScreen : MonoBehaviour, IUpdater
     public Slider progressBar;
     public Text progressText;
     public Text version;
-    public string packageName;
+    public string sceneName;
 
     private void Start()
     {
@@ -70,22 +69,17 @@ public class UpdateScreen : MonoBehaviour, IUpdater
     {
         version.text = ver;
     }
-
-    public void OnLoadSceneProgress(float progress)
+    
+    public async void OnUpdateFinish(bool result)
     {
-        progressBar.value = progress;
-    }
-
-    public void OnLoadSceneFinish()
-    {
-        Debug.Log("成功进入热更场景");
-        InitJEngine.Instance.LoadHotUpdateCallback();
-    }
-
-    public void OnUpdateFinish(bool result)
-    {
-        progressBar.gameObject.SetActive(false);
-        buttonStart.gameObject.SetActive(true);
+        progressBar.gameObject.SetActive(!result);
+        buttonStart.gameObject.SetActive(!result);
+        if (result)
+        {
+            await AssetMgr.LoadSceneAsync(sceneName);
+            Debug.Log("成功进入热更场景");
+            InitJEngine.Instance.LoadHotUpdateCallback();
+        }
     }
     #endregion
 }

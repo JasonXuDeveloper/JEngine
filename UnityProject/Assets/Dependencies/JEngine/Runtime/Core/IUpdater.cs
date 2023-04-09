@@ -6,9 +6,5 @@ public interface IUpdater
 
     void OnVersion(string ver);
     
-    void OnLoadSceneProgress(float progress);
-
-    void OnLoadSceneFinish();
-    
     void OnUpdateFinish(bool result);
 }

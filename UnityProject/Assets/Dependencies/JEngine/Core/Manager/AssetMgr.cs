@@ -23,12 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using BM;
-using ET;
 using System;
+using YooAsset;
 using UnityEngine;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
@@ -36,154 +34,98 @@ namespace JEngine.Core
 {
     public static partial class AssetMgr
     {
-        public static bool RuntimeMode => AssetComponentConfig.AssetLoadMode != AssetLoadMode.Develop;
-
-        public static Object Load(string path)
+        public static bool RuntimeMode => Updater.Mode != Updater.UpdateMode.Simulate;
+        
+        private static ResourcePackage GetPackage(string packageName)
         {
-            return Load(path, null, null);
-        }
-
-        public static Object Load(string path, string package)
-        {
-            return Load(path, package, null);
+            if(packageName == null) packageName = Updater.MainPackageName;
+            return YooAssets.GetPackage(packageName);
         }
         
-        [Obsolete]
-        public static Object Load(string path, Type type)
-        {
-            return Load(path, null, type);
-        }
+        public static Object Load(string path, Type type) => Load(path, Updater.MainPackageName, type, out _);
+        
+        public static Object Load(string path, Type type, out AssetOperationHandle handle) => Load(path, Updater.MainPackageName, type, out handle);
 
-        private static Object Load(string path, string package, Type type)
+        public static Object Load(string path, string package, Type type) => Load(path, package, type, out _);
+
+        public static Object Load(string path, string package, Type type, out AssetOperationHandle handle)
         {
-            
-            var ret = AssetComponent.Load(out _, path, package);
-            return ret;
+            handle = GetPackage(package).LoadAssetSync(path, type);
+            return handle.AssetObject;
         }
 
         public static T Load<T>(string path)
-            where T : Object
-        {
-            return Load<T>(path, null, null);
-        }
+            where T : Object => Load<T>(path, Updater.MainPackageName, out _);
+        
+        public static T Load<T>(string path, out AssetOperationHandle handle)
+            where T : Object => Load<T>(path, Updater.MainPackageName, out handle);
 
         public static T Load<T>(string path, string package)
+            where T : Object => Load<T>(path, package, out _);
+        
+        public static T Load<T>(string path, string package, out AssetOperationHandle handle)
             where T : Object
         {
-            return Load<T>(path, package, null);
+            handle = GetPackage(package).LoadAssetSync<T>(path);
+            return handle.AssetObject as T;
         }
         
-        [Obsolete]
-        public static T Load<T>(string path, Type type)
+        public static async Task<T> LoadAsync<T>(string path)
+            where T : Object => await LoadAsync<T>(path, Updater.MainPackageName);
+
+        public static async Task<T> LoadAsync<T>(string path, string package)
             where T : Object
         {
-            return Load<T>(path, null, type);
-        }
-
-        private static T Load<T>(string path, string package, Type type)
-            where T : Object
-        {
-            var ret = AssetComponent.Load<T>(out _, path, package);
-            return ret;
-        }
-
-        public static async ETTask<Object> LoadAsync(string path)
-        {
-            return await LoadAsync(path, null, null);
-        }
-
-        public static async ETTask<Object> LoadAsync(string path, string package)
-        {
-            return await LoadAsync(path, package, null);
-        }
-
-        [Obsolete]
-        public static async ETTask<Object> LoadAsync(string path, Type type)
-        {
-            return await LoadAsync(path, null, type);
-        }
-
-        private static async ETTask<Object> LoadAsync(string path, string package, Type type)
-        {
-            var ret = await AssetComponent.LoadAsync(out _, path, package);
-            return ret;
-        }
-
-        public static async ETTask<T> LoadAsync<T>(string path)
-            where T : Object
-        {
-            return await LoadAsync<T>(path, null, null);
-        }
-
-        public static async ETTask<T> LoadAsync<T>(string path, string package)
-            where T : Object
-        {
-            return await LoadAsync<T>(path, package, null);
+            var handle = GetPackage(package).LoadAssetAsync<T>(path);
+            await handle.Task;
+            return handle.AssetObject as T;
         }
         
-        [Obsolete]
-        public static async ETTask<T> LoadAsync<T>(string path, Type type)
+        public static async Task<(T, AssetOperationHandle)> LoadAsyncWithHandle<T>(string path)
+            where T : Object => await LoadAsyncWithHandle<T>(path, Updater.MainPackageName);
+
+        public static async Task<(T, AssetOperationHandle)> LoadAsyncWithHandle<T>(string path, string package)
             where T : Object
         {
-            return await LoadAsync<T>(path, null, type);
+            var handle = GetPackage(package).LoadAssetAsync<T>(path);
+            await handle.Task;
+            return (handle.AssetObject as T, handle);
         }
-
-        private static async ETTask<T> LoadAsync<T>(string path, string package = null, Type type = null)
-            where T : Object
-        {
-            var ret = await AssetComponent.LoadAsync<T>(out _, path, package);
-            return ret;
-        }
-
-        /// <summary>
-        /// 强制卸载所有该路径资源的引用
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="package"></param>
-        public static void Unload(string path, string package = null)
-        {
-            package = string.IsNullOrEmpty(package) ? AssetComponentConfig.DefaultBundlePackageName : package;
-            AssetComponent.UnLoadByPath(path, package);
-        }
-
+        
         public static void LoadScene(string path, bool additive = false, string package = null)
         {
-            AssetComponent.LoadScene(path, package);
-            if (additive)
-                SceneManager.LoadScene(path, LoadSceneMode.Additive);
-            else
-                SceneManager.LoadScene(path);
+            SceneOperationHandle handle = GetPackage(package).LoadSceneAsync(path, additive? LoadSceneMode.Additive:LoadSceneMode.Single);
+            handle.Task.Wait();
             RemoveUnusedAssets();
         }
 
-        public static async void LoadSceneAsync(string path, bool additive = false, string package = null,
-            Action<float> loadingCallback = null,
-            Action<AsyncOperation> finishedCallback = null)
+        public static async Task LoadSceneAsync(string path, bool additive = false, string package = null)
         {
-            await AssetComponent.LoadSceneAsync(path, package);
-            AsyncOperation operation = additive
-                ? SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive)
-                : SceneManager.LoadSceneAsync(path);
-            operation.allowSceneActivation = false;
-            while (!operation.isDone && operation.progress < 0.9f)
-            {
-                loadingCallback?.Invoke(operation.progress);
-                await Task.Delay(1);
-            }
-
-            loadingCallback?.Invoke(1);
-            await Task.Delay(30);//1/30秒的时间去刷新UI
-            operation.allowSceneActivation = true;
-            operation.completed += asyncOperation =>
-            {
-                RemoveUnusedAssets();
-                finishedCallback?.Invoke(asyncOperation);
-            };
+            SceneOperationHandle handle = GetPackage(package).LoadSceneAsync(path, additive? LoadSceneMode.Additive:LoadSceneMode.Single);
+            await handle.Task;
+            RemoveUnusedAssets();
         }
 
-        public static void RemoveUnusedAssets()
+        public static RawFileOperationHandle LoadRaw(string path) => LoadRaw(path, Updater.MainPackageName);
+        
+        public static RawFileOperationHandle LoadRaw(string path, string package)
         {
-            AssetComponent.ForceUnLoadAll();
+            RawFileOperationHandle handle = GetPackage(package).LoadRawFileSync(path);
+            return handle;
+        }
+        
+        public static Task<RawFileOperationHandle> LoadRawAsync(string path) => LoadRawAsync(path, Updater.MainPackageName);
+        
+        public static async Task<RawFileOperationHandle> LoadRawAsync(string path, string package)
+        {
+            RawFileOperationHandle handle = GetPackage(package).LoadRawFileAsync(path);
+            await handle.Task;
+            return handle;
+        }
+
+        public static void RemoveUnusedAssets(string package = null)
+        {
+            GetPackage(package)?.UnloadUnusedAssets();
         }
     }
 }

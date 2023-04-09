@@ -67,8 +67,6 @@ public partial class InitJEngine : MonoBehaviour
     {
         //替换LogHandler，让UnityEngine.Debug.LogException能定位更精准的堆栈，同时利用插件精简堆栈信息
         Debug.unityLogger.logHandler = new JEngine.Core.Logger(Debug.unityLogger.logHandler);
-        //给ETTask/ETVoid的报错定位到UnityEngine.Debug.LogException
-        ET.ETTask.ExceptionHandler += Debug.LogException;
         //加载热更DLL
         Instance.LoadHotFixAssembly();
         //初始化LifeCycle
@@ -145,7 +143,7 @@ public partial class InitJEngine : MonoBehaviour
             if (!usePdb)
             {
                 Log.PrintError(
-                    "加载热更DLL失败，请确保HotUpdateResources/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
+                    "加载热更DLL失败，请确保HotUpdateResources/Main/Dll里面有HotUpdateScripts.bytes文件，并且Build Bundle后将DLC传入服务器");
                 Log.PrintError("也有可能是密码不匹配或密码包含特殊字符导致的");
             }
             else if (Application.isEditor && usePdb)
