@@ -37,7 +37,7 @@ namespace JEngine.Examples
             await AssetMgr.UpdatePackage(packageName);
             await AssetMgr.LoadSceneAsync("Assets/HotUpdateResources/AddOn1/Scene/test.unity", package: packageName);
             Debug.Log("进入分包场景");
-            Debug.Log(AssetMgr.Load<TextAsset>("Assets/HotUpdateResources/AddOn1/Other/test.txt", packageName).text);
+            Debug.Log((await AssetMgr.LoadAsync<TextAsset>("Assets/HotUpdateResources/AddOn1/Other/test.txt", packageName)).text);
         }
     }
 }

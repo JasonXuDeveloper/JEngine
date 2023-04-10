@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Reflection;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Reflection;
+using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using UnityEngine.Serialization;
 using ILRuntime.Runtime.Enviorment;
@@ -159,7 +160,7 @@ namespace JEngine.Core
         /// Set value
         /// </summary>
         /// <param name="classData"></param>
-        public void SetVal(ClassData classData)
+        public async Task SetVal(ClassData classData)
         {
             string classType =
                 $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
@@ -379,7 +380,7 @@ namespace JEngine.Core
                                          (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
                                           t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
-                        var o = AssetMgr.Load(field.value, fieldType);
+                        var o = await AssetMgr.LoadAsync(field.value, fieldType);
                         if (fieldType == typeof(Sprite) && o is Texture2D tx)
                         {
                             o = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f),

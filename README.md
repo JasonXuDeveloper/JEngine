@@ -91,6 +91,7 @@ Different built-in and additional packages for JEngine
 
 ## v0.8.0 New Features
 
+- **Supported** WebGL
 - **Optimized** LifeCycleMgr performance
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance

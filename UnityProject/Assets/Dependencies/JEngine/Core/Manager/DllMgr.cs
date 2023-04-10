@@ -26,6 +26,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace JEngine.Core
 {
@@ -83,7 +84,7 @@ namespace JEngine.Core
         /// <param name="editor">is editor mode</param>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException"></exception>
-        public static byte[] GetDllBytes(string name, bool editor = false)
+        public static async Task<byte[]> GetDllBytes(string name, bool editor = false)
         {
             string path;
             if (editor)
@@ -99,7 +100,7 @@ namespace JEngine.Core
             }
 
             path = GetDllInRuntimePath(name);
-            var dllFile = AssetMgr.Load<TextAsset>(path);
+            var dllFile = await AssetMgr.LoadAsync<TextAsset>(path);
             if (dllFile == null)
             {
                 throw new FileNotFoundException($"DLL not found in: {path}");
@@ -115,7 +116,7 @@ namespace JEngine.Core
         /// <param name="editor"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static byte[] GetPdbBytes(string name, bool editor = true)
+        public static async Task<byte[]> GetPdbBytes(string name, bool editor = true)
         {
             if (editor)
             {
@@ -135,7 +136,7 @@ namespace JEngine.Core
             }
 
             var pdbPath = GetPdbInRuntimePath(name);
-            var pdbFile = AssetMgr.Load<TextAsset>(pdbPath);
+            var pdbFile = await AssetMgr.LoadAsync<TextAsset>(pdbPath);
             if (pdbFile == null)
             {
                 throw new FileNotFoundException($"Pdb not found in: {pdbPath}");

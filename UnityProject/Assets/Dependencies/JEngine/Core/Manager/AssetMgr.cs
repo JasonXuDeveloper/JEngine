@@ -53,24 +53,26 @@ namespace JEngine.Core
         /// <summary>
         /// 获取平台
         /// </summary>
-        public static RuntimePlatform GetPlatform
+        public static string GetPlatform
         {
             get
             {
 #if UNITY_ANDROID
-                return RuntimePlatform.Android;
+                return "Android";
 #elif UNITY_IOS
-             return RuntimePlatform.IPhonePlayer;
+                return "IOS";
 #elif UNITY_STANDALONE_OSX
-              return RuntimePlatform.OSXPlayer;
+                return "Mac";
 #elif UNITY_STANDALONE_WIN
-             return RuntimePlatform.WindowsPlayer;
+                return "Windows";
+#elif UNITY_WEBGL
+                return "WebGL";
 #else
-            return Application.platform;
+                return Application.platform.ToString();
 #endif
             }
         }
-        
+
         /// <summary>
         /// 初始化资源包
         /// </summary>
@@ -210,7 +212,7 @@ namespace JEngine.Core
                     var tips =
                         $"发现{totalDownloadCount}个资源有更新，总计需要下载 {Tools.GetDisplaySize(totalDownloadBytes)}";
                     TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-                    var mb = MessageBox.Show("提示", tips, "下载", "退出");
+                    var mb = MessageBox.Show("提示", tips, "下载", "返回");
                     mb.onComplete = async ok =>
                     {
                         if (ok == MessageBox.EventId.Ok)
@@ -245,12 +247,24 @@ namespace JEngine.Core
                                 //下载失败
                                 var mb2 = MessageBox.Show("错误", $"下载失败：{downloader.Error}", "返回", "退出");
                                 updater?.OnUpdateFinish(false);
-                                mb2.onComplete = _ => { tcs.SetResult(true); };
+                                mb2.onComplete = okk =>
+                                {
+                                    if (okk == MessageBox.EventId.Ok)
+                                    {
+                                        updater?.OnUpdateFinish(false);
+                                        tcs.SetResult(true);
+                                    }
+                                    else
+                                    {
+                                        Updater.Quit();
+                                    }
+                                };
                             }
                         }
                         else
                         {
-                            Updater.Quit();
+                            updater?.OnUpdateFinish(false);
+                            tcs.SetResult(true);
                         }
                     };
                     await tcs.Task;
@@ -308,6 +322,16 @@ namespace JEngine.Core
             return handle.AssetObject as T;
         }
 
+        public static async Task<Object> LoadAsync(string path, Type type) 
+            => await LoadAsync(path, Updater.MainPackageName, type);
+
+        public static async Task<Object> LoadAsync(string path, string package, Type type) 
+        {
+            var handle = GetPackage(package).LoadAssetAsync(path, type);
+            await handle.Task;
+            return handle.AssetObject;
+        }
+
         public static async Task<(T, AssetOperationHandle)> LoadAsyncWithHandle<T>(string path)
             where T : Object => await LoadAsyncWithHandle<T>(path, Updater.MainPackageName);
 
@@ -317,6 +341,16 @@ namespace JEngine.Core
             var handle = GetPackage(package).LoadAssetAsync<T>(path);
             await handle.Task;
             return (handle.AssetObject as T, handle);
+        }
+        
+        public static async Task<(Object, AssetOperationHandle)> LoadAsyncWithHandle(string path, Type type) 
+            => await LoadAsyncWithHandle(path, Updater.MainPackageName, type);
+        
+        public static async Task<(Object, AssetOperationHandle)> LoadAsyncWithHandle(string path, string package, Type type)
+        {
+            var handle = GetPackage(package).LoadAssetAsync(path, type);
+            await handle.Task;
+            return (handle.AssetObject, handle);
         }
 
         public static void LoadScene(string path, bool additive = false, string package = null)

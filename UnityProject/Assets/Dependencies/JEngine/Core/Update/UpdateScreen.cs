@@ -79,7 +79,7 @@ namespace JEngine.Core
             {
                 await AssetMgr.LoadSceneAsync(sceneName);
                 Debug.Log("成功进入热更场景");
-                InitJEngine.Instance.LoadHotUpdateCallback();
+                await InitJEngine.Instance.LoadHotUpdateCallback();
             }
         }
 

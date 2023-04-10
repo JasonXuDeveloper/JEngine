@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using UnityEngine;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -54,13 +55,13 @@ namespace JEngine.Core
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             LoadedScenes.Add(SceneManager.GetActiveScene());
-            DoBind();
+            _ = DoBind();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             LoadedScenes.Add(scene);
-            DoBind();
+            _ = DoBind();
         }
 
         private void OnSceneUnloaded(Scene scene)
@@ -80,7 +81,7 @@ namespace JEngine.Core
             }
         }
 
-        public static void DoBind(List<ClassBind> cbs)
+        public static async Task DoBind(List<ClassBind> cbs)
         {
             foreach (var cb in cbs)
             {
@@ -106,7 +107,7 @@ namespace JEngine.Core
                         continue;
                     }
 
-                    cb.SetVal(data);
+                    await cb.SetVal(data);
                 }
             }
 
@@ -125,17 +126,17 @@ namespace JEngine.Core
             }
         }
 
-        public static void DoBind(ClassBind cb)
+        public static async Task DoBind(ClassBind cb)
         {
             if (Cbs.Contains(cb)) return;
-            DoBind(new List<ClassBind> { cb });
+            await DoBind(new List<ClassBind> { cb });
         }
 
-        public static void DoBind()
+        public static async Task DoBind()
         {
             var c = Tools.FindObjectsOfTypeAll<ClassBind>();
             Cbs.AddRange(c);
-            DoBind(c);
+            await DoBind(c);
         }
     }
 }

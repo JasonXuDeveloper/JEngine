@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using UnityEngine;
 using JEngine.Core;
 using JEngine.Helper;
+using System.Threading;
+using System.Threading.Tasks;
 using ILRuntime.Mono.Cecil.Pdb;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
@@ -63,12 +64,12 @@ public partial class InitJEngine : MonoBehaviour
     /// <summary>
     /// 加载热更
     /// </summary>
-    public void LoadHotUpdateCallback()
+    public async Task LoadHotUpdateCallback()
     {
         //替换LogHandler，让UnityEngine.Debug.LogException能定位更精准的堆栈，同时利用插件精简堆栈信息
         Debug.unityLogger.logHandler = new JEngine.Core.Logger(Debug.unityLogger.logHandler);
         //加载热更DLL
-        Instance.LoadHotFixAssembly();
+        await Instance.LoadHotFixAssembly();
         //初始化LifeCycle
         LifeCycleMgr.Initialize();
         //初始化CoroutineMgr
@@ -90,7 +91,7 @@ public partial class InitJEngine : MonoBehaviour
     /// <summary>
     /// 使用ILRuntime加载热更工程
     /// </summary>
-    private void LoadHotFixAssembly()
+    private async Task LoadHotFixAssembly()
     {
         //创建新对象实例
         Appdomain = new AppDomain((int)useJIT);
@@ -99,7 +100,7 @@ public partial class InitJEngine : MonoBehaviour
         bool isEditorMode = !AssetMgr.RuntimeMode;
 
         //dll的二进制
-        byte[] dll = DllMgr.GetDllBytes(DllName, isEditorMode);
+        byte[] dll = await DllMgr.GetDllBytes(DllName, isEditorMode);
         //pdb默认不存在
         byte[] pdb = ConstMgr.NullBytes;
         //编辑器下模拟加密dll
@@ -110,7 +111,7 @@ public partial class InitJEngine : MonoBehaviour
 
         if (usePdb)
         {
-            var pdbFileBytes = DllMgr.GetPdbBytes(DllName, isEditorMode);
+            var pdbFileBytes = await DllMgr.GetPdbBytes(DllName, isEditorMode);
             pdb = new byte[pdbFileBytes.Length];
             Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
         }
@@ -148,7 +149,7 @@ public partial class InitJEngine : MonoBehaviour
             {
                 Log.PrintError("PDB不可用，可能是DLL和PDB版本不一致，可能DLL是Release，如果是Release出包，请取消UsePdb选项，本次已跳过使用PDB");
                 usePdb = false;
-                LoadHotFixAssembly();
+                await LoadHotFixAssembly();
             }
 
             return;
