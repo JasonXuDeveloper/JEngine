@@ -385,8 +385,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a9e09392b0364e338a196bbe4b3d11d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceUrl: http://127.0.0.1/
-  fallbackUrl: http://127.0.0.1/
+  resourceUrl: http://127.0.0.1/Bundles
+  fallbackUrl: http://127.0.0.1/Bundles
   gameScene: Assets/HotUpdateResources/Main/Scene/Game.unity
   mainPackageName: Main
   mode: 0
