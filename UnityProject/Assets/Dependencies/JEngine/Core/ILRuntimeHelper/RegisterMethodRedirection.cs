@@ -1,4 +1,3 @@
-#if INIT_JE
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -2887,4 +2886,3 @@ namespace JEngine.Core
         }
     }
 }
-#endif

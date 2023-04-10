@@ -1,4 +1,3 @@
-#if INIT_JE
 using ILRuntime.Runtime.Enviorment;
 using UnityEngine;
 
@@ -14,4 +13,3 @@ namespace JEngine.Core
         }
     }
 }
-#endif

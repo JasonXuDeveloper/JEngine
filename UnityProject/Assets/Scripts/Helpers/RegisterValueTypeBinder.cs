@@ -1,4 +1,3 @@
-#if INIT_JE
 using ILRuntime.Runtime.Enviorment;
 using JEngine.Core;
 
@@ -16,4 +15,3 @@ namespace JEngine.Helper
         }
     }
 }
-#endif

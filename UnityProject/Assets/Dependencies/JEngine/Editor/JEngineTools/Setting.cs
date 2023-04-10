@@ -592,7 +592,6 @@ namespace JEngine.Editor
 			//
 			// #endregion
 
-#if INIT_JE
 			#region ClassBind相关
 
 			//ClassBind工具
@@ -673,7 +672,6 @@ namespace JEngine.Editor
 			});
 
 			#endregion
-#endif
 
 			#region Bug相关
 

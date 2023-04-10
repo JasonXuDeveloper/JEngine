@@ -79,10 +79,8 @@ public partial class InitJEngine : MonoBehaviour
         FpsMonitor.Initialize();
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
-#if INIT_JE
         //初始化ClassBind
         ClassBindMgr.Instantiate();
-#endif
         //调用RunGame周期
         Tools.InvokeHotMethod(HotMainType, RunGameMethod);
         //调用在主工程的热更代码加载完毕后的周期
@@ -109,6 +107,7 @@ public partial class InitJEngine : MonoBehaviour
         {
             DllMgr.SimulateEncryption(ref dll, key);
         }
+
         if (usePdb)
         {
             var pdbFileBytes = DllMgr.GetPdbBytes(DllName, isEditorMode);
@@ -116,7 +115,6 @@ public partial class InitJEngine : MonoBehaviour
             Array.Copy(pdbFileBytes, pdb, pdbFileBytes.Length);
         }
 
-#if INIT_JE
         //尝试加载dll
         try
         {
@@ -155,13 +153,13 @@ public partial class InitJEngine : MonoBehaviour
 
             return;
         }
-#endif
+
         //成功加载热更dll
         Success = true;
         //初始化ILRuntime
         InitializeILRuntime(Appdomain);
     }
-    
+
     public static void InitializeILRuntime(AppDomain appdomain)
     {
 #if DEBUG && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IPHONE)
@@ -169,7 +167,6 @@ public partial class InitJEngine : MonoBehaviour
         appdomain.UnityMainThreadID = Thread.CurrentThread.ManagedThreadId;
         appdomain.DebugService.StartDebugService(56000);
 #endif
-#if INIT_JE
         var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
         var helperInterface = typeof(IRegisterHelper);
         //全部程序集
@@ -192,6 +189,7 @@ public partial class InitJEngine : MonoBehaviour
                 }
             }
         }
+
         //CLR绑定（有再去绑定），这个要在最后
         Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
         if (t != null)
@@ -201,7 +199,6 @@ public partial class InitJEngine : MonoBehaviour
                 appdomain
             });
         }
-#endif
     }
 
     [Serializable]

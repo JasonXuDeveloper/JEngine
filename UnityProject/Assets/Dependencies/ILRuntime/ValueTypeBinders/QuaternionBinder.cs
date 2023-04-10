@@ -1,5 +1,4 @@
-﻿#if INIT_JE
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
@@ -349,4 +348,3 @@ public unsafe class QuaternionBinder : ValueTypeBinder<Quaternion>
             ILIntepreter.PushObject(ptr, mStack, vec, true);
     }
 }
-#endif

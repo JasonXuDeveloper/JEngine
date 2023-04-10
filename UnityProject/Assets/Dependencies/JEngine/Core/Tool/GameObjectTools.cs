@@ -127,11 +127,9 @@ namespace JEngine.Core
             ObjectPool<List<T>>.Return(tempT);
             return lst;
 #endif
-#if INIT_JE
             return ClassBindMgr.LoadedScenes.SelectMany(scene => scene.GetRootGameObjects())
                 .SelectMany(g => g.GetComponentsInChildren<T>(true))
                 .ToList();
-#endif
             return UnityEngine.Object.FindObjectsOfType<T>().ToList();
         }
 

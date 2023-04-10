@@ -32,7 +32,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
-#if INIT_JE
     public unsafe partial class LifeCycleMgr : MonoBehaviour
     {
         private struct LifeCycleItem
@@ -54,7 +53,7 @@ namespace JEngine.Core
 
             public static LifeCycleItem* Create(in void* instancePtr, in ulong gcAddr, Action action, Func<bool> cond)
             {
-                LifeCycleItem* item = (LifeCycleItem*)_pool.Allocate(sizeof(LifeCycleItem));
+                LifeCycleItem* item = (LifeCycleItem*)Pool.Allocate(sizeof(LifeCycleItem));
                 item->InstancePtr = (IntPtr)instancePtr;
                 item->_instanceGCHandleAddress = gcAddr;
                 item->_actionPtr = UnsafeUtility.PinGCObjectAndGetAddress(action, out item->_actionGCHandleAddress);
@@ -73,7 +72,7 @@ namespace JEngine.Core
                 UnsafeUtility.ReleaseGCObject(_condGCHandleAddress);
                 fixed (LifeCycleItem* ptr = &this)
                 {
-                    _pool.Free((byte*)ptr);
+                    Pool.Free((byte*)ptr);
                 }
             }
         }
@@ -106,7 +105,7 @@ namespace JEngine.Core
         /// 非托管内存池
         /// 最多同时10240个被占用的任务（480KB内存）
         /// </summary>
-        private static readonly UnmanagedMemoryPool _pool = new UnmanagedMemoryPool(sizeof(LifeCycleItem) * 10240);
+        private static readonly UnmanagedMemoryPool Pool = new UnmanagedMemoryPool(sizeof(LifeCycleItem) * 10240);
 
         /// <summary>
         /// unity周期
@@ -678,73 +677,4 @@ namespace JEngine.Core
                 _instances.Count > 0 ? _ignoreWithoutInInstancesFunc : _ignoreWithInInstancesFunc);
         }
     }
-#else
-    public partial class LifeCycleMgr : MonoBehaviour
-    {
-        public static LifeCycleMgr Instance { get; private set; }
-
-        public static void Initialize()
-        {
-            //placeholder
-        }
-
-        public Guid AddUpdateTask(Action act, Func<bool> cond = null)
-        {
-            //placeholder
-            return Guid.Empty;
-        }
-
-        public void RemoveUpdateItem<T>(T id)
-        {
-            //placeholder
-        }
-
-        public void RemoveFixedUpdateItem<T>(T id)
-        {
-            //placeholder
-        }
-
-        public void RemoveLateUpdateItem<T>(T id)
-        {
-            //placeholder
-        }
-        
-        public Guid AddTask<T>(T ins, Action act, Func<bool> cond = null)
-        {
-            //placeholder
-            return Guid.Empty;
-        }
-        
-        public Guid AddTask(Action act, Func<bool> cond = null)
-        {
-            //placeholder
-            return Guid.Empty;
-        }
-
-        public void AddAwakeItem<T>(T ins, MethodInfo info, Func<bool> cond = null)
-        {
-            
-        }
-
-        public void AddStartItem<T>(T ins, MethodInfo info, GameObject cond = null)
-        {
-            
-        }
-
-        public void AddFixedUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
-        {
-            
-        }
-
-        public void AddUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
-        {
-            
-        }
-
-        public void AddLateUpdateItem<T>(T ins, MethodInfo info, GameObject cond = null)
-        {
-            
-        }
-    }
-#endif
 }

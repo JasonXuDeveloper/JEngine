@@ -4,7 +4,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
-#if INIT_JE
     /// <summary>
     /// Memory pool that returns unmanaged memory
     /// </summary>
@@ -126,5 +125,4 @@ namespace JEngine.Core
             *(ptr - 9) = 0;
         }
     }
-#endif
 }

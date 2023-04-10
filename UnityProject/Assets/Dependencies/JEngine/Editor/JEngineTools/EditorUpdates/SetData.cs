@@ -28,11 +28,11 @@ namespace JEngine.Editor
                     Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
                 if (Setting.Language == JEngineLanguage.English)
                 {
-                    Application.OpenURL("https://docs.xgamedev.net/documents/0.7/");
+                    Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
                 }
                 else
                 {
-                    Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.7/");
+                    Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.8/");
                 }
                 InjectDefineSymbol();
             }
@@ -59,7 +59,7 @@ namespace JEngine.Editor
             var group = BuildPipeline.GetBuildTargetGroup(target);
             var org = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
             var d = PlayerSettings.GetScriptingDefineSymbolsForGroup(group);
-            string[] Symbols = new string[] { "INIT_JE", "ILRuntime" };
+            string[] Symbols = new string[] { "ILRuntime" };
             List<string> dfList = d.Split(';').ToList();
             dfList.AddRange(Symbols.Except(dfList));
             d = string.Join(";", dfList.Distinct().ToArray());
