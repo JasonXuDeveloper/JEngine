@@ -52,11 +52,7 @@ namespace JEngine.Core
                 {
                     return null;
                 }
-                if(((T[])result).Length == 0)
-                {
-                    return null;
-                }
-                return ((T[])result)[0];
+                return (T)result;
             }
         }
 
@@ -75,14 +71,14 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponent(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponents(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
-                if (((T[])result).Length == 0)
+                if (result.Length == 0)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 return (T[])result;
             }
@@ -103,16 +99,16 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
-                if (((T[])result).Length == 0)
+                if (result.Length == 0)
                 {
                     return null;
                 }
-                return ((T[])result)[0];
+                return (T)result[0];
             }
         }
 
@@ -131,14 +127,14 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
                 if (((T[])result).Length == 0)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 return (T[])result;
             }
@@ -191,54 +187,6 @@ namespace JEngine.Core
         public static void Remove(this JBehaviour jBehaviour)
         {
             JBehaviour.RemoveJBehaviour(jBehaviour);
-        }
-
-        /// <summary>
-        /// Create JUI on a gameObject
-        /// 在gameObject上创建JUI
-        /// </summary>
-        /// <param name="gameObject"></param>
-        /// <returns></returns>
-        public static JUI CreateJUI(this GameObject gameObject)
-        {
-            return JBehaviour.CreateOn<JUI>(gameObject, false);
-        }
-
-        /// <summary>
-        /// Get a JUI on a gameObject
-        /// 在gameObject上获取JUI
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="gameObject"></param>
-        /// <returns></returns>
-        public static JUI GetJUI(this GameObject gameObject)
-        {
-            return JBehaviour.GetJBehaviour<JUI>(gameObject);
-        }
-
-        /// <summary>
-        /// Get a JUI on a gameObject
-        /// 在gameObject上获取全部JUI
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="gameObject"></param>
-        /// <returns></returns>
-        public static JUI[] GetJUIs(this GameObject gameObject)
-        {
-            return JBehaviour.GetJBehaviours<JUI>(gameObject);
-        }
-
-
-        /// <summary>
-        /// Remove a JUI
-        /// 销毁JUI
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="jBehaviour"></param>
-        /// <returns></returns>
-        public static void Remove(this JUI jUI)
-        {
-            JBehaviour.RemoveJBehaviour(jUI);
         }
     }
 }

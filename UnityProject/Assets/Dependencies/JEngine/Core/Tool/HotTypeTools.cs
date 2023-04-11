@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using System.Reflection;
+using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using ILRuntime.Mono.Cecil.Pdb;
 using ILRuntime.Runtime.Intepreter;
@@ -34,9 +35,13 @@ namespace JEngine.Core
                 }
 
                 _cacheDomain = new AppDomain();
-                _cacheDomain.LoadAssembly(new MemoryStream(DllMgr.GetDllBytes(ConstMgr.MainHotDLLName, true)), null,
-                    new PdbReaderProvider());
-                LoadILRuntime.InitializeILRuntime(_cacheDomain);
+                // 只有编辑器才会走到这
+                ThreadMgr.QueueOnMainThread(async () =>
+                {
+                    _cacheDomain.LoadAssembly(new MemoryStream(await DllMgr.GetDllBytes(ConstMgr.MainHotDLLName, true)), null,
+                        new PdbReaderProvider());
+                    InitJEngine.InitializeILRuntime(_cacheDomain);
+                });
                 return _cacheDomain;
             }
         }

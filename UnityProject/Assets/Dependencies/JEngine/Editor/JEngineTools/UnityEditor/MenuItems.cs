@@ -35,7 +35,7 @@ namespace JEngine.Editor
     [Obfuscation(Exclude = true)]
     internal class MenuItems
     {
-        [MenuItem("JEngine/Open Documents",priority = 1999)]
+        [MenuItem("JEngine/Open Documentation",priority = 1999)]
         public static void OpenDocument()
         {
             Application.OpenURL("https://docs.xgamedev.net/");

@@ -24,15 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using UnityEngine;
 
 namespace JEngine.Core
 {
     public static partial class ConstMgr
     {
-        public const string DLLSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
-        public const string PdbSourceFolder = "Assets/HotUpdateResources/Dll/Hidden~/";
-        public const string PdbBytesFolder = "Assets/HotUpdateResources/Dll/";
-        public const string DLLBytesFolder = "Assets/HotUpdateResources/Dll/";
+        public const string DLLSourceFolder = "Assets/HotUpdateResources/Main/Dll/Hidden~/";
+        public const string PdbSourceFolder = "Assets/HotUpdateResources/Main/Dll/Hidden~/";
+        public const string PdbBytesFolder = "Assets/HotUpdateResources/Main/Dll/";
+        public const string DLLBytesFolder = "Assets/HotUpdateResources/Main/Dll/";
         public const string MainHotDLLName = "HotUpdateScripts";
         public const string DLLExtension = ".dll";
         public const string PdbExtension = ".pdb";
@@ -42,5 +43,7 @@ namespace JEngine.Core
         
         public static byte[] NullBytes => Array.Empty<byte>();
         public static object[] NullObjects => Array.Empty<object>();
+        
+        public static WaitForSecondsRealtime WaitFor1Sec = new WaitForSecondsRealtime(0.001f);
     }
 }

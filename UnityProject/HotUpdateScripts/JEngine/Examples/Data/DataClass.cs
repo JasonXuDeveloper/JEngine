@@ -28,34 +28,6 @@ namespace JEngine.Examples
 {
     public partial class DataClass
     {
-        /// <summary>
-        /// Property which holds the real value
-        /// </summary>
-        public long Money
-        {
-            get
-            {
-                return money;
-            }
-            set
-            {
-                money = value;
-                if (BindableMoney != null)
-                {
-                    BindableMoney.Value = value;
-                }
-                else
-                {
-                    BindableMoney = new BindableProperty<long>(value);
-                }
-            }
-        }
-
-        /*
-        * Fields to bind
-        */
-        public BindableProperty<long> BindableMoney = new BindableProperty<long>(0);
-
 
         public void Awake()
         {

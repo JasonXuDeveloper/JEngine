@@ -1,6 +1,6 @@
 .DS_Store
 .idea/*
-UnityProject/DLC/*
+UnityProject/Bundles/*
 UnityProject/Assets/Dependencies/JEngine/Core/.idea/*
 UnityProject/.idea/*
 UnityProject/HotUpdateScripts/.vs/*
@@ -10,7 +10,11 @@ UnityProject/obj/*
 UnityProject/*.csproj
 UnityProject/UnityProject.sln
 UnityProject/HotUpdateScripts/obj/*
-UnityProject/ProjectSettings/*
 UnityProject/Assets/JEngine.lock
 UnityProject/Assets/JEngine.lock.meta
 UnityProject/Assets/Dependencies/ILRuntime/Generated/*
+UnityProject/Assets/Dependencies/ILRuntime/Generated.meta
+UnityProject/Logs/Packages-Update.log
+UnityProject/Sandbox/*
+UnityProject/Logs/*
+UnityProject/Build/*

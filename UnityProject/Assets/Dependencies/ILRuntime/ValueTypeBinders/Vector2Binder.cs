@@ -1,5 +1,4 @@
-﻿#if INIT_JE
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
@@ -463,4 +462,3 @@ public unsafe class Vector2Binder : ValueTypeBinder<Vector2>
             ILIntepreter.PushObject(ptr, mStack, vec, true);
     }
 }
-#endif

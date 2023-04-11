@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using JEngine.Core;
-using LitJson;
 using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
@@ -254,44 +253,6 @@ namespace JEngine.Editor
             return false;
         }
 
-        [SerializeTypeMethod(2)]
-        public static bool SerializeBindablePropertyType(AnimBool[] fadeGroup, Type cType, IType type,
-            ILTypeInstance instance, KeyValuePair<string, int> i,
-            string name)
-        {
-            var objValue = i.Value;
-            var objName = i.Key;
-            var obj = instance[objValue];
-            //可绑定值，可以尝试更改
-            if (type.ReflectionType.IsGenericType && type.ReflectionType.GetGenericTypeDefinition() == typeof(BindableProperty<>) && obj != null)
-            {
-                PropertyInfo fi = type.ReflectionType.GetProperty("Value");
-                object val = fi?.GetValue(obj);
-
-                Type genericType = type.ReflectionType.GenericTypeArguments[0];
-                genericType = genericType is ILRuntimeWrapperType wt ? wt.RealType : genericType;
-                if (genericType == null ||
-                    (!genericType.IsPrimitive && genericType != typeof(string))) //不是基础类型或字符串
-                {
-                    EditorGUILayout.LabelField(objName, val?.ToString()); //只显示字符串
-                }
-                else
-                {
-                    //可更改
-                    var data = JEngine.Core.Tools.ConvertSimpleType(EditorGUILayout.TextField(objName, val?.ToString()),
-                        genericType);
-                    if (data != null) //尝试更改
-                    {
-                        fi?.SetValue(obj, data);
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
         [SerializeTypeMethod(3)]
         public static bool SerializeUnityObjectType(AnimBool[] fadeGroup, Type cType, IType type,
             ILTypeInstance instance, KeyValuePair<string, int> i,
@@ -328,38 +289,6 @@ namespace JEngine.Editor
                     //处理Unity类型
                     var res = EditorGUILayout.ObjectField(name, obj as Object, cType, true);
                     instance[i.Value] = res;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        [SerializeTypeMethod(4)]
-        public static bool SerializeJsonDataType(AnimBool[] fadeGroup, Type cType, IType type, ILTypeInstance instance,
-            KeyValuePair<string, int> i,
-            string name)
-        {
-            if (cType == typeof(JsonData)) //可以折叠显示Json数据
-            {
-                var objValue = i.Value;
-                if (instance[objValue] != null)
-                {
-                    fadeGroup[1].target = EditorGUILayout.Foldout(fadeGroup[1].target, name, true);
-                    if (EditorGUILayout.BeginFadeGroup(fadeGroup[1].faded))
-                    {
-                        instance[objValue] = EditorGUILayout.TextArea(
-                            ((JsonData) instance[objValue]).ToString()
-                        );
-                    }
-
-                    EditorGUILayout.EndFadeGroup();
-                    EditorGUILayout.Space();
-                }
-                else
-                {
-                    EditorGUILayout.LabelField(name, "暂无值的JsonData");
                 }
 
                 return true;

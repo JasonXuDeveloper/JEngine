@@ -1,4 +1,4 @@
-using JEngine.Interface;
+using JEngine.Core;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Helper

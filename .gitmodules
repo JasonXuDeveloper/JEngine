@@ -1,6 +1,0 @@
-[submodule "UnityProject/Assets/Dependencies/protobuf-net-v2-for-ILRuntime"]
-	path = UnityProject/Assets/Dependencies/protobuf-net-v2-for-ILRuntime
-	url = git@github.com:JasonXuDeveloper/protobuf-net-v2-for-ILRuntime.git
-[submodule "UnityProject/Assets/Dependencies/Unity-Reorderable-List"]
-	path = UnityProject/Assets/Dependencies/Unity-Reorderable-List
-	url = git@github.com:cfoulston/Unity-Reorderable-List.git

@@ -1,5 +1,4 @@
-﻿#if INIT_JE
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Reflection;
@@ -464,4 +463,3 @@ public unsafe class Vector3Binder : ValueTypeBinder<Vector3>
         CopyValueTypeToStack(ref vec, dst, mStack);
     }
 }
-#endif

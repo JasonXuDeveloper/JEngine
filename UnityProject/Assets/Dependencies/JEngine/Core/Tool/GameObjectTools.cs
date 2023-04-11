@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Linq;
-using Nino.Shared.IO;
 using System.Reflection;
 using ILRuntime.Reflection;
 using ILRuntime.CLR.TypeSystem;
@@ -11,6 +10,10 @@ using UnityEngine.SceneManagement;
 using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using Component = UnityEngine.Component;
+
+#if PLUGIN_NINO
+using Nino.Shared.IO;
+#endif
 
 namespace JEngine.Core
 {
@@ -78,7 +81,7 @@ namespace JEngine.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static List<T> FindObjectsOfTypeAll<T>()
+        public static List<T> FindObjectsOfTypeAll<T>() where T: Object
         {
             if (!Application.isPlaying)
             {
@@ -86,7 +89,7 @@ namespace JEngine.Core
                     .SelectMany(g => g.GetComponentsInChildren<T>(true))
                     .ToList();
             }
-#if INIT_JE
+#if PLUGIN_NINO
             List<GameObject> all = null;
             List<GameObject> temp = null;
             foreach (var scene in ClassBindMgr.LoadedScenes)
@@ -124,7 +127,10 @@ namespace JEngine.Core
             ObjectPool<List<T>>.Return(tempT);
             return lst;
 #endif
-            return null;
+            return ClassBindMgr.LoadedScenes.SelectMany(scene => scene.GetRootGameObjects())
+                .SelectMany(g => g.GetComponentsInChildren<T>(true))
+                .ToList();
+            return UnityEngine.Object.FindObjectsOfType<T>().ToList();
         }
 
         /// <summary>
@@ -187,18 +193,35 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 获取场景内全部MonoBehaviour适配器
+        /// 获取场景内全部MonoBehaviour适配器（CrossBindingAdaptorType）
         /// </summary>
         /// <returns></returns>
         public static List<CrossBindingAdaptorType> GetAllMonoAdapters()
         {
-            return Object.FindObjectsOfType<MonoBehaviour>().ToList()
-                .FindAll(x => x.GetType().GetInterfaces().Contains(typeof(CrossBindingAdaptorType))).Select(x => (CrossBindingAdaptorType)x)
-                .ToList();
+            List<CrossBindingAdaptorType> adapters = new List<CrossBindingAdaptorType>();
+            List<CrossBindingAdaptorType> searchResult = new List<CrossBindingAdaptorType>();
+            foreach (var scene in ClassBindMgr.LoadedScenes)
+            {
+                var rootGameObjects = scene.GetRootGameObjects();
+                foreach (var rootGameObject in rootGameObjects)
+                {
+                    searchResult.Clear();
+                    rootGameObject.GetComponentsInChildren(true, searchResult);
+                    foreach (var crossBindingAdaptorType in searchResult)
+                    {
+                        if (crossBindingAdaptorType?.ILInstance != null)
+                        {
+                            adapters.Add(crossBindingAdaptorType);
+                        }
+                    }
+                }
+            }
+            
+            return adapters;
         }
 
         /// <summary>
-        /// 获取热更对象（注意：这个会返回一个ILTypeInstance数组，需要把object转ILTypeInstance[]后判断长度然后取第一个元素
+        /// 获取热更对象
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="typeName"></param>
@@ -206,14 +229,45 @@ namespace JEngine.Core
         public static object GetHotComponent(this GameObject gameObject, string typeName)
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
-            return clrInstances.ToList()
-                .FindAll(a =>
-                    a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
-                .Select(a => a.ILInstance).ToArray();
+            var type = InitJEngine.Appdomain.GetType(typeName);
+            foreach (var clrInstance in clrInstances)
+            {
+                if (clrInstance.ILInstance != null && clrInstance.ILInstance.Type.CanAssignTo(type))
+                {
+                    return clrInstance.ILInstance;
+                }
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取热更对象
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public static object[] GetHotComponents(this GameObject gameObject, string typeName)
+        {
+            var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
+            var type = InitJEngine.Appdomain.GetType(typeName);
+            object[] ret = new object[clrInstances.Length];
+            int i = 0;
+            foreach (var clrInstance in clrInstances)
+            {
+                if (clrInstance.ILInstance != null && clrInstance.ILInstance.Type.CanAssignTo(type))
+                {
+                    ret[i] = clrInstance.ILInstance;
+                    i++;
+                }
+            }
+            Array.Resize(ref ret, i);
+            
+            return ret;
         }
 
         /// <summary>
-        /// 获取热更对象（注意：这个会返回一个ILTypeInstance数组，需要把object转ILTypeInstance[]后判断长度然后取第一个元素
+        /// 获取热更对象
         /// </summary>
         /// <param name="gameObject"></param>
         /// <param name="type"></param>
@@ -221,54 +275,165 @@ namespace JEngine.Core
         public static object GetHotComponent(this GameObject gameObject, ILType type)
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
-            return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
-                .Select(a => a.ILInstance).ToArray();
+            foreach (var clrInstance in clrInstances)
+            {
+                if (clrInstance.ILInstance != null && clrInstance.ILInstance.Type.CanAssignTo(type))
+                {
+                    return clrInstance.ILInstance;
+                }
+            }
+            
+            return null;
         }
         
         /// <summary>
-        /// 获取热更对象（注意：这个会返回一个ILTypeInstance数组，需要把object转ILTypeInstance[]后判断长度然后取第一个元素
+        /// 获取热更对象
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object[] GetHotComponents(this GameObject gameObject, ILType type)
+        {
+            var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
+            object[] ret = new object[clrInstances.Length];
+            int i = 0;
+            foreach (var clrInstance in clrInstances)
+            {
+                if (clrInstance.ILInstance != null && clrInstance.ILInstance.Type.CanAssignTo(type))
+                {
+                    ret[i] = clrInstance.ILInstance;
+                    i++;
+                }
+            }
+            Array.Resize(ref ret, i);
+
+            return ret;
+        }
+        
+        /// <summary>
+        /// 获取热更对象
         /// </summary>
         /// <param name="adapters"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         public static object GetHotComponent(this CrossBindingAdaptorType[] adapters, ILType type)
         {
-            return adapters.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
-                .Select(a => a.ILInstance).ToArray();
+            foreach (var adapter in adapters)
+            {
+                if (adapter.ILInstance != null && adapter.ILInstance.Type.CanAssignTo(type))
+                {
+                    return adapter.ILInstance;
+                }
+            }
+            
+            return null;
         }
         
         /// <summary>
-        /// 获取热更对象（注意：这个会返回一个ILTypeInstance数组，需要把object转ILTypeInstance[]后判断长度然后取第一个元素
+        /// 获取热更对象
+        /// </summary>
+        /// <param name="adapters"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object[] GetHotComponents(this CrossBindingAdaptorType[] adapters, ILType type)
+        {
+            object[] ret = new object[adapters.Length];
+            int i = 0;
+            foreach (var adapter in adapters)
+            {
+                if (adapter.ILInstance != null && adapter.ILInstance.Type.CanAssignTo(type))
+                {
+                    ret[i] = adapter.ILInstance;
+                    i++;
+                }
+            }
+            Array.Resize(ref ret, i);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 获取热更对象
         /// </summary>
         /// <param name="adapters"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         public static object GetHotComponent(this List<CrossBindingAdaptorType> adapters, ILType type)
         {
-            return adapters
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(type))
-                .Select(a => a.ILInstance).ToArray();
+            foreach (var adapter in adapters)
+            {
+                if (adapter.ILInstance != null && adapter.ILInstance.Type.CanAssignTo(type))
+                {
+                    return adapter.ILInstance;
+                }
+            }
+            
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取热更对象
+        /// </summary>
+        /// <param name="adapters"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object[] GetHotComponents(this List<CrossBindingAdaptorType> adapters, ILType type)
+        {
+            object[] ret = new object[adapters.Count];
+            int i = 0;
+            foreach (var adapter in adapters)
+            {
+                if (adapter.ILInstance != null && adapter.ILInstance.Type.CanAssignTo(type))
+                {
+                    ret[i] = adapter.ILInstance;
+                    i++;
+                }
+            }
+            Array.Resize(ref ret, i);
+
+            return ret;
         }
 
+        /// <summary>
+        /// 删除挂载GameObject上的热更脚本
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="hotObject"></param>
         public static void DestroyHotComponent(this GameObject gameObject, object hotObject)
         {
             var clrInstances = gameObject.GetComponents<CrossBindingAdaptorType>();
-            var objs = clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && Equals(a.ILInstance, hotObject));
-            foreach (var obj in objs)
+            foreach (var clrInstance in clrInstances)
             {
-                Object.Destroy(obj as MonoBehaviour);
+                if (clrInstance.ILInstance != null && Equals(clrInstance.ILInstance, hotObject))
+                {
+                    Object.Destroy(clrInstance as MonoBehaviour);
+                }
             }
         }
 
-        public static object GetHotComponentInChildren(this GameObject gameObject, string typeName)
+        /// <summary>
+        /// 获取子对象上的热更对象
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
+        public static object[] GetHotComponentInChildren(this GameObject gameObject, string typeName)
         {
             var clrInstances = gameObject.GetComponentsInChildren<CrossBindingAdaptorType>(true);
-            return clrInstances.ToList()
-                .FindAll(a => a.ILInstance != null && a.ILInstance.Type.CanAssignTo(InitJEngine.Appdomain.GetType(typeName)))
-                .Select(a => a.ILInstance).ToArray();
+            var type = InitJEngine.Appdomain.GetType(typeName);
+            object[] ret = new object[clrInstances.Length];
+            int i = 0;
+            foreach (var clrInstance in clrInstances)
+            {
+                if (clrInstance.ILInstance != null && clrInstance.ILInstance.Type.CanAssignTo(type))
+                {
+                    ret[i] = clrInstance.ILInstance;
+                    i++;
+                }
+            }
+            Array.Resize(ref ret, i);
+            
+            return ret;
         }
     }
 }

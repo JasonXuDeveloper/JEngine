@@ -264,7 +264,7 @@ namespace JEngine.Core
         public JAction Execute(bool onMainThread = false)
         {
             DisposeCheck();
-            Do(onMainThread).Coroutine();
+            _ = Do(onMainThread);
             return this;
         }
 
@@ -277,7 +277,7 @@ namespace JEngine.Core
         public JAction ExecuteAsyncParallel(Action callback = null, bool onMainThread = false)
         {
             DisposeCheck();
-            _ExecuteAsync(callback, onMainThread).Coroutine();
+            _ = _ExecuteAsync(callback, onMainThread);
             return this;
         }
 
@@ -286,7 +286,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        public async ET.ETTask<JAction> ExecuteAsync(bool onMainThread = false)
+        public async Task<JAction> ExecuteAsync(bool onMainThread = false)
         {
             DisposeCheck();
             return await Do(onMainThread);
@@ -298,7 +298,7 @@ namespace JEngine.Core
         /// <param name="callback"></param>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        private async ET.ETTask<JAction> _ExecuteAsync(Action callback, bool onMainThread)
+        private async Task<JAction> _ExecuteAsync(Action callback, bool onMainThread)
         {
             DisposeCheck();
             await Do(onMainThread);
@@ -372,7 +372,7 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="onMainThread"></param>
         /// <returns></returns>
-        private async ET.ETTask<JAction> Do(bool onMainThread)
+        private async Task<JAction> Do(bool onMainThread)
         {
             if (executing && !parallel)
             {
@@ -387,7 +387,7 @@ namespace JEngine.Core
             _isMainThread = onMainThread;
             cancel = false;
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            Loom.QueueOnMainThread(async () =>
+            ThreadMgr.QueueOnMainThread(async () =>
             {
                 for (int i = 0; i < _item.toDo.Count; i++)
                 {
@@ -411,7 +411,7 @@ namespace JEngine.Core
                     if (_item.delayFrames.ContainsKey(_index))
                     {
                         //计算1帧时间(ms)
-                        var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? GameStats.FPS : Application.targetFrameRate);
+                        var durationPerFrame = 1000 / (int)(Application.targetFrameRate <= 0 ? FpsMonitor.FPS : Application.targetFrameRate);
                         var duration = durationPerFrame * _item.delayFrames[_index];
                         await Task.Delay(duration);
                         continue;
@@ -466,10 +466,7 @@ namespace JEngine.Core
                             {
                                 await Task.Run(() =>
                                 {
-                                    Loom.QueueOnMainThread(p =>
-                                    {
-                                        Execute(action);
-                                    }, null);
+                                    ThreadMgr.QueueOnMainThread(Execute, action);
                                 }, _item.cancellationTokenSource.Token);
                             }
                             else

@@ -23,11 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using JEngine.Core;
-using JEngine.AntiCheat;
-using JEngine.Examples;
-using JEngine.Net;
 using UnityEngine;
+using JEngine.Core;
 
 namespace HotUpdateScripts
 {
@@ -51,7 +48,7 @@ namespace HotUpdateScripts
         public static void RunGame()
         {
             Debug.Log("<color=yellow>[RunGame] 这个周期在ClassBind初始化后，可以激活游戏相关逻辑</color>");
-            //如果生成热更解决方案跳过，参考https://docs.xgamedev.net/zh/documents/0.7/FAQ.html#生成热更工程dll跳过
+            //如果生成热更解决方案跳过，参考https://docs.xgamedev.net/zh/documents/0.8/FAQ.html#生成热更工程dll跳过
             //的方法一，把生成的平台改成Any CPU（默认是小写的，windows下无法生成）
         }
     }

@@ -23,10 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using BM;
 using System;
 using System.IO;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace JEngine.Core
 {
@@ -44,7 +44,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Get DLL path in the runtime (located in HotUpdateResources/DLL)
+        /// Get DLL path in the runtime (located in HotUpdateResources/Main/DLL)
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -66,7 +66,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Get PDB path in the runtime (located in HotUpdateResources/DLL)
+        /// Get PDB path in the runtime (located in HotUpdateResources/Main/DLL)
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -84,7 +84,7 @@ namespace JEngine.Core
         /// <param name="editor">is editor mode</param>
         /// <returns></returns>
         /// <exception cref="FileNotFoundException"></exception>
-        public static byte[] GetDllBytes(string name, bool editor = false)
+        public static async Task<byte[]> GetDllBytes(string name, bool editor = false)
         {
             string path;
             if (editor)
@@ -93,15 +93,14 @@ namespace JEngine.Core
                 //判断有没有dll
                 if (File.Exists(path))
                 {
-                    return FileMgr.FileToByte(path);
+                    return FileMgr.FileToBytes(path);
                 }
 
                 throw new FileNotFoundException($"DLL not found in: {path}");
             }
 
             path = GetDllInRuntimePath(name);
-            var dllFile = (TextAsset)AssetMgr.Load(path,
-                AssetComponentConfig.DefaultBundlePackageName);
+            var dllFile = await AssetMgr.LoadAsync<TextAsset>(path);
             if (dllFile == null)
             {
                 throw new FileNotFoundException($"DLL not found in: {path}");
@@ -117,7 +116,7 @@ namespace JEngine.Core
         /// <param name="editor"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static byte[] GetPdbBytes(string name, bool editor = true)
+        public static async Task<byte[]> GetPdbBytes(string name, bool editor = true)
         {
             if (editor)
             {
@@ -130,15 +129,14 @@ namespace JEngine.Core
                 if (File.Exists(path) &&
                     (File.GetLastWriteTime(dllPath) - File.GetLastWriteTime(path)).Seconds < 30)
                 {
-                    return FileMgr.FileToByte(path);
+                    return FileMgr.FileToBytes(path);
                 }
 
                 throw new InvalidOperationException("Pdb is invalid");
             }
 
             var pdbPath = GetPdbInRuntimePath(name);
-            var pdbFile = (TextAsset)AssetMgr.Load(pdbPath,
-                AssetComponentConfig.DefaultBundlePackageName);
+            var pdbFile = await AssetMgr.LoadAsync<TextAsset>(pdbPath);
             if (pdbFile == null)
             {
                 throw new FileNotFoundException($"Pdb not found in: {pdbPath}");

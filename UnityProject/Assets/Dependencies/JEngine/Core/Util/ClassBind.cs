@@ -1,11 +1,11 @@
-﻿#if INIT_JE
-using System;
+﻿using System;
 using Malee.List;
 using System.Linq;
 using UnityEngine;
 using System.Reflection;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Reflection;
+using System.Threading.Tasks;
 using ILRuntime.CLR.TypeSystem;
 using UnityEngine.Serialization;
 using ILRuntime.Runtime.Enviorment;
@@ -15,7 +15,7 @@ using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Core
 {
-    [HelpURL("https://docs.xgamedev.net/zh/documents/0.7/classbind.html")]
+    [HelpURL("https://docs.xgamedev.net/zh/documents/0.8/classbind.html")]
     public class ClassBind : MonoBehaviour
     {
         [FormerlySerializedAs("ScriptsToBind")]
@@ -160,7 +160,7 @@ namespace JEngine.Core
         /// Set value
         /// </summary>
         /// <param name="classData"></param>
-        public void SetVal(ClassData classData)
+        public async Task SetVal(ClassData classData)
         {
             string classType =
                 $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
@@ -375,12 +375,12 @@ namespace JEngine.Core
                     else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
                     {
                         //Unity 编辑器下AssetDatabase读取图片会变texture2d导致无法给sprite赋值
-                        var o = AssetMgr.Load(field.value);
                         var fieldType = t.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
                                         (t.BaseType?.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
                                          (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
                                           t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
                         fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
+                        var o = await AssetMgr.LoadAsync(field.value, fieldType);
                         if (fieldType == typeof(Sprite) && o is Texture2D tx)
                         {
                             o = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f),
@@ -586,4 +586,3 @@ namespace JEngine.Core
     {
     }
 }
-#endif

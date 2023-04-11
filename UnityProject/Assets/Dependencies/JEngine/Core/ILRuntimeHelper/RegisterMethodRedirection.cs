@@ -1,4 +1,3 @@
-#if INIT_JE
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -18,8 +17,6 @@ using ILRuntime.Runtime.Enviorment;
 using ILRuntime.Runtime.Intepreter;
 using ILRuntime.Runtime.Stack;
 using JEngine.Core;
-using JEngine.Interface;
-using ProtoBuf;
 using UnityEngine;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 using Debug = UnityEngine.Debug;
@@ -220,41 +217,6 @@ namespace JEngine.Core
             args = new[] {typeof(String)};
             isInvokingMethod = monoType.GetMethod("IsInvoking", flag, null, args, null);
             appdomain.RegisterCLRMethodRedirection(isInvokingMethod, IsInvoking_6);
-
-            //注册pb反序列化
-            Type pbSerializeType = typeof(Serializer);
-            args = new[] {typeof(Type), typeof(Stream)};
-            var pbDeserializeMethod = pbSerializeType.GetMethod("Deserialize", flag, null, args, null);
-            appdomain.RegisterCLRMethodRedirection(pbDeserializeMethod, Deserialize_1);
-            args = new[] {typeof(ILTypeInstance)};
-            Dictionary<string, List<MethodInfo>> genericMethods = new Dictionary<string, List<MethodInfo>>();
-            List<MethodInfo> lst = null;
-            foreach (var m in pbSerializeType.GetMethods())
-            {
-                if (m.IsGenericMethodDefinition)
-                {
-                    if (!genericMethods.TryGetValue(m.Name, out lst))
-                    {
-                        lst = new List<MethodInfo>();
-                        genericMethods[m.Name] = lst;
-                    }
-
-                    lst.Add(m);
-                }
-            }
-
-            if (genericMethods.TryGetValue("Deserialize", out lst))
-            {
-                foreach (var m in lst)
-                {
-                    if (m.MatchGenericParameters(args, typeof(ILTypeInstance), typeof(Stream)))
-                    {
-                        var method = m.MakeGenericMethod(args);
-                        appdomain.RegisterCLRMethodRedirection(method, Deserialize_2);
-                        break;
-                    }
-                }
-            }
 
             //注册FindObject(s)OfType
             var objectType = typeof(UnityEngine.Object);
@@ -1165,72 +1127,6 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// pb net 反序列化重定向
-        /// </summary>
-        /// <param name="__intp"></param>
-        /// <param name="__esp"></param>
-        /// <param name="__mStack"></param>
-        /// <param name="__method"></param>
-        /// <param name="isNewObj"></param>
-        /// <returns></returns>
-        private static unsafe StackObject* Deserialize_1(ILIntepreter __intp, StackObject* __esp,
-            AutoList __mStack, CLRMethod __method, bool isNewObj)
-        {
-            AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 2);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            Stream source =
-                (Stream) typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            __intp.Free(ptr_of_this_method);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 2);
-            Type type = (Type) typeof(Type).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            __intp.Free(ptr_of_this_method);
-
-
-            var result_of_this_method = Serializer.Deserialize(type, source);
-
-            object obj_result_of_this_method = result_of_this_method;
-            if (obj_result_of_this_method is CrossBindingAdaptorType adaptorType)
-            {
-                return ILIntepreter.PushObject(__ret, __mStack, adaptorType.ILInstance, true);
-            }
-
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method, true);
-        }
-
-        /// <summary>
-        /// pb net 反序列化重定向
-        /// </summary>
-        /// <param name="__intp"></param>
-        /// <param name="__esp"></param>
-        /// <param name="__mStack"></param>
-        /// <param name="__method"></param>
-        /// <param name="isNewObj"></param>
-        /// <returns></returns>
-        private static unsafe StackObject* Deserialize_2(ILIntepreter __intp, StackObject* __esp,
-            AutoList __mStack, CLRMethod __method, bool isNewObj)
-        {
-            AppDomain __domain = __intp.AppDomain;
-            StackObject* ptr_of_this_method;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 1);
-
-            ptr_of_this_method = ILIntepreter.Minus(__esp, 1);
-            Stream source =
-                (Stream) typeof(Stream).CheckCLRTypes(StackObject.ToObject(ptr_of_this_method, __domain, __mStack));
-            __intp.Free(ptr_of_this_method);
-
-            var genericArgument = __method.GenericArguments;
-            var type = genericArgument[0];
-            var realType = type is CLRType ? type.TypeForCLR : type.ReflectionType;
-            var result_of_this_method = Serializer.Deserialize(realType, source);
-
-            return ILIntepreter.PushObject(__ret, __mStack, result_of_this_method);
-        }
-
-        /// <summary>
         /// 重定向CancelInvoke
         /// </summary>
         /// <param name="__intp"></param>
@@ -1516,47 +1412,40 @@ namespace JEngine.Core
         private static Dictionary<MethodInfo, CancellationTokenSource> _invokeTokens =
             new Dictionary<MethodInfo, CancellationTokenSource>(0);
 
-        private static async void DoInvokeRepeating<T>(T val, MethodInfo methodInfo, float time, float duration,
+        private static void DoInvokeRepeating<T>(T val, MethodInfo methodInfo, float time, float duration,
             GameObject go)
         {
-            if (time > 0)
+            ThreadMgr.QueueOnMainThread(() =>
             {
-                await Wait(time, _invokeRepeatingTokens[methodInfo].Token, go);
-            }
-
-            while (!_invokeRepeatingTokens[methodInfo].IsCancellationRequested)
-            {
-                try
+                void Queue()
                 {
-                    if (go != null)
+                    if (!_invokeRepeatingTokens[methodInfo].IsCancellationRequested)
                     {
-                        Loom.QueueOnMainThread(o =>
-                            methodInfo?.Invoke(val, null), null);
+                        try
+                        {
+                            if (go != null)
+                            {
+                                ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null));
+                            }
+                            else
+                            {
+                                _invokeRepeatingTokens[methodInfo].Cancel();
+                            }
+                        }
+                        catch (MissingReferenceException)
+                        {
+                            _invokeRepeatingTokens[methodInfo].Cancel();
+                        }
+                        
+                        ThreadMgr.QueueOnMainThread(Queue, duration);
                     }
                     else
                     {
-                        _invokeRepeatingTokens[methodInfo].Cancel();
+                        _invokeRepeatingTokens.Remove(methodInfo);
                     }
                 }
-                catch (MissingReferenceException)
-                {
-                    _invokeRepeatingTokens[methodInfo].Cancel();
-                }
-
-                try
-                {
-                    if (duration > 0)
-                    {
-                        await Wait(duration, _invokeRepeatingTokens[methodInfo].Token, go);
-                    }
-                }
-                catch (TaskCanceledException)
-                {
-                    //会抛出TaskCanceledException，表示等待被取消
-                }
-            }
-
-            _invokeRepeatingTokens.Remove(methodInfo);
+                ThreadMgr.QueueOnMainThread(Queue);
+            }, time);
         }
 
 
@@ -1613,19 +1502,13 @@ namespace JEngine.Core
             return __ret;
         }
 
-        private static async void DoInvoke<T>(T val, MethodInfo methodInfo, float time, GameObject go)
+        private static void DoInvoke<T>(T val, MethodInfo methodInfo, float time, GameObject go)
         {
-            if (time > 0)
-            {
-                await Wait(time, _invokeTokens[methodInfo].Token, go);
-            }
-
             try
             {
                 if (go != null)
                 {
-                    Loom.QueueOnMainThread(o =>
-                        methodInfo?.Invoke(val, null), null);
+                    ThreadMgr.QueueOnMainThread(() => methodInfo?.Invoke(val, null), time);
                     _invokeTokens.Remove(methodInfo);
                 }
             }
@@ -1634,49 +1517,6 @@ namespace JEngine.Core
                 _invokeTokens[methodInfo].Cancel();
             }
         }
-
-        /// <summary>
-        /// 等待一定时间（针对Invoke设计）
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="token"></param>
-        /// <param name="go"></param>
-        /// <returns></returns>
-        private static async Task Wait(float time, CancellationToken token, GameObject go)
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            try
-            {
-                //当没取消的时候继续等
-                while (!token.IsCancellationRequested && go != null)
-                {
-                    //当计时器的时间小于暂停时间转毫秒除以时间系数时，等待1帧
-                    if (Time.timeScale == 0 || sw.ElapsedMilliseconds < (time * 1000) / Time.timeScale)
-                    {
-                        await Task.Delay(1);
-                    }
-                    else //不满足条件就结束了
-                    {
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //会抛出TaskCanceledException，表示等待被取消，直接返回
-                //MissingReference是GO销毁
-                if (ex is TaskCanceledException || ex is MissingReferenceException)
-                {
-                    sw.Stop();
-                    return;
-                }
-            }
-
-            sw.Stop();
-        }
-
-
 
         /// <summary>
         /// 处理热更的SendMessage
@@ -2817,8 +2657,7 @@ namespace JEngine.Core
                 var typeName = __domain.LoadedTypes.Keys.ToList().Find(k => k.EndsWith(type));
                 if (typeName != null) //如果有这个热更类型
                 {
-                    var cs =  Tools.GetHotComponent(instance_of_this_method, type);
-                    result_of_this_method = cs != null && ((ILTypeInstance[]) cs).Length > 0 ? ((ILTypeInstance[]) cs)[0] : null;
+                    result_of_this_method = Tools.GetHotComponent(instance_of_this_method, type);
                 }
             }
 
@@ -2860,8 +2699,7 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    var cs = Tools.GetHotComponent(instance, type as ILType);
-                    res = cs != null && ((ILTypeInstance[]) cs).Length > 0 ? ((ILTypeInstance[]) cs)[0] : null;
+                    res = Tools.GetHotComponent(instance, type as ILType);
                 }
 
                 return ILIntepreter.PushObject(ptr, __mStack, res);
@@ -2905,14 +2743,11 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    var ilInstances = ((ILTypeInstance[])Tools.GetHotComponent(
-                            instance,
-                            type as ILType))
-                        .Select(i => i.CLRInstance).ToArray();
+                    var ilInstances = Tools.GetHotComponents(instance, type as ILType);
                     int n = ilInstances.Length;
                     res = Array.CreateInstance(type.TypeForCLR, n);
                     for (int i = 0; i < n; i++)
-                        ((Array) res).SetValue(ilInstances[i], i);
+                        ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
                 }
 
                 return ILIntepreter.PushObject(ptr_of_this_method, __mStack, res);
@@ -2941,12 +2776,11 @@ namespace JEngine.Core
                 else
                 {
                     var adapters = Tools.GetAllMonoAdapters();
-                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType))
-                        .Select(i => i.CLRInstance).ToArray();
+                    var ilInstances = Tools.GetHotComponents(adapters, type as ILType);
                     int n = ilInstances.Length;
                     res = Array.CreateInstance(type.TypeForCLR, n);
                     for (int i = 0; i < n; i++)
-                        ((Array) res).SetValue(ilInstances[i], i);
+                        ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
                 }
 
                 return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -2971,12 +2805,11 @@ namespace JEngine.Core
             if (type is ILRuntimeType ilType)
             {
                 var adapters = Tools.GetAllMonoAdapters();
-                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType))
-                    .Select(i => i.CLRInstance).ToArray();
+                var ilInstances = Tools.GetHotComponents(adapters, ilType.ILType);
                 int n = ilInstances.Length;
                 res = Array.CreateInstance(ilType.ILType.TypeForCLR, n);
                 for (int i = 0; i < n; i++)
-                    ((Array) res).SetValue(ilInstances[i], i);
+                    ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
             }
             else
             {
@@ -3007,8 +2840,7 @@ namespace JEngine.Core
                 else
                 {
                     var adapters = Tools.GetAllMonoAdapters();
-                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType));
-                    res = ilInstances.Length > 0 ? ilInstances[0] : null;
+                    res = Tools.GetHotComponent(adapters, type as ILType);
                 }
 
                 return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -3033,8 +2865,7 @@ namespace JEngine.Core
             if (type is ILRuntimeType ilType)
             {
                 var adapters = Tools.GetAllMonoAdapters();
-                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType));
-                res = ilInstances.Length > 0 ? ilInstances[0] : null;
+                res = Tools.GetHotComponent(adapters, ilType.ILType);
             }
             else
             {
@@ -3046,4 +2877,3 @@ namespace JEngine.Core
         }
     }
 }
-#endif

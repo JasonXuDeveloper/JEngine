@@ -531,7 +531,7 @@ namespace JEngine.Editor
 			#endregion
 
 			#region 热更场景相关
-
+			
 			//直接进热更场景
 			GUILayout.Space(30);
 			MakeHorizontal(GetSpace(0.1f), () =>
@@ -549,38 +549,37 @@ namespace JEngine.Editor
 			if (_showScenes)
 			{
 				//获取热更场景
-				var assets =
-					BM.BuildAssetsTools.GetPackageSceneAssets(
-						AssetDatabase.LoadAssetAtPath<BM.AssetLoadTable>(BM.BuildAssets.AssetLoadTablePath));
-
-				foreach (var sceneObj in assets)
+				//load all scene files from HotUpdateResources
+				var assets = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/HotUpdateResources" });
+				foreach (var guid in assets)
 				{
 					MakeHorizontal(GetSpace(0.1f), () =>
 					{
+						//get asset from guid
+						var asset = AssetDatabase.GUIDToAssetPath(guid);
 						GUI.enabled = false;
-						var asset = AssetDatabase.GetAssetPath(sceneObj);
-						EditorGUILayout.ObjectField(sceneObj,
+						EditorGUILayout.ObjectField(AssetDatabase.LoadAssetAtPath<SceneAsset>(asset),
 							typeof(Object), false);
 						GUI.enabled = true;
-
+			
 						GUILayout.Space(15);
-
+			
 						if (GUILayout.Button(GetString(SettingString.LoadSceneBtn)))
 						{
 							EditorSceneManager.OpenScene(asset);
 							GUIUtility.ExitGUI();
 						}
-
+			
 						GUILayout.Space(5);
-
+			
 						if (GUILayout.Button(GetString(SettingString.LoadSceneAdditiveBtn)))
 						{
 							EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
 							GUIUtility.ExitGUI();
 						}
-
+			
 						GUILayout.Space(5);
-
+			
 						if (GUILayout.Button(GetString(SettingString.UnloadSceneBtn)))
 						{
 							EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
@@ -589,10 +588,9 @@ namespace JEngine.Editor
 					});
 				}
 			}
-
+			
 			#endregion
 
-#if INIT_JE
 			#region ClassBind相关
 
 			//ClassBind工具
@@ -673,7 +671,6 @@ namespace JEngine.Editor
 			});
 
 			#endregion
-#endif
 
 			#region Bug相关
 
