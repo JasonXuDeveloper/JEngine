@@ -530,67 +530,66 @@ namespace JEngine.Editor
 
 			#endregion
 
-			// #region 热更场景相关
-			//
-			// //直接进热更场景
-			// GUILayout.Space(30);
-			// MakeHorizontal(GetSpace(0.1f), () =>
-			// {
-			// 	textStyle = new GUIStyle
-			// 	{
-			// 		fontSize = 16, normal = { textColor = CyanColor }, alignment = TextAnchor.MiddleCenter
-			// 	};
-			// 	GUILayout.Label(GetString(SettingString.ScenesTitle), textStyle);
-			// });
-			// GUILayout.Space(10);
-			// MakeHorizontal(GetSpace(0.1f),
-			// 	() => { MakeFoldOut(ref _showScenes, GetString(SettingString.HotSceneList), () => { }); });
-			// //如果场景
-			// if (_showScenes)
-			// {
-			// 	//获取热更场景
-			// 	var assets =
-			// 		BM.BuildAssetsTools.GetPackageSceneAssets(
-			// 			AssetDatabase.LoadAssetAtPath<BM.AssetLoadTable>(BM.BuildAssets.AssetLoadTablePath));
-			//
-			// 	foreach (var sceneObj in assets)
-			// 	{
-			// 		MakeHorizontal(GetSpace(0.1f), () =>
-			// 		{
-			// 			GUI.enabled = false;
-			// 			var asset = AssetDatabase.GetAssetPath(sceneObj);
-			// 			EditorGUILayout.ObjectField(sceneObj,
-			// 				typeof(Object), false);
-			// 			GUI.enabled = true;
-			//
-			// 			GUILayout.Space(15);
-			//
-			// 			if (GUILayout.Button(GetString(SettingString.LoadSceneBtn)))
-			// 			{
-			// 				EditorSceneManager.OpenScene(asset);
-			// 				GUIUtility.ExitGUI();
-			// 			}
-			//
-			// 			GUILayout.Space(5);
-			//
-			// 			if (GUILayout.Button(GetString(SettingString.LoadSceneAdditiveBtn)))
-			// 			{
-			// 				EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
-			// 				GUIUtility.ExitGUI();
-			// 			}
-			//
-			// 			GUILayout.Space(5);
-			//
-			// 			if (GUILayout.Button(GetString(SettingString.UnloadSceneBtn)))
-			// 			{
-			// 				EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
-			// 				GUIUtility.ExitGUI();
-			// 			}
-			// 		});
-			// 	}
-			// }
-			//
-			// #endregion
+			#region 热更场景相关
+			
+			//直接进热更场景
+			GUILayout.Space(30);
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = { textColor = CyanColor }, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ScenesTitle), textStyle);
+			});
+			GUILayout.Space(10);
+			MakeHorizontal(GetSpace(0.1f),
+				() => { MakeFoldOut(ref _showScenes, GetString(SettingString.HotSceneList), () => { }); });
+			//如果场景
+			if (_showScenes)
+			{
+				//获取热更场景
+				//load all scene files from HotUpdateResources
+				var assets = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/HotUpdateResources" });
+				foreach (var guid in assets)
+				{
+					MakeHorizontal(GetSpace(0.1f), () =>
+					{
+						//get asset from guid
+						var asset = AssetDatabase.GUIDToAssetPath(guid);
+						GUI.enabled = false;
+						EditorGUILayout.ObjectField(AssetDatabase.LoadAssetAtPath<SceneAsset>(asset),
+							typeof(Object), false);
+						GUI.enabled = true;
+			
+						GUILayout.Space(15);
+			
+						if (GUILayout.Button(GetString(SettingString.LoadSceneBtn)))
+						{
+							EditorSceneManager.OpenScene(asset);
+							GUIUtility.ExitGUI();
+						}
+			
+						GUILayout.Space(5);
+			
+						if (GUILayout.Button(GetString(SettingString.LoadSceneAdditiveBtn)))
+						{
+							EditorSceneManager.OpenScene(asset, OpenSceneMode.Additive);
+							GUIUtility.ExitGUI();
+						}
+			
+						GUILayout.Space(5);
+			
+						if (GUILayout.Button(GetString(SettingString.UnloadSceneBtn)))
+						{
+							EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(asset), true);
+							GUIUtility.ExitGUI();
+						}
+					});
+				}
+			}
+			
+			#endregion
 
 			#region ClassBind相关
 
