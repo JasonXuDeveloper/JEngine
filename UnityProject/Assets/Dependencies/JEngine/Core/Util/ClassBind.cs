@@ -15,7 +15,7 @@ using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
 namespace JEngine.Core
 {
-    [HelpURL("https://docs.xgamedev.net/zh/documents/0.7/classbind.html")]
+    [HelpURL("https://docs.xgamedev.net/zh/documents/0.8/classbind.html")]
     public class ClassBind : MonoBehaviour
     {
         [FormerlySerializedAs("ScriptsToBind")]

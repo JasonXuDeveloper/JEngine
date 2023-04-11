@@ -2657,8 +2657,7 @@ namespace JEngine.Core
                 var typeName = __domain.LoadedTypes.Keys.ToList().Find(k => k.EndsWith(type));
                 if (typeName != null) //如果有这个热更类型
                 {
-                    var cs =  Tools.GetHotComponent(instance_of_this_method, type);
-                    result_of_this_method = cs != null && ((ILTypeInstance[]) cs).Length > 0 ? ((ILTypeInstance[]) cs)[0] : null;
+                    result_of_this_method = Tools.GetHotComponent(instance_of_this_method, type);
                 }
             }
 
@@ -2700,8 +2699,7 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    var cs = Tools.GetHotComponent(instance, type as ILType);
-                    res = cs != null && ((ILTypeInstance[]) cs).Length > 0 ? ((ILTypeInstance[]) cs)[0] : null;
+                    res = Tools.GetHotComponent(instance, type as ILType);
                 }
 
                 return ILIntepreter.PushObject(ptr, __mStack, res);
@@ -2745,14 +2743,11 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    var ilInstances = ((ILTypeInstance[])Tools.GetHotComponent(
-                            instance,
-                            type as ILType))
-                        .Select(i => i.CLRInstance).ToArray();
+                    var ilInstances = Tools.GetHotComponents(instance, type as ILType);
                     int n = ilInstances.Length;
                     res = Array.CreateInstance(type.TypeForCLR, n);
                     for (int i = 0; i < n; i++)
-                        ((Array) res).SetValue(ilInstances[i], i);
+                        ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
                 }
 
                 return ILIntepreter.PushObject(ptr_of_this_method, __mStack, res);
@@ -2781,12 +2776,11 @@ namespace JEngine.Core
                 else
                 {
                     var adapters = Tools.GetAllMonoAdapters();
-                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType))
-                        .Select(i => i.CLRInstance).ToArray();
+                    var ilInstances = Tools.GetHotComponents(adapters, type as ILType);
                     int n = ilInstances.Length;
                     res = Array.CreateInstance(type.TypeForCLR, n);
                     for (int i = 0; i < n; i++)
-                        ((Array) res).SetValue(ilInstances[i], i);
+                        ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
                 }
 
                 return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -2811,12 +2805,11 @@ namespace JEngine.Core
             if (type is ILRuntimeType ilType)
             {
                 var adapters = Tools.GetAllMonoAdapters();
-                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType))
-                    .Select(i => i.CLRInstance).ToArray();
+                var ilInstances = Tools.GetHotComponents(adapters, ilType.ILType);
                 int n = ilInstances.Length;
                 res = Array.CreateInstance(ilType.ILType.TypeForCLR, n);
                 for (int i = 0; i < n; i++)
-                    ((Array) res).SetValue(ilInstances[i], i);
+                    ((Array) res).SetValue(((ILTypeInstance)ilInstances[i]).CLRInstance, i);
             }
             else
             {
@@ -2847,8 +2840,7 @@ namespace JEngine.Core
                 else
                 {
                     var adapters = Tools.GetAllMonoAdapters();
-                    var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, type as ILType));
-                    res = ilInstances.Length > 0 ? ilInstances[0] : null;
+                    res = Tools.GetHotComponent(adapters, type as ILType);
                 }
 
                 return ILIntepreter.PushObject(__ret, __mStack, res);
@@ -2873,8 +2865,7 @@ namespace JEngine.Core
             if (type is ILRuntimeType ilType)
             {
                 var adapters = Tools.GetAllMonoAdapters();
-                var ilInstances = ((ILTypeInstance[]) Tools.GetHotComponent(adapters, ilType.ILType));
-                res = ilInstances.Length > 0 ? ilInstances[0] : null;
+                res = Tools.GetHotComponent(adapters, ilType.ILType);
             }
             else
             {

@@ -44,7 +44,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Get DLL path in the runtime (located in HotUpdateResources/DLL)
+        /// Get DLL path in the runtime (located in HotUpdateResources/Main/DLL)
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -66,7 +66,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Get PDB path in the runtime (located in HotUpdateResources/DLL)
+        /// Get PDB path in the runtime (located in HotUpdateResources/Main/DLL)
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>

@@ -1,5 +1,28 @@
 ## All Versions
 
+### 0.8.0 (April 11 2023)
+
+- **Supported** WebGL
+- **Removed** JUI (will be redesigned shortly)
+- **Optimized** LifeCycleMgr performance
+- **Optimized** ThreadMgr features
+- **Optimized** JStream performance
+- **Optimized** JBehaviour performance
+- **Optimized** MonoBehaviour performance
+- **Optimized** FpsMonitor performance
+- **Optimized** CryptoMgr interfaces
+- **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
+- **Optimized** GetComponent(s)/FindObject(s)OfType performance
+- **Switched** to YooAsset for asset management module (instead of Bundle Master)
+- **NEW FEATURE** UnsafeMgr which provides unsafe (use for optimization) features 
+- **NEW FEATURE** UnmanagedMemoryPool which supports allocating unmanaged memory with pooling
+- **NEW FEATURE** CoroutineMgr which supports executing/stopping coroutines from non-MonoBehaviour class
+- **NEW STRUCTURE** Split JEngine source code to multiple packages
+
+
+
+
+
 ### 0.7.5 (September 25 2022)
 
 - **Updated** ILRuntime to v2.1.0

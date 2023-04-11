@@ -96,18 +96,7 @@ namespace JEngine.Core
         /// </summary>
         public async Task WaitForAsyncLoading()
         {
-            if (!AssetMgr.RuntimeMode)
-            {
-                await Task.Delay(1);
-                while (!Loaded)
-                {
-                    await Task.Delay(10);
-                }
-            }
-            else
-            {
-                await LoadTask.Task;
-            }
+            await LoadTask.Task;
         }
 
 

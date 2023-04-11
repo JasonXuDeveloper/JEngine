@@ -31,7 +31,7 @@
 
 
 
-# JENGINE v0.8.0 preview
+# JENGINE v0.8.0
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated in runtime.**
 
@@ -92,6 +92,7 @@ Different built-in and additional packages for JEngine
 ## v0.8.0 New Features
 
 - **Supported** WebGL
+- **Removed** JUI (will be redesigned shortly)
 - **Optimized** LifeCycleMgr performance
 - **Optimized** ThreadMgr features
 - **Optimized** JStream performance
@@ -100,9 +101,9 @@ Different built-in and additional packages for JEngine
 - **Optimized** FpsMonitor performance
 - **Optimized** CryptoMgr interfaces
 - **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
-- **Removed** JUI (will be redesigned shortly)
+- **Optimized** GetComponent(s)/FindObject(s)OfType performance
 - **Switched** to YooAsset for asset management module (instead of Bundle Master)
-- **NEW FEATURE** UnsafeMgr which provides unsafe features 
+- **NEW FEATURE** UnsafeMgr which provides unsafe (use for optimization) features 
 - **NEW FEATURE** UnmanagedMemoryPool which supports allocating unmanaged memory with pooling
 - **NEW FEATURE** CoroutineMgr which supports executing/stopping coroutines from non-MonoBehaviour class
 - **NEW STRUCTURE** Split JEngine source code to multiple packages

@@ -52,11 +52,7 @@ namespace JEngine.Core
                 {
                     return null;
                 }
-                if(((T[])result).Length == 0)
-                {
-                    return null;
-                }
-                return ((T[])result)[0];
+                return (T)result;
             }
         }
 
@@ -75,14 +71,14 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponent(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponents(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
-                if (((T[])result).Length == 0)
+                if (result.Length == 0)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 return (T[])result;
             }
@@ -103,16 +99,16 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
-                if (((T[])result).Length == 0)
+                if (result.Length == 0)
                 {
                     return null;
                 }
-                return ((T[])result)[0];
+                return (T)result[0];
             }
         }
 
@@ -131,14 +127,14 @@ namespace JEngine.Core
             }
             else
             {
-                object result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
+                object[] result = Tools.GetHotComponentInChildren(gameObject, typeof(T).FullName);
                 if (result == null)
                 {
                     return null;
                 }
                 if (((T[])result).Length == 0)
                 {
-                    return null;
+                    return Array.Empty<T>();
                 }
                 return (T[])result;
             }
