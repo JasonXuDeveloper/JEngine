@@ -221,8 +221,7 @@ namespace JEngine.Core
                 activeAfter = activeAfter,
             };
             var id = ((JBehaviour)cb.AddClass(cd))._instanceID;
-            cb.Active(cd);
-            UnityEngine.Object.Destroy(cb);
+            _ = cb.Active(cd);
             return id;
         }
 

@@ -6,6 +6,7 @@ using System.Reflection;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Reflection;
 using System.Threading.Tasks;
+using JEngine.Core.DO_NOT_USE;
 using ILRuntime.CLR.TypeSystem;
 using UnityEngine.Serialization;
 using ILRuntime.Runtime.Enviorment;
@@ -443,7 +444,7 @@ namespace JEngine.Core
         /// Active
         /// </summary>
         /// <param name="classData"></param>
-        public void Active(ClassData classData)
+        public async Task Active(ClassData classData)
         {
             string classType =
                 $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
@@ -458,31 +459,50 @@ namespace JEngine.Core
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
-                //不管是啥类型，直接invoke这个awake方法
-                var flags = BindingFlags.Default | BindingFlags.Public
-                                                 | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
-                                                 BindingFlags.NonPublic | BindingFlags.Static;
-                var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
-                if (awakeMethod == null)
+                if (classData.ClrInstance is MonoBehaviourAdapter.Adaptor mb) 
                 {
-                    awakeMethod = t.GetMethod("Awake", flags);
+                    mb.Awake();
+                }
+                else if (classData.ClrInstance is ClassBindNonMonoBehaviourAdapter.Adaptor mb2)
+                {
+                    mb2.Awake();
                 }
                 else
                 {
-                    awakeMethod.Invoke(clrInstance, null);
-                    classData.Activated = true;
+                    //不管是啥类型，直接invoke这个awake方法
+                    var flags = BindingFlags.Default | BindingFlags.Public
+                                                     | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
+                                                     BindingFlags.NonPublic | BindingFlags.Static;
+                    var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
+                    if (awakeMethod == null)
+                    {
+                        awakeMethod = t.GetMethod("Awake", flags);
+                    }
+                    else
+                    {
+                        awakeMethod.Invoke(clrInstance, null);
+                        classData.Activated = true;
+                    }
+
+                    if (awakeMethod == null)
+                    {
+                        Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
+                    }
+                    else if (!classData.Activated)
+                    {
+                        awakeMethod.Invoke(clrInstance, null);
+                    }
                 }
 
-                if (awakeMethod == null)
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                LifeCycleMgr.Instance.AddTask(() =>
                 {
-                    Log.PrintError($"{t.FullName}不包含Awake方法，无法激活，已跳过");
-                }
-                else if (!classData.Activated)
-                {
-                    awakeMethod.Invoke(clrInstance, null);
-                }
-                ((MonoBehaviour)clrInstance).enabled = true;
-                classData.Activated = true;
+
+                    ((MonoBehaviour)clrInstance).enabled = true;
+                    classData.Activated = true;
+                    tcs.SetResult(true);
+                });
+                await tcs.Task;
             }
 
             Remove();
