@@ -56,7 +56,7 @@ namespace JEngine.Editor
             //文本
             Key = EditorGUILayout.TextField("Encrypt Key (加密密码)", Key);
             GUILayout.Space(30);
-            if (GUILayout.Button("Build Bundles (打包资源)"))
+            if (GUILayout.Button("Encrypt Dll (加密Dll)"))
             {
                 if (Key == null)
                 {

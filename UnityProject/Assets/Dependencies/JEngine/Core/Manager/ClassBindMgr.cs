@@ -32,13 +32,17 @@ namespace JEngine.Core
 {
     public partial class ClassBindMgr : MonoBehaviour
     {
-        public static void Instantiate()
+        public static async Task Instantiate()
         {
             if (_instance != null)
                 return;
 
             _instance = new GameObject("ClassBindMgr").AddComponent<ClassBindMgr>();
             DontDestroyOnLoad(_instance);
+            SceneManager.sceneLoaded += _instance.OnSceneLoaded;
+            SceneManager.sceneUnloaded += _instance.OnSceneUnloaded;
+            LoadedScenes.Add(SceneManager.GetActiveScene());
+            await DoBind();
         }
 
         private static ClassBindMgr _instance;
@@ -51,11 +55,6 @@ namespace JEngine.Core
             {
                 DestroyImmediate(this);
             }
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-            LoadedScenes.Add(SceneManager.GetActiveScene());
-            _ = DoBind();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -73,11 +72,11 @@ namespace JEngine.Core
         {
             if (_instance == this)
             {
-                _instance = null;
-                SceneManager.sceneLoaded -= OnSceneLoaded;
-                SceneManager.sceneUnloaded -= OnSceneUnloaded;
+                SceneManager.sceneLoaded -= _instance.OnSceneLoaded;
+                SceneManager.sceneUnloaded -= _instance.OnSceneUnloaded;
                 LoadedScenes.Clear();
                 Cbs.Clear();
+                _instance = null;
             }
         }
 
@@ -121,7 +120,7 @@ namespace JEngine.Core
                         continue;
                     }
 
-                    cb.Active(data);
+                    await cb.Active(data);
                 }
             }
         }
