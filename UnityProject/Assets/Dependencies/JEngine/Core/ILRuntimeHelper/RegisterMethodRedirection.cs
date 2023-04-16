@@ -659,17 +659,16 @@ namespace JEngine.Core
             {
                 if (res.GetComponentsInChildren<ClassBind>(true).Length > 0)
                 {
-                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true).ToList());
+                    ClassBindMgr.DoBind(res.GetComponentsInChildren<ClassBind>(true));
                 }
 
                 return res;
             }
 
             //如果同时有adaptor和classbind，肯定是复制的，要给删了
-            foreach (var t in res.GetComponentsInChildren<Transform>(true))
+            foreach (var cb in res.GetComponentsInChildren<ClassBind>(true))
             {
-                var go = t.gameObject;
-                var cb = go.GetComponent<ClassBind>();
+                var go = cb.gameObject;
                 if (cb != null && go.GetComponent<CrossBindingAdaptorType>() != null)
                 {
                     UnityEngine.Object.DestroyImmediate(cb); //防止重复的ClassBind
@@ -754,6 +753,7 @@ namespace JEngine.Core
                 if (awakeMethod != null)
                 {
                     awakeMethod.Invoke(clrInstance, null);
+                    LifeCycleMgr.Instance.ExecuteOnceTask();
                 }
                 else
                 {

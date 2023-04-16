@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Reflection;
 using ILRuntime.CLR.Utils;
 using ILRuntime.Reflection;
-using System.Threading.Tasks;
 using JEngine.Core.DO_NOT_USE;
 using ILRuntime.CLR.TypeSystem;
 using UnityEngine.Serialization;
@@ -161,7 +160,7 @@ namespace JEngine.Core
         /// Set value
         /// </summary>
         /// <param name="classData"></param>
-        public async Task SetVal(ClassData classData)
+        public void SetVal(ClassData classData)
         {
             string classType =
                 $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
@@ -169,7 +168,33 @@ namespace JEngine.Core
             var clrInstance = classData.ClrInstance;
             //绑定数据
             classData.BoundData = false;
-            var fields = classData.fields.ToArray();
+            var fields = classData.fields;
+
+            void BindVal(ClassField field, object obj)
+            {
+                try
+                {
+                    var fi = t.GetField(field.fieldName, AllBindingFlags);
+                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, AllBindingFlags);
+                    if (fi != null)
+                    {
+                        fi.SetValue(clrInstance.ILInstance, obj);
+                    }
+                    else
+                    {
+                        var pi = t.GetProperty(field.fieldName, AllBindingFlags);
+                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, AllBindingFlags);
+                        if (pi == null)
+                            throw new NullReferenceException();
+                        pi.SetValue(clrInstance.ILInstance, obj);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.PrintError(
+                        $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
+                }
+            }
 
             foreach (ClassField field in fields)
             {
@@ -375,21 +400,28 @@ namespace JEngine.Core
                     }
                     else if (field.fieldType == ClassField.FieldType.HotUpdateResource)
                     {
-                        //Unity 编辑器下AssetDatabase读取图片会变texture2d导致无法给sprite赋值
-                        var fieldType = t.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
-                                        (t.BaseType?.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
-                                         (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
-                                          t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
-                        fieldType = fieldType is ILRuntimeWrapperType wrapperType ? wrapperType.RealType : fieldType;
-                        var o = await AssetMgr.LoadAsync(field.value, fieldType);
-                        if (fieldType == typeof(Sprite) && o is Texture2D tx)
+                        LifeCycleMgr.Instance.AddTask(async () =>
                         {
-                            o = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f),
-                                100.0f);
-                        }
+                            //Unity 编辑器下AssetDatabase读取图片会变texture2d导致无法给sprite赋值
+                            var fieldType = t.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
+                                            (t.BaseType?.GetField(field.fieldName, AllBindingFlags)?.FieldType ??
+                                             (t.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType ??
+                                              t.BaseType?.GetProperty(field.fieldName, AllBindingFlags)?.PropertyType));
+                            fieldType = fieldType is ILRuntimeWrapperType wrapperType
+                                ? wrapperType.RealType
+                                : fieldType;
+                            var o = await AssetMgr.LoadAsync(field.value, fieldType);
+                            if (fieldType == typeof(Sprite) && o is Texture2D tx)
+                            {
+                                o = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f),
+                                    100.0f);
+                            }
 
-                        obj = o;
+                            obj = o;
+                            BindVal(field,obj);
+                        });
                         classData.BoundData = true;
+                        continue;
                     }
                 }
                 catch (Exception except)
@@ -401,41 +433,7 @@ namespace JEngine.Core
                 //如果有数据再绑定
                 if (classData.BoundData)
                 {
-                    void BindVal(MemberInfo mi)
-                    {
-                        try
-                        {
-                            switch (mi)
-                            {
-                                case null:
-                                    throw new NullReferenceException();
-                                case FieldInfo info:
-                                    info.SetValue(clrInstance.ILInstance, obj);
-                                    break;
-                                case PropertyInfo inf:
-                                    inf.SetValue(clrInstance.ILInstance, obj);
-                                    break;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Log.PrintError(
-                                $"自动绑定{name}出错：{classType}.{field.fieldName}赋值出错：{e.Message}，已跳过");
-                        }
-                    }
-
-                    var fi = t.GetField(field.fieldName, AllBindingFlags);
-                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, AllBindingFlags);
-                    if (fi != null)
-                    {
-                        BindVal(fi);
-                    }
-                    else
-                    {
-                        var pi = t.GetProperty(field.fieldName, AllBindingFlags);
-                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, AllBindingFlags);
-                        BindVal(pi);
-                    }
+                    BindVal(field, obj);
                 }
             }
         }
@@ -444,7 +442,7 @@ namespace JEngine.Core
         /// Active
         /// </summary>
         /// <param name="classData"></param>
-        public async Task Active(ClassData classData)
+        public void Active(ClassData classData)
         {
             string classType =
                 $"{(string.IsNullOrEmpty(classData.classNamespace) ? String.Empty : $"{classData.classNamespace}.")}{classData.className}";
@@ -494,18 +492,17 @@ namespace JEngine.Core
                     }
                 }
 
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
                 LifeCycleMgr.Instance.AddTask(() =>
                 {
-
                     ((MonoBehaviour)clrInstance).enabled = true;
                     classData.Activated = true;
-                    tcs.SetResult(true);
+                    Remove();
                 });
-                await tcs.Task;
             }
-
-            Remove();
+            else
+            {
+                Remove();
+            }
         }
 
         /// <summary>

@@ -81,7 +81,7 @@ public partial class InitJEngine : MonoBehaviour
         //调用SetupGame周期
         Tools.InvokeHotMethod(HotMainType, SetupGameMethod);
         //初始化ClassBind
-        await ClassBindMgr.Instantiate();
+        ClassBindMgr.Instantiate();
         //调用RunGame周期
         Tools.InvokeHotMethod(HotMainType, RunGameMethod);
         //调用在主工程的热更代码加载完毕后的周期

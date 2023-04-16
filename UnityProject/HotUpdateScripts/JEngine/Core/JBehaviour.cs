@@ -221,7 +221,7 @@ namespace JEngine.Core
                 activeAfter = activeAfter,
             };
             var id = ((JBehaviour)cb.AddClass(cd))._instanceID;
-            _ = cb.Active(cd);
+            cb.BindSelf();
             return id;
         }
 
