@@ -23,8 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using UnityEngine;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -32,7 +32,7 @@ namespace JEngine.Core
 {
     public partial class ClassBindMgr : MonoBehaviour
     {
-        public static async Task Instantiate()
+        public static void Instantiate()
         {
             if (_instance != null)
                 return;
@@ -42,11 +42,11 @@ namespace JEngine.Core
             SceneManager.sceneLoaded += _instance.OnSceneLoaded;
             SceneManager.sceneUnloaded += _instance.OnSceneUnloaded;
             LoadedScenes.Add(SceneManager.GetActiveScene());
-            await DoBind();
+            DoBind();
         }
 
         private static ClassBindMgr _instance;
-        public static readonly HashSet<Scene> LoadedScenes = new HashSet<Scene>() { };
+        public static readonly HashSet<Scene> LoadedScenes = new HashSet<Scene>();
         private static readonly List<ClassBind> Cbs = new List<ClassBind>(30);
 
         private void Awake()
@@ -60,7 +60,7 @@ namespace JEngine.Core
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             LoadedScenes.Add(scene);
-            _ = DoBind();
+            DoBind();
         }
 
         private void OnSceneUnloaded(Scene scene)
@@ -80,7 +80,7 @@ namespace JEngine.Core
             }
         }
 
-        public static async Task DoBind(List<ClassBind> cbs)
+        public static void DoBind(ICollection<ClassBind> cbs)
         {
             foreach (var cb in cbs)
             {
@@ -106,9 +106,12 @@ namespace JEngine.Core
                         continue;
                     }
 
-                    await cb.SetVal(data);
+                    cb.SetVal(data);
                 }
             }
+
+            //确保任务全执行了
+            LifeCycleMgr.Instance.ExecuteOnceTask();
 
             //激活
             foreach (var cb in cbs)
@@ -120,22 +123,47 @@ namespace JEngine.Core
                         continue;
                     }
 
-                    await cb.Active(data);
+                    cb.Active(data);
                 }
+            }
+
+            //确保任务全执行了
+            LifeCycleMgr.Instance.ExecuteOnceTask();
+        }
+
+        private static readonly List<ClassBind> Temp = new List<ClassBind>(1);
+
+        public static void DoBind(ClassBind cb)
+        {
+            if (Cbs.Contains(cb)) return;
+            Cbs.Add(cb);
+            if (Temp.Count == 1)
+            {
+                if (Temp[0] == null)
+                {
+                    Temp[0] = cb;
+                    DoBind(Temp);
+                }
+                else
+                {
+                    DoBind(new List<ClassBind>(1)
+                    {
+                        cb
+                    });
+                }
+            }
+            else
+            {
+                Temp.Add(cb);
+                DoBind(Temp);
             }
         }
 
-        public static async Task DoBind(ClassBind cb)
-        {
-            if (Cbs.Contains(cb)) return;
-            await DoBind(new List<ClassBind> { cb });
-        }
-
-        public static async Task DoBind()
+        public static void DoBind()
         {
             var c = Tools.FindObjectsOfTypeAll<ClassBind>();
             Cbs.AddRange(c);
-            await DoBind(c);
+            DoBind(c);
         }
     }
 }

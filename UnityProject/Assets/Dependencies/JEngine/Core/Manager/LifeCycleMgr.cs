@@ -576,6 +576,22 @@ namespace JEngine.Core
         /// remove obj from instances
         /// </summary>
         private Predicate<IntPtr> RemoveInstanceIfContainsPredicate => RemoveInstanceIfContains;
+        
+        /// <summary>
+        /// execute once task
+        /// </summary>
+        private bool _onceTaskExecuting;
+        
+        /// <summary>
+        /// 处理只调用一次的任务
+        /// </summary>
+        public void ExecuteOnceTask()
+        {
+            if (_onceTaskExecuting) return;
+            _onceTaskExecuting = true;
+            ExecuteItems(_onceTaskItems);
+            _onceTaskExecuting = false;
+        }
 
         /// <summary>
         /// unity周期
@@ -596,7 +612,7 @@ namespace JEngine.Core
         private void Update()
         {
             //处理只调用一次的任务
-            ExecuteItems(_onceTaskItems);
+            ExecuteOnceTask();
             //处理update
             //确保本帧没处理过这些对象
             //调用update
