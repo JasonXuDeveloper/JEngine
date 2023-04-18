@@ -36,12 +36,12 @@ namespace JEngine.Core
 
                 _cacheDomain = new AppDomain();
                 // 只有编辑器才会走到这
-                ThreadMgr.QueueOnMainThread(async () =>
+                Task.Run(async () =>
                 {
                     _cacheDomain.LoadAssembly(new MemoryStream(await DllMgr.GetDllBytes(ConstMgr.MainHotDLLName, true)), null,
                         new PdbReaderProvider());
                     InitJEngine.InitializeILRuntime(_cacheDomain);
-                });
+                }).Wait();
                 return _cacheDomain;
             }
         }
