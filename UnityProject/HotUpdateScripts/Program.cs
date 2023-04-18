@@ -23,8 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using UnityEngine;
+
+using System.Diagnostics;
 using JEngine.Core;
+using Debug = UnityEngine.Debug;
 
 namespace HotUpdateScripts
 {
@@ -39,8 +41,8 @@ namespace HotUpdateScripts
                 foreach (var innerEx in e.Exception.InnerExceptions)
                 {
                     Debug.LogError($"{innerEx.Message}\n" +
-                    $"ILRuntime StackTrace: {innerEx.Data["StackTrace"]}\n\n" +
-                    $"Full Stacktrace: {innerEx.StackTrace}");
+                                   $"ILRuntime StackTrace: {innerEx.Data["StackTrace"]}\n\n" +
+                                   $"Full Stacktrace: {innerEx.StackTrace}");
                 }
             };
         }
@@ -50,6 +52,76 @@ namespace HotUpdateScripts
             Debug.Log("<color=yellow>[RunGame] 这个周期在ClassBind初始化后，可以激活游戏相关逻辑</color>");
             //如果生成热更解决方案跳过，参考https://docs.xgamedev.net/zh/documents/0.8/FAQ.html#生成热更工程dll跳过
             //的方法一，把生成的平台改成Any CPU（默认是小写的，windows下无法生成）
+        }
+    }
+
+    /// <summary>
+    /// 测试dll优化
+    /// </summary>
+    public class Test
+    {
+        public void DoTest()
+        {
+            Debug.Log($"original(1) = {Original(1)}");
+            Debug.Log($"optimized(1) = {Optimized(1)}");
+            RunTest(10);
+            RunTest(100);
+            RunTest(1000);
+            RunTest(10000);
+            RunTest(100000);
+            RunTest(1000000);
+        }
+
+        public void RunTest(int cnt = 100000)
+        {
+            Stopwatch sw = new Stopwatch();
+            Debug.Log($"{cnt}次计算");
+            sw.Start();
+            int a = 0;
+            int i = cnt;
+            while (i-- > 0)
+            {
+                a = Original(i);
+            }
+
+            sw.Stop();
+            Debug.Log($"Original: {sw.ElapsedMilliseconds}ms");
+
+            sw.Restart();
+            i = cnt;
+            while (i-- > 0)
+            {
+                a = Optimized(i);
+            }
+
+            sw.Stop();
+            Debug.Log($"Optimized: {sw.ElapsedMilliseconds}ms");
+        }
+
+        public int Original(int x)
+        {
+            int a = 5;
+            int b = 20;
+            int c = 10;
+            c = a;
+            int d = 5 * a;
+            int e = d;
+            int f = e / 2;
+            int g = f + a + b + c * 6 - b / 4;
+            return g + b % 3;
+        }
+
+        public int Optimized(int x)
+        {
+            int a = 5;
+            int b = 20;
+            int c = 10;
+            c = a;
+            int d = 5 * a;
+            int e = d;
+            int f = e / 2;
+            int g = f + a + b + c * 6 - b / 4;
+            return g + b % 3;
         }
     }
 }
