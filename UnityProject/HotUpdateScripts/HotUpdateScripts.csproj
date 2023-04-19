@@ -96,7 +96,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Proto2cs\" />
     <Folder Include="JEngine\Event\" />
     <Folder Include="JEngine\Examples\" />
   </ItemGroup>

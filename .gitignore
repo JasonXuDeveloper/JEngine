@@ -18,3 +18,4 @@ UnityProject/Logs/Packages-Update.log
 UnityProject/Sandbox/*
 UnityProject/Logs/*
 UnityProject/Build/*
+UnityProject/HotUpdateScripts/.idea/*

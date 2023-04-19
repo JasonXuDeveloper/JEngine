@@ -23,9 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 #if UNITY_EDITOR
-using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using ILRuntime.CLR.TypeSystem;
+using ILRuntime.Mono.Cecil.Pdb;
+using ILRuntime.Runtime.Enviorment;
 using JEngine.Core;
 using UnityEditor;
 using UnityEngine;
@@ -35,13 +41,44 @@ namespace JEngine.Editor
     [Obfuscation(Exclude = true)]
     internal class MenuItems
     {
-        [MenuItem("JEngine/Open Documentation",priority = 1999)]
+        [MenuItem("JEngine/Optimize Dll &o")]
+        public static void OptimizeDll()
+        {
+            var dllPath = ConstMgr.DLLSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.DLLExtension;
+            var pdbPath = ConstMgr.PdbSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.PdbExtension;
+            //execute Optimizer.Optimize(dllPath, pdbPath); in a new thread with timeout (using cancellation token), if timeout then cancel the task
+            var cts = new CancellationTokenSource();
+            var task = Task.Run(() => Optimizer.Optimize(dllPath, pdbPath), cts.Token);
+            if (task.Wait(10000))
+            {
+                Debug.Log("Optimize Dll Success");
+            }
+            else
+            {
+                cts.Cancel();
+                Debug.LogError("Optimize Dll Timeout");
+            }
+        }
+
+        [MenuItem("JEngine/Test Optimized Dll &r")]
+        public static void TestOptimizedDll()
+        {
+            AppDomain appdomain = new AppDomain();
+            appdomain.LoadAssembly(new MemoryStream(File.ReadAllBytes("optimized.dll")),
+                new MemoryStream(File.ReadAllBytes("optimized.pdb")), new PdbReaderProvider());
+            var type = (ILType)appdomain.GetType("HotUpdateScripts.Test");
+            var instance = appdomain.Instantiate("HotUpdateScripts.Test");
+            var method = type.GetMethod("DoTest", 0);
+            appdomain.Invoke(method, instance, null);
+        }
+
+        [MenuItem("JEngine/Open Documentation", priority = 1999)]
         public static void OpenDocument()
         {
             Application.OpenURL("https://docs.xgamedev.net/");
         }
-        
-        [MenuItem("JEngine/Open on Github",priority = 2000)]
+
+        [MenuItem("JEngine/Open on Github", priority = 2000)]
         public static void OpenGithub()
         {
             Application.OpenURL("https://github.com/JasonXuDeveloper/JEngine");
