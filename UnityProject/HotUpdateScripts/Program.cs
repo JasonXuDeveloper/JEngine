@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System.Diagnostics;
+using ILRuntime.Runtime;
 using JEngine.Core;
 using Debug = UnityEngine.Debug;
 
@@ -63,13 +64,14 @@ namespace HotUpdateScripts
         public void DoTest()
         {
             Debug.Log($"original(1) = {Original(1)}");
+            Debug.Log($"jit(1) = {JIT(1)}");
             Debug.Log($"optimized(1) = {Optimized(1)}");
+            Debug.Log($"optimizedJIT(1) = {OptimizedJIT(1)}");
             RunTest(10);
             RunTest(100);
             RunTest(1000);
             RunTest(10000);
             RunTest(100000);
-            RunTest(1000000);
         }
 
         public void RunTest(int cnt = 100000)
@@ -91,11 +93,31 @@ namespace HotUpdateScripts
             i = cnt;
             while (i-- > 0)
             {
+                a = JIT(i);
+            }
+
+            sw.Stop();
+            Debug.Log($"JIT: {sw.ElapsedMilliseconds}ms");
+
+            sw.Restart();
+            i = cnt;
+            while (i-- > 0)
+            {
                 a = Optimized(i);
             }
 
             sw.Stop();
             Debug.Log($"Optimized: {sw.ElapsedMilliseconds}ms");
+
+            sw.Restart();
+            i = cnt;
+            while (i-- > 0)
+            {
+                a = OptimizedJIT(i);
+            }
+
+            sw.Stop();
+            Debug.Log($"OptimizedJIT: {sw.ElapsedMilliseconds}ms");
         }
 
         public int Original(int x)
@@ -108,7 +130,23 @@ namespace HotUpdateScripts
             int e = d;
             int f = e / 2;
             int g = f + a + b + c * 6 - b / 4;
-            return g + b % 3;
+            int h = x * 2 + 10 + 3 - 6 - 8 - g;
+            return h + 10 % 3;
+        }
+
+        [ILRuntimeJIT(ILRuntimeJITFlags.JITImmediately)]
+        public int JIT(int x)
+        {
+            int a = 5;
+            int b = 20;
+            int c = 10;
+            c = a;
+            int d = 5 * a;
+            int e = d;
+            int f = e / 2;
+            int g = f + a + b + c * 6 - b / 4;
+            int h = x * 2 + 10 + 3 - 6 - 8 - g;
+            return h + 10 % 3;
         }
 
         public int Optimized(int x)
@@ -121,7 +159,23 @@ namespace HotUpdateScripts
             int e = d;
             int f = e / 2;
             int g = f + a + b + c * 6 - b / 4;
-            return g + b % 3;
+            int h = x * 2 + 10 + 3 - 6 - 8 - g;
+            return h + 10 % 3;
+        }
+
+        [ILRuntimeJIT(ILRuntimeJITFlags.JITImmediately)]
+        public int OptimizedJIT(int x)
+        {
+            int a = 5;
+            int b = 20;
+            int c = 10;
+            c = a;
+            int d = 5 * a;
+            int e = d;
+            int f = e / 2;
+            int g = f + a + b + c * 6 - b / 4;
+            int h = x * 2 + 10 + 3 - 6 - 8 - g;
+            return h + 10 % 3;
         }
     }
 }

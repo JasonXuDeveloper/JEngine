@@ -35,6 +35,7 @@ namespace JEngine.Core
         public const string PdbBytesFolder = "Assets/HotUpdateResources/Main/Dll/";
         public const string DLLBytesFolder = "Assets/HotUpdateResources/Main/Dll/";
         public const string MainHotDLLName = "HotUpdateScripts";
+        public const string ExprFlag = "_expr";
         public const string DLLExtension = ".dll";
         public const string PdbExtension = ".pdb";
         public const string BytesExtension = ".bytes";

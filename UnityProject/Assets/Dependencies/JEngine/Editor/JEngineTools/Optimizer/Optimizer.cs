@@ -1,18 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ILRuntime.Mono.Cecil;
 using ILRuntime.Mono.Cecil.Cil;
 using ILRuntime.Mono.Cecil.Pdb;
-using JEngine.Core;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace JEngine.Editor
 {
     public static partial class Optimizer
     {
+        /// <summary>
+        /// 整数常数或栈地址
+        /// </summary>
         private static Code[] _ldcOrLdlocCode = new Code[]
         {
+            Code.Ldc_I4,
             Code.Ldc_I4_0,
             Code.Ldc_I4_1,
             Code.Ldc_I4_2,
@@ -23,7 +27,6 @@ namespace JEngine.Editor
             Code.Ldc_I4_7,
             Code.Ldc_I4_8,
             Code.Ldc_I4_S,
-            Code.Ldc_I4,
             Code.Ldc_I4_M1,
             Code.Ldc_I8,
             Code.Ldloc_0,
@@ -33,34 +36,31 @@ namespace JEngine.Editor
             Code.Ldloc_S
         };
 
-
         /// <summary>
         /// 优化
         /// </summary>
         /// <param name="dllPath">Assembly</param>
         /// <param name="pdbPath">symbol</param>
-        public static void Optimize(string dllPath, string pdbPath)
+        /// <param name="dllOutputPath">symbol</param>
+        /// <param name="pdbOutputPath">symbol</param>
+        public static void Optimize(string dllPath, string pdbPath, string dllOutputPath, string pdbOutputPath)
         {
             //模块
             var module = LoadModule(dllPath, pdbPath);
-            //类型
-            List<TypeDefinition> types = new List<TypeDefinition>();
-
             if (module.HasTypes)
             {
                 foreach (var t in module.GetTypes()) //获取所有此模块定义的类型
                 {
-                    types.Add(t);
-
                     //测试
                     if (t.FullName == "HotUpdateScripts.Test")
                     {
                         OptimizeMethod(t.Methods.First(m => m.Name == "Optimized"));
+                        OptimizeMethod(t.Methods.First(m => m.Name == "OptimizedJIT"));
                     }
                 }
             }
 
-            var optimizedPdbStream = new FileStream("optimized.pdb", FileMode.Create);
+            var optimizedPdbStream = pdbPath != null ? new FileStream(pdbOutputPath, FileMode.Create) : null;
             var writerParameters = pdbPath != null
                 ? new WriterParameters
                 {
@@ -68,21 +68,8 @@ namespace JEngine.Editor
                     SymbolWriterProvider = new PdbWriterProvider()
                 }
                 : new WriterParameters();
-            module.Write("optimized.dll", writerParameters);
+            module.Write(dllOutputPath, writerParameters);
             if (pdbPath != null) optimizedPdbStream.Dispose();
-
-            var optimizedModule = LoadModule("optimized.dll", "optimized.pdb");
-            //check type matches
-            if (optimizedModule.HasTypes)
-            {
-                foreach (var t in optimizedModule.GetTypes())
-                {
-                    if (types.All(type => type.MetadataToken != t.MetadataToken))
-                    {
-                        Log.PrintError("Type not found: " + t);
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -112,7 +99,7 @@ namespace JEngine.Editor
         }
 
         /// <summary>
-        /// 优化加法
+        /// 优化方法
         /// </summary>
         /// <param name="method"></param>
         private static void OptimizeMethod(MethodDefinition method)
@@ -123,7 +110,7 @@ namespace JEngine.Editor
             Debug.Log($"读取{method.Name}的指令（共{oldInstructionsCount}条指令）：");
             int index = 0;
             Dictionary<string, object> constStack = new Dictionary<string, object>();
-            Dictionary<string, int> loadStack = new Dictionary<string, int>();
+            //先优化
             while (true)
             {
                 var max = method.Body.Instructions.Count;
@@ -137,9 +124,6 @@ namespace JEngine.Editor
                 Debug.Log(
                     $"index: {index + 1}/{max} instruction: {instruction}");
 
-                //记录位置
-                RecordLastTimeLoadStackValue(instruction, loadStack, ref index, processor);
-                
                 //更新常量
                 if (CheckConst(instruction, constStack, ref index))
                 {
@@ -154,6 +138,32 @@ namespace JEngine.Editor
                     continue;
                 }
 
+                index++;
+            }
+
+            index = 0;
+            //优化后清理冗余
+            Dictionary<string, int> stStack = new Dictionary<string, int>();
+            while (true)
+            {
+                var max = method.Body.Instructions.Count;
+                if (index >= max)
+                {
+                    break;
+                }
+
+                var instruction = method.Body.Instructions.ElementAt(index);
+                //清理冗余ld st
+                if (CleanRedundantStLoc(instruction, stStack, ref index, processor))
+                {
+                    Debug.Log($"当前指令：\n{string.Join("\n", method.Body.Instructions)}");
+                }
+
+                //清理冗余方法返回值调用栈
+                if (CleanRedundantStackAtRet(instruction, stStack, ref index, processor))
+                {
+                    Debug.Log($"当前指令：\n{string.Join("\n", method.Body.Instructions)}");
+                }
 
                 index++;
             }
@@ -165,54 +175,114 @@ namespace JEngine.Editor
         }
 
         /// <summary>
-        /// 记录上次load位置
+        /// 整理顺序
+        /// </summary>
+        /// <param name="processor"></param>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        private static void SortInstructionOrder(ILProcessor processor, int from, int to)
+        {
+            var instructions = processor.Body.Instructions;
+            var cur = Math.Max(0, from);
+            var max = Math.Min(instructions.Count, to);
+            while (cur < max)
+            {
+                var instruction = instructions.ElementAt(cur);
+                var next = cur + 1;
+                instruction.Next = next >= instructions.Count ? null : instructions.ElementAt(next);
+                var prev = cur - 1;
+                instruction.Previous = prev < 0 ? null : instructions.ElementAt(prev);
+
+                cur++;
+            }
+        }
+
+        /// <summary>
+        /// 清理冗余stloc指令
         /// </summary>
         /// <param name="instruction"></param>
-        /// <param name="loadStack"></param>
+        /// <param name="stStack"></param>
         /// <param name="index"></param>
         /// <param name="processor"></param>
-        private static void RecordLastTimeLoadStackValue(in Instruction instruction, Dictionary<string, int> loadStack,
+        private static bool CleanRedundantStLoc(in Instruction instruction, Dictionary<string, int> stStack,
             ref int index, ILProcessor processor)
         {
-            var key = GetStLocName(instruction);
-            if (key != null && instruction.Previous != null)
+            //如果是ldloc.x，那可以把之前记录的可以略过的stloc.x的标记删掉
+            var ldKey = GetLdLocName(instruction);
+            if (ldKey != null)
             {
-                //stloc.s key 上一句是设置为常量
-                if (_ldcOrLdlocCode.Contains(instruction.Previous.OpCode.Code))
-                {
-                    //看看是不是之前被设置为常量并st过
-                    if (loadStack.TryGetValue(key, out var oldIndex))
-                    {
-                        //是的话判断这两次设置常量期间有没有ldloc.s key过，没的话可以把上次的ld和stloc.s key删除
-                        var hasLd = false;
-                        for (int i = oldIndex + 1; i < index; i++)
-                        {
-                            var tempInstruction = processor.Body.Instructions[i];
-                            if (tempInstruction.OpCode.Code == Code.Ldloc_S &&
-                                tempInstruction.Operand.ToString() == key)
-                            {
-                                hasLd = true;
-                                break;
-                            }
-                        }
+                stStack.Remove(ldKey);
+                return false;
+            }
 
-                        //如果没有ld key，说明上次st的值已经被覆盖，可以删除
-                        if (!hasLd)
-                        {
-                            var lastLd = processor.Body.Instructions[oldIndex];
-                            var lastSt = processor.Body.Instructions[oldIndex + 1];
-                            lastLd.Previous.Next = lastSt.Next;
-                            lastSt.Next.Previous = lastLd.Previous;
-                            processor.Remove(lastLd);
-                            processor.Remove(lastSt);
-                            Debug.LogWarning($"删除了不会起作用的ld和st: {lastLd} -> {lastSt}");
-                            index = oldIndex + 1;
-                        }
+            //如果是stloc.x，那可以把之前记录的可以略过的stloc.x的指令删掉
+            var stKey = GetStLocName(instruction);
+            if (stKey != null)
+            {
+                if (stStack.TryGetValue(stKey, out var oldIndex))
+                {
+                    //获取之前的stloc.x指令
+                    var lastSt = processor.Body.Instructions.ElementAt(oldIndex);
+                    var lastLd = lastSt.Previous;
+                    //判断上一句是不是ldloc.x或设置常量
+                    if (lastLd != null && _ldcOrLdlocCode.Contains(lastLd.OpCode.Code))
+                    {
+                        lastLd.Previous.Next = lastSt.Next;
+                        lastSt.Next.Previous = lastLd.Previous;
+                        processor.Remove(lastLd);
+                        processor.Remove(lastSt);
+                        Debug.LogWarning($"删除了不会起作用的ld和st: {lastLd} -> {lastSt}");
                     }
 
-                    loadStack[key] = index - 1;
+                    stStack[stKey] = index;
+                    return true;
+                }
+
+                stStack[stKey] = index;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 清理在返回值时的冗余指令
+        /// </summary>
+        /// <param name="instruction"></param>
+        /// <param name="stStack"></param>
+        /// <param name="index"></param>
+        /// <param name="processor"></param>
+        private static bool CleanRedundantStackAtRet(in Instruction instruction, Dictionary<string, int> stStack,
+            ref int index, ILProcessor processor)
+        {
+            //如果是br或br.s，且prev是stloc.x，jump后是ldloc.x，ldloc.x之后是ret，那可以直接ret
+            if (instruction.OpCode.Code == Code.Br || instruction.OpCode.Code == Code.Br_S)
+            {
+                var prev = instruction.Previous;
+                var prevStKey = GetStLocName(prev);
+                if (prevStKey != null)
+                {
+                    var jump = instruction.Operand as Instruction;
+                    var jumpLdKey = GetLdLocName(jump);
+                    if (jump != null && jumpLdKey != null && jumpLdKey == prevStKey)
+                    {
+                        var ret = jump.Next;
+                        if (ret.OpCode.Code == Code.Ret)
+                        {
+                            prev.Previous.Next = ret;
+                            ret.Previous = prev.Previous;
+                            processor.Remove(prev);
+                            processor.Remove(jump);
+                            processor.Remove(instruction);
+                            SortInstructionOrder(processor, index - 2, processor.Body.Instructions.Count);
+                            Debug.LogWarning($"删除了不会起作用的方法返回调用栈: {prev} -> {instruction} -> {jump}");
+                            index -= 3;
+                            return true;
+                        }
+                    }
                 }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -243,15 +313,6 @@ namespace JEngine.Editor
                         case Code.Ldloc_2:
                         case Code.Ldloc_3:
                         case Code.Ldloc_S:
-                            //获取需要压入栈的值
-                            var prevKey = GetLdLocName(previous);
-                            if (constStack.TryGetValue(prevKey, out var value))
-                            {
-                                constStack[key] = value;
-                                return true;
-                            }
-
-                            break;
                         case Code.Ldc_I4:
                         case Code.Ldc_I4_M1:
                         case Code.Ldc_I4_0:
@@ -264,10 +325,33 @@ namespace JEngine.Editor
                         case Code.Ldc_I4_7:
                         case Code.Ldc_I4_8:
                         case Code.Ldc_I4_S:
+                        case Code.Ldc_I8:
+                        case Code.Ldc_R4:
+                        case Code.Ldc_R8:
                             //获取需要压入栈的值
-                            key = GetStLocName(instruction);
-                            constStack[key] = GetLdcI4Num(previous);
-                            return true;
+                            var prevKey = GetLdLocName(previous);
+                            if (prevKey != null)
+                            {
+                                if (constStack.TryGetValue(prevKey, out var value))
+                                {
+                                    constStack[key] = value;
+                                    // Debug.LogWarning($"存了一个常量：{key}= {value}");
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                constStack[key] = GetLdcNumForInteger(previous);
+                                // Debug.LogWarning($"存了一个常量：{key}= {constStack[key]} （{previous}）");
+                                return true;
+                            }
+
+                            break;
+                        default:
+                            //存的如果不是常量，那就把之前的常量删掉
+                            constStack.Remove(key);
+                            // Debug.LogWarning($"删除了不会起作用的常量：{key}");
+                            break;
                     }
 
                     break;
@@ -289,21 +373,6 @@ namespace JEngine.Editor
         private static bool OptimizeArithConst(in Instruction instruction, Dictionary<string, object> constStack,
             ref int index, ILProcessor processor)
         {
-            /*
-             * TODO 压缩连续计算（需要同级别）
-             *
-             * IL_001c: ldloc.1
-             * IL_001d: add
-             * IL_0020: ldc.i4.s 30
-             * IL_0021: add
-             * =>
-             * if ldloc.1 is const:
-             * IL_001c: ldloc.1 + 30
-             * IL_0021: add
-             *
-             * TODO 修bug，偶尔会优化出错误结果（负数）
-             */
-            
             Stack<long> nums = new Stack<long>();
             //如果instruction一直到add之类的都是（ldc.i4.s或ldc.i4.x，x是0~8）或（ldloc.s或ldloc.y，y是0~3）
             Code[] desired = _ldcOrLdlocCode;
@@ -321,6 +390,7 @@ namespace JEngine.Editor
                     //有常量
                     if (constStack.TryGetValue(key, out var value) && long.TryParse(value.ToString(), out var num))
                     {
+                        // Debug.LogWarning($"读取到常量：{value}");
                         nums.Push(num);
                     }
                     //不符合优化要求
@@ -332,7 +402,8 @@ namespace JEngine.Editor
                 }
                 else
                 {
-                    nums.Push(GetLdcI4Num(current));
+                    nums.Push(GetLdcNumForInteger(current));
+                    // Debug.LogWarning($"读取到常量：{nums.Peek()}");
                 }
 
                 //下一个
@@ -340,67 +411,140 @@ namespace JEngine.Editor
             }
 
             //如果读到头了
-            if (current != instruction && current != null && nums.Count >= 2)
+            if (current != instruction && current != null)
             {
                 //如果是add/sub/mul/div
                 var code = current.OpCode.Code;
                 if (code == Code.Add || code == Code.Sub || code == Code.Mul || code == Code.Div ||
                     code == Code.Rem)
                 {
-                    //计算结果
-                    long result;
-                    if (code == Code.Add)
+                    //压入栈的有2个常数就可以这样优化
+                    if (nums.Count >= 2)
                     {
-                        var rhs = nums.Pop();
-                        var lhs = nums.Pop();
-                        result = lhs + rhs;
-                    }
-                    else if (code == Code.Sub)
-                    {
-                        var rhs = nums.Pop();
-                        var lhs = nums.Pop();
-                        result = lhs - rhs;
-                    }
-                    else if (code == Code.Mul)
-                    {
-                        var rhs = nums.Pop();
-                        var lhs = nums.Pop();
-                        result = lhs * rhs;
-                    }
-                    else if (code == Code.Div)
-                    {
-                        var rhs = nums.Pop();
-                        var lhs = nums.Pop();
-                        result = lhs / rhs;
-                    }
-                    else
-                    {
-                        var rhs = nums.Pop();
-                        var lhs = nums.Pop();
-                        result = lhs % rhs;
+                        //计算结果
+                        long result;
+                        if (code == Code.Add)
+                        {
+                            var rhs = nums.Pop();
+                            var lhs = nums.Pop();
+                            result = lhs + rhs;
+                        }
+                        else if (code == Code.Sub)
+                        {
+                            var rhs = nums.Pop();
+                            var lhs = nums.Pop();
+                            result = lhs - rhs;
+                        }
+                        else if (code == Code.Mul)
+                        {
+                            var rhs = nums.Pop();
+                            var lhs = nums.Pop();
+                            result = lhs * rhs;
+                        }
+                        else if (code == Code.Div)
+                        {
+                            var rhs = nums.Pop();
+                            var lhs = nums.Pop();
+                            result = lhs / rhs;
+                        }
+                        else
+                        {
+                            var rhs = nums.Pop();
+                            var lhs = nums.Pop();
+                            result = lhs % rhs;
+                        }
+
+                        //看result能不能转指令
+                        var ldcInstruction = NewLdcInstruction(result);
+                        //把current替换成ldcInstruction
+                        ldcInstruction.Offset = current.Offset;
+                        newIndex = processor.Body.Instructions.IndexOf(current);
+                        //替换
+                        processor.Replace(newIndex, ldcInstruction);
+                        //老的是current.prev和current.prev.prev
+                        processor.RemoveAt(newIndex - 1);
+                        processor.RemoveAt(newIndex - 2);
+                        //整理
+                        SortInstructionOrder(processor, newIndex - 3, newIndex + 1);
+                        Debug.LogWarning($"成功将第{newIndex - 2}个指令到第{newIndex}的指令优化为{ldcInstruction}");
+                        return true;
                     }
 
-                    //看result能不能转int
-                    Instruction newLdcI4Instruction;
-                    if (result <= int.MaxValue)
-                        newLdcI4Instruction = NewLdcI4Instruction((int)result);
-                    else
-                        newLdcI4Instruction = NewLdcI8Instruction(result);
-                    //把current替换成newLdcI4Instruction
-                    newLdcI4Instruction.Offset = current.Offset;
-                    newIndex = processor.Body.Instructions.IndexOf(current);
-                    //替换
-                    processor.Replace(newIndex, newLdcI4Instruction);
-                    //老的是current.prev.prev
-                    processor.RemoveAt(newIndex - 1);
-                    processor.RemoveAt(newIndex - 2);
-                    
-                    newLdcI4Instruction.Next = processor.Body.Instructions.ElementAt(newIndex - 1);
-                    newLdcI4Instruction.Previous = processor.Body.Instructions.ElementAt(newIndex - 3);
-                    // Debug.Log($"new: {newLdcI4Instruction}, new.prev: {newLdcI4Instruction.Previous}, new.next: {newLdcI4Instruction.Next}");
-                    
-                    Debug.LogWarning($"成功将第{newIndex - 2}个指令到第{newIndex}的指令优化为{newLdcI4Instruction}");
-                    return true;
+                    if (nums.Count == 1)
+                    {
+                        //判断current的下一个是不是常数
+                        var next = current.Next;
+                        if (desired.Contains(next.OpCode.Code))
+                        {
+                            //判断next的下一个是不是和current一个code
+                            var nextNext = next.Next;
+                            if (!nextNext.OpCode.Code.Equals(code))
+                                return false;
+                            //获取数值
+                            var nextKey = GetLdLocName(next);
+                            long nextNum;
+                            if (nextKey != null)
+                            {
+                                //有常量
+                                if (!constStack.TryGetValue(nextKey, out var value))
+                                {
+                                    return false;
+                                }
+
+                                if (!long.TryParse(value.ToString(), out nextNum))
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                nextNum = GetLdcNumForInteger(next);
+                            }
+
+                            //取出之前压的数值
+                            var num = nums.Pop();
+                            //计算结果
+                            long result;
+                            if (code == Code.Add)
+                            {
+                                result = num + nextNum;
+                            }
+                            else if (code == Code.Sub)
+                            {
+                                result = num + nextNum;
+                            }
+                            else if (code == Code.Mul)
+                            {
+                                result = num + nextNum;
+                            }
+                            else if (code == Code.Div)
+                            {
+                                result = num + nextNum;
+                            }
+                            else
+                            {
+                                result = num + nextNum;
+                            }
+
+                            //看result能不能转指令
+                            var ldcInstruction = NewLdcInstruction(result);
+                            //把current替换成ldcInstruction
+                            ldcInstruction.Offset = current.Offset;
+                            newIndex = processor.Body.Instructions.IndexOf(current);
+                            //替换current的上一句
+                            processor.Replace(newIndex - 1, ldcInstruction);
+                            //替换
+                            processor.Replace(newIndex, ldcInstruction);
+                            //删除current的下一句和下下一句
+                            processor.RemoveAt(newIndex);
+                            processor.RemoveAt(newIndex);
+                            //整理
+                            SortInstructionOrder(processor, newIndex - 1, newIndex + 1);
+
+                            Debug.LogWarning($"成功将第{newIndex - 1}个指令到第{newIndex + 2}的指令优化为{ldcInstruction}");
+                            return true;
+                        }
+                    }
                 }
             }
 

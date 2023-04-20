@@ -4,7 +4,7 @@ namespace JEngine.Editor
 {
     public static partial class Optimizer
     {
-        private static Instruction NewLdcI4Instruction(int i)
+        private static Instruction NewLdcInstruction(long i)
         {
             switch (i)
             {
@@ -28,16 +28,13 @@ namespace JEngine.Editor
                     return Instruction.Create(OpCodes.Ldc_I4_7);
                 case 8:
                     return Instruction.Create(OpCodes.Ldc_I4_8);
-                case var _ when i <= 127:
+                case var _ when i <= 127 && i >= -128:
                     return Instruction.Create(OpCodes.Ldc_I4_S, (sbyte)i);
+                case var _ when i <= int.MaxValue && i >= int.MinValue:
+                    return Instruction.Create(OpCodes.Ldc_I4, (int)i);
                 default:
-                    return Instruction.Create(OpCodes.Ldc_I4, i);
+                    return Instruction.Create(OpCodes.Ldc_I8, i);
             }
-        }
-        
-        private static Instruction NewLdcI8Instruction(long i)
-        {
-            return Instruction.Create(OpCodes.Ldc_I8, i);
         }
     }
 }

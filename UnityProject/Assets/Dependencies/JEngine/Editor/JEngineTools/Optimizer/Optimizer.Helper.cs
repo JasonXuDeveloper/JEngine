@@ -7,96 +7,66 @@ namespace JEngine.Editor
         private static string GetLdLocName(Instruction instruction)
         {
             var code = instruction.OpCode.Code.ToString();
-            if(code.StartsWith("Ldloc"))
+            if (code.StartsWith("Ldloc"))
             {
-                if(code.EndsWith("S"))
+                if (code.EndsWith("S"))
                 {
                     return instruction.Operand.ToString();
                 }
-                
-                return code.Substring(code.Length - 1);
+
+                return code.Replace("Ldloc", "").Replace("_", "");
             }
 
             return null;
         }
-        
+
         private static string GetStLocName(Instruction instruction)
         {
             var code = instruction.OpCode.Code.ToString();
-            if(code.StartsWith("Stloc"))
+            if (code.StartsWith("Stloc"))
             {
-                if(code.EndsWith("S"))
+                if (code.EndsWith("S"))
                 {
                     return instruction.Operand.ToString();
                 }
-                
-                return code.Substring(code.Length - 1);
+
+                return code.Replace("Stloc", "").Replace("_", "");
             }
 
             return null;
         }
-        
-        private static int GetLdcI4Num(Instruction instruction)
+
+        private static long GetLdcNumForInteger(Instruction instruction)
         {
-            var code = instruction.OpCode.Code.ToString();
-            if(code.StartsWith("Ldc_I4"))
+            var code = instruction.OpCode.Code;
+            switch (code)
             {
-                if(code.EndsWith("S"))
-                {
-                    return (sbyte)instruction.Operand;
-                }
-
-                if(code.EndsWith("M1"))
-                {
+                case Code.Ldc_I4_M1:
                     return -1;
-                }
-
-                if(code.EndsWith("0"))
-                {
+                case Code.Ldc_I4_0:
                     return 0;
-                }
-
-                if(code.EndsWith("1"))
-                {
+                case Code.Ldc_I4_1:
                     return 1;
-                }
-
-                if(code.EndsWith("2"))
-                {
+                case Code.Ldc_I4_2:
                     return 2;
-                }
-
-                if(code.EndsWith("3"))
-                {
+                case Code.Ldc_I4_3:
                     return 3;
-                }
-
-                if(code.EndsWith("4"))
-                {
+                case Code.Ldc_I4_4:
                     return 4;
-                }
-
-                if(code.EndsWith("5"))
-                {
+                case Code.Ldc_I4_5:
                     return 5;
-                }
-
-                if(code.EndsWith("6"))
-                {
+                case Code.Ldc_I4_6:
                     return 6;
-                }
-
-                if(code.EndsWith("7"))
-                {
+                case Code.Ldc_I4_7:
                     return 7;
-                }
-
-                if(code.EndsWith("8"))
-                {
+                case Code.Ldc_I4_8:
                     return 8;
-                }
-
-                return (int)instruction.Operand;
+                case Code.Ldc_I4_S:
+                    return (sbyte)instruction.Operand;
+                case Code.Ldc_I4:
+                    return (int)instruction.Operand;
+                case Code.Ldc_I8:
+                    return (long)instruction.Operand;
             }
 
             return 0;
