@@ -23,11 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-using System.Diagnostics;
-using ILRuntime.Runtime;
 using JEngine.Core;
-using Debug = UnityEngine.Debug;
+using UnityEngine;
 
 namespace HotUpdateScripts
 {
@@ -53,129 +50,6 @@ namespace HotUpdateScripts
             Debug.Log("<color=yellow>[RunGame] 这个周期在ClassBind初始化后，可以激活游戏相关逻辑</color>");
             //如果生成热更解决方案跳过，参考https://docs.xgamedev.net/zh/documents/0.8/FAQ.html#生成热更工程dll跳过
             //的方法一，把生成的平台改成Any CPU（默认是小写的，windows下无法生成）
-        }
-    }
-
-    /// <summary>
-    /// 测试dll优化
-    /// </summary>
-    public class Test
-    {
-        public void DoTest()
-        {
-            Debug.Log($"original(1) = {Original(1)}");
-            Debug.Log($"jit(1) = {JIT(1)}");
-            Debug.Log($"optimized(1) = {Optimized(1)}");
-            Debug.Log($"optimizedJIT(1) = {OptimizedJIT(1)}");
-            RunTest(10);
-            RunTest(100);
-            RunTest(1000);
-            RunTest(10000);
-            RunTest(100000);
-        }
-
-        public void RunTest(int cnt = 100000)
-        {
-            Stopwatch sw = new Stopwatch();
-            Debug.Log($"{cnt}次计算");
-            sw.Start();
-            int a = 0;
-            int i = cnt;
-            while (i-- > 0)
-            {
-                a = Original(i);
-            }
-
-            sw.Stop();
-            Debug.Log($"Original: {sw.ElapsedMilliseconds}ms");
-
-            sw.Restart();
-            i = cnt;
-            while (i-- > 0)
-            {
-                a = JIT(i);
-            }
-
-            sw.Stop();
-            Debug.Log($"JIT: {sw.ElapsedMilliseconds}ms");
-
-            sw.Restart();
-            i = cnt;
-            while (i-- > 0)
-            {
-                a = Optimized(i);
-            }
-
-            sw.Stop();
-            Debug.Log($"Optimized: {sw.ElapsedMilliseconds}ms");
-
-            sw.Restart();
-            i = cnt;
-            while (i-- > 0)
-            {
-                a = OptimizedJIT(i);
-            }
-
-            sw.Stop();
-            Debug.Log($"OptimizedJIT: {sw.ElapsedMilliseconds}ms");
-        }
-
-        public int Original(int x)
-        {
-            int a = 5;
-            int b = 20;
-            int c = 10;
-            c = a;
-            int d = 5 * a;
-            int e = d;
-            int f = e / 2;
-            int g = f + a + b + c * 6 - b / 4;
-            int h = x * 2 + 10 + 3 - 6 - 8 - g;
-            return h + 10 % 3;
-        }
-
-        [ILRuntimeJIT(ILRuntimeJITFlags.JITImmediately)]
-        public int JIT(int x)
-        {
-            int a = 5;
-            int b = 20;
-            int c = 10;
-            c = a;
-            int d = 5 * a;
-            int e = d;
-            int f = e / 2;
-            int g = f + a + b + c * 6 - b / 4;
-            int h = x * 2 + 10 + 3 - 6 - 8 - g;
-            return h + 10 % 3;
-        }
-
-        public int Optimized(int x)
-        {
-            int a = 5;
-            int b = 20;
-            int c = 10;
-            c = a;
-            int d = 5 * a;
-            int e = d;
-            int f = e / 2;
-            int g = f + a + b + c * 6 - b / 4;
-            int h = x * 2 + 10 + 3 - 6 - 8 - g;
-            return h + 10 % 3;
-        }
-
-        [ILRuntimeJIT(ILRuntimeJITFlags.JITImmediately)]
-        public int OptimizedJIT(int x)
-        {
-            int a = 5;
-            int b = 20;
-            int c = 10;
-            c = a;
-            int d = 5 * a;
-            int e = d;
-            int f = e / 2;
-            int g = f + a + b + c * 6 - b / 4;
-            int h = x * 2 + 10 + 3 - 6 - 8 - g;
-            return h + 10 % 3;
         }
     }
 }
