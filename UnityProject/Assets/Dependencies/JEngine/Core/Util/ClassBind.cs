@@ -496,22 +496,8 @@ namespace JEngine.Core
                 {
                     ((MonoBehaviour)clrInstance).enabled = true;
                     classData.Activated = true;
-                    Remove();
                 });
             }
-            else
-            {
-                Remove();
-            }
-        }
-
-        /// <summary>
-        /// Remove cb
-        /// </summary>
-        private void Remove()
-        {
-            //添加后删除
-            Destroy(this);
         }
 
 

@@ -125,6 +125,8 @@ namespace JEngine.Core
 
                     cb.Active(data);
                 }
+                
+                Object.Destroy(cb);
             }
 
             //确保任务全执行了
