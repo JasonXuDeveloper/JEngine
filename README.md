@@ -17,7 +17,7 @@
   </a>
   <a style="text-decoration:none">
     <img src="https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge" alt="badge" />
-  </a>[README_zh_cn.md](README_zh_cn.md)
+  </a>
   <br>
   <br>
   <a href="https://xgamedev.net/"><strong>Documentation »</strong></a>
