@@ -17,7 +17,7 @@
   </a>
   <a style="text-decoration:none">
     <img src="https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge" alt="badge" />
-  </a>
+  </a>[README_zh_cn.md](README_zh_cn.md)
   <br>
   <br>
   <a href="https://xgamedev.net/"><strong>Documentation »</strong></a>
@@ -31,7 +31,7 @@
 
 
 
-# JENGINE v0.8.0f5
+# JENGINE v0.8.0f6
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated in runtime.**
 

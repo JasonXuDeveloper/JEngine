@@ -357,8 +357,10 @@ namespace JEngine.Core
         {
             SceneOperationHandle handle = GetPackage(package)
                 .LoadSceneAsync(path, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
-            handle.Task.Wait();
-            RemoveUnusedAssets();
+            handle.Task.ContinueWith((_, __) => RemoveUnusedAssets()
+                , null);
+            _ = handle.Task;
+            Log.PrintWarning("LoadScene will not wait for scene loading complete. Use LoadSceneAsync instead.");
         }
 
         public static async Task LoadSceneAsync(string path, bool additive = false, string package = null)
