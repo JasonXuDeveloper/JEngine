@@ -1,14 +1,135 @@
 ﻿using System;
+using UnityEngine;
+using System.Threading;
+using Unity.Collections;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using Unity.Collections.LowLevel.Unsafe;
+using ThreadTaskAction = JEngine.Core.ThreadMgr.ThreadTaskAwaiter.ThreadTaskAction;
 
 namespace JEngine.Core
 {
-    public static class ThreadMgr
+    public static unsafe class ThreadMgr
     {
+        public struct ThreadTaskAwaiter : INotifyCompletion
+        {
+            public int Index;
+
+            public struct ThreadTaskAction
+            {
+                public void* ActionPtr;
+                public ulong ActionGCHandleAddress;
+            }
+
+            public void GetResult()
+            {
+            }
+
+            public bool IsCompleted
+                => false;
+
+            public void OnCompleted(Action continuation)
+            {
+                ThreadTaskAction* action = ItemList + Index;
+                action->ActionPtr =
+                    UnsafeUtility.PinGCObjectAndGetAddress(continuation, out action->ActionGCHandleAddress);
+            }
+
+            public ThreadTaskAwaiter GetAwaiter()
+            {
+                return this;
+            }
+        }
+
+        private static int GetIndex()
+        {
+            bool gotLock = false;
+            try
+            {
+                _createLock.Enter(ref gotLock);
+                byte* ptr = UsageList;
+                byte* max = ptr + MaxSize;
+                while (ptr < max)
+                {
+                    if (*ptr == 0)
+                    {
+                        *ptr = 1;
+                        break;
+                    }
+
+                    ptr++;
+                }
+
+                if (ptr == max)
+                    throw new Exception("ThreadMgr: ThreadTaskAwaiter is full!");
+
+                return (int)(ptr - UsageList);
+            }
+            finally
+            {
+                if (gotLock) _createLock.Exit();
+            }
+        }
+
+        private static void SetCompleted(int index)
+        {
+            if (UsageList[index] == 0 || index < 0 || index >= MaxSize)
+                return;
+            ThreadTaskAction* action = ItemList + index;
+            var actionPtr = action->ActionPtr;
+            var actionGCHandleAddress = action->ActionGCHandleAddress;
+            try
+            {
+                UsageList[index] = 0;
+                Action act = null;
+                try
+                {
+                    act = UnsafeMgr.Instance.FromPtr<Action>(actionPtr);
+                }
+                catch
+                {
+                    //ignore
+                }
+
+                act?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+            finally
+            {
+                if (actionGCHandleAddress != 0)
+                    UnsafeUtility.ReleaseGCObject(actionGCHandleAddress);
+            }
+        }
+
         /// <summary>
-        /// Init loom
+        /// 非托管内存
+        /// </summary>
+        private static readonly ThreadTaskAction* ItemList =
+            (ThreadTaskAction*)UnsafeUtility.Malloc(sizeof(ThreadTaskAction) * MaxSize, 4, Allocator.Persistent);
+
+        /// <summary>
+        /// 使用列表
+        /// </summary>
+        private static readonly byte* UsageList = (byte*)UnsafeUtility.Malloc(MaxSize, 4, Allocator.Persistent);
+
+        /// <summary>
+        /// 最大数量
+        /// </summary>
+        private const int MaxSize = 10000;
+
+        /// <summary>
+        /// 锁
+        /// </summary>
+        private static SpinLock _createLock;
+
+
+        /// <summary>
+        /// Init ThreadMgr
         /// </summary>
         public static void Initialize()
         {
@@ -16,6 +137,8 @@ namespace JEngine.Core
             _updateTaskId = LifeCycleMgr.Instance.AddUpdateTask(Update, () => _active);
             //默认运行
             Activate();
+            GC.AddMemoryPressure(sizeof(ThreadTaskAction) * MaxSize);
+            GC.AddMemoryPressure(MaxSize);
         }
 
         /// <summary>
@@ -73,10 +196,8 @@ namespace JEngine.Core
         /// <param name="action"></param>
         /// <param name="p"></param>
         [Obsolete("Use QueueOnMainThread<T> instead")]
-        public static void QueueOnMainThread(Action<object> action, object p)
-        {
-            QueueOnMainThread(action, p, 0f);
-        }
+        public static ThreadTaskAwaiter QueueOnMainThread(Action<object> action, object p)
+            => QueueOnMainThread(action, p, 0f);
 
         /// <summary>
         /// Queue an action with param on main thread to run after specific seconds
@@ -84,9 +205,18 @@ namespace JEngine.Core
         /// <param name="action"></param>
         /// <param name="p"></param>
         /// <param name="time"></param>
-        public static void QueueOnMainThread<T>(Action<T> action, T p, float time = 0)
+        public static ThreadTaskAwaiter QueueOnMainThread<T>(Action<T> action, T p, float time = 0)
         {
-            QueueOnMainThread(() => action(p), time);
+            var ret = new ThreadTaskAwaiter();
+            ret.Index = GetIndex();
+            int index = ret.Index;
+            var act = new Action(() =>
+            {
+                action(p);
+                SetCompleted(index);
+            });
+            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = act, MainThread = true });
+            return ret;
         }
 
         /// <summary>
@@ -94,11 +224,20 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="action"></param>
         /// <param name="time"></param>
-        public static void QueueOnMainThread(Action action, float time = 0f)
+        public static ThreadTaskAwaiter QueueOnMainThread(Action action, float time = 0f)
         {
-            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = action, MainThread = true});
+            var ret = new ThreadTaskAwaiter();
+            int index = GetIndex();
+            ret.Index = index;
+            var act = new Action(() =>
+            {
+                action();
+                SetCompleted(index);
+            });
+            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = act, MainThread = true });
+            return ret;
         }
-        
+
         /// <summary>
         /// Queue an action on other thread to run after specific seconds
         /// </summary>
@@ -118,14 +257,14 @@ namespace JEngine.Core
         /// <param name="time"></param>
         public static void QueueOnOtherThread(Action action, float time = 0f)
         {
-            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = action , MainThread = false});
+            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = action, MainThread = false });
         }
 
         /// <summary>
         /// Current actions to process
         /// </summary>
         private static readonly List<(bool main, Action action)> CurActions = new List<(bool, Action)>(100);
-        
+
         /// <summary>
         /// Current time
         /// </summary>
@@ -147,11 +286,11 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    Delayed.Enqueue(item); 
+                    Delayed.Enqueue(item);
                 }
             }
 
-            foreach (var (main,act) in CurActions)
+            foreach (var (main, act) in CurActions)
             {
                 if (!main)
                 {
