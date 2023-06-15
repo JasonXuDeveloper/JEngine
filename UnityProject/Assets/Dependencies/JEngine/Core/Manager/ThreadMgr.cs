@@ -1,13 +1,12 @@
 ﻿using System;
-using UnityEngine;
-using System.Threading;
-using Unity.Collections;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using ThreadTaskAction = JEngine.Core.ThreadMgr.ThreadTaskAwaiter.ThreadTaskAction;
+using UnityEngine;
 
 namespace JEngine.Core
 {
@@ -16,12 +15,6 @@ namespace JEngine.Core
         public struct ThreadTaskAwaiter : INotifyCompletion
         {
             public int Index;
-
-            public struct ThreadTaskAction
-            {
-                public void* ActionPtr;
-                public ulong ActionGCHandleAddress;
-            }
 
             public void GetResult()
             {
@@ -32,9 +25,7 @@ namespace JEngine.Core
 
             public void OnCompleted(Action continuation)
             {
-                ThreadTaskAction* action = ItemList + Index;
-                action->ActionPtr =
-                    UnsafeUtility.PinGCObjectAndGetAddress(continuation, out action->ActionGCHandleAddress);
+                Actions[Index] = continuation;
             }
 
             public ThreadTaskAwaiter GetAwaiter()
@@ -77,40 +68,22 @@ namespace JEngine.Core
         {
             if (UsageList[index] == 0 || index < 0 || index >= MaxSize)
                 return;
-            ThreadTaskAction* action = ItemList + index;
-            var actionPtr = action->ActionPtr;
-            var actionGCHandleAddress = action->ActionGCHandleAddress;
+            Action act = Actions[index];
             try
             {
                 UsageList[index] = 0;
-                Action act = null;
-                try
-                {
-                    act = UnsafeMgr.Instance.FromPtr<Action>(actionPtr);
-                }
-                catch
-                {
-                    //ignore
-                }
-
                 act?.Invoke();
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
             }
-            finally
-            {
-                if (actionGCHandleAddress != 0)
-                    UnsafeUtility.ReleaseGCObject(actionGCHandleAddress);
-            }
         }
 
         /// <summary>
-        /// 非托管内存
+        /// 待执行任务
         /// </summary>
-        private static readonly ThreadTaskAction* ItemList =
-            (ThreadTaskAction*)UnsafeUtility.Malloc(sizeof(ThreadTaskAction) * MaxSize, 4, Allocator.Persistent);
+        private static readonly Action[] Actions = new Action[MaxSize];
 
         /// <summary>
         /// 使用列表
@@ -137,7 +110,6 @@ namespace JEngine.Core
             _updateTaskId = LifeCycleMgr.Instance.AddUpdateTask(Update, () => _active);
             //默认运行
             Activate();
-            GC.AddMemoryPressure(sizeof(ThreadTaskAction) * MaxSize);
             GC.AddMemoryPressure(MaxSize);
         }
 
@@ -152,7 +124,7 @@ namespace JEngine.Core
         private static bool _active;
 
         /// <summary>
-        /// Activate loom to execute loop
+        /// Activate threadMgr to execute loop
         /// </summary>
         public static void Activate()
         {
@@ -160,7 +132,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Deactivate loom to stop loop
+        /// Deactivate threadMgr to stop loop
         /// </summary>
         public static void Deactivate()
         {
@@ -168,7 +140,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// Stop the current loom, requires re-initialize to rerun
+        /// Stop the current threadMgr, requires re-initialize to rerun
         /// </summary>
         public static void Stop()
         {
@@ -245,19 +217,26 @@ namespace JEngine.Core
         /// <param name="p"></param>
         /// <param name="time"></param>
         /// <typeparam name="T"></typeparam>
-        public static void QueueOnOtherThread<T>(Action<T> action, T p, float time = 0f)
-        {
-            QueueOnOtherThread(() => action(p), time);
-        }
+        public static ThreadTaskAwaiter QueueOnOtherThread<T>(Action<T> action, T p, float time = 0f)
+            => QueueOnMainThread(action, p, time);
 
         /// <summary>
         /// Queue an action on other thread to run after specific seconds
         /// </summary>
         /// <param name="action"></param>
         /// <param name="time"></param>
-        public static void QueueOnOtherThread(Action action, float time = 0f)
+        public static ThreadTaskAwaiter QueueOnOtherThread(Action action, float time = 0f)
         {
-            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = action, MainThread = false });
+            var ret = new ThreadTaskAwaiter();
+            int index = GetIndex();
+            ret.Index = index;
+            var act = new Action(() =>
+            {
+                action();
+                SetCompleted(index);
+            });
+            Delayed.Enqueue(new DelayedQueueItem { Time = _curTime + time, Action = act, MainThread = false });
+            return ret;
         }
 
         /// <summary>
@@ -275,7 +254,7 @@ namespace JEngine.Core
         /// </summary>
         static void Update()
         {
-            _curTime = UnityEngine.Time.time;
+            _curTime = Time.time;
             var i = Delayed.Count;
             while (i-- > 0)
             {
@@ -302,7 +281,7 @@ namespace JEngine.Core
                         }
                         catch (Exception e)
                         {
-                            UnityEngine.Debug.LogException(e);
+                            Debug.LogException(e);
                         }
                     });
                 }
@@ -314,7 +293,7 @@ namespace JEngine.Core
                     }
                     catch (Exception e)
                     {
-                        UnityEngine.Debug.LogException(e);
+                        Debug.LogException(e);
                     }
                 }
             }
