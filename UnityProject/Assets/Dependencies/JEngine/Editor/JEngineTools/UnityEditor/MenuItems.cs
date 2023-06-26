@@ -41,61 +41,6 @@ namespace JEngine.Editor
     [Obfuscation(Exclude = true)]
     internal class MenuItems
     {
-        [MenuItem("JEngine/Optimize Dll &o")]
-        public static void OptimizeDll()
-        {
-            var dllPath = ConstMgr.DLLSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.DLLExtension;
-            var pdbPath = ConstMgr.PdbSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.PdbExtension;
-            var dllOutPath = ConstMgr.DLLSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.ExprFlag + ConstMgr.BytesExtension;
-            var pdbOutPath = ConstMgr.PdbSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.ExprFlag  + ConstMgr.BytesExtension;
-            //execute Optimizer.Optimize(dllPath, pdbPath); in a new thread with timeout (using cancellation token), if timeout then cancel the task
-            var cts = new CancellationTokenSource();
-            var task = Task.Run(() =>
-            {
-                try
-                {
-                    Optimizer.Optimize(dllPath, pdbPath, dllOutPath, pdbOutPath);
-                }
-                catch
-                {
-                    Optimizer.Optimize(dllPath, null, dllOutPath, null);
-                }
-            }, cts.Token);
-            if (task.Wait(10000))
-            {
-                Debug.Log("Optimize Dll Success");
-            }
-            else
-            {
-                cts.Cancel();
-                Debug.LogError("Optimize Dll Timeout");
-            }
-        }
-
-        [MenuItem("JEngine/Test Optimized Dll &r")]
-        public static void TestOptimizedDll()
-        {
-            var dllOutPath = ConstMgr.DLLSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.ExprFlag + ConstMgr.BytesExtension;
-            var pdbOutPath = ConstMgr.PdbSourceFolder + ConstMgr.MainHotDLLName + ConstMgr.ExprFlag  + ConstMgr.BytesExtension;
-            AppDomain appdomain = new AppDomain();
-            try
-            {
-                appdomain.LoadAssembly(new MemoryStream(File.ReadAllBytes(dllOutPath)),
-                    File.Exists(pdbOutPath) ? new MemoryStream(File.ReadAllBytes(pdbOutPath)) : null,
-                    new PdbReaderProvider());
-            }
-            catch
-            {
-                appdomain.LoadAssembly(new MemoryStream(File.ReadAllBytes(dllOutPath)),
-                    null,
-                    new PdbReaderProvider());
-            }
-            var type = (ILType)appdomain.GetType("HotUpdateScripts.Test");
-            var instance = appdomain.Instantiate("HotUpdateScripts.Test");
-            var method = type.GetMethod("DoTest", 0);
-            appdomain.Invoke(method, instance, null);
-        }
-
         [MenuItem("JEngine/Open Documentation", priority = 1999)]
         public static void OpenDocument()
         {

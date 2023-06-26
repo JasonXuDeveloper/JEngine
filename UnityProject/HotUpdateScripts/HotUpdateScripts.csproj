@@ -68,7 +68,6 @@
     <Compile Include="JEngine\Core\JValidation.cs" />
     <Compile Include="JEngine\Examples\Core\ValidationDemo.cs" />
     <Compile Include="JEngine\Examples\Core\AddOnDemo.cs" />
-    <Compile Include="JEngine\Examples\Core\Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
