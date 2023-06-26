@@ -36,10 +36,11 @@
                         //就mono订阅start和update事件
                         LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
                         LifeCycleMgr.Instance.AddFixedUpdateItem(instance, GetMethodInfo(type, "FixedUpdate"),
-                            gameObject);
-                        LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject);
+                        gameObject, ()=> enabled);
+                        LifeCycleMgr.Instance.AddUpdateItem(instance, GetMethodInfo(type, "Update"), gameObject,
+                            () => enabled);
                         LifeCycleMgr.Instance.AddLateUpdateItem(instance, GetMethodInfo(type, "LateUpdate"),
-                            gameObject);
+                            gameObject, () => enabled);
     
                         isAwaking = false;
                         awaked = true;

@@ -134,7 +134,7 @@ namespace JEngine.Core
         /// <summary>
         /// 最大数量
         /// </summary>
-        private const int MaxSize = 10000;
+        private const int MaxSize = 30000;
 
         /// <summary>
         /// 锁
@@ -286,12 +286,13 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         /// <param name="method"></param>
         /// <param name="parent"></param>
-        public void AddUpdateItem<T>(T instance, MethodInfo method, GameObject parent) where T : class
+        /// <param name="cond"></param>
+        public void AddUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _updateItems.Add(GetLifeCycleItem(in ptr, in address,
                 () => method?.Invoke(instance, ConstMgr.NullObjects),
-                () => parent.activeInHierarchy));
+                () => cond == null ? parent.activeInHierarchy : parent.activeInHierarchy && cond.Invoke()));
         }
 
         /// <summary>
@@ -360,11 +361,13 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         /// <param name="method"></param>
         /// <param name="parent"></param>
-        public void AddLateUpdateItem<T>(T instance, MethodInfo method, GameObject parent) where T : class
+        /// <param name="cond"></param>
+        public void AddLateUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _lateUpdateItems.Add(GetLifeCycleItem(in ptr, in address,
-                () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+                () => method?.Invoke(instance, ConstMgr.NullObjects), 
+                () => cond == null ? parent.activeInHierarchy : parent.activeInHierarchy && cond.Invoke()));
         }
 
         /// <summary>
@@ -404,11 +407,13 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         /// <param name="method"></param>
         /// <param name="parent"></param>
-        public void AddFixedUpdateItem<T>(T instance, MethodInfo method, GameObject parent) where T : class
+        /// <param name="cond"></param>
+        public void AddFixedUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _fixedUpdateItems.Add(GetLifeCycleItem(in ptr, in address,
-                () => method?.Invoke(instance, ConstMgr.NullObjects), () => parent.activeInHierarchy));
+                () => method?.Invoke(instance, ConstMgr.NullObjects), 
+                () => cond == null ? parent.activeInHierarchy : parent.activeInHierarchy && cond.Invoke()));
         }
 
         /// <summary>
