@@ -172,6 +172,11 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
         
         void OnEnable()
         {
+            if (!awaked && !isAwaking)
+            {
+                Awake();
+                LifeCycleMgr.Instance.ExecuteOnceTask();
+            }
             LifeCycleMgr.Instance.AddTask(() =>
             {
                 if (instance != null)

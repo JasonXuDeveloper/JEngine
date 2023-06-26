@@ -35,6 +35,7 @@ namespace JEngine.Core
         private static readonly Type MonoAdapterType = typeof(MonoBehaviourAdapter.Adaptor);
         private static readonly Type ILTypeInstanceType = typeof(ILTypeInstance);
         private static readonly Type AppdomainType = typeof(AppDomain);
+
         private const BindingFlags AllBindingFlags = BindingFlags.Public | BindingFlags.NonPublic |
                                                      BindingFlags.Instance | BindingFlags.Static |
                                                      BindingFlags.FlattenHierarchy | BindingFlags.Default;
@@ -175,7 +176,13 @@ namespace JEngine.Core
                 try
                 {
                     var fi = t.GetField(field.fieldName, AllBindingFlags);
-                    if (fi == null) fi = t.BaseType?.GetField(field.fieldName, AllBindingFlags);
+                    var type = t;
+                    while (fi == null && type.BaseType != null)
+                    {
+                        fi = type.BaseType.GetField(field.fieldName, AllBindingFlags);
+                        type = type.BaseType;
+                    }
+
                     if (fi != null)
                     {
                         fi.SetValue(clrInstance.ILInstance, obj);
@@ -183,10 +190,15 @@ namespace JEngine.Core
                     else
                     {
                         var pi = t.GetProperty(field.fieldName, AllBindingFlags);
-                        if (pi == null) pi = t.BaseType?.GetProperty(field.fieldName, AllBindingFlags);
-                        if (pi == null)
-                            throw new NullReferenceException();
-                        pi.SetValue(clrInstance.ILInstance, obj);
+                        type = t;
+                        while (pi == null && type.BaseType != null)
+                        {
+                            pi = type.BaseType.GetProperty(field.fieldName, AllBindingFlags);
+                            type = type.BaseType;
+                        }
+
+                        if (pi != null)
+                            pi.SetValue(clrInstance.ILInstance, obj);
                     }
                 }
                 catch (Exception e)
@@ -418,7 +430,7 @@ namespace JEngine.Core
                             }
 
                             obj = o;
-                            BindVal(field,obj);
+                            BindVal(field, obj);
                         });
                         classData.BoundData = true;
                         continue;
@@ -457,7 +469,7 @@ namespace JEngine.Core
                     Log.PrintError($"自动绑定{name}出错：{classType}没有成功绑定数据，自动激活成功，但可能会抛出空异常！");
                 }
 
-                if (classData.ClrInstance is MonoBehaviourAdapter.Adaptor mb) 
+                if (classData.ClrInstance is MonoBehaviourAdapter.Adaptor mb)
                 {
                     mb.Awake();
                 }
@@ -471,7 +483,7 @@ namespace JEngine.Core
                     var flags = BindingFlags.Default | BindingFlags.Public
                                                      | BindingFlags.Instance | BindingFlags.FlattenHierarchy |
                                                      BindingFlags.NonPublic | BindingFlags.Static;
-                    var awakeMethod = clrInstance.GetType().GetMethod("Awake",flags);
+                    var awakeMethod = clrInstance.GetType().GetMethod("Awake", flags);
                     if (awakeMethod == null)
                     {
                         awakeMethod = t.GetMethod("Awake", flags);
