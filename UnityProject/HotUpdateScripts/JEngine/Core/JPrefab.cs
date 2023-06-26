@@ -106,8 +106,9 @@ namespace JEngine.Core
         private async Task LoadPrefabAsync(string path, string package, Action<bool, JPrefab> callback)
         {
             LoadTask = new TaskCompletionSource<bool>();
-            var (obj, handle) = await AssetMgr.LoadAsyncWithHandle<GameObject>(path, package);
+            var (obj, h) = await AssetMgr.LoadAsyncWithHandle<GameObject>(path, package);
             Instance = obj;
+            handle = h;
             Loaded = true;
             callback?.Invoke(!Error, this);
             LoadTask.SetResult(true);
@@ -138,21 +139,7 @@ namespace JEngine.Core
         /// All GameObjects that has been instantiated to scene
         /// 全部被生成到场景中的游戏对象
         /// </summary>
-        public List<GameObject> InstantiatedGameObjects
-        {
-            get
-            {
-                List<GameObject> ret = new List<GameObject>();
-                for(int i = 0, cnt = _instantiatedGameObjects.Count; i < cnt; i++)
-                {
-                    var gameObject = _instantiatedGameObjects[i];
-                    if (gameObject == null || ReferenceEquals(gameObject, null)) continue;
-                    ret.Add(gameObject);
-                }
-                _instantiatedGameObjects = ret;
-                return ret;
-            }
-        }
+        public IEnumerable<GameObject> InstantiatedGameObjects => _instantiatedGameObjects;
         private List<GameObject> _instantiatedGameObjects = new List<GameObject>(0);
 
         /// <summary>
@@ -176,7 +163,7 @@ namespace JEngine.Core
             {
                 go.name = name;
             }
-            InstantiatedGameObjects.Add(go);
+            _instantiatedGameObjects.Add(go);
             return go;
         }
 
@@ -202,7 +189,7 @@ namespace JEngine.Core
             {
                 go.name = name;
             }
-            InstantiatedGameObjects.Add(go);
+            _instantiatedGameObjects.Add(go);
             return go;
         }
 
@@ -229,7 +216,7 @@ namespace JEngine.Core
             {
                 go.name = name;
             }
-            InstantiatedGameObjects.Add(go);
+            _instantiatedGameObjects.Add(go);
             return go;
         }
 
@@ -256,7 +243,7 @@ namespace JEngine.Core
             {
                 go.name = name;
             }
-            InstantiatedGameObjects.Add(go);
+            _instantiatedGameObjects.Add(go);
             return go;
         }
 
@@ -284,7 +271,7 @@ namespace JEngine.Core
             {
                 go.name = name;
             }
-            InstantiatedGameObjects.Add(go);
+            _instantiatedGameObjects.Add(go);
             return go;
         }
 
@@ -294,9 +281,9 @@ namespace JEngine.Core
         /// </summary>
         public void DestroyAllInstantiatedObjects()
         {
-            for (int i = 0, cnt = InstantiatedGameObjects.Count; i < cnt; i++)
+            for (int i = 0, cnt = _instantiatedGameObjects.Count; i < cnt; i++)
             {
-                UnityEngine.Object.DestroyImmediate(InstantiatedGameObjects[i]);
+                UnityEngine.Object.DestroyImmediate(_instantiatedGameObjects[i]);
             }
         }
 
