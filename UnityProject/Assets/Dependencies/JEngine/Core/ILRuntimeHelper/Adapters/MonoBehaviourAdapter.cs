@@ -130,12 +130,14 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 if (isAwaking) return;
                 isAwaking = true;
+                _skipEnable = true;
                 LifeCycleMgr.Instance.AddTask(instance, () =>
                 {
                     if (_destoryed) return;
                     var type = instance.Type.ReflectionType;
                     //直接Invoke
                     GetMethodInfo(type, "Awake")?.Invoke(instance, ConstMgr.NullObjects);
+                    GetMethodInfo(type, "OnEnable")?.Invoke(instance, ConstMgr.NullObjects);
                     LifeCycleMgr.Instance.AddAwakeItem(instance, null); //这一帧空出来
                     //就mono订阅start和update事件
                     LifeCycleMgr.Instance.AddStartItem(instance, GetMethodInfo(type, "Start"));
@@ -169,13 +171,20 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
 
         IMethod _mOnEnableMethod;
         bool _mOnEnableMethodGot;
+        bool _skipEnable;
         
         void OnEnable()
         {
-            if (!awaked && !isAwaking)
+            if (!awaked)
             {
                 Awake();
                 LifeCycleMgr.Instance.ExecuteOnceTask();
+                return;
+            }
+            if (_skipEnable)
+            {
+                _skipEnable = false;
+                return;
             }
             LifeCycleMgr.Instance.AddTask(() =>
             {
