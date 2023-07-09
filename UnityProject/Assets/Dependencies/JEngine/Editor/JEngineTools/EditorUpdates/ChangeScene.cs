@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using JEngine.Core;
 using UnityEditor;
@@ -35,8 +36,11 @@ namespace JEngine.Editor
                 DynamicGI.UpdateEnvironment();
             }
 
-            var initJEngine = GameObject.Find("InitJEngine");
-            var comp = initJEngine.GetComponent<InitJEngine>();
+            var comp = Object.FindFirstObjectByType<InitJEngine>();
+            if (comp == null)
+            {
+                Debug.LogWarning("没有找到InitJEngine脚本，无法检验秘钥是否正确");
+            }
             var key = comp.key;
             var k = PlayerPrefs.GetString($"{prefix}.EncryptPassword", "");
             if (string.IsNullOrEmpty(k))
