@@ -180,6 +180,7 @@ public class MonoBehaviourAdapter : CrossBindingAdaptor
             {
                 Awake();
                 LifeCycleMgr.Instance.ExecuteOnceTask();
+                _skipEnable = false;
                 return;
             }
             if (_skipEnable)
