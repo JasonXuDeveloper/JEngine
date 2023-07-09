@@ -31,10 +31,13 @@ namespace JEngine.Editor
                     if (!Application.isPlaying) return;
                     await Task.Delay(10);
                 }
+
                 DynamicGI.UpdateEnvironment();
             }
 
-            var key = Object.FindObjectOfType<InitJEngine>().key;
+            var initJEngine = GameObject.Find("InitJEngine");
+            var comp = initJEngine.GetComponent<InitJEngine>();
+            var key = comp.key;
             var k = PlayerPrefs.GetString($"{prefix}.EncryptPassword", "");
             if (string.IsNullOrEmpty(k))
             {
@@ -50,7 +53,7 @@ namespace JEngine.Editor
                         Setting.GetString(SettingString.Ok), Setting.GetString(SettingString.Ignore));
                     if (res)
                     {
-                        Object.FindObjectOfType<InitJEngine>().key = k;
+                        comp.key = k;
                     }
                 }
             }
