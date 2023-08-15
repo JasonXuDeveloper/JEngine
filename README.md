@@ -30,8 +30,10 @@
 </p>
 
 
-
 # JENGINE v0.8.0f6
+
+  ![Alt](https://repobeats.axiom.co/api/embed/d085b73402ea8b3e88deb98cb4074afd95528c0d.svg "Repobeats analytics image")
+
 
 **JEngine is an out-of-the-box framework designed for Unity developers. It encapsulates powerful functions. Beginners can also get started quickly and easily create games that can be updated in runtime.**
 
