@@ -1,6 +1,6 @@
 {
   "name": "com.jasonxudeveloper.jengine",
-  "version": "0.8.0f6",
+  "version": "0.8.0f7",
   "displayName": "JEngine",
   "description": "The solution that allows unity games update in runtime.",
   "license": "MIT",
