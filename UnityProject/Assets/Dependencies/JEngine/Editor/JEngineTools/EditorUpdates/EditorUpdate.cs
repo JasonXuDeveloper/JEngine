@@ -20,7 +20,7 @@ namespace JEngine.Editor
                 EditorApplication.update += AllowUnsafe.Update; //允许Unsafe code
             }
 
-            if (!SetData.hasAdded)
+            if (!SetData.HasAdded)
             {
                 EditorApplication.update += SetData.Update; //设置某些需要在后台设置的东西
             }

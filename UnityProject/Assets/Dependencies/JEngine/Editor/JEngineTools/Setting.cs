@@ -261,7 +261,15 @@ namespace JEngine.Editor
 		public static string EncryptPassword
 		{
 			get => PlayerPrefs.GetString($"{_prefix}.EncryptPassword", "");
-			set => PlayerPrefs.SetString($"{_prefix}.EncryptPassword", value);
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+				{
+					return;
+				}
+				PlayerPrefs.SetString($"{_prefix}.EncryptPassword", value);
+				SetData.UpdateData(data=>data.EncryptPassword = value);
+			}
 		}
 
 		/// <summary>
