@@ -7,7 +7,7 @@ namespace JEngine.Editor
     {
         public string Prefix = "";
         public string EncryptPassword = "";
-        public string Version = "0.8.0f6";
+        public string Version = "0.8.0f7";
 
         public int Size()
         {
