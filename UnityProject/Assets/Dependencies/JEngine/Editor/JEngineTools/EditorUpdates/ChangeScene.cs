@@ -28,7 +28,6 @@ namespace JEngine.Editor
                 var op = SceneManager.LoadSceneAsync(name);
                 while (SceneManager.GetActiveScene().path != path)
                 {
-                    if (!Application.isPlaying) return;
                     EditorUtility.DisplayProgressBar("JEngine", Setting.GetString(SettingString.JumpToStartUpScene), op.progress);
                     await Task.Delay(100);
                 }
@@ -36,10 +35,10 @@ namespace JEngine.Editor
                 DynamicGI.UpdateEnvironment();
             }
 
-            var comp = Object.FindFirstObjectByType<InitJEngine>();
+            var comp = Object.FindObjectOfType<InitJEngine>();
             if (comp == null)
             {
-                Debug.LogWarning("没有找到InitJEngine脚本，无法检验秘钥是否正确");
+                // Debug.LogWarning("没有找到InitJEngine脚本，无法检验秘钥是否正确");
                 return;
             }
             var key = comp.key;
