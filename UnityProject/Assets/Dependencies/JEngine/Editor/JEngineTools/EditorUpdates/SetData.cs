@@ -11,7 +11,7 @@ namespace JEngine.Editor
     {
         public static bool HasAdded;
         private static string _path = "JEngine.proj";
-        private static JEngineProjData _data = new JEngineProjData();
+        private static JEngineProjData _data;
 
         public static void UpdateData(Action<JEngineProjData> func)
         {
@@ -23,54 +23,59 @@ namespace JEngine.Editor
 
         public static string GetPrefix()
         {
-            //看看文件存不存在，不存在就创建和提示
-            string fPath = Path.Combine(Application.dataPath, _path);
-            if (!File.Exists(fPath))
+            if (_data == null)
             {
                 _data = new JEngineProjData();
-                //兼容老版本
-                bool flag = false;
-                if (File.Exists(Path.Combine(Application.dataPath, "JEngine.lock")))
+                //看看文件存不存在，不存在就创建和提示
+                string fPath = Path.Combine(Application.dataPath, _path);
+                if (!File.Exists(fPath))
                 {
-                    _data.Prefix = File.ReadAllText(Path.Combine(Application.dataPath, "JEngine.lock"));
-                    _data.EncryptPassword =  PlayerPrefs.GetString($"{_data.Prefix}.EncryptPassword", "");
-                    File.Delete(Path.Combine(Application.dataPath, "JEngine.lock"));
-                }
-                else
-                {
-                    _data.Prefix = Guid.NewGuid().ToString();
-                    flag = true;
-                }
-                Span<byte> data = stackalloc byte[_data.Size()];
-                _data.AsBinary(ref data);
-                File.WriteAllBytes(fPath, data.ToArray());
-                if (flag)
-                {
-                    //提示看文档
-                    Debug.LogError(Setting.GetString(SettingString.NoticeText));
-                    EditorUtility.DisplayDialog(Setting.GetString(SettingString.Notice),
-                        Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
-                    if (Setting.Language == JEngineLanguage.English)
+                    //兼容老版本
+                    bool flag = false;
+                    if (File.Exists(Path.Combine(Application.dataPath, "JEngine.lock")))
                     {
-                        Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
+                        _data.Prefix = File.ReadAllText(Path.Combine(Application.dataPath, "JEngine.lock"));
+                        _data.EncryptPassword = PlayerPrefs.GetString($"{_data.Prefix}.EncryptPassword", "");
+                        File.Delete(Path.Combine(Application.dataPath, "JEngine.lock"));
                     }
                     else
                     {
-                        Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.8/");
+                        _data.Prefix = Guid.NewGuid().ToString();
+                        flag = true;
                     }
+
+                    Span<byte> data = stackalloc byte[_data.Size()];
+                    _data.AsBinary(ref data);
+                    File.WriteAllBytes(fPath, data.ToArray());
+                    if (flag)
+                    {
+                        //提示看文档
+                        Debug.LogError(Setting.GetString(SettingString.NoticeText));
+                        EditorUtility.DisplayDialog(Setting.GetString(SettingString.Notice),
+                            Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
+                        if (Setting.Language == JEngineLanguage.English)
+                        {
+                            Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
+                        }
+                        else
+                        {
+                            Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.8/");
+                        }
+                    }
+
+                    InjectDefineSymbol();
                 }
-                InjectDefineSymbol();
-            }
-            else
-            {
-                //读取文件
-                Span<byte> data = File.ReadAllBytes(fPath);
-                _data.FromBinary(ref data);
+                else
+                {
+                    //读取文件
+                    Span<byte> data = File.ReadAllBytes(fPath);
+                    _data.FromBinary(ref data);
+                }
             }
 
             return _data.Prefix;
         }
-        
+
         public static void Update()
         {
             string prefix = GetPrefix();

@@ -76,6 +76,16 @@ namespace JEngine.Core
             {
                 CoroutineMgr.Instance.StartCoroutine(JBehavioursLoop());
             });
+            LifeCycleMgr.Instance.AddOnDestroyTask(() =>
+            {
+                foreach (var jb in JBehaviours.Values.ToList())
+                {
+                    if (!jb._hidden && !jb._paused)
+                    {
+                        jb.Destroy();
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -86,7 +96,6 @@ namespace JEngine.Core
             Stopwatch sw = new Stopwatch();
             for (;;)
             {
-                if (!Application.isPlaying) break;
                 yield return ConstMgr.WaitFor1Sec;
                 int cnt = LoopJBehaviours.Count;
                 for (int i = 0; i < cnt; i++)
@@ -575,10 +584,7 @@ namespace JEngine.Core
             JBehaviours.Remove(_instanceID);
             GameObjectJBehaviours.Remove(_gameObject);
             _gameObject = null;
-            if (Application.isPlaying)
-            {
-                End();
-            }
+            End();
         }
 
 
