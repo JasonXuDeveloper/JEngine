@@ -163,6 +163,7 @@ namespace JEngine.Core
         /// </summary>
         private void OnDestroy()
         {
+            ExecuteItems(_onDestroyTaskItems);
             UnsafeUtility.Free(ItemList, Allocator.Persistent);
             UnsafeUtility.Free(UsageList, Allocator.Persistent);
             GC.RemoveMemoryPressure(sizeof(LifeCycleItem) * MaxSize);
@@ -203,6 +204,11 @@ namespace JEngine.Core
         /// All once task methods
         /// </summary>
         private readonly List<IntPtr> _onceTaskItems = new List<IntPtr>(100);
+
+        /// <summary>
+        /// All on destory task methods
+        /// </summary>
+        private readonly List<IntPtr> _onDestroyTaskItems = new List<IntPtr>(100);
 
         /// <summary>
         /// no gc search for awake objs
@@ -287,7 +293,8 @@ namespace JEngine.Core
         /// <param name="method"></param>
         /// <param name="parent"></param>
         /// <param name="cond"></param>
-        public void AddUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
+        public void AddUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null)
+            where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _updateItems.Add(GetLifeCycleItem(in ptr, in address,
@@ -362,11 +369,12 @@ namespace JEngine.Core
         /// <param name="method"></param>
         /// <param name="parent"></param>
         /// <param name="cond"></param>
-        public void AddLateUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
+        public void AddLateUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null)
+            where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _lateUpdateItems.Add(GetLifeCycleItem(in ptr, in address,
-                () => method?.Invoke(instance, ConstMgr.NullObjects), 
+                () => method?.Invoke(instance, ConstMgr.NullObjects),
                 () => cond == null ? parent.activeInHierarchy : parent.activeInHierarchy && cond.Invoke()));
         }
 
@@ -408,11 +416,12 @@ namespace JEngine.Core
         /// <param name="method"></param>
         /// <param name="parent"></param>
         /// <param name="cond"></param>
-        public void AddFixedUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null) where T : class
+        public void AddFixedUpdateItem<T>(T instance, MethodInfo method, GameObject parent, Func<bool> cond = null)
+            where T : class
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _fixedUpdateItems.Add(GetLifeCycleItem(in ptr, in address,
-                () => method?.Invoke(instance, ConstMgr.NullObjects), 
+                () => method?.Invoke(instance, ConstMgr.NullObjects),
                 () => cond == null ? parent.activeInHierarchy : parent.activeInHierarchy && cond.Invoke()));
         }
 
@@ -465,7 +474,8 @@ namespace JEngine.Core
         /// <param name="instance"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public void AddTask<T>(T instance, Action action) => AddTask(action, () => true);
+        public void AddTask<T>(T instance, Action action) where T : class
+            => AddTask(instance, action, () => true);
 
         /// <summary>
         /// Add a task that will call once in the main thread when condition is true
@@ -478,6 +488,55 @@ namespace JEngine.Core
         {
             void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
             _onceTaskItems.Add(GetLifeCycleItem(in ptr, in address, action, condition));
+        }
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when application is quitting
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public Guid AddOnDestroyTask(Action action) => AddOnDestroyTask(action, () => true);
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when condition is true when application is quitting
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public Guid AddOnDestroyTask(Action action, Func<bool> condition)
+        {
+            Guid guid = Guid.NewGuid();
+            var guidIdent = new IntPtr(guid.GetHashCode());
+            while (_onDestroyTaskItems.Exists(i => ((LifeCycleItem*)i)->InstancePtr == guidIdent))
+            {
+                guid = Guid.NewGuid();
+                guidIdent = new IntPtr(guid.GetHashCode());
+            }
+
+            _onDestroyTaskItems.Add(GetLifeCycleItem((void*)guidIdent, 0, action, condition));
+            return guid;
+        }
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when application is quitting
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public void AddOnDestroyTask<T>(T instance, Action action) where T : class
+            => AddOnDestroyTask(instance, action, () => true);
+
+        /// <summary>
+        /// Add a task that will call once in the main thread when condition is true when application is quitting
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="action"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public void AddOnDestroyTask<T>(T instance, Action action, Func<bool> condition) where T : class
+        {
+            void* ptr = UnsafeUtility.PinGCObjectAndGetAddress(instance, out var address);
+            _onDestroyTaskItems.Add(GetLifeCycleItem(in ptr, in address, action, condition));
         }
 
         /// <summary>
@@ -717,7 +776,7 @@ namespace JEngine.Core
                             _instances.Add(item->InstancePtr);
                         }
                     }
-                    
+
                     //调用start，并记录本帧处理的对象
                     ExecuteItems(_startItems, true, InstancesContains,
                         iterate: il => _startObjs.Remove(il.InstancePtr));
@@ -731,7 +790,7 @@ namespace JEngine.Core
                         item = (LifeCycleItem*)_startItems[i];
                         _instances.Add(item->InstancePtr);
                     }
-                    
+
                     ExecuteItems(_startItems, iterate: il => _startObjs.Remove(il.InstancePtr));
                 }
             }
