@@ -1,4 +1,5 @@
 using UnityEngine;
+using YooAsset;
 
 namespace JEngine.Core
 {
@@ -11,6 +12,15 @@ namespace JEngine.Core
 
         [SerializeField] private string gameScene = "Assets/HotUpdateResources/Main/Scene/Game.unity";
         [SerializeField] private string mainPackageName = "Main";
+
+        [SerializeField] [Tooltip("主分包资源打包该管线")]
+        private EDefaultBuildPipeline pipeline = EDefaultBuildPipeline.BuiltinBuildPipeline;
+
+        [SerializeField] [Tooltip("打包资源时是否加密")]
+        private bool encrypted = true;
+
+        [SerializeField] [Tooltip("是否为微信小游戏")] private bool isWechatGame = false;
+
 
         [Tooltip("Simulate是开发模式，Standalone是离线模式，Remote是真机模式")] [SerializeField]
         private UpdateMode mode = UpdateMode.Simulate;
@@ -48,6 +58,7 @@ namespace JEngine.Core
             Simulate = 0,
             Standalone = 1,
             Remote = 2,
+            WebGL = 3
         }
 
         /// <summary>
@@ -77,7 +88,11 @@ namespace JEngine.Core
         {
             var updater = FindObjectOfType<UpdateScreen>();
             updater.sceneName = gameScene;
-            _ = AssetMgr.UpdatePackage(mainPackageName, updater);
+            if (isWechatGame)
+            {
+                YooAssets.SetCacheSystemDisableCacheOnWebGL();
+            }
+            _ = AssetMgr.UpdatePackage(mainPackageName, encrypted, pipeline, updater);
         }
 
         private void OnDestroy()

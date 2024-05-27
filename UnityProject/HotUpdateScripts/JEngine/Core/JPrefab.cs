@@ -115,7 +115,7 @@ namespace JEngine.Core
         }
 
         private string path;
-        private AssetOperationHandle handle;
+        private AssetHandle handle;
 
         /// <summary>
         /// If the prefab has loaded or not (if it has error, it will still be loaded)
