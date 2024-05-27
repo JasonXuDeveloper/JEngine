@@ -25,160 +25,54 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using JEngine.Core;
 using UnityEditor;
-using UnityEngine;
 
 namespace JEngine.Editor
 {
     internal static class Clean
     {
-        public static bool hasAdded;
-
-        private static bool _isDone = true;
-
-        private static readonly string HotProjectName = ConstMgr.MainHotDLLName;
-
-        private static readonly DirectoryInfo LibraryDirectory =
-            new DirectoryInfo(Application.dataPath + "/../Library/ScriptAssemblies");
-        
-        private static readonly DirectoryInfo PackageDirectory =
-            new DirectoryInfo(Application.dataPath + "/../Library/PackageCache");
+        public static bool initialised;
 
         private static readonly DirectoryInfo HiddenDirectory =
             new DirectoryInfo(ConstMgr.DLLSourceFolder);
 
-        public delegate void PostCleanEvent(int count);
 
-        public static event PostCleanEvent onPostClean;
-
-        static Clean()
+        public static void Initialise()
         {
-            onPostClean += cnt => MakeBytes();
-        }
+            var watcher = new FileSystemWatcher(HiddenDirectory.FullName);
+            watcher.NotifyFilter = NotifyFilters.Attributes
+                                   | NotifyFilters.CreationTime
+                                   | NotifyFilters.DirectoryName
+                                   | NotifyFilters.FileName
+                                   | NotifyFilters.LastAccess
+                                   | NotifyFilters.LastWrite
+                                   | NotifyFilters.Security
+                                   | NotifyFilters.Size;
 
-        public static void Update()
-        {
-            hasAdded = true;
+            watcher.Changed += (_, _) => { EditorApplication.delayCall += MakeBytes; };
 
-            if (!_isDone || EditorApplication.isPlaying)
-            {
-                return;
-            }
-
-            if (!HiddenDirectory.Exists) //DLL导入到隐藏文件夹，防止每次加载浪费时间
-            {
-                HiddenDirectory.Create();
-            }
-
-            if (!FileMgr.HasFile(DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName))) //没热更dll就返回
-            {
-                return;
-            }
-
-            //有的话比较日期
-            DateTime lastModified = File.GetLastWriteTime(DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName));
-            string lastModifiedStr = lastModified.ToString(Setting.GetString(SettingString.DateFormat));
-            if (Setting.LastDLLCleanUpTime != lastModifiedStr) //不一样再处理
-            {
-                var files = HiddenDirectory.GetFiles();
-                int counts = 0;
-                List<string> fileNames = Directory.GetFiles("Assets/",
-                    "*.dll", SearchOption.AllDirectories).ToList();//白名单DLL
-                //ScriptAssemblies和PackageCache的Dll也应该进白名单
-                fileNames.AddRange(Directory.GetFiles(LibraryDirectory.FullName,
-                    "*.dll", SearchOption.AllDirectories));
-                fileNames.AddRange(Directory.GetFiles(PackageDirectory.FullName,
-                    "*.dll", SearchOption.AllDirectories));
-
-                var watch = new Stopwatch();
-                AssetDatabase.Refresh();
-
-                Setting.LastDLLCleanUpTime = lastModifiedStr;
-
-                _isDone = false;
-                fileNames = fileNames.FindAll(x => !x.Contains("~"));
-
-                watch.Start();
-                foreach (var file in files)
-                {
-                    var name = file.Name;
-                    var success = true;
-                    if (!File.Exists(LibraryDirectory.FullName + "/" + name) && !name.Contains("netstandard") &&
-                        !name.Contains(HotProjectName) && !name.Contains("Unity") && !name.Contains("System") &&
-                        (name.EndsWith(".pdb") || name.EndsWith(".dll")))
-                    {
-                        if (fileNames.Find(x => x.Contains(name)) == null) //不存在就添加
-                        {
-                            success = false;
-                        }
-                        else //存在就删了
-                        {
-                            FileMgr.Delete(file.FullName);
-                            counts++;
-                        }
-                    }
-                    else if (!name.Contains(HotProjectName))
-                    {
-                        try
-                        {
-                            FileMgr.Delete(file.FullName);
-                            counts++;
-                        }
-                        catch
-                        {
-                            Log.Print(String.Format(
-                                Setting.GetString(SettingString.DeleteErrorLog),
-                                file.Name));
-                            success = false;
-                        }
-                    }
-
-                    if (!success)
-                    {
-                        if (file.Directory != null)
-                        {
-                            DirectoryInfo newPath = new DirectoryInfo(file.Directory.FullName).Parent?.Parent?.Parent;
-                            if (newPath != null)
-                            {
-                                File.Move(file.FullName, newPath.FullName + "/" + file.Name);
-                                Log.Print(String.Format(
-                                    Setting.GetString(SettingString.DLLNewReferenceLog),
-                                    newPath.FullName + "/" + file.Name));
-                            }
-                        }
-                    }
-                }
-
-                watch.Stop();
-                if (counts > 0) //如果删除过东西
-                {
-                    Log.Print(String.Format(Setting.GetString(SettingString.DLLCleanLog),
-                        counts,
-                        watch.ElapsedMilliseconds));
-                }
-                
-                onPostClean?.Invoke(counts);
-                
-                _isDone = true;
-            }
+            watcher.Filter = $"{ConstMgr.MainHotDLLName}.dll";
+            watcher.EnableRaisingEvents = true;
+            initialised = true;
         }
 
         private static void MakeBytes()
         {
-            FileMgr.Delete(DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
-            FileMgr.Delete(DllMgr.GetPdbInRuntimePath(ConstMgr.MainHotDLLName));
-
             Action<string> buildAct = async s =>
             {
                 var watch = new Stopwatch();
                 watch.Start();
                 string dllPath = DllMgr.GetDllInEditorPath(ConstMgr.MainHotDLLName);
+                if (!File.Exists(dllPath))
+                {
+                    Log.PrintError("DLL文件不存在！");
+                    return;
+                }
+
                 var bytes = FileMgr.FileToBytes(dllPath);
                 var result = FileMgr.BytesToFile(CryptoMgr.AesEncrypt(bytes, s),
                     DllMgr.GetDllInRuntimePath(ConstMgr.MainHotDLLName));
@@ -204,7 +98,7 @@ namespace JEngine.Editor
                     {
                         Log.PrintError("PDB转Byte[]出错！");
                         return;
-                    }   
+                    }
                 }
 
                 Setting.EncryptPassword = s;
