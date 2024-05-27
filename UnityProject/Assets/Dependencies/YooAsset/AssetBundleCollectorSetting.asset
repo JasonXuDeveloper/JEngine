@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: AssetBundleCollectorSetting
   m_EditorClassIdentifier: 
   ShowPackageView: 1
-  EnableAddressable: 0
-  UniqueBundleName: 0
   ShowEditorAlias: 1
+  UniqueBundleName: 1
   Packages:
   - PackageName: Main
     PackageDesc: "\u4E3B\u5206\u5305\uFF0C\u70ED\u66F4\u4EE3\u7801\u5FC5\u987B\u5728\u8FD9\u4E2A\u5305\u5185"
+    EnableAddressable: 0
+    LocationToLower: 0
+    IncludeAssetGUID: 0
+    AutoCollectShaders: 1
+    IgnoreRuleName: NormalIgnoreRule
     Groups:
     - GroupName: Scene
       GroupDesc: "\u573A\u666F\u8D44\u6E90"
@@ -85,21 +89,13 @@ MonoBehaviour:
         FilterRuleName: CollectShaderVariants
         AssetTags: 
         UserData: 
-    - GroupName: Raw
-      GroupDesc: "\u539F\u751F\u8D44\u6E90"
-      AssetTags: 
-      ActiveRuleName: EnableGroup
-      Collectors:
-      - CollectPath: Assets/HotUpdateResources/Main/Raw
-        CollectorGUID: f81b15da1e2b64733af61d0154dc8d4d
-        CollectorType: 0
-        AddressRuleName: AddressByFileName
-        PackRuleName: PackRawFile
-        FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
   - PackageName: AddOn1
     PackageDesc: "\u5206\u53051"
+    EnableAddressable: 0
+    LocationToLower: 0
+    IncludeAssetGUID: 0
+    AutoCollectShaders: 1
+    IgnoreRuleName: NormalIgnoreRule
     Groups:
     - GroupName: Scene
       GroupDesc: "\u573A\u666F\u8D44\u6E90"
@@ -124,6 +120,27 @@ MonoBehaviour:
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+  - PackageName: Raw
+    PackageDesc: "\u539F\u751F\u8D44\u6E90"
+    EnableAddressable: 0
+    LocationToLower: 0
+    IncludeAssetGUID: 0
+    AutoCollectShaders: 1
+    IgnoreRuleName: NormalIgnoreRule
+    Groups:
+    - GroupName: Default Group
+      GroupDesc: "\u539F\u751F\u8D44\u6E90"
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Assets/HotUpdateResources/Raw
+        CollectorGUID: f81b15da1e2b64733af61d0154dc8d4d
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackRawFile
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 

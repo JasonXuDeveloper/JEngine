@@ -30,7 +30,7 @@
 
 
 
-# JENGINE v0.8.0f7
+# JENGINE v1.0 开发版
 
 JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强大的功能，小白也能**快速上手**，**轻松制作**可以**热更新的游戏**
 
@@ -70,7 +70,7 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 
 ## 使用要求
 
-- **Unity 2020.3.4+**
+- **Unity 2021.3.2+**
 - .net framework 4.x / .net 4.x / net framework
 
 ## 功能包
@@ -93,7 +93,7 @@ JEngine不同的自带和额外的功能包
 ## 依赖项目
 
 - [ILRuntime](https://github.com/Ourpalm/ILRuntime) v2.1.0 - 运行时执行C#代码
-- [YooAssets](https://github.com/tuyoogame/YooAsset) v1.4.10 - 运行时更新资源
+- [YooAssets](https://github.com/tuyoogame/YooAsset) v2.1.2 - 运行时更新资源
 - [Unity-Reorderable-List](https://github.com/cfoulston/Unity-Reorderable-List) v1.0.1 - 额外编辑器控件
 
 
@@ -127,39 +127,9 @@ JEngine不同的自带和额外的功能包
 
 
 
-## v0.8.0 最新功能
+## v0.1.0 最新功能
 
-- **支持** WebGL
-
-- **移除** JUI（过段时间会重构）
-
-- **优化** LifeCycleMgr 性能
-
-- **优化** ThreadMgr 功能
-
-- **优化** JStream 性能
-
-- **优化** JBehaviour 性能
-
-- **优化** MonoBehaviour 性能
-
-- **优化** FpsMonitor 性能
-
-- **优化** CryptoMgr 接口
-
-- **优化** JBehaviour/ClassBind Object/MonoBehaviour GC
-
-- **优化** GetComponent(s)/FindObject(s)OfType 性能
-
-- **切换** 到 YooAsset作为热更资源管理 (弃用Bundle Master)
-
-- **新功能** UnsafeMgr 提供不安全（用于性能优化）功能
-
-- **新功能** UnmanagedMemoryPool 提供非托管内存池功能
-
-- **新功能** CoroutineMgr提供在非MonoBehaviour类型内使用携程的功能
-
-- **新架构** 将JEngine源码分成不同的模块，核心代码更轻量！
+- 支持**热更资源加密**
 
   [点击此处查看历史版本功能（英文）](CHANGE.md)
 

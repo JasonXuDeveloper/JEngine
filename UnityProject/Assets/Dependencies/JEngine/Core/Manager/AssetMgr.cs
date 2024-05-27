@@ -76,13 +76,15 @@ namespace JEngine.Core
         /// <summary>
         /// 初始化资源包
         /// </summary>
-        /// <param name="packageName"></param>
-        private static async Task SetUpPackage(string packageName)
+        /// <param name="packageName">包名</param>
+        /// <param name="pipeline">默认管线</param>
+        /// <param name="encrypted">是否加密</param>
+        private static async Task SetUpPackage(string packageName, EDefaultBuildPipeline pipeline, bool encrypted)
         {
             string resourceUrl = Updater.ResourceUrl;
             string fallbackUrl = Updater.FallbackUrl;
             // 更新URL
-            string end = $"/{GetPlatform}/{packageName}";
+            string end = $"/{GetPlatform}/{packageName}/";
             if (!resourceUrl.EndsWith(end)) resourceUrl = $"{resourceUrl}{end}";
             if (!fallbackUrl.EndsWith(end)) fallbackUrl = $"{fallbackUrl}{end}";
             // 创建默认的资源包
@@ -99,18 +101,28 @@ namespace JEngine.Core
             }
 
             // 初始化
+            var decryptionServices = encrypted ? new FileOffsetDecryption() : null;
             InitializeParameters initParameters = Updater.Mode switch
             {
                 UpdateMode.Simulate => new EditorSimulateModeParameters()
                 {
-                    SimulateManifestFilePath = EditorSimulateModeHelper.SimulateBuild(packageName)
+                    SimulateManifestFilePath = EditorSimulateModeHelper.SimulateBuild(
+                        pipeline, packageName)
                 },
-                UpdateMode.Standalone => new OfflinePlayModeParameters(),
+                UpdateMode.Standalone => new OfflinePlayModeParameters()
+                {
+                    DecryptionServices = decryptionServices
+                },
                 UpdateMode.Remote => new HostPlayModeParameters()
                 {
-                    QueryServices = new QueryStreamingAssetsFileServices(),
-                    DefaultHostServer = resourceUrl,
-                    FallbackHostServer = fallbackUrl
+                    BuildinQueryServices = new GameQueryServices(),
+                    RemoteServices = new RemoteServices(resourceUrl, fallbackUrl),
+                    DecryptionServices = decryptionServices
+                },
+                UpdateMode.WebGL => new WebPlayModeParameters()
+                {
+                    BuildinQueryServices = new GameQueryServices(),
+                    RemoteServices = new RemoteServices(resourceUrl, fallbackUrl),
                 },
                 _ => null
             };
@@ -122,11 +134,14 @@ namespace JEngine.Core
         /// 下载包
         /// </summary>
         /// <param name="packageName">包名</param>
+        /// <param name="encrypted">是否加密</param>
+        /// <param name="pipeline">资源管线（原生文件的资源包构建模式必须是RawFileBuildPipeline）</param>
         /// <param name="updater">回调事件</param>
-        public static async Task UpdatePackage(string packageName, IUpdater updater = null)
+        public static async Task UpdatePackage(string packageName, bool encrypted = true,
+            EDefaultBuildPipeline pipeline = EDefaultBuildPipeline.BuiltinBuildPipeline, IUpdater updater = null)
         {
             // 检查资源包
-            await SetUpPackage(packageName);
+            await SetUpPackage(packageName, pipeline, encrypted);
             // 释放UI
             MessageBox.Dispose();
             // 版本信息
@@ -284,12 +299,12 @@ namespace JEngine.Core
 
         public static Object Load(string path, Type type) => Load(path, Updater.MainPackageName, type, out _);
 
-        public static Object Load(string path, Type type, out AssetOperationHandle handle) =>
+        public static Object Load(string path, Type type, out AssetHandle handle) =>
             Load(path, Updater.MainPackageName, type, out handle);
 
         public static Object Load(string path, string package, Type type) => Load(path, package, type, out _);
 
-        public static Object Load(string path, string package, Type type, out AssetOperationHandle handle)
+        public static Object Load(string path, string package, Type type, out AssetHandle handle)
         {
             handle = GetPackage(package).LoadAssetSync(path, type);
             return handle.AssetObject;
@@ -298,13 +313,13 @@ namespace JEngine.Core
         public static T Load<T>(string path)
             where T : Object => Load<T>(path, Updater.MainPackageName, out _);
 
-        public static T Load<T>(string path, out AssetOperationHandle handle)
+        public static T Load<T>(string path, out AssetHandle handle)
             where T : Object => Load<T>(path, Updater.MainPackageName, out handle);
 
         public static T Load<T>(string path, string package)
             where T : Object => Load<T>(path, package, out _);
 
-        public static T Load<T>(string path, string package, out AssetOperationHandle handle)
+        public static T Load<T>(string path, string package, out AssetHandle handle)
             where T : Object
         {
             handle = GetPackage(package).LoadAssetSync<T>(path);
@@ -322,31 +337,32 @@ namespace JEngine.Core
             return handle.AssetObject as T;
         }
 
-        public static async Task<Object> LoadAsync(string path, Type type) 
+        public static async Task<Object> LoadAsync(string path, Type type)
             => await LoadAsync(path, Updater.MainPackageName, type);
 
-        public static async Task<Object> LoadAsync(string path, string package, Type type) 
+        public static async Task<Object> LoadAsync(string path, string package, Type type)
         {
             var handle = GetPackage(package).LoadAssetAsync(path, type);
             await handle.Task;
             return handle.AssetObject;
         }
 
-        public static async Task<(T, AssetOperationHandle)> LoadAsyncWithHandle<T>(string path)
+        public static async Task<(T, AssetHandle)> LoadAsyncWithHandle<T>(string path)
             where T : Object => await LoadAsyncWithHandle<T>(path, Updater.MainPackageName);
 
-        public static async Task<(T, AssetOperationHandle)> LoadAsyncWithHandle<T>(string path, string package)
+        public static async Task<(T, AssetHandle)> LoadAsyncWithHandle<T>(string path, string package)
             where T : Object
         {
             var handle = GetPackage(package).LoadAssetAsync<T>(path);
             await handle.Task;
             return (handle.AssetObject as T, handle);
         }
-        
-        public static async Task<(Object, AssetOperationHandle)> LoadAsyncWithHandle(string path, Type type) 
+
+        public static async Task<(Object, AssetHandle)> LoadAsyncWithHandle(string path, Type type)
             => await LoadAsyncWithHandle(path, Updater.MainPackageName, type);
-        
-        public static async Task<(Object, AssetOperationHandle)> LoadAsyncWithHandle(string path, string package, Type type)
+
+        public static async Task<(Object, AssetHandle)> LoadAsyncWithHandle(string path, string package,
+            Type type)
         {
             var handle = GetPackage(package).LoadAssetAsync(path, type);
             await handle.Task;
@@ -355,9 +371,9 @@ namespace JEngine.Core
 
         public static void LoadScene(string path, bool additive = false, string package = null)
         {
-            SceneOperationHandle handle = GetPackage(package)
+            SceneHandle handle = GetPackage(package)
                 .LoadSceneAsync(path, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
-            handle.Task.ContinueWith((_, __) => RemoveUnusedAssets()
+            handle.Task.ContinueWith((_, _) => RemoveUnusedAssets()
                 , null);
             _ = handle.Task;
             Log.PrintWarning("LoadScene will not wait for scene loading complete. Use LoadSceneAsync instead.");
@@ -365,26 +381,26 @@ namespace JEngine.Core
 
         public static async Task LoadSceneAsync(string path, bool additive = false, string package = null)
         {
-            SceneOperationHandle handle = GetPackage(package)
+            SceneHandle handle = GetPackage(package)
                 .LoadSceneAsync(path, additive ? LoadSceneMode.Additive : LoadSceneMode.Single);
             await handle.Task;
             RemoveUnusedAssets();
         }
 
-        public static RawFileOperationHandle LoadRaw(string path) => LoadRaw(path, Updater.MainPackageName);
+        public static RawFileHandle LoadRaw(string path) => LoadRaw(path, Updater.MainPackageName);
 
-        public static RawFileOperationHandle LoadRaw(string path, string package)
+        public static RawFileHandle LoadRaw(string path, string package)
         {
-            RawFileOperationHandle handle = GetPackage(package).LoadRawFileSync(path);
+            RawFileHandle handle = GetPackage(package).LoadRawFileSync(path);
             return handle;
         }
 
-        public static Task<RawFileOperationHandle> LoadRawAsync(string path) =>
+        public static Task<RawFileHandle> LoadRawAsync(string path) =>
             LoadRawAsync(path, Updater.MainPackageName);
 
-        public static async Task<RawFileOperationHandle> LoadRawAsync(string path, string package)
+        public static async Task<RawFileHandle> LoadRawAsync(string path, string package)
         {
-            RawFileOperationHandle handle = GetPackage(package).LoadRawFileAsync(path);
+            RawFileHandle handle = GetPackage(package).LoadRawFileAsync(path);
             await handle.Task;
             return handle;
         }

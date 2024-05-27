@@ -20,7 +20,4 @@ Global
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release-Windows|Any CPU.ActiveCfg = Debug|anycpu
 		{E461BAE8-B218-4AAE-8773-0C18C85110E4}.Release-Windows|Any CPU.Build.0 = Debug|anycpu
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		outputpath = ../Assets/HotUpdateResources/Main/Dll/Hidden~
-	EndGlobalSection
 EndGlobal
