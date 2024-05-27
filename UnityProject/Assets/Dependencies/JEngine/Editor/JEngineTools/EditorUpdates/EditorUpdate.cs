@@ -10,9 +10,9 @@ namespace JEngine.Editor
         /// </summary>
         static EditorUpdate()
         {
-            if (!Clean.hasAdded)
+            if (!Clean.initialised)
             {
-                EditorApplication.update += Clean.Update; //处理DLL
+                Clean.Initialise();
             }
 
             if (!AllowUnsafe.hasAdded)
