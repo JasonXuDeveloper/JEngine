@@ -6,6 +6,7 @@ using JEngine.Helper;
 using System.Threading;
 using System.Threading.Tasks;
 using ILRuntime.Mono.Cecil.Pdb;
+using ILRuntime.Runtime.Enviorment;
 using UnityEngine.Serialization;
 using AppDomain = ILRuntime.Runtime.Enviorment.AppDomain;
 
@@ -169,23 +170,61 @@ public partial class InitJEngine : MonoBehaviour
         appdomain.DebugService.StartDebugService(56000);
 #endif
         var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+        //助手类
         var helperInterface = typeof(IRegisterHelper);
-        //全部程序集
+        
+        //跨域继承
+        var ilRuntimeAssembly = typeof(AppDomain).Assembly;
+        var crossBindingAdaptorType = typeof(CrossBindingAdaptor);
+        
+        //遍历全部程序集
         foreach (var assembly in assemblies)
         {
+            if(assembly == ilRuntimeAssembly)
+                continue;
+            //不需要System, Unity, 还有一些JEngine的第三方插件
+            if (assembly.FullName.StartsWith("System") || 
+                assembly.FullName.StartsWith("mscorlib") || assembly.FullName.StartsWith("netstandard") ||
+                assembly.FullName.StartsWith("UnityEngine") || assembly.FullName.StartsWith("ILRuntime") ||
+                assembly.FullName.StartsWith("UnityEditor") || assembly.FullName.StartsWith("YooAsset")||
+                assembly.FullName.StartsWith("Bee") || assembly.FullName.StartsWith("Malee")||
+                assembly.FullName.StartsWith("Unity.") || assembly.FullName.StartsWith("nunit") ||
+                assembly.FullName.StartsWith("Mono.") || assembly.FullName.StartsWith("JetBrains.") )
+            {
+                continue;
+            }
+            
+            Debug.Log(assembly.FullName);
+            
             var types = assembly.GetTypes();
             //全部类型
             foreach (var type in types)
             {
-                var interfaces = type.GetInterfaces();
                 //继承接口
-                foreach (var @interface in interfaces)
+                if (helperInterface.IsAssignableFrom(type) && type != helperInterface)
                 {
-                    if (@interface == helperInterface)
+                    //注册
+                    var helper = (IRegisterHelper)Activator.CreateInstance(type);
+                    helper.Register(appdomain);
+                }
+                
+                //跨域继承
+                if (type.IsSubclassOf(crossBindingAdaptorType))
+                {
+                    object obj = Activator.CreateInstance(type);
+                    CrossBindingAdaptor adaptor = obj as CrossBindingAdaptor;
+                    if (adaptor == null)
                     {
-                        //注册
-                        var helper = (IRegisterHelper)Activator.CreateInstance(type);
-                        helper.Register(appdomain);
+                        continue;
+                    }
+
+                    try
+                    {
+                        appdomain.RegisterCrossBindingAdaptor(adaptor);
+                    }
+                    catch
+                    {
+                        //ignore
                     }
                 }
             }
@@ -193,12 +232,13 @@ public partial class InitJEngine : MonoBehaviour
 
         //CLR绑定（有再去绑定），这个要在最后
         Type t = Type.GetType("ILRuntime.Runtime.Generated.CLRBindings");
+        object[] param = new object[]
+        {
+            appdomain
+        };
         if (t != null)
         {
-            t.GetMethod("Initialize")?.Invoke(null, new object[]
-            {
-                appdomain
-            });
+            t.GetMethod("Initialize")?.Invoke(null, param);
         }
     }
 
