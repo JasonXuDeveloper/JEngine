@@ -58,30 +58,19 @@ namespace JEngine.Core
 
         protected override void Dispose(bool disposing)
         {
-            try
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _isOpen = false;
-                    _buffer = null;
-                    _decryptorBuffer = null;
-                }
+                _isOpen = false;
+                _buffer = null;
+                _decryptorBuffer = null;
             }
-            finally
-            {
-                // Call base.Close() to cleanup async IO resources
-                base.Dispose(disposing);
-            }
+            base.Dispose(disposing);
         }
 
         public override void Flush()
         {
         }
 
-        // Gets & sets the capacity (number of bytes allocated) for this stream.
-        // The capacity cannot be set to a value less than the current length
-        // of the stream.
-        // 
         public int Capacity
         {
             get
@@ -126,15 +115,16 @@ namespace JEngine.Core
             if (n <= 0)
                 return 0;
 
+            uint nInt = (uint)n;
             if (_encrypted)
             {
                 //JEngine的分块解密
-                GetBytesAt(_position, count, buffer, offset);
+                GetBytesAt(_position, nInt, buffer, offset);
             }
             else
             {
                 //没加密的直接读就好
-                Unsafe.CopyBlockUnaligned(ref buffer[offset], ref _buffer[_position], (uint)n);
+                Unsafe.CopyBlockUnaligned(ref buffer[offset], ref _buffer[_position], nInt);
             }
 
             _position += n;
@@ -151,10 +141,10 @@ namespace JEngine.Core
         /// <param name="retOffset"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void GetBytesAt(int start, int length, byte[] ret, int retOffset)
+        private void GetBytesAt(int start, uint length, byte[] ret, int retOffset)
         {
             int offset = start & 0x7ffffff0; // 偏移值，截取开始的地方，比如 67 变 64，相当于start - start % 16
-            int count = 32 + length & 0x7ffffff0; //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77%16）
+            int count = 32 + (int)length & 0x7ffffff0; //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77%16）
             //= 77 + （32-13） = 77 + 19 = 96，多16位确保不丢东西，相当于length +(32 - length % 16);
 
             if (_decryptorBuffer.Length < count)
@@ -163,14 +153,13 @@ namespace JEngine.Core
             }
 
             //解密
-            int decryptedBytes = _decryptor.TransformBlock(_buffer, offset, count, _decryptorBuffer, 0);
+            _decryptor.TransformBlock(_buffer, offset, count, _decryptorBuffer, 0);
 
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
             offset = start ^ offset; //相当于start % 16
 
             //直接操作指针，可以略过边界检查
-            Unsafe.CopyBlockUnaligned(ref ret[retOffset], ref _decryptorBuffer[offset],
-                (uint)Math.Min(decryptedBytes, length));
+            Unsafe.CopyBlockUnaligned(ref ret[retOffset], ref _decryptorBuffer[offset], length);
         }
 
         public override long Seek(long offset, SeekOrigin loc)
