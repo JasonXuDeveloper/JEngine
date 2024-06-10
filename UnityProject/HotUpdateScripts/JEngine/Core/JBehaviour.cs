@@ -137,9 +137,9 @@ namespace JEngine.Core
                         float duration;
                         if (jb.FrameMode) //等待
                         {
-                            duration = jb.Frequency / ((float)Application.targetFrameRate <= 0
-                                ? FpsMonitor.FPS
-                                : Application.targetFrameRate);
+                            duration = jb.Frequency / (FpsMonitor.FPS > Application.targetFrameRate
+                                ? Application.targetFrameRate
+                                : FpsMonitor.FPS);
                         }
                         else
                         {
