@@ -8,7 +8,7 @@ namespace JEngine.Core
         public static long TotalFrames => _totalFrames;
 
         private static int _frames;
-        private static int _backupFrames;
+        private static int _backupFrames = Application.targetFrameRate > 0 ? Application.targetFrameRate : 60;
         private static float _timer = 1;
         private static long _totalFrames;
 
@@ -21,9 +21,8 @@ namespace JEngine.Core
         {
             //增加帧率
             ++_frames;
-            ++_backupFrames;
             ++_totalFrames;
-            
+
             //计时器刷新
             _timer -= Time.deltaTime;
             
