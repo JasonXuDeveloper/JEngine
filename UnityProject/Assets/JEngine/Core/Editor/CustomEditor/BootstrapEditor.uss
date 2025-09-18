@@ -1,0 +1,58 @@
+.group-box {
+    margin: 5px;
+    padding: 10px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.group-header {
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+    color: #5A9FD4;
+}
+
+.field-container {
+    margin: 5px 0;
+}
+
+.toggle-button {
+    height: 30px;
+    margin: 5px 0;
+    border-radius: 3px;
+    -unity-font-style: bold;
+    color: white;
+}
+
+.toggle-button:hover {
+    opacity: 0.9;
+}
+
+.validation-error {
+    color: #FF4444;
+    font-size: 11px;
+    margin-top: 2px;
+    margin-left: 3px;
+    -unity-font-style: italic;
+}
+
+PopupField {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+TextField {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+ObjectField {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+#fallback-container {
+    margin-left: 10px;
+}
