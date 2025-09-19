@@ -245,6 +245,15 @@ Foldout {
     padding: 0 8px;
 }
 
+/* Responsive buttons override form height constraints */
+.form-control Button.responsive-button,
+.form-row Button.responsive-button {
+    height: auto;
+    min-height: 24px;
+    max-height: none;
+    padding: 6px 12px;
+}
+
 /* Utility button in form rows needs specific spacing */
 .form-row .utility-button {
     margin-left: 12px;
@@ -252,4 +261,162 @@ Foldout {
     margin-top: 0;
     margin-bottom: 0;
     flex-shrink: 0;
+}
+
+/* Button color theme classes */
+.btn-primary {
+    background-color: #2E6DA4;
+    color: white;
+    border-color: #1E4A6B;
+}
+
+.btn-primary:hover {
+    background-color: #357ABD;
+}
+
+.btn-primary:active {
+    background-color: #1E4A6B;
+}
+
+.btn-secondary {
+    background-color: #6C757D;
+    color: white;
+    border-color: #545B62;
+}
+
+.btn-secondary:hover {
+    background-color: #5A6268;
+}
+
+.btn-secondary:active {
+    background-color: #545B62;
+}
+
+.btn-success {
+    background-color: #28A745;
+    color: white;
+    border-color: #1E7E34;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.btn-success:active {
+    background-color: #1E7E34;
+}
+
+.btn-danger {
+    background-color: #DC3545;
+    color: white;
+    border-color: #BD2130;
+}
+
+.btn-danger:hover {
+    background-color: #C82333;
+}
+
+.btn-danger:active {
+    background-color: #BD2130;
+}
+
+.btn-warning {
+    background-color: #FD7E14;
+    color: white;
+    border-color: #E55A00;
+}
+
+.btn-warning:hover {
+    background-color: #E55A00;
+}
+
+.btn-warning:active {
+    background-color: #D04A00;
+}
+
+/* Common button base styles */
+.button {
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 6px 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin: 2px;
+}
+
+.responsive-button {
+    white-space: normal;
+    overflow: visible;
+    height: auto;
+    min-height: 24px;
+    max-height: none;
+    flex-shrink: 1;
+    width: auto;
+    min-width: auto;
+    max-width: none;
+}
+
+.action-button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 80px;
+}
+
+.flex-button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 80px;
+}
+
+/* Container styles */
+.responsive-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.button-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.fixed-button-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.full-width-button-container {
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Responsive text styles */
+.responsive-text {
+    white-space: normal;
+    overflow: visible;
+}
+
+.responsive-title {
+    white-space: normal;
+    overflow: visible;
+    -unity-font-style: bold;
+    font-size: 20px;
+}
+
+.responsive-subtitle {
+    white-space: normal;
+    overflow: visible;
+    -unity-font-style: bold;
+    font-size: 18px;
+}
+
+.responsive-header {
+    white-space: normal;
+    overflow: visible;
+    -unity-font-style: bold;
+    font-size: 16px;
 }
