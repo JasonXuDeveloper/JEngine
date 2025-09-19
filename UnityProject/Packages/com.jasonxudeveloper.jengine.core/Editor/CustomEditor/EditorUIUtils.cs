@@ -102,6 +102,8 @@ namespace JEngine.Core.Editor.CustomEditor
         public static void MakeTitleTextResponsive(VisualElement element)
         {
             element.AddToClassList("responsive-title");
+            // Apply initial font size
+            element.style.fontSize = 24f;
             element.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 AdjustTextElementFontSize(element, false, TextType.Title);
@@ -114,6 +116,8 @@ namespace JEngine.Core.Editor.CustomEditor
         public static void MakeSubtitleTextResponsive(VisualElement element)
         {
             element.AddToClassList("responsive-subtitle");
+            // Apply initial font size
+            element.style.fontSize = 18f;
             element.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 AdjustTextElementFontSize(element, false, TextType.Subtitle);
@@ -126,6 +130,8 @@ namespace JEngine.Core.Editor.CustomEditor
         public static void MakeHeaderTextResponsive(VisualElement element)
         {
             element.AddToClassList("responsive-header");
+            // Apply initial font size
+            element.style.fontSize = 16f;
             element.RegisterCallback<GeometryChangedEvent>(evt =>
             {
                 AdjustTextElementFontSize(element, false, TextType.Header);

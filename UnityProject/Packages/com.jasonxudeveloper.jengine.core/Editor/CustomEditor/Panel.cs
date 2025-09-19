@@ -69,14 +69,14 @@ namespace JEngine.Core.Editor.CustomEditor
             _settings = Settings.Instance;
             _root = rootVisualElement;
 
-            // Load stylesheets
-            var commonStyleSheet = StyleSheetLoader.LoadPackageStyleSheet("JEngineCommon.uss");
-            if (commonStyleSheet != null)
-                _root.styleSheets.Add(commonStyleSheet);
-
+            // Load stylesheets - Panel first, then Common to override
             var panelStyleSheet = StyleSheetLoader.LoadPackageStyleSheet<Panel>();
             if (panelStyleSheet != null)
                 _root.styleSheets.Add(panelStyleSheet);
+
+            var commonStyleSheet = StyleSheetLoader.LoadPackageStyleSheet("JEngineCommon.uss");
+            if (commonStyleSheet != null)
+                _root.styleSheets.Add(commonStyleSheet);
 
             // Create main scroll view
             var scrollView = new ScrollView(ScrollViewMode.Vertical);
@@ -90,9 +90,6 @@ namespace JEngine.Core.Editor.CustomEditor
             CreateStatusSection(scrollView);
 
             _root.Add(scrollView);
-
-            // Apply responsive text sizing to all text elements
-            EditorUIUtils.MakeAllTextResponsive(_root);
         }
 
         private void CreateHeader(VisualElement parent)
@@ -185,7 +182,8 @@ namespace JEngine.Core.Editor.CustomEditor
             {
                 value = _settings.clearBuildCache
             };
-            clearCacheToggle.tooltip = "Clear build cache before building. Uncheck to enable incremental builds (faster)";
+            clearCacheToggle.tooltip =
+                "Clear build cache before building. Uncheck to enable incremental builds (faster)";
             clearCacheToggle.RegisterValueChangedCallback(evt =>
             {
                 _settings.clearBuildCache = evt.newValue;
@@ -517,13 +515,15 @@ namespace JEngine.Core.Editor.CustomEditor
 
             buildGroup.Add(individualButtonsContainer);
 
-            var infoLabel = new Label("Use 'Build All' for complete workflow, or individual buttons for specific tasks.");
+            var infoLabel =
+                new Label("Use 'Build All' for complete workflow, or individual buttons for specific tasks.");
             infoLabel.AddToClassList("info-label");
             infoLabel.AddToClassList("text-wrap-multiline");
             EditorUIUtils.MakeTextResponsive(infoLabel);
             buildGroup.Add(infoLabel);
 
-            var packageInfoLabel = new Label("Note: For packages other than 'main', only 'Build Hot Update Assets' is required.");
+            var packageInfoLabel =
+                new Label("Note: For packages other than 'main', only 'Build Hot Update Assets' is required.");
             packageInfoLabel.AddToClassList("info-label");
             packageInfoLabel.AddToClassList("text-wrap-multiline");
             EditorUIUtils.MakeTextResponsive(packageInfoLabel);
@@ -653,12 +653,14 @@ namespace JEngine.Core.Editor.CustomEditor
 
                 LogMessage($"Assets build completed successfully! Version: {packageVersion} Output: {outputDirectory}");
                 EditorUtility.DisplayDialog("Assets Build Successful",
-                    $"Assets build completed successfully!\nVersion: {packageVersion}\nOutput: {outputDirectory}", "OK");
+                    $"Assets build completed successfully!\nVersion: {packageVersion}\nOutput: {outputDirectory}",
+                    "OK");
             }
             catch (Exception e)
             {
                 LogMessage($"Assets build failed: {e.Message}", true);
-                EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error: {e.Message}", "OK");
+                EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error: {e.Message}",
+                    "OK");
             }
             finally
             {
@@ -832,7 +834,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var packRuleResult = DefaultPackRule.CreateShadersPackRuleResult();
             return packRuleResult.GetBundleName(_settings.packageName, uniqueBundleName);
         }
-        
+
         private int GetNextPackageVersion()
         {
             var now = DateTime.UtcNow;
@@ -893,8 +895,5 @@ namespace JEngine.Core.Editor.CustomEditor
 
             return row;
         }
-
-
-
     }
 }

@@ -30,7 +30,7 @@ namespace JEngine.Core.Editor
 {
     public enum JEngineLanguage
     {
-        Chinese = 0,
+        中文 = 0,
         English = 1
     }
 

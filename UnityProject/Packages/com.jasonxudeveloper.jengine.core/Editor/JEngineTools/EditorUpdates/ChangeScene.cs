@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using JEngine.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,11 +13,16 @@ namespace JEngine.Core.Editor.JEngineTools.EditorUpdates
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static async void DoChange()
         {
-            var prefix = $"JEngine.Editor.Setting.{Application.productName}.";
-            var jump = PlayerPrefs.GetString($"{prefix}.JumpStartUpScene", "1") == "1";
+            var jump = Settings.Instance.jumpStartUp;
             if (!jump) return;
             var scene = SceneManager.GetActiveScene();
-            var path = PlayerPrefs.GetString($"{prefix}.StartUpScenePath", "Assets/Init.unity");
+            var path = Settings.Instance.startUpScenePath;
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogWarning("JEngine: StartUpScenePath is empty, cannot jump to startup scene.");
+                return;
+            }
+
             if (scene.path != path)
             {
                 string name = path
@@ -28,9 +32,11 @@ namespace JEngine.Core.Editor.JEngineTools.EditorUpdates
                 var op = SceneManager.LoadSceneAsync(name);
                 while (SceneManager.GetActiveScene().path != path)
                 {
-                    EditorUtility.DisplayProgressBar("JEngine", Setting.GetString(SettingString.JumpToStartUpScene), op.progress);
+                    EditorUtility.DisplayProgressBar("JEngine", "Loading startup scene...",
+                        op.progress);
                     await Task.Delay(100);
                 }
+
                 EditorUtility.ClearProgressBar();
                 DynamicGI.UpdateEnvironment();
             }
