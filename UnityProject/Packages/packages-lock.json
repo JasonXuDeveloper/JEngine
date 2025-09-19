@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.code-philosophy.hybridclr": {
-      "version": "file:hybridclr_unity@8.5.1",
+      "version": "file:com.code-philosophy.hybridclr@8.5.1",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -21,11 +21,21 @@
       "hash": "59804e17a0d1562ca0f847db986ed93b25825b6d"
     },
     "com.cysharp.unitask": {
-      "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+      "version": "2.5.10",
       "depth": 0,
-      "source": "git",
+      "source": "registry",
       "dependencies": {},
-      "hash": "98538ef7c7a22f4ec22101e72f7eec4ed831c724"
+      "url": "https://package.openupm.com"
+    },
+    "com.jasonxudeveloper.jengine.core": {
+      "version": "file:com.jasonxudeveloper.jengine.core",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.cysharp.unitask": "2.5.10",
+        "com.jasonxudeveloper.nino": "4.0.0-preview.114",
+        "com.tuyoogame.yooasset": "2.3.16"
+      }
     },
     "com.jasonxudeveloper.nino": {
       "version": "4.0.0-preview.114",
