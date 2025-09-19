@@ -394,7 +394,7 @@ Foldout {
     align-items: stretch;
 }
 
-/* Responsive text styles */
+/* Responsive text styles - High specificity to override other styles */
 .responsive-text {
     white-space: normal;
     overflow: visible;
@@ -404,19 +404,19 @@ Foldout {
     white-space: normal;
     overflow: visible;
     -unity-font-style: bold;
-    font-size: 20px;
+    font-size: 24px !important;
 }
 
 .responsive-subtitle {
     white-space: normal;
     overflow: visible;
     -unity-font-style: bold;
-    font-size: 18px;
+    font-size: 18px !important;
 }
 
 .responsive-header {
     white-space: normal;
     overflow: visible;
     -unity-font-style: bold;
-    font-size: 16px;
+    font-size: 16px !important;
 }
