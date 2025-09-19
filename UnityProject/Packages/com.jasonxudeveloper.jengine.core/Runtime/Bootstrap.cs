@@ -224,14 +224,14 @@ namespace JEngine.Core
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
                             await MessageBox.Show("提示",
-                                $"需要下载{count}个文件，总大小{size / 1024 / 1024}MB，是否开始下载？",
+                                $"需要下载{count}个文件，总大小{size / 1024f / 1024f:F2}MB，是否开始下载？",
                                 "下载"),
                         OnDownloadProgress = data =>
                         {
                             if (updateStatusText != null)
                             {
                                 updateStatusText.text =
-                                    $"正在下载第{data.CurrentDownloadCount}/{data.TotalDownloadCount}个文件（{data.CurrentDownloadBytes / 1024 / 1024}MB/{data.TotalDownloadBytes / 1024 / 1024}MB）";
+                                    $"正在下载第{data.CurrentDownloadCount}/{data.TotalDownloadCount}个文件（{data.CurrentDownloadBytes / 1024f / 1024f:F2}MB/{data.TotalDownloadBytes / 1024f / 1024f:F2}MB）";
                             }
 
                             if (downloadProgressText != null)
@@ -284,7 +284,8 @@ namespace JEngine.Core
                     updateStatusText.text = "正在加载代码...";
 #if UNITY_EDITOR
                     // 编辑器下直接从文件系统加载，不能读加密的，加密的只有真机才可以运行
-                    var hotUpdateDllBytes = await System.IO.File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
+                    var hotUpdateDllBytes =
+                        await System.IO.File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
 #else
                     var dllHandle =
                         package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");
