@@ -1,0 +1,4 @@
+/* SettingsEditor specific styles */
+
+/* Settings editor inherits all styles from JEngineCommon.uss */
+/* Add any settings-specific styling here if needed */
