@@ -6,14 +6,12 @@
 }
 
 .header-title {
-    font-size: 24px;
     -unity-font-style: bold;
     color: #ffffff;
     margin-bottom: 5px;
 }
 
 .header-subtitle {
-    font-size: 14px;
     color: #cccccc;
     -unity-font-style: italic;
 }
@@ -151,7 +149,6 @@
 /* Panel specific styles */
 
 .section-title {
-    font-size: 16px;
     -unity-font-style: bold;
     margin-bottom: 10px;
     color: #5A9FD4;
