@@ -31,7 +31,12 @@ namespace JEngine.Core.Editor.CustomEditor
 
             // Apply responsive text sizing to all elements
             EditorUIUtils.MakeAllTextResponsive(_root);
-
+            
+#if UNITY_EDITOR
+            // Development Settings Group
+            CreateDevelopmentSettingsGroup();
+#endif
+            
             // Server Settings Group
             CreateServerSettingsGroup();
 
@@ -43,11 +48,6 @@ namespace JEngine.Core.Editor.CustomEditor
 
             // UI Settings Group
             CreateUISettingsGroup();
-
-#if UNITY_EDITOR
-            // Development Settings Group
-            CreateDevelopmentSettingsGroup();
-#endif
             
             UpdateFallbackServerVisibility();
 
