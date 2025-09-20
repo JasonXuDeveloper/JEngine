@@ -1,4 +1,4 @@
-// SceneLoadCallbacks.cs
+// SceneLoadStatus.cs
 //
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,18 +23,26 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
-using Cysharp.Threading.Tasks;
-
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// 场景加载回调接口
+    /// 场景加载状态枚举
     /// </summary>
-    public struct SceneLoadCallbacks
+    public enum SceneLoadStatus
     {
-        public Action<SceneLoadStatus> OnStatusUpdate { get; set; }
-        public Action<float> OnProgressUpdate { get; set; }
-        public Func<Exception, UniTask> OnError { get; set; }
+        /// <summary>
+        /// 正在加载场景
+        /// </summary>
+        Loading,
+
+        /// <summary>
+        /// 场景加载完成
+        /// </summary>
+        Completed,
+
+        /// <summary>
+        /// 场景加载失败
+        /// </summary>
+        Failed
     }
 }
