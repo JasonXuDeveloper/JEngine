@@ -1,4 +1,4 @@
-// AesConfig.cs
+// CryptoUtils.cs
 //
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,39 +23,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using JEngine.Core.Encrypt.Shared;
-using UnityEngine;
+using System.Security.Cryptography;
 
-namespace JEngine.Core.Encrypt.Config
+namespace JEngine.Core.Encrypt.Shared
 {
-    public class AesConfig : EncryptConfig<AesConfig, byte[]>
+    public static class CryptoUtils
     {
-        [SerializeField] public byte[] iv; // 128-bit IV
-
-#if UNITY_EDITOR
-        private void OnEnable()
+        public static byte[] GenerateRandomBytes(int length)
         {
-            // Generate default random key and IV if empty
-            if (key == null || key.Length != 32 || CryptoUtils.IsEmpty(key))
-            {
-                key = CryptoUtils.GenerateRandomBytes(32);
-            }
-
-            if (iv == null || iv.Length != 16 || CryptoUtils.IsEmpty(iv))
-            {
-                iv = CryptoUtils.GenerateRandomBytes(16);
-            }
+            var bytes = new byte[length];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(bytes);
+            return bytes;
         }
 
-        private void Awake()
+        public static bool IsEmpty(byte[] array)
         {
-            OnEnable();
-        }
-#endif
-        public override void RegenerateKey()
-        {
-            key = CryptoUtils.GenerateRandomBytes(32);
-            iv = CryptoUtils.GenerateRandomBytes(16);
+            if (array == null) return true;
+
+            foreach (var b in array)
+            {
+                if (b != 0) return false;
+            }
+
+            return true;
         }
     }
 }

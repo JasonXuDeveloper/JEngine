@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -360,6 +361,86 @@ namespace JEngine.Core.Editor.CustomEditor
             finalFontSize = Mathf.Clamp(finalFontSize, 10, 16);
 
             button.style.fontSize = finalFontSize;
+        }
+
+        /// <summary>
+        /// Creates an editable byte array field with hex display
+        /// </summary>
+        public static VisualElement CreateByteArrayField(string label, SerializedProperty property)
+        {
+            var row = CreateFormRow(label);
+
+            var container = new VisualElement();
+            container.AddToClassList("byte-array-container");
+
+            // Create property field for normal editing
+            var propertyField = new UnityEditor.UIElements.PropertyField(property);
+            propertyField.AddToClassList("byte-array-property");
+
+            // Create a read-only text field to display the byte array as hex
+            var hexField = new TextField("Hex View")
+            {
+                value = ByteArrayToHex(property),
+                isReadOnly = true,
+                multiline = true,
+                userData = property // Store property reference for manual refresh
+            };
+            hexField.AddToClassList("byte-array-hex-field");
+
+            // Update hex display when property field changes
+            propertyField.RegisterValueChangeCallback(_ =>
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    if (property.serializedObject.targetObject != null)
+                    {
+                        property.serializedObject.Update();
+                        hexField.value = ByteArrayToHex(property);
+                    }
+                };
+            });
+
+            // Set up periodic update for hex field to catch all changes
+            var lastHexValue = ByteArrayToHex(property);
+            hexField.schedule.Execute(() =>
+            {
+                if (property.serializedObject.targetObject != null)
+                {
+                    var newHexValue = ByteArrayToHex(property);
+                    if (newHexValue != lastHexValue)
+                    {
+                        hexField.value = newHexValue;
+                        lastHexValue = newHexValue;
+                    }
+                }
+            }).Every(100); // Check every 100ms
+
+            container.Add(propertyField);
+            container.Add(hexField);
+            row.Add(container);
+
+            return row;
+        }
+
+        /// <summary>
+        /// Converts a byte array property to hex string representation
+        /// </summary>
+        public static string ByteArrayToHex(SerializedProperty property)
+        {
+            if (property.arraySize == 0)
+                return "Empty";
+
+            var hex = "";
+            for (int i = 0; i < property.arraySize; i++)
+            {
+                if (i > 0 && i % 16 == 0)
+                    hex += "\n";
+                else if (i > 0)
+                    hex += " ";
+
+                hex += property.GetArrayElementAtIndex(i).intValue.ToString("X2");
+            }
+            return hex;
         }
     }
 }
