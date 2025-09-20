@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using JEngine.Core.Encrypt;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,8 +37,7 @@ namespace JEngine.Core.Editor
 
     public class Settings : ScriptableObject
     {
-        [Header("Package Settings")]
-        public string packageName = "main";
+        [Header("Package Settings")] public string packageName = "main";
 
         public BuildTarget buildTarget = BuildTarget.Android;
 
@@ -48,15 +48,16 @@ namespace JEngine.Core.Editor
         [Tooltip("Use asset dependency database to improve build speed")]
         public bool useAssetDependDB = true;
 
-        [Header("JEngine Settings")]
-        public JEngineLanguage language = JEngineLanguage.English;
+        [Tooltip("Bundle encryption option")]
+        public EncryptionOption encryptionOption = EncryptionOption.Xor;
 
-        [Tooltip("Startup scene path")]
-        public string startUpScenePath = "Assets/Init.unity";
+        [Header("JEngine Settings")] public JEngineLanguage language = JEngineLanguage.English;
+
+        [Tooltip("Startup scene path")] public string startUpScenePath = "Assets/Init.unity";
 
         [Tooltip("Jump to startup scene when launch")]
         public bool jumpStartUp = true;
-        
+
         private static Settings _instance;
         private static readonly string SettingsPath = "Assets/Editor/JEngineSettings.asset";
 
@@ -81,14 +82,17 @@ namespace JEngine.Core.Editor
                         AssetDatabase.CreateAsset(_instance, SettingsPath);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
-                        
+
                         //提示看文档
-                        Debug.LogError("[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net");
+                        Debug.LogError(
+                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net");
                         EditorUtility.DisplayDialog("Kindly Notice",
-                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net", "Done");
+                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net",
+                            "Done");
                         Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
                     }
                 }
+
                 return _instance;
             }
         }

@@ -67,6 +67,8 @@ namespace JEngine.Core
 
         public string aotDllListFilePath = "Assets/HotUpdate/Compiled/AOT.bytes";
 
+        public EncryptionOption encryptionOption = EncryptionOption.Xor;
+
         [Header("UI Settings")] public TextMeshProUGUI versionText;
 
         public TextMeshProUGUI updateStatusText;
@@ -74,6 +76,8 @@ namespace JEngine.Core
         public TextMeshProUGUI downloadProgressText;
 
         public Slider downloadProgressBar;
+
+        public Button startButton;
 
 #if UNITY_EDITOR
         [Header("Development Settings")] [HideInInspector]
@@ -177,9 +181,18 @@ namespace JEngine.Core
 
             _instance = this;
             DontDestroyOnLoad(gameObject);
+
+            startButton?.gameObject.SetActive(true);
+            downloadProgressBar?.gameObject.SetActive(false);
+            startButton?.onClick.AddListener(() =>
+            {
+                startButton?.gameObject.SetActive(false);
+                downloadProgressBar?.gameObject.SetActive(true);
+                Initialize();
+            });
         }
 
-        public async void Initialize()
+        private async void Initialize()
         {
             try
             {
@@ -400,9 +413,13 @@ namespace JEngine.Core
                         $"{defaultHostServer}{(defaultHostServer.EndsWith("/") ? "" : "/")}{GetPlatform()}/{package.PackageName}";
                     var effectiveFallbackServer = useDefaultAsFallback ? server : fallbackHostServer;
                     var remoteServices = new RemoteServices(server, effectiveFallbackServer);
-                    var decryption = new FileStreamDecryption();
+                    var manifestRestoration =
+                        EncryptionMapping.Mapping[encryptionOption].ManifestEncryptionConfig.Decryption;
+                    var decryption = EncryptionMapping.Mapping[encryptionOption].Decryption;
                     var cacheFileSystemParams =
                         FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices, decryption);
+                    cacheFileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
+                        manifestRestoration);
                     var initParameters = new HostPlayModeParameters
                     {
                         BuildinFileSystemParameters = null,
@@ -520,7 +537,7 @@ namespace JEngine.Core
                 PackageInitializationStatus.DownloadingResources => "正在下载资源...",
                 PackageInitializationStatus.Completed => "资源包初始化完成",
                 PackageInitializationStatus.Failed => "初始化失败",
-                _ => status.ToString()
+                _ => "未知状态"
             };
         }
 
@@ -531,7 +548,7 @@ namespace JEngine.Core
                 SceneLoadStatus.Loading => "正在加载场景...",
                 SceneLoadStatus.Completed => "场景加载完成",
                 SceneLoadStatus.Failed => "场景加载失败",
-                _ => status.ToString()
+                _ => "未知状态"
             };
         }
 

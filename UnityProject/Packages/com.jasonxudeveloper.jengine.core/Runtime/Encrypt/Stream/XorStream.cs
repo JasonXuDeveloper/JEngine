@@ -1,4 +1,4 @@
-// MenuItems.cs
+// XorStream.cs
 // 
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,43 +23,42 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using System;
 using System.IO;
-using JEngine.Core.Editor.CustomEditor;
-using UnityEditor;
-using UnityEngine;
-using YooAsset;
 
-namespace JEngine.Core.Editor
+namespace JEngine.Core.Encrypt
 {
-    public static class MenuItems
+    /// <summary>
+    /// xor解密流
+    /// </summary>
+    public class XorStream : FileStream
     {
-        [MenuItem("JEngine/JEngine Panel #&J", priority = 1000)]
-        private static void OpenWindow()
+        private readonly byte[] _key;
+
+        public XorStream(byte[] key, string path, FileMode mode, FileAccess access, FileShare share) : base(path, mode,
+            access, share)
         {
-            var window = EditorWindow.GetWindow<Panel>();
-            window.titleContent = new GUIContent("JEngine Panel",
-                EditorGUIUtility.IconContent("BuildSettings.Editor.Small").image);
-            window.Show();
+            _key = key;
         }
 
-        [MenuItem("JEngine/Open Editor Bundle Cache", priority = 3000)]
-        private static void OpenDownloadPath()
+        public override int Read(byte[] array, int offset, int count)
         {
-            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent!.FullName,
-                YooAssetSettingsData.GetDefaultYooFolderName());
-            if (string.IsNullOrEmpty(path))
+            // Get the current position before reading
+            var currentPosition = Position;
+
+            // Read the encrypted data
+            var bytesRead = base.Read(array, offset, count);
+
+            // Decrypt the data based on the file position, not buffer position
+            Span<byte> span = array;
+            for (int i = 0; i < bytesRead; i++)
             {
-                Debug.LogWarning("JEngine: Download path is not set.");
-                return;
+                int bufferIdx = offset + i;
+                long filePos = currentPosition + i;
+                span[bufferIdx] ^= _key[filePos % _key.Length];
             }
 
-            if (!Directory.Exists(path))
-            {
-                Debug.LogWarning("JEngine: Download path does not exist.");
-                return;
-            }
-
-            EditorUtility.RevealInFinder(path);
+            return bytesRead;
         }
     }
 }

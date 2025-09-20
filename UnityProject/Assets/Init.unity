@@ -861,11 +861,13 @@ MonoBehaviour:
   staticSecretKeyPath: Obfuz/StaticSecretKey
   dynamicSecretKeyPath: Assets/HotUpdate/Obfuz/DynamicSecretKey.bytes
   aotDllListFilePath: Assets/HotUpdate/Compiled/AOT.bytes
+  encryptionOption: 1
   versionText: {fileID: 2019442895}
   updateStatusText: {fileID: 1946342723}
   downloadProgressText: {fileID: 1384766990}
   downloadProgressBar: {fileID: 1847636611}
-  useEditorDevMode: 1
+  startButton: {fileID: 1079429684}
+  useEditorDevMode: 0
 --- !u!1 &1033013693
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,43 +1231,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1079429689}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 964396229}
-        m_TargetAssemblyTypeName: JEngine.Core.Bootstrap, JEngine.Core
-        m_MethodName: Initialize
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1079429683}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1847636609}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!95 &1079429686
 Animator:
   serializedVersion: 5
