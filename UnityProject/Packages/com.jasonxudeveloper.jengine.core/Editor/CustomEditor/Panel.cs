@@ -29,6 +29,7 @@ using System.IO;
 using HybridCLR.Editor;
 using HybridCLR.Editor.Commands;
 using HybridCLR.Editor.Settings;
+using JEngine.Core.Encrypt;
 using Nino.Core;
 using Obfuz.Settings;
 using Obfuz4HybridCLR;
@@ -118,7 +119,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings);
             parent.Add(jengineGroup);
         }
-
+        
         private int _currentPage;
         private int _totalPages;
         private const int ScenesPerPage = 5;
@@ -611,6 +612,7 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             var buildOutputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
             var streamingAssetsRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
+            var bundleEncryption = EncryptionMapping.Mapping[_settings.encryptionOption];
 
             return new ScriptableBuildParameters
             {
@@ -628,7 +630,9 @@ namespace JEngine.Core.Editor.CustomEditor
                 CompressOption = ECompressOption.LZ4,
                 ClearBuildCacheFiles = _settings.clearBuildCache,
                 UseAssetDependencyDB = _settings.useAssetDependDB,
-                EncryptionServices = new FileStreamEncryption(),
+                ManifestProcessServices = bundleEncryption.ManifestEncryptionConfig.Encryption,
+                ManifestRestoreServices = bundleEncryption.ManifestEncryptionConfig.Decryption,
+                EncryptionServices = bundleEncryption.Encryption,
                 BuiltinShadersBundleName = GetBuiltinShaderBundleName()
             };
         }

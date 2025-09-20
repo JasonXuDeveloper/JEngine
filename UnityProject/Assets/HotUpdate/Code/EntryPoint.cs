@@ -166,7 +166,7 @@ namespace HotUpdate.Code
                 PackageInitializationStatus.DownloadingResources => "正在下载资源...",
                 PackageInitializationStatus.Completed => "资源包初始化完成",
                 PackageInitializationStatus.Failed => "初始化失败",
-                _ => status.ToString()
+                _ => "未知状态"
             };
         }
 
@@ -177,7 +177,7 @@ namespace HotUpdate.Code
                 SceneLoadStatus.Loading => "正在加载场景...",
                 SceneLoadStatus.Completed => "场景加载完成",
                 SceneLoadStatus.Failed => "场景加载失败",
-                _ => status.ToString()
+                _ => "未知状态"
             };
         }
     }

@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bd1afdce9715f84eb4cbc901922afc2, type: 3}
-  m_Name: YooAssetSettings
+  m_Script: {fileID: 11500000, guid: 8ed133a3c68f48d68d80bd8238a75e50, type: 3}
+  m_Name: XorConfig
   m_EditorClassIdentifier: 
-  DefaultYooFolderName: yoo
-  PackageManifestPrefix: 
+  key: 01020304

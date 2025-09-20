@@ -1,4 +1,4 @@
-// MenuItems.cs
+// XorManifest.cs
 // 
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,43 +23,60 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System.IO;
-using JEngine.Core.Editor.CustomEditor;
-using UnityEditor;
-using UnityEngine;
+using System;
+using JEngine.Core.Encrypt.Config;
 using YooAsset;
 
-namespace JEngine.Core.Editor
+namespace JEngine.Core.Encrypt.Manifest
 {
-    public static class MenuItems
+    public class XorManifest : ManifestEncryptionConfig<XorConfig, XorManifestProcess, XorManifestRestore>
     {
-        [MenuItem("JEngine/JEngine Panel #&J", priority = 1000)]
-        private static void OpenWindow()
+        public XorManifest(XorConfig config) : base(config)
         {
-            var window = EditorWindow.GetWindow<Panel>();
-            window.titleContent = new GUIContent("JEngine Panel",
-                EditorGUIUtility.IconContent("BuildSettings.Editor.Small").image);
-            window.Show();
+        }
+    }
+
+    public class XorManifestProcess : IManifestProcessServices
+    {
+        private readonly XorConfig _config;
+
+        public XorManifestProcess(XorConfig config)
+        {
+            _config = config;
         }
 
-        [MenuItem("JEngine/Open Editor Bundle Cache", priority = 3000)]
-        private static void OpenDownloadPath()
+        public byte[] ProcessManifest(byte[] fileData)
         {
-            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent!.FullName,
-                YooAssetSettingsData.GetDefaultYooFolderName());
-            if (string.IsNullOrEmpty(path))
+            var key = _config.key;
+            Span<byte> dataSpan = fileData;
+            for (int i = 0; i < dataSpan.Length; i++)
             {
-                Debug.LogWarning("JEngine: Download path is not set.");
-                return;
+                dataSpan[i] ^= key[i % key.Length];
             }
 
-            if (!Directory.Exists(path))
+            return fileData;
+        }
+    }
+
+    public class XorManifestRestore : IManifestRestoreServices
+    {
+        private readonly XorConfig _config;
+
+        public XorManifestRestore(XorConfig config)
+        {
+            _config = config;
+        }
+
+        public byte[] RestoreManifest(byte[] fileData)
+        {
+            var key = _config.key;
+            Span<byte> dataSpan = fileData;
+            for (int i = 0; i < dataSpan.Length; i++)
             {
-                Debug.LogWarning("JEngine: Download path does not exist.");
-                return;
+                dataSpan[i] ^= key[i % key.Length];
             }
 
-            EditorUtility.RevealInFinder(path);
+            return fileData;
         }
     }
 }

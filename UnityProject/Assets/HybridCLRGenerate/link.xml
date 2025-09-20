@@ -2,8 +2,11 @@
 <linker>
   <assembly fullname="JEngine.Core">
     <type fullname="JEngine.Core.Bootstrap" preserve="all" />
-    <type fullname="JEngine.Core.Bootstrap/DownloadStatus" preserve="all" />
-    <type fullname="JEngine.Core.Bootstrap/PackageInitializationCallbacks" preserve="all" />
+    <type fullname="JEngine.Core.Misc.MessageBox" preserve="all" />
+    <type fullname="JEngine.Core.Update.PackageInitializationCallbacks" preserve="all" />
+    <type fullname="JEngine.Core.Update.PackageInitializationStatus" preserve="all" />
+    <type fullname="JEngine.Core.Update.SceneLoadCallbacks" preserve="all" />
+    <type fullname="JEngine.Core.Update.SceneLoadStatus" preserve="all" />
   </assembly>
   <assembly fullname="Obfuz.Runtime">
     <type fullname="Obfuz.ObfuzIgnoreAttribute" preserve="all" />
@@ -26,20 +29,23 @@
     <type fullname="UnityEngine.GameObject" preserve="all" />
     <type fullname="UnityEngine.Mathf" preserve="all" />
     <type fullname="UnityEngine.SceneManagement.LoadSceneMode" preserve="all" />
-    <type fullname="UnityEngine.SceneManagement.LocalPhysicsMode" preserve="all" />
+    <type fullname="UnityEngine.Scripting.PreserveAttribute" preserve="all" />
     <type fullname="UnityEngine.TextAsset" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.UI">
     <type fullname="UnityEngine.UI.Button" preserve="all" />
     <type fullname="UnityEngine.UI.Button/ButtonClickedEvent" preserve="all" />
+    <type fullname="UnityEngine.UI.Selectable" preserve="all" />
   </assembly>
   <assembly fullname="YooAsset">
     <type fullname="YooAsset.AssetHandle" preserve="all" />
+    <type fullname="YooAsset.DownloadUpdateData" preserve="all" />
+    <type fullname="YooAsset.DownloaderOperation" preserve="all" />
+    <type fullname="YooAsset.DownloaderOperation/DownloadUpdate" preserve="all" />
     <type fullname="YooAsset.EOperationStatus" preserve="all" />
     <type fullname="YooAsset.HandleBase" preserve="all" />
     <type fullname="YooAsset.ResourcePackage" preserve="all" />
     <type fullname="YooAsset.SceneHandle" preserve="all" />
-    <type fullname="YooAsset.YooAssets" preserve="all" />
   </assembly>
   <assembly fullname="netstandard">
     <type fullname="System.Action" preserve="all" />
@@ -57,7 +63,6 @@
     <type fullname="System.Func`2" preserve="all" />
     <type fullname="System.Func`3" preserve="all" />
     <type fullname="System.Int32" preserve="all" />
-    <type fullname="System.Int64" preserve="all" />
     <type fullname="System.Object" preserve="all" />
     <type fullname="System.Runtime.CompilerServices.AsyncStateMachineAttribute" preserve="all" />
     <type fullname="System.Runtime.CompilerServices.CompilationRelaxationsAttribute" preserve="all" />
@@ -67,6 +72,7 @@
     <type fullname="System.Runtime.CompilerServices.RuntimeHelpers" preserve="all" />
     <type fullname="System.Runtime.CompilerServices.TaskAwaiter" preserve="all" />
     <type fullname="System.RuntimeFieldHandle" preserve="all" />
+    <type fullname="System.Single" preserve="all" />
     <type fullname="System.String" preserve="all" />
     <type fullname="System.Threading.CancellationToken" preserve="all" />
     <type fullname="System.Threading.Tasks.Task" preserve="all" />
