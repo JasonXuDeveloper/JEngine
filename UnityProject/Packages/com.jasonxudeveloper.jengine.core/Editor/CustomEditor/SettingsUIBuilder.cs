@@ -147,23 +147,6 @@ namespace JEngine.Core.Editor.CustomEditor
             languageRow.Add(languageField);
             jengineGroup.Add(languageRow);
 
-            // Encrypt Password
-            var passwordRow = EditorUIUtils.CreateFormRow("Encrypt DLL Password");
-            var passwordField = new TextField()
-            {
-                value = settings.encryptPassword,
-                isPasswordField = true
-            };
-            passwordField.RegisterValueChangedCallback(evt =>
-            {
-                settings.encryptPassword = evt.newValue;
-                settings.Save();
-            });
-            passwordField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(passwordField);
-            passwordRow.Add(passwordField);
-            jengineGroup.Add(passwordRow);
-
             // Startup Scene (only for Panel)
             var sceneRow = EditorUIUtils.CreateFormRow("Startup Scene");
             var currentScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(settings.startUpScenePath);
