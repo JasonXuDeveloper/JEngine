@@ -22,7 +22,7 @@ namespace JEngine.Core.Editor.CustomEditor
             _root = new VisualElement();
 
             // Add USS styling
-            var commonStyleSheet = StyleSheetLoader.LoadPackageStyleSheet("JEngineCommon.uss");
+            var commonStyleSheet = StyleSheetLoader.LoadCommonStyleSheet();
             if (commonStyleSheet != null)
                 _root.styleSheets.Add(commonStyleSheet);
 
@@ -79,7 +79,7 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             toggleButton.AddToClassList("toggle-button");
             toggleButton.AddToClassList("form-control");
-            EditorUIUtils.MakeFormWidthButton(toggleButton, EditorUIUtils.ButtonType.Primary);
+            EditorUIUtils.MakeFormWidthButton(toggleButton);
             UpdateFallbackButtonState(toggleButton);
             toggleButtonRow.Add(toggleButton);
             serverGroup.Add(toggleButtonRow);
@@ -333,7 +333,7 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             playModeButton.AddToClassList("toggle-button");
             playModeButton.AddToClassList("form-control");
-            EditorUIUtils.MakeFormWidthButton(playModeButton, EditorUIUtils.ButtonType.Primary);
+            EditorUIUtils.MakeFormWidthButton(playModeButton);
             UpdatePlayModeButtonState(playModeButton);
             playModeRow.Add(playModeButton);
             devGroup.Add(playModeRow);

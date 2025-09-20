@@ -152,3 +152,45 @@
     margin-bottom: 10px;
     color: #5A9FD4;
 }
+
+/* Hot Update Scenes Styles */
+.scenes-container {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.scene-item-container {
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 12px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.scene-field {
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.pagination-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-left: 0;
+    margin-right: 0;
+    border-top-width: 1px;
+    border-top-color: rgba(128, 128, 128, 0.3);
+}
+
+.page-label {
+    -unity-text-align: middle-center;
+    color: rgba(204, 204, 204, 1);
+    -unity-font-style: bold;
+    min-width: 80px;
+}
