@@ -1,4 +1,4 @@
-// SceneLoadCallbacks.cs
+// PackageInitializationStatus.cs
 //
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,18 +23,46 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
-using Cysharp.Threading.Tasks;
-
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// 场景加载回调接口
+    /// 资源包初始化状态枚举
     /// </summary>
-    public struct SceneLoadCallbacks
+    public enum PackageInitializationStatus
     {
-        public Action<SceneLoadStatus> OnStatusUpdate { get; set; }
-        public Action<float> OnProgressUpdate { get; set; }
-        public Func<Exception, UniTask> OnError { get; set; }
+        /// <summary>
+        /// 正在初始化资源包
+        /// </summary>
+        InitializingPackage,
+
+        /// <summary>
+        /// 正在获取版本信息
+        /// </summary>
+        GettingVersion,
+
+        /// <summary>
+        /// 正在更新清单
+        /// </summary>
+        UpdatingManifest,
+
+        /// <summary>
+        /// 正在检查更新
+        /// </summary>
+        CheckingUpdate,
+
+        /// <summary>
+        /// 正在下载资源
+        /// </summary>
+        DownloadingResources,
+
+        /// <summary>
+        /// 初始化完成
+        /// </summary>
+        Completed,
+
+        /// <summary>
+        /// 初始化失败
+        /// </summary>
+        Failed
     }
 }
