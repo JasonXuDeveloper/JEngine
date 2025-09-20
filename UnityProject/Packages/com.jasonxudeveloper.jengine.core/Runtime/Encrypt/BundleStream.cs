@@ -25,7 +25,7 @@
 
 using System.IO;
 
-namespace JEngine.Core.Update
+namespace JEngine.Core.Encrypt
 {
     /// <summary>
     /// 资源文件解密流

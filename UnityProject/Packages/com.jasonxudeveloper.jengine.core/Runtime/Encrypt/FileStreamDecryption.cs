@@ -24,10 +24,11 @@
 //  THE SOFTWARE.
 
 using System.IO;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using YooAsset;
 
-namespace JEngine.Core.Update
+namespace JEngine.Core.Encrypt
 {
     /// <summary>
     /// 资源文件流解密类
@@ -40,10 +41,12 @@ namespace JEngine.Core.Update
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundle(DecryptFileInfo fileInfo)
         {
-            BundleStream bundleStream = new BundleStream(fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BundleStream bundleStream =
+                new BundleStream(fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             DecryptResult decryptResult = new DecryptResult();
             decryptResult.ManagedStream = bundleStream;
-            decryptResult.Result = AssetBundle.LoadFromStream(bundleStream, fileInfo.FileLoadCRC, GetManagedReadBufferSize());
+            decryptResult.Result =
+                AssetBundle.LoadFromStream(bundleStream, fileInfo.FileLoadCRC, GetManagedReadBufferSize());
             return decryptResult;
         }
 
@@ -53,10 +56,12 @@ namespace JEngine.Core.Update
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundleAsync(DecryptFileInfo fileInfo)
         {
-            BundleStream bundleStream = new BundleStream(fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            BundleStream bundleStream =
+                new BundleStream(fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             DecryptResult decryptResult = new DecryptResult();
             decryptResult.ManagedStream = bundleStream;
-            decryptResult.CreateRequest = AssetBundle.LoadFromStreamAsync(bundleStream, fileInfo.FileLoadCRC, GetManagedReadBufferSize());
+            decryptResult.CreateRequest =
+                AssetBundle.LoadFromStreamAsync(bundleStream, fileInfo.FileLoadCRC, GetManagedReadBufferSize());
             return decryptResult;
         }
 
@@ -84,6 +89,7 @@ namespace JEngine.Core.Update
             throw new System.NotImplementedException();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint GetManagedReadBufferSize()
         {
             return 1024;
