@@ -612,7 +612,7 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             var buildOutputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
             var streamingAssetsRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
-            var bundleEncryption = EncryptionMapping.Mapping[_settings.encryptionOption];
+            var bundleEncryption = EncryptionMapping.GetBundleConfig(_settings.encryptionOption);
 
             return new ScriptableBuildParameters
             {

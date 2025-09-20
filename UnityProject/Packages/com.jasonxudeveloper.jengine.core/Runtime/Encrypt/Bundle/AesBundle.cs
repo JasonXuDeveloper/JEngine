@@ -1,20 +1,20 @@
-// XorBundle.cs
-// 
+// AesBundle.cs
+//
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
-// 
+//
 //  Copyright (c) 2025 JEngine
-// 
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-// 
+//
 //  The above copyright notice and this permission notice shall be included in
 //  all copies or substantial portions of the Software.
-// 
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,27 +23,27 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
 using System.IO;
 using JEngine.Core.Encrypt.Config;
 using JEngine.Core.Encrypt.Manifest;
+using JEngine.Core.Encrypt.Shared;
 using UnityEngine;
 using YooAsset;
 
 namespace JEngine.Core.Encrypt.Bundle
 {
-    public class XorBundle : BundleEncryptionConfig<XorConfig, XorManifest, XorConfig, XorEncryptionServices,
-        XorDecryptionServices>
+    public class AesBundle : BundleEncryptionConfig<AesConfig, AesManifest, AesConfig, AesEncryptionServices,
+        AesDecryptionServices>
     {
-        public override XorConfig ManifestConfig  =>  XorConfig.Instance;
-        public override XorConfig BundleConfig  =>  XorConfig.Instance;
+        public override AesConfig ManifestConfig =>  AesConfig.Instance;
+        public override AesConfig BundleConfig  =>  AesConfig.Instance;
     }
 
-    public class XorEncryptionServices : IEncryptionServices
+    public class AesEncryptionServices : IEncryptionServices
     {
-        private readonly XorConfig _config;
+        private readonly AesConfig _config;
 
-        public XorEncryptionServices(XorConfig config)
+        public AesEncryptionServices(AesConfig config)
         {
             _config = config;
         }
@@ -51,26 +51,24 @@ namespace JEngine.Core.Encrypt.Bundle
         public EncryptResult Encrypt(EncryptFileInfo fileInfo)
         {
             var bytes = File.ReadAllBytes(fileInfo.FileLoadPath);
-            var key = _config.key;
 
-            Span<byte> span = bytes;
-            for (int i = 0; i < span.Length; i++)
+            // Use AES-256 CBC with PKCS7 padding for encryption
+            var encryptedData = AesUtil.AesEncrypt(bytes, _config.key, _config.iv);
+
+            EncryptResult result = new EncryptResult()
             {
-                span[i] ^= key[i % key.Length];
-            }
-
-            EncryptResult result = new EncryptResult();
-            result.Encrypted = true;
-            result.EncryptedData = bytes;
+                Encrypted = true,
+                EncryptedData = encryptedData
+            };
             return result;
         }
     }
 
-    public class XorDecryptionServices : IDecryptionServices
+    public class AesDecryptionServices : IDecryptionServices
     {
-        private readonly XorConfig _config;
+        private readonly AesConfig _config;
 
-        public XorDecryptionServices(XorConfig config)
+        public AesDecryptionServices(AesConfig config)
         {
             _config = config;
         }
@@ -80,12 +78,11 @@ namespace JEngine.Core.Encrypt.Bundle
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundle(DecryptFileInfo fileInfo)
         {
-            XorStream stream =
-                new XorStream(_config.key, fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            byte[] decryptedData = AesUtil.AesDecrypt(fileInfo.FileLoadPath, _config.key, _config.iv);
+
+            var assetBundle = AssetBundle.LoadFromMemory(decryptedData);
             DecryptResult decryptResult = new DecryptResult();
-            decryptResult.ManagedStream = stream;
-            decryptResult.Result =
-                AssetBundle.LoadFromStream(stream, fileInfo.FileLoadCRC, 2048);
+            decryptResult.Result = assetBundle;
             return decryptResult;
         }
 
@@ -94,31 +91,24 @@ namespace JEngine.Core.Encrypt.Bundle
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundleAsync(DecryptFileInfo fileInfo)
         {
-            XorStream stream =
-                new XorStream(_config.key, fileInfo.FileLoadPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            byte[] decryptedData = AesUtil.AesDecrypt(fileInfo.FileLoadPath, _config.key, _config.iv);
+
             DecryptResult decryptResult = new DecryptResult();
-            decryptResult.ManagedStream = stream;
-            decryptResult.CreateRequest =
-                AssetBundle.LoadFromStreamAsync(stream, fileInfo.FileLoadCRC, 2048);
+            decryptResult.CreateRequest = AssetBundle.LoadFromMemoryAsync(decryptedData);
             return decryptResult;
         }
 
         /// <summary>
         /// 后备方式获取解密的资源包
-        /// 注意：当正常解密方法失败后，会触发后备加载！
-        /// 说明：建议通过LoadFromMemory()方法加载资源包作为保底机制。
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundleFallback(DecryptFileInfo fileInfo)
         {
             byte[] fileData = File.ReadAllBytes(fileInfo.FileLoadPath);
-            var key = _config.key;
-            Span<byte> span = fileData;
-            for (int i = 0; i < span.Length; i++)
-            {
-                span[i] ^= key[i % key.Length];
-            }
 
-            var assetBundle = AssetBundle.LoadFromMemory(fileData);
+            // Decrypt using AES-256 CBC with PKCS7 padding
+            byte[] decryptedData = AesUtil.AesDecrypt(fileData, _config.key, _config.iv);
+
+            var assetBundle = AssetBundle.LoadFromMemory(decryptedData);
             DecryptResult decryptResult = new DecryptResult();
             decryptResult.Result = assetBundle;
             return decryptResult;
@@ -129,7 +119,8 @@ namespace JEngine.Core.Encrypt.Bundle
         /// </summary>
         byte[] IDecryptionServices.ReadFileData(DecryptFileInfo fileInfo)
         {
-            throw new NotImplementedException();
+            byte[] fileData = File.ReadAllBytes(fileInfo.FileLoadPath);
+            return AesUtil.AesDecrypt(fileData, _config.key, _config.iv);
         }
 
         /// <summary>
@@ -137,7 +128,8 @@ namespace JEngine.Core.Encrypt.Bundle
         /// </summary>
         string IDecryptionServices.ReadFileText(DecryptFileInfo fileInfo)
         {
-            throw new NotImplementedException();
+            byte[] decryptedData = ((IDecryptionServices)this).ReadFileData(fileInfo);
+            return System.Text.Encoding.UTF8.GetString(decryptedData);
         }
     }
 }
