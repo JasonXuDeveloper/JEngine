@@ -90,4 +90,4 @@ MonoBehaviour:
   polymorphicDllSettings:
     enable: 1
     codeGenerationSecretKey: obfuz-polymorphic-key
-    disableLoadStandardDll: 0
+    disableLoadStandardDll: 1
