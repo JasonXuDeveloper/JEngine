@@ -32,12 +32,12 @@ namespace JEngine.Core.Editor.CustomEditor
 
             // Apply responsive text sizing to all elements
             EditorUIUtils.MakeAllTextResponsive(_root);
-            
+
 #if UNITY_EDITOR
             // Development Settings Group
             CreateDevelopmentSettingsGroup();
 #endif
-            
+
             // Server Settings Group
             CreateServerSettingsGroup();
 
@@ -49,7 +49,7 @@ namespace JEngine.Core.Editor.CustomEditor
 
             // UI Settings Group
             CreateUISettingsGroup();
-            
+
             UpdateFallbackServerVisibility();
 
             return _root;
@@ -182,7 +182,9 @@ namespace JEngine.Core.Editor.CustomEditor
             var hotMethodChoices = GetAvailableHotMethods();
             var hotMethodField = new PopupField<string>()
             {
-                choices = hotMethodChoices.Any() ? hotMethodChoices : new List<string> { _bootstrap.hotUpdateMethodName },
+                choices = hotMethodChoices.Any()
+                    ? hotMethodChoices
+                    : new List<string> { _bootstrap.hotUpdateMethodName },
                 value = _bootstrap.hotUpdateMethodName
             };
             hotMethodField.AddToClassList("form-control");
@@ -225,7 +227,9 @@ namespace JEngine.Core.Editor.CustomEditor
             var staticKeyChoices = GetAvailableStaticSecretKeys();
             var staticKeyField = new PopupField<string>()
             {
-                choices = staticKeyChoices.Any() ? staticKeyChoices : new List<string> { _bootstrap.staticSecretKeyPath },
+                choices = staticKeyChoices.Any()
+                    ? staticKeyChoices
+                    : new List<string> { _bootstrap.staticSecretKeyPath },
                 value = _bootstrap.staticSecretKeyPath
             };
             staticKeyField.AddToClassList("form-control");
@@ -243,7 +247,9 @@ namespace JEngine.Core.Editor.CustomEditor
             var dynamicKeyChoices = GetAvailableDynamicSecretKeys();
             var dynamicKeyField = new PopupField<string>()
             {
-                choices = dynamicKeyChoices.Any() ? dynamicKeyChoices : new List<string> { _bootstrap.dynamicSecretKeyPath },
+                choices = dynamicKeyChoices.Any()
+                    ? dynamicKeyChoices
+                    : new List<string> { _bootstrap.dynamicSecretKeyPath },
                 value = _bootstrap.dynamicSecretKeyPath
             };
             dynamicKeyField.AddToClassList("form-control");
@@ -257,7 +263,7 @@ namespace JEngine.Core.Editor.CustomEditor
             securityGroup.Add(dynamicKeyRow);
 
             // Encryption Option
-            var bundleConfig = EncryptionMapping.Mapping[_bootstrap.encryptionOption];
+            var bundleConfig = EncryptionMapping.GetBundleConfig(_bootstrap.encryptionOption);
             var manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
             var bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
 
@@ -271,7 +277,13 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(ScriptableObject),
                 value = manifestConfigFile
             };
-            manifestConfigField.SetEnabled(false); // Make it readonly
+            manifestConfigField.RegisterValueChangedCallback(_ =>
+            {
+                // Prevent editing by reverting any changes
+                bundleConfig = EncryptionMapping.GetBundleConfig(_bootstrap.encryptionOption);
+                manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
+                manifestConfigField.value = manifestConfigFile;
+            });
             manifestConfigField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(manifestConfigField);
             manifestConfigRow.Add(manifestConfigField);
@@ -283,7 +295,13 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(ScriptableObject),
                 value = bundleConfigFile
             };
-            bundleConfigField.SetEnabled(false); // Make it readonly
+            bundleConfigField.RegisterValueChangedCallback(_ =>
+            {
+                // Prevent editing by reverting any changes
+                bundleConfig = EncryptionMapping.GetBundleConfig(_bootstrap.encryptionOption);
+                bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
+                bundleConfigField.value = bundleConfigFile;
+            });
             bundleConfigField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(bundleConfigField);
             bundleConfigRow.Add(bundleConfigField);
@@ -292,11 +310,12 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(encryptionField);
             encryptionField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.encryptionOption)).enumValueIndex = (int)(EncryptionOption)evt.newValue;
+                serializedObject.FindProperty(nameof(_bootstrap.encryptionOption)).enumValueIndex =
+                    (int)(EncryptionOption)evt.newValue;
                 serializedObject.ApplyModifiedProperties();
 
                 // Refresh the config object fields when encryption option changes
-                var newBundleConfig = EncryptionMapping.Mapping[(EncryptionOption)evt.newValue];
+                var newBundleConfig = EncryptionMapping.GetBundleConfig((EncryptionOption)evt.newValue);
                 manifestConfigField.value = newBundleConfig.ManifestConfigScriptableObject;
                 bundleConfigField.value = newBundleConfig.BundleConfigScriptableObject;
             });
@@ -364,7 +383,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(progressBarField);
             progressBarRow.Add(progressBarField);
             uiGroup.Add(progressBarRow);
-            
+
             // Start Button
             var startButtonRow = CreateFormRow("Start Button");
             var startButtonField = new ObjectField()
@@ -456,7 +475,6 @@ namespace JEngine.Core.Editor.CustomEditor
 
             return group;
         }
-
 
 
         private StyleSheet CreateStyleSheet()

@@ -130,7 +130,7 @@ namespace JEngine.Core.Editor.CustomEditor
             buildGroup.Add(useAssetDBRow);
 
             // Encryption Option
-            var bundleConfig = EncryptionMapping.Mapping[settings.encryptionOption];
+            var bundleConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
             var manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
             var bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
 
@@ -144,7 +144,12 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(ScriptableObject),
                 value = manifestConfigFile
             };
-            manifestConfigField.SetEnabled(false); // Make it readonly
+            manifestConfigField.RegisterValueChangedCallback(_ =>
+            {
+                // Prevent editing by reverting any changes
+                var newBundleConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
+                manifestConfigField.value = newBundleConfig.ManifestConfigScriptableObject;
+            });
             manifestConfigField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(manifestConfigField);
             manifestConfigRow.Add(manifestConfigField);
@@ -156,7 +161,12 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(ScriptableObject),
                 value = bundleConfigFile
             };
-            bundleConfigField.SetEnabled(false); // Make it readonly
+            bundleConfigField.RegisterValueChangedCallback(_ =>
+            {
+                // Prevent editing by reverting any changes
+                var newBundleConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
+                bundleConfigField.value = newBundleConfig.BundleConfigScriptableObject;
+            });
             bundleConfigField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(bundleConfigField);
             bundleConfigRow.Add(bundleConfigField);
@@ -167,7 +177,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 settings.Save();
 
                 // Refresh the config object fields when encryption option changes
-                var newBundleConfig = EncryptionMapping.Mapping[settings.encryptionOption];
+                var newBundleConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
                 manifestConfigField.value = newBundleConfig.ManifestConfigScriptableObject;
                 bundleConfigField.value = newBundleConfig.BundleConfigScriptableObject;
             });
