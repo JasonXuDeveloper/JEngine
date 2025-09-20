@@ -24,6 +24,7 @@
 //  THE SOFTWARE.
 
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -65,7 +66,7 @@ namespace JEngine.Core.Encrypt.Shared
         private static byte[] ChaCha20Transform(byte[] data, byte[] key, byte[] nonce)
         {
             byte[] result = new byte[data.Length];
-            uint[] state = new uint[16];
+            Span<uint> state = stackalloc uint[16];
 
             // Constants "expand 32-byte k"
             state[0] = 0x61707865;
@@ -76,7 +77,7 @@ namespace JEngine.Core.Encrypt.Shared
             // Key (little-endian)
             for (int i = 0; i < 8; i++)
             {
-                state[4 + i] = ToLittleEndian(key, i * 4);
+                state[4 + i] = BinaryPrimitives.ReadUInt32LittleEndian(key.AsSpan(i * 4, 4));
             }
 
             // Initial counter
@@ -85,19 +86,20 @@ namespace JEngine.Core.Encrypt.Shared
             // Nonce (little-endian)
             for (int i = 0; i < 3; i++)
             {
-                state[13 + i] = ToLittleEndian(nonce, i * 4);
+                state[13 + i] = BinaryPrimitives.ReadUInt32LittleEndian(nonce.AsSpan(i * 4, 4));
             }
 
             int offset = 0;
             uint blockCounter = 0;
 
+            Span<uint> working = stackalloc uint[16];
+            Span<byte> keystream = stackalloc byte[64];
             while (offset < data.Length)
             {
                 state[12] = blockCounter;
 
                 // Create working copy
-                uint[] working = new uint[16];
-                Array.Copy(state, working, 16);
+                state.CopyTo(working);
 
                 // 20 rounds (10 double rounds)
                 for (int round = 0; round < 10; round++)
@@ -122,10 +124,9 @@ namespace JEngine.Core.Encrypt.Shared
                 }
 
                 // Generate keystream and XOR
-                byte[] keystream = new byte[64];
                 for (int i = 0; i < 16; i++)
                 {
-                    FromLittleEndian(working[i], keystream, i * 4);
+                    BinaryPrimitives.WriteUInt32LittleEndian(keystream.Slice(i * 4, 4), working[i]);
                 }
 
                 int blockSize = Math.Min(64, data.Length - offset);
@@ -141,28 +142,21 @@ namespace JEngine.Core.Encrypt.Shared
             return result;
         }
 
-        private static uint ToLittleEndian(byte[] bytes, int offset)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ChaCha20Quarter(Span<uint> state, int a, int b, int c, int d)
         {
-            return (uint)(bytes[offset] |
-                         (bytes[offset + 1] << 8) |
-                         (bytes[offset + 2] << 16) |
-                         (bytes[offset + 3] << 24));
-        }
-
-        private static void FromLittleEndian(uint value, byte[] bytes, int offset)
-        {
-            bytes[offset] = (byte)value;
-            bytes[offset + 1] = (byte)(value >> 8);
-            bytes[offset + 2] = (byte)(value >> 16);
-            bytes[offset + 3] = (byte)(value >> 24);
-        }
-
-        private static void ChaCha20Quarter(uint[] state, int a, int b, int c, int d)
-        {
-            state[a] += state[b]; state[d] ^= state[a]; state[d] = RotateLeft(state[d], 16);
-            state[c] += state[d]; state[b] ^= state[c]; state[b] = RotateLeft(state[b], 12);
-            state[a] += state[b]; state[d] ^= state[a]; state[d] = RotateLeft(state[d], 8);
-            state[c] += state[d]; state[b] ^= state[c]; state[b] = RotateLeft(state[b], 7);
+            state[a] += state[b];
+            state[d] ^= state[a];
+            state[d] = RotateLeft(state[d], 16);
+            state[c] += state[d];
+            state[b] ^= state[c];
+            state[b] = RotateLeft(state[b], 12);
+            state[a] += state[b];
+            state[d] ^= state[a];
+            state[d] = RotateLeft(state[d], 8);
+            state[c] += state[d];
+            state[b] ^= state[c];
+            state[b] = RotateLeft(state[b], 7);
         }
 
 
@@ -184,7 +178,8 @@ namespace JEngine.Core.Encrypt.Shared
             if (key.Length != 32)
                 throw new ArgumentException($"ChaCha20 requires a 32-byte key, got {key.Length} bytes", nameof(key));
             if (nonce.Length != 12)
-                throw new ArgumentException($"ChaCha20 requires a 12-byte nonce, got {nonce.Length} bytes", nameof(nonce));
+                throw new ArgumentException($"ChaCha20 requires a 12-byte nonce, got {nonce.Length} bytes",
+                    nameof(nonce));
         }
     }
 }

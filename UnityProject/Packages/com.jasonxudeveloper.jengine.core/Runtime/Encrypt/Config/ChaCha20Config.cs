@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using JEngine.Core.Encrypt.Shared;
 using UnityEngine;
 
 namespace JEngine.Core.Encrypt.Config
@@ -35,14 +36,14 @@ namespace JEngine.Core.Encrypt.Config
         private void OnEnable()
         {
             // Generate default random key and nonce if empty
-            if (key == null || key.Length != 32 || IsEmpty(key))
+            if (key == null || key.Length != 32 || CryptoUtils.IsEmpty(key))
             {
-                key = GenerateRandomBytes(32);
+                key = CryptoUtils.GenerateRandomBytes(32);
             }
 
-            if (nonce == null || nonce.Length != 12 || IsEmpty(nonce))
+            if (nonce == null || nonce.Length != 12 || CryptoUtils.IsEmpty(nonce))
             {
-                nonce = GenerateRandomBytes(12);
+                nonce = CryptoUtils.GenerateRandomBytes(12);
             }
         }
 
@@ -50,24 +51,11 @@ namespace JEngine.Core.Encrypt.Config
         {
             OnEnable();
         }
-
-        private static byte[] GenerateRandomBytes(int length)
-        {
-            var bytes = new byte[length];
-            using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
-            rng.GetBytes(bytes);
-            return bytes;
-        }
-
-        private static bool IsEmpty(byte[] array)
-        {
-            foreach (var b in array)
-            {
-                if (b != 0) return false;
-            }
-
-            return true;
-        }
 #endif
+        public override void RegenerateKey()
+        {
+            key = CryptoUtils.GenerateRandomBytes(32);
+            nonce = CryptoUtils.GenerateRandomBytes(12);
+        }
     }
 }
