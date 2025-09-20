@@ -7,6 +7,7 @@ namespace JEngine.Core.Editor
 {
     public static class StyleSheetLoader
     {
+        private const string CommonStyleSheetName = "JEngineCommon.uss";
         public static StyleSheet LoadPackageStyleSheet(string fileName)
         {
             var packageInfo = UnityEditor.PackageManager.PackageInfo.FindForAssembly(Assembly.GetExecutingAssembly());
@@ -27,6 +28,11 @@ namespace JEngine.Core.Editor
         {
             var fileName = typeof(T).Name + ".uss";
             return LoadPackageStyleSheet(fileName);
+        }
+
+        public static StyleSheet LoadCommonStyleSheet()
+        {
+            return LoadPackageStyleSheet(CommonStyleSheetName);
         }
     }
 }

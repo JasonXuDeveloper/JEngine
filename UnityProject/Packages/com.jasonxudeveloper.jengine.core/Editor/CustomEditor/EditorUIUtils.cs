@@ -36,19 +36,19 @@ namespace JEngine.Core.Editor.CustomEditor
     {
         public enum ButtonType
         {
-            Primary,    // Main actions (blue)
-            Secondary,  // Secondary actions (gray)
-            Success,    // Positive actions (green)
-            Danger,     // Destructive actions (red)
-            Warning     // Warning actions (orange)
+            Primary, // Main actions (blue)
+            Secondary, // Secondary actions (gray)
+            Success, // Positive actions (green)
+            Danger, // Destructive actions (red)
+            Warning // Warning actions (orange)
         }
 
         public enum TextType
         {
-            Normal,     // Regular text (13px base)
-            Header,     // Group headers (16px base)
-            Subtitle,   // Subtitles (18px base)
-            Title       // Main titles (20px base)
+            Normal, // Regular text (13px base)
+            Header, // Group headers (16px base)
+            Subtitle, // Subtitles (18px base)
+            Title // Main titles (20px base)
         }
 
         /// <summary>
@@ -90,10 +90,8 @@ namespace JEngine.Core.Editor.CustomEditor
         public static void MakeTextResponsive(VisualElement element)
         {
             element.AddToClassList("responsive-text");
-            element.RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                AdjustTextElementFontSize(element);
-            });
+            element.RegisterCallback<GeometryChangedEvent, VisualElement>(
+                static (_, ele) => { AdjustTextElementFontSize(ele); }, element);
         }
 
         /// <summary>
@@ -104,10 +102,8 @@ namespace JEngine.Core.Editor.CustomEditor
             element.AddToClassList("responsive-title");
             // Apply initial font size
             element.style.fontSize = 24f;
-            element.RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                AdjustTextElementFontSize(element, false, TextType.Title);
-            });
+            element.RegisterCallback<GeometryChangedEvent, VisualElement>(
+                static (_, ele) => { AdjustTextElementFontSize(ele, TextType.Title); }, element);
         }
 
         /// <summary>
@@ -118,10 +114,8 @@ namespace JEngine.Core.Editor.CustomEditor
             element.AddToClassList("responsive-subtitle");
             // Apply initial font size
             element.style.fontSize = 18f;
-            element.RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                AdjustTextElementFontSize(element, false, TextType.Subtitle);
-            });
+            element.RegisterCallback<GeometryChangedEvent, VisualElement>(
+                static (_, ele) => { AdjustTextElementFontSize(ele, TextType.Subtitle); }, element);
         }
 
         /// <summary>
@@ -132,10 +126,8 @@ namespace JEngine.Core.Editor.CustomEditor
             element.AddToClassList("responsive-header");
             // Apply initial font size
             element.style.fontSize = 16f;
-            element.RegisterCallback<GeometryChangedEvent>(evt =>
-            {
-                AdjustTextElementFontSize(element, false, TextType.Header);
-            });
+            element.RegisterCallback<GeometryChangedEvent, VisualElement>(
+                static (_, ele) => { AdjustTextElementFontSize(ele, TextType.Header); }, element);
         }
 
         /// <summary>
@@ -152,7 +144,7 @@ namespace JEngine.Core.Editor.CustomEditor
             }
         }
 
-        private static void AdjustTextElementFontSize(VisualElement element, bool isHeader = false, TextType textType = TextType.Normal)
+        private static void AdjustTextElementFontSize(VisualElement element, TextType textType = TextType.Normal)
         {
             // Get the element's current width for responsive sizing
             var elementWidth = element.resolvedStyle.width;
@@ -194,27 +186,16 @@ namespace JEngine.Core.Editor.CustomEditor
                     break;
             }
 
-            // Fallback for legacy isHeader parameter
-            if (isHeader && textType == TextType.Normal)
-            {
-                baseFontSize = 16f;
-                if (Screen.width < 1200)
-                    scaleFactor = 1.0f;
-                else if (Screen.width > 1600)
-                    scaleFactor = 1.2f;
-            }
-
             // Special handling for different element types
             if (element is Label)
             {
                 // Labels still readable even in constrained spaces
-                if (!isHeader && elementWidth > 0 && elementWidth < 150)
-                    scaleFactor *= 0.95f;  // Less aggressive scaling for small labels
+                if (textType == TextType.Normal && elementWidth > 0 && elementWidth < 150)
+                    scaleFactor *= 0.95f; // Less aggressive scaling for small labels
             }
             else if (element is TextField || element is PopupField<string> || element is EnumField)
             {
-                // Form controls need very readable text
-                baseFontSize = isHeader ? 16f : 13f;
+                // Form controls need very readable text (keep current base size)
             }
 
             float finalFontSize = baseFontSize * scaleFactor;
@@ -223,23 +204,17 @@ namespace JEngine.Core.Editor.CustomEditor
             switch (textType)
             {
                 case TextType.Title:
-                    element.style.fontSize = Mathf.Clamp(finalFontSize, 18f, 32f);  // Titles: 18px - 32px
+                    element.style.fontSize = Mathf.Clamp(finalFontSize, 18f, 32f); // Titles: 18px - 32px
                     break;
                 case TextType.Subtitle:
-                    element.style.fontSize = Mathf.Clamp(finalFontSize, 16f, 28f);  // Subtitles: 16px - 28px
+                    element.style.fontSize = Mathf.Clamp(finalFontSize, 16f, 28f); // Subtitles: 16px - 28px
                     break;
                 case TextType.Header:
-                    element.style.fontSize = Mathf.Clamp(finalFontSize, 14f, 24f);  // Headers: 14px - 24px
+                    element.style.fontSize = Mathf.Clamp(finalFontSize, 14f, 24f); // Headers: 14px - 24px
                     break;
                 default: // TextType.Normal
-                    element.style.fontSize = Mathf.Clamp(finalFontSize, 11f, 18f);  // Normal text: 11px - 18px
+                    element.style.fontSize = Mathf.Clamp(finalFontSize, 11f, 18f); // Normal text: 11px - 18px
                     break;
-            }
-
-            // Fallback for legacy isHeader parameter
-            if (isHeader && textType == TextType.Normal)
-            {
-                element.style.fontSize = Mathf.Clamp(finalFontSize, 14f, 24f);  // Headers: 14px - 24px
             }
         }
 
@@ -251,13 +226,15 @@ namespace JEngine.Core.Editor.CustomEditor
             var row = new VisualElement();
             row.AddToClassList("form-row");
 
+            // Always add a label element to maintain two-column layout
+            var label = new Label(labelText ?? "");
+            label.AddToClassList("form-label");
             if (!string.IsNullOrEmpty(labelText))
             {
-                var label = new Label(labelText);
-                label.AddToClassList("form-label");
                 MakeTextResponsive(label);
-                row.Add(label);
             }
+
+            row.Add(label);
 
             return row;
         }
@@ -305,8 +282,6 @@ namespace JEngine.Core.Editor.CustomEditor
         }
 
 
-
-
         /// <summary>
         /// Makes a button responsive with proper text wrapping and styling
         /// </summary>
@@ -319,8 +294,7 @@ namespace JEngine.Core.Editor.CustomEditor
             // Register for geometry change events to adjust font size dynamically
             button.RegisterCallback<GeometryChangedEvent>(evt =>
             {
-                var target = evt.target as Button;
-                if (target != null)
+                if (evt.target is Button target)
                 {
                     AdjustButtonFontSize(target);
                 }
@@ -352,7 +326,7 @@ namespace JEngine.Core.Editor.CustomEditor
 
             // Add CSS classes for form-specific styling - all properties handled by CSS
             button.AddToClassList("form-control"); // Use same class as dropdowns
-            button.AddToClassList("flex-button");   // Same class as working action buttons
+            button.AddToClassList("flex-button"); // Same class as working action buttons
         }
 
 
