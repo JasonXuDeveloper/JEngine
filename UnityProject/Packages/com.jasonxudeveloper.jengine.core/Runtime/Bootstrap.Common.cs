@@ -90,18 +90,28 @@ namespace JEngine.Core
                 await callbacks.OnError(e);
                 // 切换回上一个场景
                 await SceneManager.LoadSceneAsync(previousSceneName);
-                
+
                 return null;
             }
         }
 
         /// <summary>
-        /// 通用的资源包初始化函数
+        /// 创建或获取一个资源包
+        /// </summary>
+        /// <param name="packageName"></param>
+        /// <returns></returns>
+        public static ResourcePackage CreateOrGetPackage(string packageName)
+        {
+            return YooAssets.TryGetPackage(packageName) ?? YooAssets.CreatePackage(packageName);
+        }
+
+        /// <summary>
+        /// 通用的资源包更新函数
         /// </summary>
         /// <param name="package">要初始化的资源包</param>
         /// <param name="callbacks">各种回调函数</param>
         /// <returns>是否初始化成功</returns>
-        public static async UniTask<bool> InitializePackage(ResourcePackage package,
+        public static async UniTask<bool> UpdatePackage(ResourcePackage package,
             PackageInitializationCallbacks callbacks)
         {
             if (_instance == null)
@@ -109,7 +119,36 @@ namespace JEngine.Core
                 throw new Exception("Bootstrap instance not found in the scene.");
             }
 
-            return await _instance.InitializePackageImpl(package, callbacks);
+            var ret = await _instance.UpdatePackageImpl(package, callbacks);
+            if (!ret)
+            {
+                await package.DestroyAsync();
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 清理资源包缓存
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="onError"></param>
+        /// <returns></returns>
+        public static async UniTask<bool> DeletePackageCache(ResourcePackage package,
+            Func<Exception, UniTask> onError = null)
+        {
+            var operation = package.ClearCacheFilesAsync(EFileClearMode.ClearAllBundleFiles);
+            await operation.ToUniTask();
+
+            if (operation.Status == EOperationStatus.Succeed)
+            {
+                //清理成功
+                return true;
+            }
+
+            //清理失败
+            if (onError != null) await onError(new Exception(operation.Error));
+            return false;
         }
     }
 }

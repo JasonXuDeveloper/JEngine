@@ -55,15 +55,6 @@ namespace JEngine.Core.Editor.CustomEditor
         private ScrollView _logScrollView;
         private bool _isBuilding;
 
-        [MenuItem("JEngine/JEngine Panel #&J", priority = 1998)]
-        private static void OpenWindow()
-        {
-            var window = GetWindow<Panel>();
-            window.titleContent = new GUIContent("JEngine Panel",
-                EditorGUIUtility.IconContent("BuildSettings.Editor.Small").image);
-            window.Show();
-        }
-
         private void CreateGUI()
         {
             _settings = Settings.Instance;

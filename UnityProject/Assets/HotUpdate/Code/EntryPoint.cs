@@ -57,16 +57,16 @@ namespace HotUpdate.Code
                         var packageName = "addon1";
 
                         // 创建或获取AddOn1包
-                        var package = YooAssets.TryGetPackage(packageName) ?? YooAssets.CreatePackage(packageName);
+                        var package = Bootstrap.CreateOrGetPackage(packageName);
 
                         // 设置AddOn包的初始化回调
                         var callbacks = new PackageInitializationCallbacks
                         {
                             OnStatusUpdate = static status => Debug.Log($"[AddOn1] 状态: {status}"),
                             OnVersionUpdate = static version => Debug.Log($"[AddOn1] 版本: {version}"),
-                            OnDownloadPrompt = static (count, size) => MessageBox.Show(
+                            OnDownloadPrompt = static (count, size) => MessageBox.Show("提示",
                                 $"[AddOn1] 需要下载 {count} 个文件，总大小 {size / 1024f / 1024f:F2}MB，是否继续？",
-                                "下载提示", "是", "否"),
+                                "是", "否"),
                             OnDownloadProgress = static data =>
                             {
                                 Debug.Log(
@@ -83,7 +83,7 @@ namespace HotUpdate.Code
 
                         // 使用Bootstrap的通用初始化函数
                         Debug.Log("[AddOn1] 开始初始化AddOn1包...");
-                        bool success = await Bootstrap.InitializePackage(package, callbacks);
+                        bool success = await Bootstrap.UpdatePackage(package, callbacks);
 
                         if (!success)
                         {
@@ -130,6 +130,10 @@ namespace HotUpdate.Code
                         {
                             Debug.LogWarning($"[AddOn1] 未能加载test.txt文件: {textHandle.LastError}");
                         }
+
+                        // 清理AddOn1包的缓存（可选）
+                        await Bootstrap.DeletePackageCache(package);
+                        Debug.Log("[AddOn1] 清理AddOn1包的下载缓存完成。");
                     }
                     catch (System.Exception ex)
                     {
