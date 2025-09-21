@@ -33,7 +33,7 @@ using YooAsset;
 namespace JEngine.Core.Encrypt.Bundle
 {
     public class XorBundle : BundleEncryptionConfig<XorConfig, XorManifest, XorConfig, XorEncryptionServices,
-        XorDecryptionServices, XorWebDecryptionServices>
+        XorDecryptionServices>
     {
         public override XorConfig ManifestConfig  =>  XorConfig.Instance;
         public override XorConfig BundleConfig  =>  XorConfig.Instance;
@@ -142,32 +142,6 @@ namespace JEngine.Core.Encrypt.Bundle
         string IDecryptionServices.ReadFileText(DecryptFileInfo fileInfo)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class XorWebDecryptionServices : IWebDecryptionServices
-    {
-        private readonly XorConfig _config;
-
-        public XorWebDecryptionServices(XorConfig config)
-        {
-            _config = config;
-        }
-
-        public WebDecryptResult LoadAssetBundle(WebDecryptFileInfo fileInfo)
-        {
-            var data = fileInfo.FileData;
-            var key = _config.key;
-            Span<byte> span = data;
-            for (int i = 0; i < span.Length; i++)
-            {
-                span[i] ^= key[i % key.Length];
-            }
-
-            var assetBundle = AssetBundle.LoadFromMemory(data);
-            WebDecryptResult decryptResult = new WebDecryptResult();
-            decryptResult.Result = assetBundle;
-            return decryptResult;
         }
     }
 }

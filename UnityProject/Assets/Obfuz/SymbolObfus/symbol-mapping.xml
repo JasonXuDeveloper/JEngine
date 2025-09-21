@@ -257,6 +257,7 @@
       <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$Ed" />
       <field signature="System.Exception error" newName="$JD" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$Fd" />
+      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_8&gt;d::SetStateMachine([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_8&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$Vc" oldStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__0_8&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__0_8&gt;d:$Vc(IAsyncStateMachine)" />
     </type>
     <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0" newFullName="" status="NotRenamed">
       <field signature="[UnityEngine.UI]UnityEngine.UI.Button addOnDemoButton" newName="$kD" />
@@ -274,6 +275,7 @@
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__2" newName="$oD" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; &lt;&gt;u__3" newName="$OD" />
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$pD" />
+      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0/&lt;&lt;RunGame&gt;b__1&gt;d::SetStateMachine([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0/&lt;&lt;RunGame&gt;b__1&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$se" oldStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__1&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__1&gt;d:$se(IAsyncStateMachine)" />
     </type>
   </assembly>
   <assembly name="JEngine.Core">
@@ -298,13 +300,13 @@
       <field signature="int $Obfuz$RVA_Value17" newName="$KC" />
       <field signature="int $Obfuz$RVA_Value18" newName="$lC" />
       <field signature="int $Obfuz$RVA_Value19" newName="$LC" />
-      <field signature="int $Obfuz$RVA_Value20" newName="$fD" />
-      <field signature="string $Obfuz$RVA_Value21" newName="$FD" />
+      <field signature="string $Obfuz$RVA_Value20" newName="$qd" />
+      <field signature="int $Obfuz$RVA_Value21" newName="$mC" />
       <field signature="int $Obfuz$RVA_Value22" newName="$Qd" />
-      <field signature="int $Obfuz$RVA_Value23" newName="$gD" />
-      <field signature="float $Obfuz$RVA_Value24" newName="$GD" />
+      <field signature="float $Obfuz$RVA_Value23" newName="$rd" />
+      <field signature="string $Obfuz$RVA_Value24" newName="$pb" />
       <field signature="string $Obfuz$RVA_Value25" newName="$Rd" />
-      <field signature="string $Obfuz$RVA_Value26" newName="$hD" />
+      <field signature="int $Obfuz$RVA_Value26" newName="$qb" />
       <field signature="int $Obfuz$RVA_Value27" newName="$MC" />
       <field signature="int $Obfuz$RVA_Value28" newName="$sd" />
       <field signature="int $Obfuz$RVA_Value29" newName="$nC" />
@@ -401,12 +403,6 @@
       <field signature="int $Obfuz$RVA_Value120" newName="$BD" />
       <field signature="int $Obfuz$RVA_Value121" newName="$cD" />
       <field signature="int $Obfuz$RVA_Value122" newName="$CD" />
-      <field signature="int $Obfuz$RVA_Value123" newName="$HD" />
-      <field signature="int $Obfuz$RVA_Value124" newName="$iD" />
-      <field signature="int $Obfuz$RVA_Value125" newName="$ID" />
-      <field signature="int $Obfuz$RVA_Value126" newName="$jD" />
-      <field signature="int $Obfuz$RVA_Value127" newName="$JD" />
-      <field signature="int $Obfuz$RVA_Value128" newName="$kD" />
     </type>
     <type fullName="$Obfuz$ProxyCall" newFullName="$Q" status="Renamed">
       <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_10462300(int)" newName="$cb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_10462300(Int32)" newStackTraceSignature="$Q:$cb(Int32)" />
@@ -549,9 +545,8 @@
       <method signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_8773255(object, int)" newName="$Gc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_8773255(Object, Int32)" newStackTraceSignature="$Q:$Gc(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8773255(nint, int)" newName="$lD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8773255(IntPtr, Int32)" newStackTraceSignature="$Q:$lD(IntPtr, Int32)" />
       <method signature="[YooAsset]YooAsset.EOperationStatus $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10989665(object, int)" newName="$hc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10989665(Object, Int32)" newStackTraceSignature="$Q:$hc(Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.FileSystemParameters $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_4689158(object, object, int)" newName="$MD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_4689158(Object, Object, Int32)" newStackTraceSignature="$Q:$MD(Object, Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.FileSystemParameters $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_4689158(object, object, object, int)" newName="$oD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_4689158(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$oD(Object, Object, Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.IDecryptionServices $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_5810609(object, int)" newName="$OD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_5810609(Object, Int32)" newStackTraceSignature="$Q:$OD(Object, Int32)" />
+      <method signature="[YooAsset]YooAsset.FileSystemParameters $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_4689158(object, object, object, int)" newName="$Hc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_4689158(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$Hc(Object, Object, Object, Int32)" />
+      <method signature="[YooAsset]YooAsset.IDecryptionServices $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_5810609(object, int)" newName="$MD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_5810609(Object, Int32)" newStackTraceSignature="$Q:$MD(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.IManifestRestoreServices $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_4257539(object, int)" newName="$nD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_4257539(Object, Int32)" newStackTraceSignature="$Q:$nD(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.InitializationOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_386774(object, object, int)" newName="$ic" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_386774(Object, Object, Int32)" newStackTraceSignature="$Q:$ic(Object, Object, Int32)" />
       <method signature="[YooAsset]YooAsset.RequestPackageVersionOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_14334_361653(object, byte, int, int)" newName="$Ic" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_14334_361653(Object, Byte, Int32, Int32)" newStackTraceSignature="$Q:$Ic(Object, Byte, Int32, Int32)" />
@@ -575,13 +570,13 @@
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize32_12 $Obfuz$WatermarkDataHolderField12" newName="$XA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize48_9 $Obfuz$WatermarkDataHolderField9" newName="$yA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_7 $Obfuz$WatermarkDataHolderField7" newName="$YA" />
-      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1972 F38F7068587D98F9483383C1EBDF2AF64A42AF9D7DF53EC17C406989A5CD57D5" newName="$eD" />
+      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1947 9B449B6256EBC8B016007141ADD9A10F19096BF172575B124DF09CDA9E1EF9A6" newName="$Yd" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_2 $Obfuz$WatermarkDataHolderField2" newName="$ZA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize36_6 $Obfuz$WatermarkDataHolderField6" newName="$ab" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_4 $Obfuz$WatermarkDataHolderField4" newName="$Ab" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_5 $Obfuz$WatermarkDataHolderField5" newName="$bb" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_11 $Obfuz$WatermarkDataHolderField11" newName="$Bb" />
-      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1947 3EAFAAF89133896B3BB7DB3FA00417791508A7C82FCF97F9E35A4CD5FF82E564" newName="$ED" />
+      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1796 46D47B971632D04C90441EC864081E505747056522948BF97304AE848D551CB1" newName="$zd" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize36_8 $Obfuz$WatermarkDataHolderField8" newName="$Cb" />
     </type>
     <type fullName="&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_11" newFullName="$H/$N" status="Renamed" />
@@ -599,7 +594,6 @@
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1138" newFullName="$H/$WA" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1796" newFullName="$H/$mb" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1947" newFullName="$H/$Mb" status="Renamed" />
-    <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1972" newFullName="$H/$Ob" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=273" newFullName="$H/$i" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=291" newFullName="$H/$I" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=373" newFullName="$H/$QA" status="Renamed" />
@@ -619,23 +613,23 @@
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap::UpdatePackageImpl([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.ResourcePackage, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks, [JEngine.Core]JEngine.Core.Encrypt.EncryptionOption)" newName="$f" oldStackTraceSignature="JEngine.Core.Bootstrap:UpdatePackageImpl(ResourcePackage, PackageInitializationCallbacks, EncryptionOption)" newStackTraceSignature="JEngine.Core.Bootstrap:$f(ResourcePackage, $G, $PA)" />
       <method signature="string JEngine.Core.Bootstrap::@GetStatusText([JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$F" oldStackTraceSignature="JEngine.Core.Bootstrap:GetStatusText(PackageInitializationStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$F($h)" />
       <method signature="string JEngine.Core.Bootstrap::@GetSceneLoadStatusText([JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$g" oldStackTraceSignature="JEngine.Core.Bootstrap:GetSceneLoadStatusText(SceneLoadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$g($I)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;Awake&gt;b__26_0([JEngine.Core]JEngine.Core.Bootstrap)" newName="$G" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;Awake&gt;b__26_0()" newStackTraceSignature="JEngine.Core.Bootstrap:$G()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_0([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$h" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_0(PackageInitializationStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$h($h)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_1([JEngine.Core]JEngine.Core.Bootstrap, string)" newName="$H" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_1(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$H(String)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_3([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.DownloadUpdateData)" newName="$pA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_3(DownloadUpdateData)" newStackTraceSignature="JEngine.Core.Bootstrap:$pA(DownloadUpdateData)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_4([JEngine.Core]JEngine.Core.Bootstrap)" newName="$PA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_4()" newStackTraceSignature="JEngine.Core.Bootstrap:$PA()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_5([JEngine.Core]JEngine.Core.Bootstrap)" newName="$qA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_5()" newStackTraceSignature="JEngine.Core.Bootstrap:$qA()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_7([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$QA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_7(SceneLoadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$QA($I)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_8([JEngine.Core]JEngine.Core.Bootstrap, float)" newName="$rA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_8(Single)" newStackTraceSignature="JEngine.Core.Bootstrap:$rA(Single)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;Awake&gt;b__25_0([JEngine.Core]JEngine.Core.Bootstrap)" newName="$G" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;Awake&gt;b__25_0()" newStackTraceSignature="JEngine.Core.Bootstrap:$G()" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_0([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$h" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_0(PackageInitializationStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$h($h)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_1([JEngine.Core]JEngine.Core.Bootstrap, string)" newName="$H" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_1(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$H(String)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_3([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.DownloadUpdateData)" newName="$pA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_3(DownloadUpdateData)" newStackTraceSignature="JEngine.Core.Bootstrap:$pA(DownloadUpdateData)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_4([JEngine.Core]JEngine.Core.Bootstrap)" newName="$PA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_4()" newStackTraceSignature="JEngine.Core.Bootstrap:$PA()" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_5([JEngine.Core]JEngine.Core.Bootstrap)" newName="$qA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_5()" newStackTraceSignature="JEngine.Core.Bootstrap:$qA()" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_7([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$QA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_7(SceneLoadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$QA($I)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__27_8([JEngine.Core]JEngine.Core.Bootstrap, float)" newName="$rA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__27_8(Single)" newStackTraceSignature="JEngine.Core.Bootstrap:$rA(Single)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c" newFullName="" status="NotRenamed">
       <field signature="[JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c &lt;&gt;9" newName="$i" />
-      <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;&gt;9__28_2" newName="$A" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__28_6" newName="$c" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__28_9" newName="$C" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_2([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, int, long)" newName="$RA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_2(Int32, Int64)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$RA(Int32, Int64)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_6([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$sA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_6(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$sA(Exception)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_9([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$Hc" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_9(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$Hc(Exception)" />
+      <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;&gt;9__27_2" newName="$A" />
+      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__27_6" newName="$c" />
+      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__27_9" newName="$C" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__27_2([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, int, long)" newName="$RA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__27_2(Int32, Int64)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$RA(Int32, Int64)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__27_6([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$sA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__27_6(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$sA(Exception)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__27_9([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$Be" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__27_9(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$Be(Exception)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__24_2&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$B" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$J" />
@@ -680,14 +674,14 @@
       <field signature="int count" newName="$e" />
       <field signature="long size" newName="$E" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$f" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$pD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_2&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$A:$pD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$OD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_2&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$A:$OD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$b" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$F" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$g" />
       <field signature="System.Exception error" newName="$G" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$h" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$PD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_6&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$b:$PD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$pD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_6&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$b:$pD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_9&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$B" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$H" />
@@ -714,7 +708,7 @@
       <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; onError" newName="$L" />
       <field signature="[YooAsset]YooAsset.ClearCacheFilesOperation &lt;operation&gt;5__2" newName="$m" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$M" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$QD" oldStackTraceSignature="JEngine.Core.&lt;DeletePackageCache&gt;d__3:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$c:$QD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$PD" oldStackTraceSignature="JEngine.Core.&lt;DeletePackageCache&gt;d__3:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$c:$PD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;Initialize&gt;d__26" newFullName="JEngine.Core.Bootstrap/$C" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$n" />
@@ -734,7 +728,7 @@
       <field signature="int &lt;&gt;7__wrap2" newName="$p" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$P" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__2" newName="$q" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$rD" oldStackTraceSignature="JEngine.Core.&lt;Initialize&gt;d__27:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$C:$rD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$QD" oldStackTraceSignature="JEngine.Core.&lt;Initialize&gt;d__27:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$C:$QD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__21" newFullName="JEngine.Core.Bootstrap/$b" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$D" />
@@ -853,7 +847,7 @@
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$eA" />
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__2" newName="$EA" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UnityAsyncExtensions/AsyncOperationAwaiter &lt;&gt;u__3" newName="$fA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$SD" oldStackTraceSignature="JEngine.Core.&lt;LoadHotUpdateScene&gt;d__0:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$D:$SD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$rD" oldStackTraceSignature="JEngine.Core.&lt;LoadHotUpdateScene&gt;d__0:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$D:$rD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__19" newFullName="JEngine.Core.Bootstrap/$c" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$p" />
@@ -897,7 +891,7 @@
       <field signature="System.Collections.Generic.List`1/Enumerator&lt;string&gt; &lt;&gt;7__wrap2" newName="$iA" />
       <field signature="string &lt;aotDllName&gt;5__4" newName="$IA" />
       <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__5" newName="$NA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$tD" oldStackTraceSignature="JEngine.Core.&lt;LoadMetadataForAOTAssemblies&gt;d__25:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$E:$tD(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$SD" oldStackTraceSignature="JEngine.Core.&lt;LoadMetadataForAOTAssemblies&gt;d__25:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$E:$SD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;LoadSceneWithProgress&gt;d__23" newFullName="JEngine.Core.Bootstrap/$C" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$t" />
@@ -998,7 +992,7 @@
       <field signature="bool &lt;ret&gt;5__2" newName="$SA" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$tA" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$TA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$Be" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackage&gt;d__2:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$F:$Be(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$tD" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackage&gt;d__2:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$F:$tD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__29" newFullName="JEngine.Core.Bootstrap/$g" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$uA" />
@@ -1030,7 +1024,7 @@
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$mb" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$Mb" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__3" newName="$nb" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$ue" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackageImpl&gt;d__30:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$g:$ue(IAsyncStateMachine)" />
+      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$Be" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackageImpl&gt;d__30:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$g:$Be(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/DownloadStatus" newFullName="JEngine.Core.Bootstrap/$b" status="Renamed">
       <field signature="int &lt;CurrentDownloadCount&gt;k__BackingField" newName="$F" />
@@ -1105,9 +1099,6 @@
     <type fullName="JEngine.Core.Encrypt.Bundle.AesEncryptionServices" newFullName="$E.$Jb" status="Renamed">
       <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.AesConfig _config" newName="$Wd" />
     </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.AesWebDecryptionServices" newFullName="$g.$nb" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.AesConfig _config" newName="$zd" />
-    </type>
     <type fullName="JEngine.Core.Encrypt.Bundle.ChaCha20Bundle" newFullName="$E.$Kb" status="Renamed">
       <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.ChaCha20Config ManifestConfig" newName="$a" />
       <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.ChaCha20Config BundleConfig" newName="$A" />
@@ -1125,9 +1116,6 @@
     <type fullName="JEngine.Core.Encrypt.Bundle.ChaCha20EncryptionServices" newFullName="$E.$lb" status="Renamed">
       <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.ChaCha20Config _config" newName="$Xd" />
     </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.ChaCha20WebDecryptionServices" newFullName="$g.$Nb" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.ChaCha20Config _config" newName="$dD" />
-    </type>
     <type fullName="JEngine.Core.Encrypt.Bundle.XorBundle" newFullName="$d.$UA" status="Renamed">
       <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig ManifestConfig" newName="$a" />
       <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig BundleConfig" newName="$A" />
@@ -1144,9 +1132,6 @@
     </type>
     <type fullName="JEngine.Core.Encrypt.Bundle.XorEncryptionServices" newFullName="$d.$vA" status="Renamed">
       <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$Nd" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.XorWebDecryptionServices" newFullName="$g.$ob" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$DD" />
     </type>
     <type fullName="JEngine.Core.Encrypt.BundleEncryptionConfig`5" newFullName="$c.$rA`5" status="Renamed">
       <field signature="!1 _manifestEncryptionConfigInstance" newName="$id" />
@@ -1166,28 +1151,6 @@
       <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_ManifestEncryptionConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$VD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_ManifestEncryptionConfig()" newStackTraceSignature="$c.$rA`5:$VD()" />
       <method signature="[YooAsset]YooAsset.IEncryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$wD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_Encryption()" newStackTraceSignature="$c.$rA`5:$wD()" />
       <method signature="[YooAsset]YooAsset.IDecryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$WD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_Decryption()" newStackTraceSignature="$c.$rA`5:$WD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.BundleEncryptionConfig`6" newFullName="$F.$Mb`6" status="Renamed">
-      <field signature="!1 _manifestEncryptionConfigInstance" newName="$jd" />
-      <field signature="!3 _encryptionInstance" newName="$qd" />
-      <field signature="!4 _decryptionInstance" newName="$rd" />
-      <field signature="!5 _webDecryptionInstance" newName="$Yd" />
-      <property signature="!0 ManifestConfig" newName="$a" />
-      <property signature="!2 BundleConfig" newName="$A" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject ManifestConfigScriptableObject" newName="$b" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject BundleConfigScriptableObject" newName="$B" />
-      <property signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig ManifestEncryptionConfig" newName="$c" />
-      <property signature="[YooAsset]YooAsset.IEncryptionServices Encryption" newName="$C" />
-      <property signature="[YooAsset]YooAsset.IDecryptionServices Decryption" newName="$d" />
-      <property signature="[YooAsset]YooAsset.IWebDecryptionServices WebDecryption" newName="$D" />
-      <method signature="!0 JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_ManifestConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$xD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_ManifestConfig()" newStackTraceSignature="$F.$Mb`6:$xD()" />
-      <method signature="!2 JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_BundleConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$XD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_BundleConfig()" newStackTraceSignature="$F.$Mb`6:$XD()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_ManifestConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$UD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_ManifestConfigScriptableObject()" newStackTraceSignature="$F.$Mb`6:$UD()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_BundleConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$vD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_BundleConfigScriptableObject()" newStackTraceSignature="$F.$Mb`6:$vD()" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_ManifestEncryptionConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$VD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_ManifestEncryptionConfig()" newStackTraceSignature="$F.$Mb`6:$VD()" />
-      <method signature="[YooAsset]YooAsset.IEncryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$wD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_Encryption()" newStackTraceSignature="$F.$Mb`6:$wD()" />
-      <method signature="[YooAsset]YooAsset.IDecryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$WD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_Decryption()" newStackTraceSignature="$F.$Mb`6:$WD()" />
-      <method signature="[YooAsset]YooAsset.IWebDecryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`6::get_WebDecryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`6&lt;!0,!1,!2,!3,!4,!5&gt;)" newName="$Ue" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`6:get_WebDecryption()" newStackTraceSignature="$F.$Mb`6:$Ue()" />
     </type>
     <type fullName="JEngine.Core.Encrypt.Config.AesConfig" newFullName="" status="NotRenamed">
       <method signature="void JEngine.Core.Encrypt.Config.AesConfig::RegenerateKey([JEngine.Core]JEngine.Core.Encrypt.Config.AesConfig)" newName="$Oe" oldStackTraceSignature="JEngine.Core.Encrypt.Config.AesConfig:RegenerateKey()" newStackTraceSignature="JEngine.Core.Encrypt.Config.AesConfig:$Oe()" />
@@ -1219,13 +1182,11 @@
       <property signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig ManifestEncryptionConfig" newName="$b" />
       <property signature="[YooAsset]YooAsset.IEncryptionServices Encryption" newName="$B" />
       <property signature="[YooAsset]YooAsset.IDecryptionServices Decryption" newName="$c" />
-      <property signature="[YooAsset]YooAsset.IWebDecryptionServices WebDecryption" newName="$C" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.IBundleEncryptionConfig::get_ManifestConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$UD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_ManifestConfigScriptableObject()" newStackTraceSignature="$c.$QA:$UD()" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.IBundleEncryptionConfig::get_BundleConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$vD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_BundleConfigScriptableObject()" newStackTraceSignature="$c.$QA:$vD()" />
       <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig JEngine.Core.Encrypt.IBundleEncryptionConfig::get_ManifestEncryptionConfig([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$VD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_ManifestEncryptionConfig()" newStackTraceSignature="$c.$QA:$VD()" />
       <method signature="[YooAsset]YooAsset.IEncryptionServices JEngine.Core.Encrypt.IBundleEncryptionConfig::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$wD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_Encryption()" newStackTraceSignature="$c.$QA:$wD()" />
       <method signature="[YooAsset]YooAsset.IDecryptionServices JEngine.Core.Encrypt.IBundleEncryptionConfig::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$WD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_Decryption()" newStackTraceSignature="$c.$QA:$WD()" />
-      <method signature="[YooAsset]YooAsset.IWebDecryptionServices JEngine.Core.Encrypt.IBundleEncryptionConfig::get_WebDecryption([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$Ue" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_WebDecryption()" newStackTraceSignature="$c.$QA:$Ue()" />
     </type>
     <type fullName="JEngine.Core.Encrypt.IManifestEncryptionConfig" newFullName="$c.$RA" status="Renamed">
       <property signature="[YooAsset]YooAsset.IManifestProcessServices Encryption" newName="$a" />
@@ -1565,13 +1526,6 @@
       <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Loading" newName="$hc" />
       <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Completed" newName="$Hc" />
       <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Failed" newName="$ic" />
-    </type>
-    <type fullName="JEngine.Core.Update.TargetPlatform" newFullName="$f.$mb" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Update.TargetPlatform Regular" newName="$pb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.TargetPlatform WeChat" newName="$qb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.TargetPlatform Douyin" newName="$mC" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.TargetPlatform Alipay" newName="$id" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.TargetPlatform TapTap" newName="$Id" />
     </type>
   </assembly>
   <assembly name="Obfuz.Generated">

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using JEngine.Core.Encrypt;
-using JEngine.Core.Update;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -105,20 +104,6 @@ namespace JEngine.Core.Editor.CustomEditor
         private void CreateAssetSettingsGroup()
         {
             var assetGroup = CreateGroup("Asset Settings");
-
-            // Target Platform
-            var targetPlatformRow = CreateFormRow("Target Platform");
-            var targetPlatformField = new EnumField(_bootstrap.targetPlatform);
-            targetPlatformField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(targetPlatformField);
-            targetPlatformField.RegisterValueChangedCallback(evt =>
-            {
-                var enumProperty = serializedObject.FindProperty(nameof(_bootstrap.targetPlatform));
-                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(TargetPlatform)), evt.newValue);
-                serializedObject.ApplyModifiedProperties();
-            });
-            targetPlatformRow.Add(targetPlatformField);
-            assetGroup.Add(targetPlatformRow);
 
             // Package Name Dropdown
             var packageNameRow = CreateFormRow("Package Name");

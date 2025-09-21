@@ -33,7 +33,7 @@ using YooAsset;
 namespace JEngine.Core.Encrypt.Bundle
 {
     public class AesBundle : BundleEncryptionConfig<AesConfig, AesManifest, AesConfig, AesEncryptionServices,
-        AesDecryptionServices, AesWebDecryptionServices>
+        AesDecryptionServices>
     {
         public override AesConfig ManifestConfig =>  AesConfig.Instance;
         public override AesConfig BundleConfig  =>  AesConfig.Instance;
@@ -134,26 +134,6 @@ namespace JEngine.Core.Encrypt.Bundle
         {
             byte[] decryptedData = ((IDecryptionServices)this).ReadFileData(fileInfo);
             return System.Text.Encoding.UTF8.GetString(decryptedData);
-        }
-    }
-    
-    public class AesWebDecryptionServices : IWebDecryptionServices
-    {
-        private readonly AesConfig _config;
-
-        public AesWebDecryptionServices(AesConfig config)
-        {
-            _config = config;
-        }
-
-        public WebDecryptResult LoadAssetBundle(WebDecryptFileInfo fileInfo)
-        {
-            var data = fileInfo.FileData;
-            var decryptedData = AesUtil.AesDecrypt(data, _config.key, _config.iv);
-            var assetBundle = AssetBundle.LoadFromMemory(decryptedData);
-            WebDecryptResult decryptResult = new WebDecryptResult();
-            decryptResult.Result = assetBundle;
-            return decryptResult;
         }
     }
 }

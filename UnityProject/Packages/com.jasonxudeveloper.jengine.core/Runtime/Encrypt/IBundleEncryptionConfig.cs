@@ -36,22 +36,20 @@ namespace JEngine.Core.Encrypt
         IManifestEncryptionConfig ManifestEncryptionConfig { get; }
         IEncryptionServices Encryption { get; }
         IDecryptionServices Decryption { get; }
-        IWebDecryptionServices WebDecryption { get; }
     }
 
     public abstract class BundleEncryptionConfig<TManifestConfig, TManifestEncryptionConfig, TBundleConfig, TEncryption,
-        TDecryption, TWebDecryption>
+        TDecryption>
         : IBundleEncryptionConfig
         where TManifestConfig : ScriptableObject
         where TManifestEncryptionConfig : IManifestEncryptionConfig
         where TBundleConfig : ScriptableObject
         where TEncryption : IEncryptionServices
         where TDecryption : IDecryptionServices
-        where TWebDecryption : IWebDecryptionServices
     {
         public abstract TManifestConfig ManifestConfig { get; }
         public abstract TBundleConfig BundleConfig { get; }
-
+        
         public ScriptableObject ManifestConfigScriptableObject => ManifestConfig;
         public ScriptableObject BundleConfigScriptableObject => BundleConfig;
 
@@ -103,22 +101,5 @@ namespace JEngine.Core.Encrypt
         }
 
         private TDecryption _decryptionInstance;
-
-        public IWebDecryptionServices WebDecryption
-        {
-            get
-            {
-                if (_webDecryptionInstance == null)
-                {
-                    _webDecryptionInstance =
-                        (TWebDecryption)Activator.CreateInstance(typeof(TWebDecryption),
-                            new object[] { BundleConfig });
-                }
-
-                return _webDecryptionInstance;
-            }
-        }
-
-        private TWebDecryption _webDecryptionInstance;
     }
 }

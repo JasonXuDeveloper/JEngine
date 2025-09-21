@@ -762,9 +762,9 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: 
+    Android: ILRuntime
     Standalone: 
-    WebGL: 
+    WebGL: ILRuntime
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

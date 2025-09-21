@@ -843,7 +843,6 @@ MonoBehaviour:
   defaultHostServer: http://127.0.0.1/
   useDefaultAsFallback: 1
   fallbackHostServer: http://127.0.0.1/
-  targetPlatform: 0
   packageName: main
   hotCodeName: HotUpdate.Code.dll
   selectedHotScene: Assets/HotUpdate/Main/Scene/Game.unity
@@ -851,7 +850,7 @@ MonoBehaviour:
   hotUpdateMethodName: RunGame
   dynamicSecretKeyPath: Assets/HotUpdate/Obfuz/DynamicSecretKey.bytes
   aotDllListFilePath: Assets/HotUpdate/Compiled/AOT.bytes
-  encryptionOption: 2
+  encryptionOption: 1
   versionText: {fileID: 2019442895}
   updateStatusText: {fileID: 1946342723}
   downloadProgressText: {fileID: 1384766990}

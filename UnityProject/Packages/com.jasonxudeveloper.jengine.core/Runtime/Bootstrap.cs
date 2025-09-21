@@ -51,9 +51,7 @@ namespace JEngine.Core
 
         public string fallbackHostServer = "http://127.0.0.1/";
 
-        [Header("Asset Settings")] public TargetPlatform targetPlatform = TargetPlatform.Regular;
-
-        public string packageName = "main";
+        [Header("Asset Settings")] public string packageName = "main";
 
         public string hotCodeName = "HotUpdate.Code.dll";
 
@@ -296,8 +294,7 @@ namespace JEngine.Core
                         },
                         OnError = async exception =>
                         {
-                            await MessageBox.Show("Error", $"Scene loading failed: {exception.Message}",
-                                ok: "Retry");
+                            await MessageBox.Show("Error", $"Scene loading failed: {exception.Message}", ok: "Retry");
                         }
                     };
                     downloadProgressBar.gameObject.SetActive(true);
@@ -415,125 +412,16 @@ namespace JEngine.Core
                     var remoteServices = new RemoteServices(server, effectiveFallbackServer);
                     var bundleConfig = EncryptionMapping.GetBundleConfig(option);
                     var manifestRestoration = bundleConfig.ManifestEncryptionConfig.Decryption;
-                    InitializeParameters initParameters = null;
-                    switch (targetPlatform)
+                    var decryption = bundleConfig.Decryption;
+                    var cacheFileSystemParams =
+                        FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices, decryption);
+                    cacheFileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
+                        manifestRestoration);
+                    var initParameters = new HostPlayModeParameters
                     {
-                        case TargetPlatform.Regular:
-                        {
-#if UNITY_WEBGL
-                            var webRemoteFileSystem =
-                                FileSystemParameters.CreateDefaultWebRemoteFileSystemParameters(remoteServices,
-                                    bundleConfig.WebDecryption);
-                            webRemoteFileSystem.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-
-                            FileSystemParameters webServerFileSystem =
-                                FileSystemParameters.CreateDefaultWebServerFileSystemParameters(bundleConfig
-                                    .WebDecryption);
-                            webServerFileSystem.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-                            if (package.PackageName != packageName)
-                            {
-                                webServerFileSystem = null;
-                            }
-
-                            initParameters = new WebPlayModeParameters
-                            {
-                                WebRemoteFileSystemParameters = webRemoteFileSystem,
-                                WebServerFileSystemParameters = webServerFileSystem
-                            };
-
-#else
-                            var cacheFileSystemParams =
-                                FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices,
-                                    bundleConfig.Decryption);
-                            cacheFileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-
-                            var buildinFileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(
-                                bundleConfig.Decryption);
-                            buildinFileSystemParams?.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-                            if (package.PackageName != packageName)
-                            {
-                                buildinFileSystemParams = null;
-                            }
-
-                            initParameters = new HostPlayModeParameters
-                            {
-                                BuildinFileSystemParameters = buildinFileSystemParams,
-                                CacheFileSystemParameters = cacheFileSystemParams
-                            };
-#endif
-                            break;
-                        }
-                        case TargetPlatform.WeChat:
-                        {
-#if UNITY_WEBGL && WEIXINMINIGAME
-                            string packageRoot = $"{WeChatWASM.WX.env.USER_DATA_PATH}/__GAME_FILE_CACHE/yoo";
-                            var wechatFileSystemParams =
-                                WechatFileSystemCreater.CreateFileSystemParameters(packageRoot, remoteServices,
-                                    bundleConfig.WebDecryption);
-                            wechatFileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-
-                            initParameters = new WebPlayModeParameters
-                            {
-                                WebServerFileSystemParameters = wechatFileSystemParams
-                            };
-#endif
-
-                            break;
-                        }
-                        case TargetPlatform.Douyin:
-                        {
-#if UNITY_WEBGL && DOUYINMINIGAME
-                            var webRemoteFileSystem = TiktokFileSystemCreater.CreateFileSystemParameters("yoo",
-                                remoteServices, bundleConfig.WebDecryption);
-                            webRemoteFileSystem.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-                            
-                            initParameters = new WebPlayModeParameters
-                            {
-                                WebServerFileSystemParameters = webRemoteFileSystem
-                            };
-#endif
-                            break;
-                        }
-                        case TargetPlatform.Alipay:
-                        {
-#if UNITY_WEBGL && UNITY_ALIMINIGAME
-                            var webRemoteFileSystem = AlipayFileSystemCreater.CreateFileSystemParameters(
-                                "yoo", remoteServices, bundleConfig.WebDecryption);
-                            webRemoteFileSystem.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-                            
-                            initParameters = new WebPlayModeParameters
-                            {
-                                WebServerFileSystemParameters = webRemoteFileSystem
-                            };
-#endif
-                            break;
-                        }
-                        case TargetPlatform.TapTap:
-                        {
-#if UNITY_WEBGL && TAPMINIGAME
-                            var webRemoteFileSystem = TaptapFileSystemCreater.CreateFileSystemParameters(
-                                "yoo", remoteServices, bundleConfig.WebDecryption);
-                            webRemoteFileSystem.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
-                                manifestRestoration);
-
-                            initParameters = new WebPlayModeParameters
-                            {
-                                WebServerFileSystemParameters = webRemoteFileSystem
-                            };
-#endif
-                            break;
-                        }
-                        default:
-                            throw new NotSupportedException($"Target platform {targetPlatform} is not supported yet.");
-                    }
-
+                        BuildinFileSystemParameters = null,
+                        CacheFileSystemParameters = cacheFileSystemParams
+                    };
                     initOperation = package.InitializeAsync(initParameters);
                 }
 
