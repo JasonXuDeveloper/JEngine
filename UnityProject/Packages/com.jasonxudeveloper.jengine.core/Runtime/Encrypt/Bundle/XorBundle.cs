@@ -85,7 +85,7 @@ namespace JEngine.Core.Encrypt.Bundle
             DecryptResult decryptResult = new DecryptResult();
             decryptResult.ManagedStream = stream;
             decryptResult.Result =
-                AssetBundle.LoadFromStream(stream, fileInfo.FileLoadCRC, 2048);
+                AssetBundle.LoadFromStream(stream, fileInfo.FileLoadCRC, 32);
             return decryptResult;
         }
 
@@ -99,7 +99,7 @@ namespace JEngine.Core.Encrypt.Bundle
             DecryptResult decryptResult = new DecryptResult();
             decryptResult.ManagedStream = stream;
             decryptResult.CreateRequest =
-                AssetBundle.LoadFromStreamAsync(stream, fileInfo.FileLoadCRC, 2048);
+                AssetBundle.LoadFromStreamAsync(stream, fileInfo.FileLoadCRC, 32);
             return decryptResult;
         }
 
