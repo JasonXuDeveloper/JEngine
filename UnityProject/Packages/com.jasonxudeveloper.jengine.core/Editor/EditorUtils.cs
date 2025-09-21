@@ -53,13 +53,13 @@ namespace JEngine.Core.Editor
                 // Add default if no packages found
                 if (packages.Count == 0)
                 {
-                    packages.Add("main");
+                    packages.Add("DefaultPackage");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"Failed to get YooAsset packages: {ex.Message}");
-                packages.Add("main");
+                packages.Add("DefaultPackage");
             }
 
             return packages;

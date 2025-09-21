@@ -1,4 +1,8 @@
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JEngine.Core.Editor.CustomEditor
 {
@@ -14,7 +18,7 @@ namespace JEngine.Core.Editor.CustomEditor
             _root = new VisualElement();
 
             // Add USS styling
-            var commonStyleSheet = StyleSheetLoader.LoadCommonStyleSheet();
+            var commonStyleSheet = StyleSheetLoader.LoadPackageStyleSheet("JEngineCommon.uss");
             if (commonStyleSheet != null)
                 _root.styleSheets.Add(commonStyleSheet);
 
@@ -35,20 +39,19 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private void CreatePackageSettingsGroup()
         {
-            var packageGroup = SettingsUIBuilder.CreatePackageSettingsGroup(_settings);
+            var packageGroup = SettingsUIBuilder.CreatePackageSettingsGroup(_settings, true);
             _root.Add(packageGroup);
         }
 
         private void CreateBuildOptionsGroup()
         {
-            var buildGroup = SettingsUIBuilder.CreateBuildOptionsGroup(_settings);
+            var buildGroup = SettingsUIBuilder.CreateBuildOptionsGroup(_settings, true);
             _root.Add(buildGroup);
         }
 
         private void CreateJEngineSettingsGroup()
         {
-            // Don't include Panel-specific settings in inspector
-            var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings);
+            var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings, true);
             _root.Add(jengineGroup);
         }
 
