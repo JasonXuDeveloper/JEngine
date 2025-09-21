@@ -24,17 +24,9 @@
 //  THE SOFTWARE.
 
 
-using JEngine.Core.Encrypt.Shared;
-using Random = UnityEngine.Random;
-
 namespace JEngine.Core.Encrypt.Config
 {
     public class XorConfig : EncryptConfig<XorConfig, byte[]>
     {
-        public override void RegenerateKey()
-        {
-            var len = Random.Range(16, 129); // Random length between 16 and 128
-            key = CryptoUtils.GenerateRandomBytes(len);
-        }
     }
 }

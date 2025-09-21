@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ed133a3c68f48d68d80bd8238a75e50, type: 3}
   m_Name: XorConfig
   m_EditorClassIdentifier: 
-  key: a9d98c0550f1297a2fd7f817cf0e0a4074b698db39d16bf90301b850
+  key: 01020304

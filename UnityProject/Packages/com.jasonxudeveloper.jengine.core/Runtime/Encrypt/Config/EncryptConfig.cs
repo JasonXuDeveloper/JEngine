@@ -29,7 +29,7 @@ using UnityEngine;
 
 namespace JEngine.Core.Encrypt.Config
 {
-    public abstract class EncryptConfig<T, TKey> : ScriptableObject where T : EncryptConfig<T, TKey>
+    public class EncryptConfig<T, TKey> : ScriptableObject where T : EncryptConfig<T, TKey>
     {
         public TKey key;
 
@@ -66,7 +66,5 @@ namespace JEngine.Core.Encrypt.Config
         }
 
         private static T _instance;
-        
-        public abstract void RegenerateKey();
     }
 }
