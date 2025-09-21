@@ -40,22 +40,73 @@ namespace JEngine.Editor
 		JEngineSetting = 0,
 		DisplayLanguage = 1,
 		StartUpScene = 2,
+		LastDLLCleanTime = 3,
+		DateFormat = 4,
 		JumpToStartUpScene = 5,
+		MissingAssembly = 6,
+		MissingAssemblyBtn = 7,
+		ErrorRescueTools = 8,
+		ErrorRescueToolsInfo = 9,
 		InvalidSceneObject = 10,
+		PanelInfo = 11,
 		ScenesTitle = 12,
 		LoadSceneBtn = 13,
 		LoadSceneAdditiveBtn = 14,
 		UnloadSceneBtn = 15,
+		ClassBindTools = 16,
+		LocalJEngine = 17,
+		HotJEngine = 18,
+		ChooseBtn = 19,
+		UpdateJEngine = 20,
+		UpdateHelpBox = 21,
+		DLLConvertLog = 22,
+		DLLCleanLog = 23,
+		DLLNewReferenceLog = 24,
+		DeleteErrorLog = 25,
+		ClassBindErrorTitle = 26,
+		ClassBindErrorContent = 27,
+		ClassBindInvalidField = 28,
+		ClassBindGetAllField = 29,
+		ClassBindGetAllType = 30,
+		ClassBindProgress = 31,
+		ClassBindProgressContentForGetField = 32,
+		ClassBindProgressContentForGetType = 33,
+		Success = 34,
+		Fail = 35,
+		ClassBindResultTitle = 36,
+		ClassBindResultContentForGetType = 37,
 		Done = 38,
 		HotSceneList = 39,
+		ClassBindResultContentForSetField = 40,
+		ClassBindUnableSetFieldValue = 41,
+		MemberVariables = 42,
+		ClassBindIgnorePrivate = 43,
+		ClassBindIgnoreHideInInspector = 44,
+		ClassBindInvalidFieldDeleted = 45,
+		ClassBindRearrange = 46,
+		ClassBindRearrangeResult = 47,
+		ClassBindRearrangeTitle = 48,
 		EncryptDLLPassword = 49,
+		ShortCuts = 50,
+		BuildBundles = 51,
+		GenerateClrBind = 52,
+		GenerateCrossDomainAdapter = 53,
+		OpenJEngineSetting = 54,
+		ClassBindInfo = 55,
 		Notice = 56,
 		NoticeText = 57,
+		MismatchDLLKeyTitle = 58,
+		MismatchDLLKeyContext = 59,
+		Ok = 60,
+		Ignore = 61,
+		ClassBindGetFromBase = 62,
 	}
 
 	internal class Setting : EditorWindow
 	{
 		private static string _prefix;
+
+		private static DirectoryInfo _dataPath;
 
 		private static readonly Color RedColor = new Color32(190, 61, 75, 255);
 		private static readonly Color CyanColor = new Color32(75, 226, 235, 255);
@@ -239,6 +290,64 @@ namespace JEngine.Editor
 		}
 
 		/// <summary>
+		/// 上次处理热更DLL时间
+		/// </summary>
+		public static string LastDLLCleanUpTime
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.LastDLLCleanUpTime");
+			set => PlayerPrefs.SetString($"{_prefix}.LastDLLCleanUpTime", value);
+		}
+
+		/// <summary>
+		/// 本地框架路径
+		/// </summary>
+		public static string LocalPath
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.LocalPath",
+				_dataPath.FullName + "/Dependencies/JEngine");
+			private set => PlayerPrefs.SetString($"{_prefix}.LocalPath", value);
+		}
+
+		/// <summary>
+		/// 热更框架路径
+		/// </summary>
+		public static string HotPath
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.HotPath",
+				_dataPath.Parent?.FullName + "/HotUpdateScripts/JEngine");
+			private set => PlayerPrefs.SetString($"{_prefix}.HotPath", value);
+		}
+
+		/// <summary>
+		/// ClassBind获取基类
+		/// </summary>
+		public static bool ClassBindGetFromBase
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindGetFromBase", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindGetFromBase", value ? "1" : "0");
+		}
+
+
+		/// <summary>
+		/// ClassBind不获取private
+		/// </summary>
+		public static bool ClassBindIgnorePrivate
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnorePrivate", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnorePrivate", value ? "1" : "0");
+		}
+
+		/// <summary>
+		/// ClassBind不获取HideInInspector
+		/// </summary>
+		public static bool ClassBindIgnoreHideInInspector
+		{
+			get => PlayerPrefs.GetString($"{_prefix}.ClassBindIgnoreHideInInspector", "0") == "1";
+			private set => PlayerPrefs.SetString($"{_prefix}.ClassBindIgnoreHideInInspector", value ? "1" : "0");
+		}
+
+
+		/// <summary>
 		/// 是否展示热更场景
 		/// </summary>
 		private bool _showScenes = true;
@@ -247,6 +356,7 @@ namespace JEngine.Editor
 
 		private static Setting _instance;
 
+		[MenuItem("JEngine/Setting #&J", priority = 1998)]
 		private static void ShowWindow()
 		{
 			var window = GetWindow<Setting>(GetString(SettingString.JEngineSetting));
@@ -255,8 +365,17 @@ namespace JEngine.Editor
 			_instance = window;
 		}
 
+		public static void Refresh()
+		{
+			if (_instance != null)
+			{
+				_instance.Repaint();
+			}
+		}
+
 		private void OnEnable()
 		{
+			_dataPath = new DirectoryInfo(Application.dataPath);
 			_scrollPos = new Vector2(position.width, position.height);
 		}
 
@@ -264,6 +383,14 @@ namespace JEngine.Editor
 		{
 			int result = (int)(position.width * percentage);
 			return result;
+		}
+
+		public static void SetPrefix(string prefix)
+		{
+			if (string.IsNullOrEmpty(_prefix))
+			{
+				_prefix = $"JEngine.Editor.Setting.{Application.productName}.{prefix}.";
+			}
 		}
 
 		private void OnGUI()
@@ -288,6 +415,11 @@ namespace JEngine.Editor
 				alignment = TextAnchor.MiddleCenter
 			};
 			GUILayout.Label(GetString(SettingString.JEngineSetting), textStyle);
+			GUILayout.Space(10);
+
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.PanelInfo), MessageType.Info); });
+
 			GUILayout.Space(10);
 
 			//选择语言
@@ -329,7 +461,79 @@ namespace JEngine.Editor
 				{
 					JumpStartUp = EditorGUILayout.Toggle(GetString(SettingString.JumpToStartUpScene), JumpStartUp);
 				});
+
+			//上次处理热更DLL时间
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.LastDLLCleanTime)); });
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				GUI.enabled = false;
+				textStyle = new GUIStyle(EditorStyles.textField.name) { alignment = TextAnchor.MiddleCenter };
+				EditorGUILayout.TextField(LastDLLCleanUpTime, textStyle);
+				GUI.enabled = true;
+			});
+
 			GUILayout.Space(10);
+
+			//本地路径
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.LocalJEngine)); });
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				GUI.enabled = false;
+				LocalPath = EditorGUILayout.TextField(LocalPath);
+				GUI.enabled = true;
+				if (GUILayout.Button(GetString(SettingString.ChooseBtn), GUILayout.Width(70)))
+				{
+					var path = EditorUtility.OpenFolderPanel(GetString(SettingString.LocalJEngine), LocalPath,
+						GetString(SettingString.LocalJEngine));
+					if (!string.IsNullOrEmpty(path))
+					{
+						LocalPath = path;
+					}
+
+					GUIUtility.ExitGUI();
+				}
+			});
+			//热更路径
+			MakeHorizontal(GetSpace(0.1f), () => { EditorGUILayout.LabelField(GetString(SettingString.HotJEngine)); });
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				GUI.enabled = false;
+				HotPath = EditorGUILayout.TextField(HotPath);
+				GUI.enabled = true;
+				if (GUILayout.Button(GetString(SettingString.ChooseBtn), GUILayout.Width(70)))
+				{
+					var path = EditorUtility.OpenFolderPanel(GetString(SettingString.HotJEngine), HotPath,
+						GetString(SettingString.HotJEngine));
+					if (!string.IsNullOrEmpty(path))
+					{
+						HotPath = path;
+					}
+
+					GUIUtility.ExitGUI();
+				}
+			});
+
+			GUILayout.Space(10);
+
+			//提示框
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.UpdateHelpBox), MessageType.Error); });
+
+			//更新按钮
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				GUI.enabled = false;
+
+				if (GUILayout.Button(GetString(SettingString.UpdateJEngine) + " - 暂不可用", GUILayout.Height(30)))
+				{
+					UpdateJEngine.Update();
+					GUIUtility.ExitGUI();
+				}
+
+				GUI.enabled = true;
+			});
 
 			#endregion
 
@@ -353,7 +557,7 @@ namespace JEngine.Editor
 			{
 				//获取热更场景
 				//load all scene files from HotUpdateResources
-				var assets = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/HotUpdate" });
+				var assets = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/HotUpdateResources" });
 				foreach (var guid in assets)
 				{
 					MakeHorizontal(GetSpace(0.1f), () =>
@@ -392,6 +596,70 @@ namespace JEngine.Editor
 				}
 			}
 			
+			#endregion
+
+			#region Bug相关
+
+			//bug修复
+			GUILayout.Space(30);
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = { textColor = RedColor }, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ErrorRescueTools), textStyle);
+			});
+			GUILayout.Space(10);
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.HelpBox(GetString(SettingString.ErrorRescueToolsInfo), MessageType.Warning); });
+
+			//修复Missing Type
+			GUILayout.Space(10);
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				EditorGUILayout.LabelField(GetString(SettingString.MissingAssembly), GUILayout.MinHeight(50));
+				if (GUILayout.Button(GetString(SettingString.MissingAssemblyBtn), GUILayout.MinHeight(50)))
+				{
+					PlayerSettings.allowUnsafeCode = false;
+				}
+			});
+			GUILayout.Space(10);
+
+			#endregion
+
+			#region 快捷键
+
+			MakeHorizontal(GetSpace(0.1f), () =>
+			{
+				textStyle = new GUIStyle
+				{
+					fontSize = 16, normal = { textColor = PurpleColor }, alignment = TextAnchor.MiddleCenter
+				};
+				GUILayout.Label(GetString(SettingString.ShortCuts), textStyle);
+			});
+			GUILayout.Space(10);
+			textStyle = new GUIStyle(EditorStyles.textField.name) { alignment = TextAnchor.MiddleCenter };
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.BuildBundles), "Command/Control Shift Alt B",
+						textStyle);
+				});
+			MakeHorizontal(GetSpace(0.1f),
+				() => { EditorGUILayout.LabelField(GetString(SettingString.GenerateClrBind), "Shift B", textStyle); });
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.OpenJEngineSetting), "Alt Shift J", textStyle);
+				});
+			MakeHorizontal(GetSpace(0.1f),
+				() =>
+				{
+					EditorGUILayout.LabelField(GetString(SettingString.GenerateCrossDomainAdapter),
+						"Command/Control Shift G", textStyle);
+				});
+
 			#endregion
 
 			try

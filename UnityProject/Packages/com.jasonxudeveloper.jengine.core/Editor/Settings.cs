@@ -23,21 +23,16 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using JEngine.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace JEngine.Core.Editor
 {
-    public enum JEngineLanguage
-    {
-        Chinese = 0,
-        English = 1
-    }
-
     public class Settings : ScriptableObject
     {
         [Header("Package Settings")]
-        public string packageName = "main";
+        public string packageName = "DefaultPackage";
 
         public BuildTarget buildTarget = BuildTarget.Android;
 
@@ -47,18 +42,6 @@ namespace JEngine.Core.Editor
 
         [Tooltip("Use asset dependency database to improve build speed")]
         public bool useAssetDependDB = true;
-
-        [Header("JEngine Settings")]
-        public JEngineLanguage language = JEngineLanguage.English;
-
-        [Tooltip("Password for DLL encryption")]
-        public string encryptPassword = "";
-
-        [Tooltip("Startup scene path")]
-        public string startUpScenePath = "Assets/Init.unity";
-
-        [Tooltip("Jump to startup scene when launch")]
-        public bool jumpStartUp = true;
         
         private static Settings _instance;
         private static readonly string SettingsPath = "Assets/Editor/JEngineSettings.asset";
@@ -86,10 +69,17 @@ namespace JEngine.Core.Editor
                         AssetDatabase.Refresh();
                         
                         //提示看文档
-                        Debug.LogError("[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net");
-                        EditorUtility.DisplayDialog("Kindly Notice",
-                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net", "Done");
-                        Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
+                        Debug.LogError(Setting.GetString(SettingString.NoticeText));
+                        EditorUtility.DisplayDialog(Setting.GetString(SettingString.Notice),
+                            Setting.GetString(SettingString.NoticeText), Setting.GetString(SettingString.Done));
+                        if (Setting.Language == JEngineLanguage.English)
+                        {
+                            Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
+                        }
+                        else
+                        {
+                            Application.OpenURL("https://docs.xgamedev.net/zh/documents/0.8/");
+                        }
                     }
                 }
                 return _instance;

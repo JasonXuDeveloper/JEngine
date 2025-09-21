@@ -31,33 +31,114 @@ namespace JEngine.Core.Editor.CustomEditor
             // Build Options Group
             CreateBuildOptionsGroup();
 
-            // JEngine Settings Group
-            CreateJEngineSettingsGroup();
-
             return _root;
         }
 
         private void CreatePackageSettingsGroup()
         {
-            var packageGroup = SettingsUIBuilder.CreatePackageSettingsGroup(_settings, true);
+            var packageGroup = CreateGroup("Package Settings");
+
+            // Package Name Dropdown
+            var packageNameRow = CreateFormRow("Package Name");
+            var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
+            var packageNameField = new PopupField<string>()
+            {
+                choices = packageChoices.Any() ? packageChoices : new List<string> { _settings.packageName },
+                value = _settings.packageName
+            };
+            packageNameField.AddToClassList("form-control");
+            packageNameField.RegisterValueChangedCallback(evt =>
+            {
+                _settings.packageName = evt.newValue;
+                _settings.Save();
+            });
+            packageNameRow.Add(packageNameField);
+            packageGroup.Add(packageNameRow);
+
+            // Build Target with Set to Active button
+            var buildTargetRow = CreateFormRow("Build Target");
+            var buildTargetField = new EnumField(_settings.buildTarget);
+            buildTargetField.BindProperty(serializedObject.FindProperty("buildTarget"));
+            buildTargetField.RegisterValueChangedCallback(_ =>
+            {
+                _settings.Save();
+            });
+            buildTargetField.AddToClassList("form-control-with-button");
+
+            var setActiveButton = new Button(() =>
+            {
+                _settings.buildTarget = EditorUserBuildSettings.activeBuildTarget;
+                buildTargetField.value = _settings.buildTarget;
+                serializedObject.Update();
+                _settings.Save();
+            })
+            {
+                text = "Set to Active"
+            };
+            setActiveButton.AddToClassList("utility-button");
+
+            buildTargetRow.Add(buildTargetField);
+            buildTargetRow.Add(setActiveButton);
+            packageGroup.Add(buildTargetRow);
+
             _root.Add(packageGroup);
         }
 
         private void CreateBuildOptionsGroup()
         {
-            var buildGroup = SettingsUIBuilder.CreateBuildOptionsGroup(_settings, true);
+            var buildGroup = CreateGroup("Build Options");
+
+            // Clear Build Cache Toggle
+            var clearCacheRow = CreateFormRow("Clear Build Cache");
+            var clearCacheToggle = new Toggle();
+            clearCacheToggle.BindProperty(serializedObject.FindProperty("clearBuildCache"));
+            clearCacheToggle.tooltip =
+                "Clear build cache before building. Uncheck to enable incremental builds (faster)";
+            clearCacheToggle.RegisterValueChangedCallback(_ => _settings.Save());
+            clearCacheToggle.AddToClassList("form-control");
+            clearCacheRow.Add(clearCacheToggle);
+            buildGroup.Add(clearCacheRow);
+
+            // Use Asset Depend DB Toggle
+            var useAssetDBRow = CreateFormRow("Use Asset Dependency DB");
+            var useAssetDBToggle = new Toggle();
+            useAssetDBToggle.BindProperty(serializedObject.FindProperty("useAssetDependDB"));
+            useAssetDBToggle.tooltip = "Use asset dependency database to improve build speed";
+            useAssetDBToggle.RegisterValueChangedCallback(_ => _settings.Save());
+            useAssetDBToggle.AddToClassList("form-control");
+            useAssetDBRow.Add(useAssetDBToggle);
+            buildGroup.Add(useAssetDBRow);
+
             _root.Add(buildGroup);
         }
 
-        private void CreateJEngineSettingsGroup()
+        private VisualElement CreateGroup(string title)
         {
-            var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings, true);
-            _root.Add(jengineGroup);
+            var group = new VisualElement();
+            group.AddToClassList("group-box");
+
+            var header = new Label(title);
+            header.AddToClassList("group-header");
+            group.Add(header);
+
+            return group;
         }
 
         private StyleSheet CreateStyleSheet()
         {
             return StyleSheetLoader.LoadPackageStyleSheet<SettingsEditor>();
+        }
+
+        private VisualElement CreateFormRow(string labelText)
+        {
+            var row = new VisualElement();
+            row.AddToClassList("form-row");
+
+            var label = new Label(labelText);
+            label.AddToClassList("form-label");
+            row.Add(label);
+
+            return row;
         }
 
     }

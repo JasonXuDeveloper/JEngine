@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
+using JEngine.Core.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -28,9 +29,6 @@ namespace JEngine.Core.Editor.CustomEditor
 
             var styleSheet = CreateStyleSheet();
             _root.styleSheets.Add(styleSheet);
-
-            // Apply responsive text sizing to all elements
-            EditorUIUtils.MakeAllTextResponsive(_root);
 
             // Server Settings Group
             CreateServerSettingsGroup();
@@ -63,7 +61,6 @@ namespace JEngine.Core.Editor.CustomEditor
             var defaultHostField = new TextField();
             defaultHostField.BindProperty(serializedObject.FindProperty("defaultHostServer"));
             defaultHostField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(defaultHostField);
             defaultHostRow.Add(defaultHostField);
             serverGroup.Add(defaultHostRow);
 
@@ -79,7 +76,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             toggleButton.AddToClassList("toggle-button");
             toggleButton.AddToClassList("form-control");
-            EditorUIUtils.MakeFormWidthButton(toggleButton, EditorUIUtils.ButtonType.Primary);
             UpdateFallbackButtonState(toggleButton);
             toggleButtonRow.Add(toggleButton);
             serverGroup.Add(toggleButtonRow);
@@ -91,7 +87,6 @@ namespace JEngine.Core.Editor.CustomEditor
             var fallbackField = new TextField();
             fallbackField.BindProperty(serializedObject.FindProperty("fallbackHostServer"));
             fallbackField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(fallbackField);
             fallbackRow.Add(fallbackField);
             fallbackContainer.Add(fallbackRow);
             serverGroup.Add(fallbackContainer);
@@ -113,7 +108,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.packageName
             };
             packageNameField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(packageNameField);
             packageNameField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("packageName").stringValue = evt.newValue;
@@ -131,7 +125,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.hotCodeName
             };
             hotCodeField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(hotCodeField);
             hotCodeField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("hotCodeName").stringValue = evt.newValue;
@@ -149,7 +142,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.selectedHotScene
             };
             hotSceneField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(hotSceneField);
             hotSceneField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("selectedHotScene").stringValue = evt.newValue;
@@ -167,7 +159,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.hotUpdateClassName
             };
             hotClassField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(hotClassField);
             hotClassField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("hotUpdateClassName").stringValue = evt.newValue;
@@ -185,7 +176,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.hotUpdateMethodName
             };
             hotMethodField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(hotMethodField);
             hotMethodField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("hotUpdateMethodName").stringValue = evt.newValue;
@@ -203,7 +193,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.aotDllListFilePath
             };
             aotField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(aotField);
             aotField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("aotDllListFilePath").stringValue = evt.newValue;
@@ -228,7 +217,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.staticSecretKeyPath
             };
             staticKeyField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(staticKeyField);
             staticKeyField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("staticSecretKeyPath").stringValue = evt.newValue;
@@ -246,7 +234,6 @@ namespace JEngine.Core.Editor.CustomEditor
                 value = _bootstrap.dynamicSecretKeyPath
             };
             dynamicKeyField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(dynamicKeyField);
             dynamicKeyField.RegisterValueChangedCallback(evt =>
             {
                 serializedObject.FindProperty("dynamicSecretKeyPath").stringValue = evt.newValue;
@@ -271,7 +258,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             versionField.BindProperty(serializedObject.FindProperty("versionText"));
             versionField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(versionField);
             versionRow.Add(versionField);
             uiGroup.Add(versionRow);
 
@@ -284,7 +270,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             statusField.BindProperty(serializedObject.FindProperty("updateStatusText"));
             statusField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(statusField);
             statusRow.Add(statusField);
             uiGroup.Add(statusRow);
 
@@ -297,7 +282,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             progressTextField.BindProperty(serializedObject.FindProperty("downloadProgressText"));
             progressTextField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(progressTextField);
             progressTextRow.Add(progressTextField);
             uiGroup.Add(progressTextRow);
 
@@ -310,7 +294,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             progressBarField.BindProperty(serializedObject.FindProperty("downloadProgressBar"));
             progressBarField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(progressBarField);
             progressBarRow.Add(progressBarField);
             uiGroup.Add(progressBarRow);
 
@@ -333,7 +316,6 @@ namespace JEngine.Core.Editor.CustomEditor
             };
             playModeButton.AddToClassList("toggle-button");
             playModeButton.AddToClassList("form-control");
-            EditorUIUtils.MakeFormWidthButton(playModeButton, EditorUIUtils.ButtonType.Primary);
             UpdatePlayModeButtonState(playModeButton);
             playModeRow.Add(playModeButton);
             devGroup.Add(playModeRow);
@@ -346,12 +328,12 @@ namespace JEngine.Core.Editor.CustomEditor
             if (_bootstrap.useEditorDevMode)
             {
                 button.text = "Editor Dev Mode";
-                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Danger);
+                button.style.backgroundColor = new Color(1f, 0.3f, 0.3f);
             }
             else
             {
                 button.text = "Host Play Mode";
-                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Success);
+                button.style.backgroundColor = new Color(0.3f, 1f, 0.3f);
             }
         }
 #endif
@@ -361,12 +343,12 @@ namespace JEngine.Core.Editor.CustomEditor
             if (_bootstrap.useDefaultAsFallback)
             {
                 button.text = "Using Default Server as Fallback";
-                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Success);
+                button.style.backgroundColor = new Color(0.3f, 1f, 0.3f);
             }
             else
             {
                 button.text = "Using Custom Server as Fallback";
-                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Warning);
+                button.style.backgroundColor = new Color(1f, 1f, 0.3f);
             }
         }
 
@@ -387,13 +369,83 @@ namespace JEngine.Core.Editor.CustomEditor
 
             var header = new Label(title);
             header.AddToClassList("group-header");
-            EditorUIUtils.MakeHeaderTextResponsive(header);
             group.Add(header);
 
             return group;
         }
 
+        private VisualElement CreateGroupWithFormContainer(string title)
+        {
+            var group = CreateGroup(title);
 
+            var formContainer = new VisualElement();
+            formContainer.AddToClassList("form-container");
+            group.Add(formContainer);
+
+            return formContainer;
+        }
+
+        private VisualElement CreateDropdownField(
+            string label,
+            string propertyName,
+            Func<List<string>> getChoices,
+            string validationMessage,
+            Func<string, bool> validator = null)
+        {
+            var container = new VisualElement();
+            container.AddToClassList("field-container");
+
+            var choices = getChoices();
+            var property = serializedObject.FindProperty(propertyName);
+
+            var dropdown = new PopupField<string>(label)
+            {
+                choices = choices.Any() ? choices : new List<string> { property.stringValue },
+                value = property.stringValue
+            };
+
+            dropdown.RegisterValueChangedCallback(evt =>
+            {
+                property.stringValue = evt.newValue;
+                serializedObject.ApplyModifiedProperties();
+
+                // Validate
+                bool isValid = !string.IsNullOrEmpty(evt.newValue);
+                if (validator != null)
+                    isValid = isValid && validator(evt.newValue);
+
+                UpdateValidationState(container, isValid, validationMessage);
+            });
+
+            // Initial validation
+            bool initialValid = !string.IsNullOrEmpty(property.stringValue);
+            if (validator != null)
+                initialValid = initialValid && validator(property.stringValue);
+            UpdateValidationState(container, initialValid, validationMessage);
+
+            container.Add(dropdown);
+            return container;
+        }
+
+        private void UpdateValidationState(VisualElement container, bool isValid, string message)
+        {
+            var existingError = container.Q<Label>("validation-error");
+
+            if (!isValid)
+            {
+                if (existingError == null)
+                {
+                    var errorLabel = new Label(message);
+                    errorLabel.name = "validation-error";
+                    errorLabel.AddToClassList("validation-error");
+                    container.Add(errorLabel);
+                }
+            }
+            else
+            {
+                existingError?.RemoveFromHierarchy();
+            }
+        }
 
         private StyleSheet CreateStyleSheet()
         {
@@ -407,7 +459,6 @@ namespace JEngine.Core.Editor.CustomEditor
 
             var label = new Label(labelText);
             label.AddToClassList("form-label");
-            EditorUIUtils.MakeTextResponsive(label);
             row.Add(label);
 
             return row;

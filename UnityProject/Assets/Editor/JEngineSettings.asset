@@ -16,7 +16,3 @@ MonoBehaviour:
   buildTarget: 2
   clearBuildCache: 0
   useAssetDependDB: 1
-  language: 1
-  encryptPassword: 
-  startUpScenePath: Assets/Init.unity
-  jumpStartUp: 1
