@@ -72,37 +72,29 @@
   <ItemGroup>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>Dlls\UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>Dlls\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>Dlls\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System" />
     <Reference Include="UnityEngine.UI">
       <HintPath>Dlls\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="ILRuntime">
       <HintPath>..\Library\ScriptAssemblies\ILRuntime.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TestRunner">
       <HintPath>..\Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="YooAsset">
       <HintPath>..\Library\ScriptAssemblies\YooAsset.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

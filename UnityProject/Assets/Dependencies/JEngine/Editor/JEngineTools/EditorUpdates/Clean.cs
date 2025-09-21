@@ -156,14 +156,13 @@ namespace JEngine.Editor
                 }
 
                 watch.Stop();
-                if (counts > 0) //如果删除过东西
+                if (counts > 0) //如果删除过东西，就代表DLL更新了，就需要生成文件
                 {
                     Log.Print(String.Format(Setting.GetString(SettingString.DLLCleanLog),
                         counts,
                         watch.ElapsedMilliseconds));
+                    onPostClean?.Invoke(counts);
                 }
-                
-                onPostClean?.Invoke(counts);
                 
                 _isDone = true;
             }

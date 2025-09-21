@@ -30,7 +30,7 @@
 </p>
 
 
-# JENGINE v1.0 dev
+# JENGINE v0.8.0f7
 
   ![Alt](https://repobeats.axiom.co/api/embed/d085b73402ea8b3e88deb98cb4074afd95528c0d.svg "Repobeats analytics image")
 
@@ -51,7 +51,7 @@ The ``development`` branch is the development branch. You are welcome to make ch
 
 ## Requirement
 
-- **Unity 2021.3.2+**
+- **Unity 2020.3.4+**
 - .net framework 4.x / .net 4.x / net framework
 
 ## Packages
@@ -74,7 +74,7 @@ Different built-in and additional packages for JEngine
 ## Dependencies
 
 - [ILRuntime](https://github.com/Ourpalm/ILRuntime) v2.1.0 - execute C# code in runtime
-- [YooAssets](https://github.com/tuyoogame/YooAsset) v2.1.2 - update resource in runtime
+- [YooAssets](https://github.com/tuyoogame/YooAsset) v1.4.10 - update resource in runtime
 - [Unity-Reorderable-List](https://github.com/cfoulston/Unity-Reorderable-List) v1.0.1 - additional editor inspector tool
 
 
@@ -91,9 +91,24 @@ Different built-in and additional packages for JEngine
 
 <img src="https://contrib.rocks/image?repo=JasonXuDeveloper/JEngine"/>
 
-## v0.1.0 New Features
+## v0.8.0 New Features
 
-- Support **Hot Update Resource Encryption**
+- **Supported** WebGL
+- **Removed** JUI (will be redesigned shortly)
+- **Optimized** LifeCycleMgr performance
+- **Optimized** ThreadMgr features
+- **Optimized** JStream performance
+- **Optimized** JBehaviour performance
+- **Optimized** MonoBehaviour performance
+- **Optimized** FpsMonitor performance
+- **Optimized** CryptoMgr interfaces
+- **Optimized** JBehaviour/ClassBind Object/MonoBehaviour GC
+- **Optimized** GetComponent(s)/FindObject(s)OfType performance
+- **Switched** to YooAsset for asset management module (instead of Bundle Master)
+- **NEW FEATURE** UnsafeMgr which provides unsafe (use for optimization) features 
+- **NEW FEATURE** UnmanagedMemoryPool which supports allocating unmanaged memory with pooling
+- **NEW FEATURE** CoroutineMgr which supports executing/stopping coroutines from non-MonoBehaviour class
+- **NEW STRUCTURE** Split JEngine source code to multiple packages
 
 [Click here to see the change log](CHANGE.md)
 
