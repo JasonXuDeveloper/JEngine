@@ -32,8 +32,7 @@ namespace JEngine.Core.Encrypt
     public enum EncryptionOption
     {
         Xor = 1,
-        Aes = 2,
-        ChaCha20 = 3
+        Aes = 2
     }
 
     public static class EncryptionMapping
@@ -42,8 +41,7 @@ namespace JEngine.Core.Encrypt
             new Dictionary<EncryptionOption, IBundleEncryptionConfig>
             {
                 { EncryptionOption.Xor, new XorBundle() },
-                { EncryptionOption.Aes, new AesBundle() },
-                { EncryptionOption.ChaCha20, new ChaCha20Bundle() }
+                { EncryptionOption.Aes, new AesBundle() }
             };
 
         public static IBundleEncryptionConfig GetBundleConfig(EncryptionOption option)

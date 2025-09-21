@@ -310,8 +310,8 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(encryptionField);
             encryptionField.RegisterValueChangedCallback(evt =>
             {
-                var enumProperty = serializedObject.FindProperty(nameof(_bootstrap.encryptionOption));
-                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(EncryptionOption)), evt.newValue);
+                serializedObject.FindProperty(nameof(_bootstrap.encryptionOption)).enumValueIndex =
+                    (int)(EncryptionOption)evt.newValue;
                 serializedObject.ApplyModifiedProperties();
 
                 // Refresh the config object fields when encryption option changes
