@@ -6,6 +6,7 @@
   "license": "MIT",
   "unity": "2022.3",
   "documentationUrl": "https://docs.xgamedev.net/",
+  "changelogUrl": "https://github.com/JasonXuDeveloper/JEngine/blob/master/CHANGE.md",
   "keywords": [
     "HotUpdate",
     "HybridCLR",

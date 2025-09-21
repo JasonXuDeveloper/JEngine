@@ -30,7 +30,7 @@ using YooAsset;
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// 资源包初始化回调接口
+    /// Resource package initialization callback interface
     /// </summary>
     public struct PackageInitializationCallbacks
     {

@@ -29,7 +29,7 @@ using System.IO;
 namespace JEngine.Core.Encrypt
 {
     /// <summary>
-    /// xor解密流
+    /// XOR decryption stream
     /// </summary>
     public class XorStream : FileStream
     {

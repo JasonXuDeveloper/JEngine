@@ -35,7 +35,7 @@ namespace JEngine.Core
     public partial class Bootstrap
     {
         /// <summary>
-        /// 加载热更新场景的通用函数
+        /// Common function for loading hot update scenes
         /// </summary>
         /// <param name="package"></param>
         /// <param name="sceneName"></param>
@@ -46,34 +46,34 @@ namespace JEngine.Core
             SceneLoadCallbacks callbacks,
             LoadSceneMode loadMode = LoadSceneMode.Single)
         {
-            // 调用状态更新回调
+            // Call status update callback
             callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Loading);
             callbacks.OnProgressUpdate?.Invoke(0f);
 
-            // 保存当前活动场景，用于后续卸载
+            // Save current active scene for later unloading
             var previousSceneName = SceneManager.GetActiveScene().name;
 
             try
             {
-                // 加载新场景
+                // Load new scene
                 var handle = package.LoadSceneAsync(sceneName, loadMode, suspendLoad: true);
 
-                // 更新加载进度
+                // Update loading progress
                 while (handle.Progress < 0.9f)
                 {
                     float progress = handle.Progress;
 
-                    // 调用进度更新回调
+                    // Call progress update callback
                     callbacks.OnProgressUpdate?.Invoke(progress);
 
                     await UniTask.DelayFrame(1);
                 }
 
-                // 调用完成状态回调
+                // Call completion status callback
                 callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Completed);
                 callbacks.OnProgressUpdate?.Invoke(1f);
 
-                await UniTask.DelayFrame(1); // 等待一帧，确保场景切换完成
+                await UniTask.DelayFrame(1); // Wait one frame to ensure scene transition is complete
                 handle.UnSuspend();
                 await handle.Task;
 
@@ -82,15 +82,15 @@ namespace JEngine.Core
                     throw new Exception(handle.LastError);
                 }
 
-                // 调用完成回调
+                // Call completion callback
                 return handle;
             }
             catch (Exception e)
             {
                 callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Failed);
-                // 调用错误回调
+                // Call error callback
                 await callbacks.OnError(e);
-                // 切换回上一个场景
+                // Switch back to previous scene
                 await SceneManager.LoadSceneAsync(previousSceneName);
 
                 return null;
@@ -98,7 +98,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 创建或获取一个资源包
+        /// Create or get a resource package
         /// </summary>
         /// <param name="packageName"></param>
         /// <returns></returns>
@@ -108,12 +108,12 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 通用的资源包更新函数
+        /// Common resource package update function
         /// </summary>
-        /// <param name="package">要初始化的资源包</param>
-        /// <param name="callbacks">各种回调函数</param>
-        /// <param name="encryptionOption">分包加密方式</param>
-        /// <returns>是否初始化成功</returns>
+        /// <param name="package">Resource package to initialize</param>
+        /// <param name="callbacks">Various callback functions</param>
+        /// <param name="encryptionOption">Package encryption method</param>
+        /// <returns>Whether initialization was successful</returns>
         public static async UniTask<bool> UpdatePackage(ResourcePackage package,
             PackageInitializationCallbacks callbacks, EncryptionOption encryptionOption)
         {
@@ -132,7 +132,7 @@ namespace JEngine.Core
         }
 
         /// <summary>
-        /// 清理资源包缓存
+        /// Clear resource package cache
         /// </summary>
         /// <param name="package"></param>
         /// <param name="onError"></param>
@@ -145,11 +145,11 @@ namespace JEngine.Core
 
             if (operation.Status == EOperationStatus.Succeed)
             {
-                //清理成功
+                // Cleanup successful
                 return true;
             }
 
-            //清理失败
+            // Cleanup failed
             if (onError != null) await onError(new Exception(operation.Error));
             return false;
         }

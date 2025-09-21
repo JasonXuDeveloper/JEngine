@@ -26,22 +26,22 @@
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// 场景加载状态枚举
+    /// Scene loading status enum
     /// </summary>
     public enum SceneLoadStatus
     {
         /// <summary>
-        /// 正在加载场景
+        /// Loading scene
         /// </summary>
         Loading,
 
         /// <summary>
-        /// 场景加载完成
+        /// Scene loading completed
         /// </summary>
         Completed,
 
         /// <summary>
-        /// 场景加载失败
+        /// Scene loading failed
         /// </summary>
         Failed
     }
