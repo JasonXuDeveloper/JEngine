@@ -47,7 +47,6 @@ namespace JEngine.Core.Encrypt.Manifest
 
         public byte[] ProcessManifest(byte[] fileData)
         {
-#if UNITY_EDITOR
             var key = _config.key;
             Span<byte> dataSpan = fileData;
             for (int i = 0; i < dataSpan.Length; i++)
@@ -56,9 +55,6 @@ namespace JEngine.Core.Encrypt.Manifest
             }
 
             return fileData;
-#else
-            throw new System.NotSupportedException("XOR manifest encryption is only supported in Unity Editor");
-#endif
         }
     }
 

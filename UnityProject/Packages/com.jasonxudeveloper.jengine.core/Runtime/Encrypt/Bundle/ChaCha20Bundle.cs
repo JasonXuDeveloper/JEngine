@@ -50,7 +50,6 @@ namespace JEngine.Core.Encrypt.Bundle
 
         public EncryptResult Encrypt(EncryptFileInfo fileInfo)
         {
-#if UNITY_EDITOR
             var bytes = File.ReadAllBytes(fileInfo.FileLoadPath);
 
             // Use ChaCha20 stream cipher for encryption
@@ -62,9 +61,6 @@ namespace JEngine.Core.Encrypt.Bundle
                 EncryptedData = encryptedData
             };
             return result;
-#else
-            throw new System.NotSupportedException("ChaCha20 encryption is only supported in Unity Editor");
-#endif
         }
     }
 

@@ -50,7 +50,6 @@ namespace JEngine.Core.Encrypt.Bundle
 
         public EncryptResult Encrypt(EncryptFileInfo fileInfo)
         {
-#if UNITY_EDITOR
             var bytes = File.ReadAllBytes(fileInfo.FileLoadPath);
             var key = _config.key;
 
@@ -64,9 +63,6 @@ namespace JEngine.Core.Encrypt.Bundle
             result.Encrypted = true;
             result.EncryptedData = bytes;
             return result;
-#else
-            throw new System.NotSupportedException("XOR encryption is only supported in Unity Editor");
-#endif
         }
     }
 
