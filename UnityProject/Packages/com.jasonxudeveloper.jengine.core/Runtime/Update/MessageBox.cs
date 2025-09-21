@@ -31,59 +31,56 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace JEngine.Core.Misc
+namespace JEngine.Core.Update
 {
-    public class MessageBox
+    /// <summary>
+    /// Awaitable class for MessageBox operations
+    /// </summary>
+    public class MessageBoxAwaiter : IUniTaskSource<bool>
     {
-        /// <summary>
-        /// Awaitable class for MessageBox operations
-        /// </summary>
-        private class MessageBoxAwaiter : IUniTaskSource<bool>
+        private UniTaskCompletionSourceCore<bool> _core;
+
+        public bool GetResult(short token) => _core.GetResult(token);
+
+        void IUniTaskSource.GetResult(short token)
         {
-            private UniTaskCompletionSourceCore<bool> _core;
-
-            public bool GetResult(short token) => _core.GetResult(token);
-
-            void IUniTaskSource.GetResult(short token)
-            {
-                _core.GetResult(token);
-            }
-
-            public UniTaskStatus GetStatus(short token) => _core.GetStatus(token);
-            public UniTaskStatus UnsafeGetStatus() => _core.UnsafeGetStatus();
-
-            public void OnCompleted(Action<object> continuation, object state, short token) =>
-                _core.OnCompleted(continuation, state, token);
-
-            /// <summary>
-            /// Gets the UniTask for this awaiter
-            /// </summary>
-            public UniTask<bool> Task => new(this, _core.Version);
-
-            /// <summary>
-            /// Completes the task with the specified result (safe - won't throw if already completed)
-            /// </summary>
-            public bool TrySetResult(bool result) => _core.TrySetResult(result);
-
-            /// <summary>
-            /// Cancels the task (safe - won't throw if already completed)
-            /// </summary>
-            public void TrySetCanceled()
-            {
-                _core.TrySetCanceled();
-            }
-
-            /// <summary>
-            /// Gets whether the task is already completed
-            /// </summary>
-            public bool IsCompleted => _core.GetStatus(_core.Version).IsCompleted();
-
-            /// <summary>
-            /// Resets the awaiter for reuse (zero allocation)
-            /// </summary>
-            public void Reset() => _core.Reset();
+            _core.GetResult(token);
         }
 
+        public UniTaskStatus GetStatus(short token) => _core.GetStatus(token);
+        public UniTaskStatus UnsafeGetStatus() => _core.UnsafeGetStatus();
+
+        public void OnCompleted(Action<object> continuation, object state, short token) =>
+            _core.OnCompleted(continuation, state, token);
+
+        /// <summary>
+        /// Gets the UniTask for this awaiter
+        /// </summary>
+        public UniTask<bool> Task => new(this, _core.Version);
+
+        /// <summary>
+        /// Completes the task with the specified result (safe - won't throw if already completed)
+        /// </summary>
+        public bool TrySetResult(bool result) => _core.TrySetResult(result);
+
+        /// <summary>
+        /// Cancels the task (safe - won't throw if already completed)
+        /// </summary>
+        public bool TrySetCanceled() => _core.TrySetCanceled();
+
+        /// <summary>
+        /// Gets whether the task is already completed
+        /// </summary>
+        public bool IsCompleted => _core.GetStatus(_core.Version).IsCompleted();
+
+        /// <summary>
+        /// Resets the awaiter for reuse (zero allocation)
+        /// </summary>
+        public void Reset() => _core.Reset();
+    }
+
+    public class MessageBox
+    {
         private static readonly Lazy<GameObject> LazyPrefab = new(() =>
         {
             var prefab = Resources.Load<GameObject>("Prefabs/MessageBox");

@@ -24,7 +24,6 @@
 //  THE SOFTWARE.
 
 using System.IO;
-using JEngine.Core.Encrypt;
 using JEngine.Core.Update;
 using YooAsset;
 
