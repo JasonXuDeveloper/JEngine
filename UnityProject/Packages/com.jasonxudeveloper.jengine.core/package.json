@@ -5,7 +5,7 @@
   "description": "The solution that allows unity games update in runtime.",
   "license": "MIT",
   "unity": "2022.3",
-  "documentationUrl": "https://jengine.xgamedev.net/",
+  "documentationUrl": "https://docs.xgamedev.net/",
   "changelogUrl": "https://github.com/JasonXuDeveloper/JEngine/blob/master/CHANGE.md",
   "keywords": [
     "HotUpdate",

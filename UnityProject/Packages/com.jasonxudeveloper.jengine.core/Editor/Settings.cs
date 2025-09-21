@@ -77,11 +77,11 @@ namespace JEngine.Core.Editor
 
                         // Prompt to read documentation
                         Debug.LogError(
-                            "[JEngine] First time to use JEngine please read the document first! URL: jengine.xgamedev.net");
+                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net");
                         EditorUtility.DisplayDialog("Kindly Notice",
-                            "[JEngine] First time to use JEngine please read the document first! URL: jengine.xgamedev.net",
+                            "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net",
                             "Done");
-                        Application.OpenURL("https://jengine.xgamedev.net/documents/0.8/");
+                        Application.OpenURL("https://docs.xgamedev.net/documents/0.8/");
                     }
                 }
 
