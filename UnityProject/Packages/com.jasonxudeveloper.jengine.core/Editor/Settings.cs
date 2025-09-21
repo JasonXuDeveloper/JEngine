@@ -51,6 +51,9 @@ namespace JEngine.Core.Editor
         [Header("JEngine Settings")]
         public JEngineLanguage language = JEngineLanguage.English;
 
+        [Tooltip("Password for DLL encryption")]
+        public string encryptPassword = "";
+
         [Tooltip("Startup scene path")]
         public string startUpScenePath = "Assets/Init.unity";
 
