@@ -34,6 +34,8 @@ using Nino.Core;
 using Obfuz;
 using Obfuz.EncryptionVM;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+// using Obfuz.EncryptionVM;
 using YooAsset;
 using Application = UnityEngine.Application;
 using TMPro;
@@ -41,7 +43,7 @@ using UnityEngine.UI;
 
 namespace JEngine.Core
 {
-    public partial class Bootstrap : MonoBehaviour
+    public class Bootstrap : MonoBehaviour
     {
         [Header("Server Settings")] public string defaultHostServer = "http://127.0.0.1/";
 
@@ -105,7 +107,9 @@ namespace JEngine.Core
         }
 
         private static Bootstrap _instance;
-        
+
+        public static Bootstrap Instance => _instance;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void SetUpStaticSecretKey()
         {
@@ -170,7 +174,8 @@ namespace JEngine.Core
         {
             if (_instance != null && _instance != this)
             {
-                DestroyImmediate(_instance);
+                Destroy(gameObject);
+                return;
             }
 
             _instance = this;
@@ -255,10 +260,10 @@ namespace JEngine.Core
                             if (downloadProgressBar != null)
                                 downloadProgressBar.value = 1f;
                         },
-                        OnError = async error => await MessageBox.Show("警告", error.Message, no: null)
+                        OnError = async error => await MessageBox.Show("警告", error, no: null)
                     };
 
-                    bool success = await InitializePackage(package, packageInitCallbacks);
+                    bool success = await InitializePackageWithCallbacks(package, packageInitCallbacks);
                     if (!success)
                     {
                         continue; // Retry the loop
@@ -273,21 +278,7 @@ namespace JEngine.Core
 
                     //进热更场景
                     updateStatusText.text = "正在加载场景...";
-                    var sceneLoadCallbacks = new SceneLoadCallbacks
-                    {
-                        OnStatusUpdate = status => updateStatusText.text = status,
-                        OnProgressUpdate = progress =>
-                        {
-                            downloadProgressText.text = $"{Mathf.RoundToInt(progress * 100)}%";
-                            downloadProgressBar.value = progress;
-                        },
-                        OnError = async exception =>
-                        {
-                            await MessageBox.Show("错误", $"场景加载失败: {exception.Message}", ok: "重试");
-                        }
-                    };
-                    downloadProgressBar.gameObject.SetActive(true);
-                    await LoadHotUpdateScene(package, selectedHotScene, sceneLoadCallbacks);
+                    await LoadSceneWithProgress(package, selectedHotScene);
 
                     // 加载热更DLL
                     updateStatusText.text = "正在加载代码...";
@@ -304,8 +295,12 @@ namespace JEngine.Core
                     dllHandle.Release();
 #endif
 
+
                     Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes);
                     await LoadHotCode(hotUpdateAss);
+
+                    // 热更代码执行成功后，卸载之前的场景
+                    await UnloadPreviousScene();
 
                     // If we reach here, initialization was successful, break out of the retry loop
                     break;
@@ -316,6 +311,78 @@ namespace JEngine.Core
                     await MessageBox.Show("错误", $"初始化过程中发生异常：{ex.Message}");
                     // Continue the loop to retry
                 }
+            }
+        }
+
+        private Scene? _previousScene; // 存储之前的场景用于后续卸载
+
+        private async UniTask LoadSceneWithProgress(ResourcePackage package, string sceneName)
+        {
+            // 显示进度UI
+            downloadProgressBar.gameObject.SetActive(true);
+            updateStatusText.text = "正在加载场景...";
+            downloadProgressText.text = "0%";
+            downloadProgressBar.value = 0f;
+
+            // 保存当前活动场景，用于后续卸载
+            _previousScene = SceneManager.GetActiveScene();
+
+            // 使用Additive模式加载新场景
+            var handle = package.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+
+            // 更新加载进度
+            while (!handle.IsDone)
+            {
+                float progress = handle.Progress;
+
+                // 更新UI显示
+                downloadProgressText.text = $"{Mathf.RoundToInt(progress * 100)}%";
+                downloadProgressBar.value = progress;
+
+                await UniTask.DelayFrame(1);
+            }
+
+            // 等待场景加载完成
+            await handle.Task;
+
+            if (handle.Status == EOperationStatus.Succeed)
+            {
+                updateStatusText.text = "场景加载完成";
+                downloadProgressText.text = "100%";
+                downloadProgressBar.value = 1f;
+
+                // 设置新场景为活动场景
+                var newScene = handle.SceneObject;
+                SceneManager.SetActiveScene(newScene);
+
+                // 等待一帧确保场景已经设置为活动状态
+                await UniTask.DelayFrame(1);
+
+                // 隐藏进度UI
+                downloadProgressBar.gameObject.SetActive(false);
+                downloadProgressText.text = "";
+                updateStatusText.text = "";
+            }
+            else
+            {
+                // 加载失败处理
+                await MessageBox.Show("错误", $"场景加载失败: {handle.LastError}", ok: "重试");
+                throw new Exception($"Failed to load scene: {handle.LastError}");
+            }
+        }
+
+        private async UniTask UnloadPreviousScene()
+        {
+            if (_previousScene.HasValue && !string.IsNullOrEmpty(_previousScene.Value.name))
+            {
+                // 静默卸载之前的场景，不显示进度
+                var unloadOperation = SceneManager.UnloadSceneAsync(_previousScene.Value);
+                if (unloadOperation != null)
+                {
+                    await unloadOperation;
+                }
+
+                _previousScene = null;
             }
         }
 
@@ -369,7 +436,39 @@ namespace JEngine.Core
             }
         }
 
-        private async UniTask<bool> InitializePackageImpl(ResourcePackage package,
+        /// <summary>
+        /// 资源包初始化回调接口
+        /// </summary>
+        public class PackageInitializationCallbacks
+        {
+            public Action<string> OnStatusUpdate { get; set; }
+            public Action<string> OnVersionUpdate { get; set; }
+            public Func<int, long, UniTask<bool>> OnDownloadPrompt { get; set; }
+            public Action<DownloadStatus> OnDownloadProgress { get; set; }
+            public Action OnDownloadStart { get; set; }
+            public Action OnDownloadComplete { get; set; }
+            public Func<string, UniTask> OnError { get; set; }
+        }
+
+        /// <summary>
+        /// 下载状态信息
+        /// </summary>
+        public class DownloadStatus
+        {
+            public int CurrentDownloadCount { get; set; }
+            public int TotalDownloadCount { get; set; }
+            public long CurrentDownloadBytes { get; set; }
+            public long TotalDownloadBytes { get; set; }
+            public float Progress { get; set; }
+        }
+
+        /// <summary>
+        /// 通用的资源包初始化函数
+        /// </summary>
+        /// <param name="package">要初始化的资源包</param>
+        /// <param name="callbacks">各种回调函数</param>
+        /// <returns>是否初始化成功</returns>
+        public async UniTask<bool> InitializePackageWithCallbacks(ResourcePackage package,
             PackageInitializationCallbacks callbacks)
         {
             try
@@ -415,7 +514,7 @@ namespace JEngine.Core
                 if (initOperation.Status != EOperationStatus.Succeed)
                 {
                     if (callbacks.OnError != null)
-                        await callbacks.OnError(new Exception(initOperation.Error));
+                        await callbacks.OnError($"资源初始化失败：{initOperation.Error}");
                     return false;
                 }
 
@@ -433,7 +532,7 @@ namespace JEngine.Core
                 else
                 {
                     if (callbacks.OnError != null)
-                        await callbacks.OnError(new Exception(operation.Error));
+                        await callbacks.OnError($"获取资源版本失败：{operation.Error}");
                     return false;
                 }
 
@@ -445,7 +544,7 @@ namespace JEngine.Core
                 if (updateOperation.Status != EOperationStatus.Succeed)
                 {
                     if (callbacks.OnError != null)
-                        await callbacks.OnError(new Exception(updateOperation.Error));
+                        await callbacks.OnError($"更新资源清单失败：{updateOperation.Error}");
                     return false;
                 }
 
@@ -477,14 +576,26 @@ namespace JEngine.Core
 
                     await UniTask.DelayFrame(1);
 
-                    downloader.DownloadUpdateCallback += callbacks.OnDownloadProgress;
+                    downloader.DownloadUpdateCallback += data =>
+                    {
+                        var status = new DownloadStatus
+                        {
+                            CurrentDownloadCount = data.CurrentDownloadCount,
+                            TotalDownloadCount = downloader.TotalDownloadCount,
+                            CurrentDownloadBytes = data.CurrentDownloadBytes,
+                            TotalDownloadBytes = downloader.TotalDownloadBytes,
+                            Progress = data.Progress
+                        };
+                        callbacks.OnDownloadProgress?.Invoke(status);
+                    };
+
                     downloader.BeginDownload();
                     await downloader.Task;
 
                     if (downloader.Status != EOperationStatus.Succeed)
                     {
                         if (callbacks.OnError != null)
-                            await callbacks.OnError(new Exception(downloader.Error));
+                            await callbacks.OnError($"下载资源失败：{downloader.Error}");
                         return false;
                     }
 
@@ -502,7 +613,7 @@ namespace JEngine.Core
             catch (Exception ex)
             {
                 if (callbacks.OnError != null)
-                    await callbacks.OnError(ex);
+                    await callbacks.OnError($"初始化过程中发生异常：{ex.Message}");
                 return false;
             }
         }

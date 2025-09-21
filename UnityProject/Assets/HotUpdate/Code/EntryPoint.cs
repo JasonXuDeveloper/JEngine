@@ -25,20 +25,16 @@
 
 using Cysharp.Threading.Tasks;
 using JEngine.Core;
-using JEngine.Core.Update;
 using Obfuz;
 using UnityEngine;
-using UnityEngine.Scripting;
 using UnityEngine.UI;
 using YooAsset;
 
 namespace HotUpdate.Code
 {
-    [Preserve]
     [ObfuzIgnore(ObfuzScope.TypeName)]
     public static class EntryPoint
     {
-        [Preserve]
         [ObfuzIgnore(ObfuzScope.MethodName)]
         public static void RunGame()
         {
@@ -56,17 +52,23 @@ namespace HotUpdate.Code
                         Debug.Log("AddOnDemoButton clicked.");
                         var packageName = "addon1";
 
+                        // 获取Bootstrap实例
+                        var bootstrap = Bootstrap.Instance;
+
                         // 创建或获取AddOn1包
                         var package = YooAssets.TryGetPackage(packageName) ?? YooAssets.CreatePackage(packageName);
 
                         // 设置AddOn包的初始化回调
-                        var callbacks = new PackageInitializationCallbacks
+                        var callbacks = new Bootstrap.PackageInitializationCallbacks
                         {
                             OnStatusUpdate = static status => Debug.Log($"[AddOn1] 状态: {status}"),
                             OnVersionUpdate = static version => Debug.Log($"[AddOn1] 版本: {version}"),
-                            OnDownloadPrompt = static (count, size) => MessageBox.Show(
-                                $"[AddOn1] 需要下载 {count} 个文件，总大小 {size / 1024f / 1024f:F2}MB，是否继续？",
-                                "下载提示", "是", "否"),
+                            OnDownloadPrompt = static (count, size) =>
+                            {
+                                Debug.Log($"[AddOn1] 需要下载 {count} 个文件，总大小 {size / 1024 / 1024}MB");
+                                // 对于AddOn包，我们可以选择自动下载或询问用户
+                                return new(true); // 自动同意下载
+                            },
                             OnDownloadProgress = static data =>
                             {
                                 Debug.Log(
@@ -83,7 +85,7 @@ namespace HotUpdate.Code
 
                         // 使用Bootstrap的通用初始化函数
                         Debug.Log("[AddOn1] 开始初始化AddOn1包...");
-                        bool success = await Bootstrap.InitializePackage(package, callbacks);
+                        bool success = await bootstrap.InitializePackageWithCallbacks(package, callbacks);
 
                         if (!success)
                         {
@@ -94,27 +96,15 @@ namespace HotUpdate.Code
                         Debug.Log("[AddOn1] AddOn1包初始化成功！");
 
                         // 加载AddOn1场景
-                        var sceneLoadCallbacks = new SceneLoadCallbacks
-                        {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] {status}"),
-                            OnProgressUpdate = static progress => Debug.Log($"[AddOn1] 加载进度: {progress * 100:F0}%"),
-                            OnError = static exception =>
-                            {
-                                Debug.LogError($"[AddOn1] 场景加载失败: {exception.Message}");
-                                return UniTask.CompletedTask;
-                            }
-                        };
-
-                        var handle = await Bootstrap.LoadHotUpdateScene(package,
-                            "Assets/HotUpdate/AddOn1/Scene/test.unity",
-                            sceneLoadCallbacks);
-                        if (handle != null)
+                        var sceneHandle = package.LoadSceneAsync("Assets/HotUpdate/AddOn1/Scene/test.unity");
+                        await sceneHandle.Task;
+                        if (sceneHandle.Status == EOperationStatus.Succeed)
                         {
                             Debug.Log("进入分包场景");
                         }
                         else
                         {
-                            Debug.LogError("[AddOn1] 场景加载异常");
+                            Debug.LogError($"[AddOn1] 场景加载失败: {sceneHandle.LastError}");
                         }
 
                         // 加载AddOn1资源
