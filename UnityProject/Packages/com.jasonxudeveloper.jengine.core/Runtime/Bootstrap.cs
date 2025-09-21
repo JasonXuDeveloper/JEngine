@@ -61,8 +61,7 @@ namespace JEngine.Core
 
         public string hotUpdateMethodName = "RunGame";
 
-        [Header("Security Settings")] public string staticSecretKeyPath = "Obfuz/StaticSecretKey";
-
+        [Header("Security Settings")]
         public string dynamicSecretKeyPath = "Assets/HotUpdate/Obfuz/DynamicSecretKey.bytes";
 
         public string aotDllListFilePath = "Assets/HotUpdate/Compiled/AOT.bytes";
@@ -116,9 +115,7 @@ namespace JEngine.Core
         private static void SetUpStaticSecretKey()
         {
             Debug.Log("SetUpStaticSecret begin");
-            // Find the Bootstrap instance in the scene to get the configured path
-            _instance = FindObjectOfType<Bootstrap>();
-            string keyPath = _instance != null ? _instance.staticSecretKeyPath : "Obfuz/StaticSecretKey";
+            string keyPath = "Obfuz/StaticSecretKey";
 
             var secretKeyAsset = Resources.Load<TextAsset>(keyPath);
             if (secretKeyAsset != null)
@@ -200,7 +197,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                await MessageBox.Show("错误", $"初始化失败：{e.Message}", no: null);
+                await MessageBox.Show("Error", $"Initialization failed: {e.Message}", no: null);
                 Application.Quit();
             }
         }
@@ -212,35 +209,35 @@ namespace JEngine.Core
             {
                 try
                 {
-                    updateStatusText.text = "初始化中...";
+                    updateStatusText.text = "Initializing...";
                     downloadProgressBar.gameObject.SetActive(false);
 
                     YooAssets.Destroy();
 
-                    // 初始化资源系统
+                    // Initialize asset system
                     YooAssets.Initialize();
 
-                    // 创建默认的资源包
+                    // Create default resource package
                     var package = CreateOrGetPackage(packageName);
 
-                    // 设置该资源包为默认的资源包，可以使用YooAssets相关加载接口加载该资源包内容。
+                    // Set this resource package as the default resource package. You can use YooAssets related loading interfaces to load the contents of this resource package.
                     YooAssets.SetDefaultPackage(package);
 
-                    // 使用提取出的通用初始化函数
+                    // Use the extracted common initialization function
                     var packageInitCallbacks = new PackageInitializationCallbacks
                     {
                         OnStatusUpdate = status => updateStatusText.text = GetStatusText(status),
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
-                            await MessageBox.Show("提示",
-                                $"需要下载{count}个文件，总大小{size / 1024f / 1024f:F2}MB，是否开始下载？",
-                                "下载"),
+                            await MessageBox.Show("Notice",
+                                $"Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Start download?",
+                                "Download"),
                         OnDownloadProgress = data =>
                         {
                             if (updateStatusText != null)
                             {
                                 updateStatusText.text =
-                                    $"正在下载第{data.CurrentDownloadCount}/{data.TotalDownloadCount}个文件（{data.CurrentDownloadBytes / 1024f / 1024f:F2}MB/{data.TotalDownloadBytes / 1024f / 1024f:F2}MB）";
+                                    $"Downloading file {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({data.CurrentDownloadBytes / 1024f / 1024f:F2}MB/{data.TotalDownloadBytes / 1024f / 1024f:F2}MB)";
                             }
 
                             if (downloadProgressText != null)
@@ -256,20 +253,20 @@ namespace JEngine.Core
                         OnDownloadStart = () =>
                         {
                             downloadProgressBar.gameObject.SetActive(true);
-                            updateStatusText.text = "下载中...";
+                            updateStatusText.text = "Downloading...";
                             downloadProgressText.text = "";
                             downloadProgressBar.value = 0f;
                         },
                         OnDownloadComplete = () =>
                         {
                             if (updateStatusText != null)
-                                updateStatusText.text = "下载完成，正在加载...";
+                                updateStatusText.text = "Download completed, loading...";
                             if (downloadProgressText != null)
                                 downloadProgressText.text = "100%";
                             if (downloadProgressBar != null)
                                 downloadProgressBar.value = 1f;
                         },
-                        OnError = async error => await MessageBox.Show("警告", error.Message, no: null)
+                        OnError = async error => await MessageBox.Show("Warning", error.Message, no: null)
                     };
 
                     bool success = await UpdatePackage(package, packageInitCallbacks, encryptionOption);
@@ -278,15 +275,15 @@ namespace JEngine.Core
                         continue; // Retry the loop
                     }
 
-                    // 先补充元数据
-                    updateStatusText.text = "正在加载代码...";
+                    // First supplement metadata
+                    updateStatusText.text = "Loading code...";
                     await LoadMetadataForAOTAssemblies();
-                    // 设置动态密钥
-                    updateStatusText.text = "正在解密资源...";
+                    // Set dynamic key
+                    updateStatusText.text = "Decrypting resources...";
                     await SetUpDynamicSecret();
 
-                    //进热更场景
-                    updateStatusText.text = "正在加载场景...";
+                    // Enter hot update scene
+                    updateStatusText.text = "Loading scene...";
                     var sceneLoadCallbacks = new SceneLoadCallbacks
                     {
                         OnStatusUpdate = status => updateStatusText.text = GetSceneLoadStatusText(status),
@@ -297,16 +294,16 @@ namespace JEngine.Core
                         },
                         OnError = async exception =>
                         {
-                            await MessageBox.Show("错误", $"场景加载失败: {exception.Message}", ok: "重试");
+                            await MessageBox.Show("Error", $"Scene loading failed: {exception.Message}", ok: "Retry");
                         }
                     };
                     downloadProgressBar.gameObject.SetActive(true);
                     await LoadHotUpdateScene(package, selectedHotScene, sceneLoadCallbacks);
 
-                    // 加载热更DLL
-                    updateStatusText.text = "正在加载代码...";
+                    // Load hot update DLL
+                    updateStatusText.text = "Loading code...";
 #if UNITY_EDITOR
-                    // 编辑器下直接从文件系统加载，不能读加密的，加密的只有真机才可以运行
+                    // In editor, load directly from file system. Cannot read encrypted files. Encrypted files can only run on real devices.
                     var hotUpdateDllBytes =
                         await System.IO.File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
 #else
@@ -327,7 +324,7 @@ namespace JEngine.Core
                 catch (Exception ex)
                 {
                     Debug.LogError($"Initialization failed with exception: {ex}");
-                    await MessageBox.Show("错误", $"初始化过程中发生异常：{ex.Message}");
+                    await MessageBox.Show("Error", $"Exception occurred during initialization: {ex.Message}");
                     // Continue the loop to retry
                 }
             }
@@ -338,7 +335,7 @@ namespace JEngine.Core
             Type type = hotUpdateAss.GetType(hotUpdateClassName);
             if (type == null)
             {
-                await MessageBox.Show("错误", "代码异常，请联系客服", ok: null);
+                await MessageBox.Show("Error", "Code exception, please contact customer service", ok: null);
                 Application.Quit();
                 return;
             }
@@ -346,7 +343,7 @@ namespace JEngine.Core
             var method = type.GetMethod(hotUpdateMethodName, BindingFlags.Public | BindingFlags.Static);
             if (method == null)
             {
-                await MessageBox.Show("错误", "代码异常，请联系客服", ok: null);
+                await MessageBox.Show("Error", "Code exception, please contact customer service", ok: null);
                 Application.Quit();
                 return;
             }
@@ -378,7 +375,7 @@ namespace JEngine.Core
             catch (Exception e)
             {
                 Debug.LogError($"Failed to invoke hot update method {hotUpdateMethodName}: {e}");
-                await MessageBox.Show("错误", $"函数调用失败：{e.Message}", ok: "退出", no: null);
+                await MessageBox.Show("Error", $"Function call failed: {e.Message}", ok: "Exit", no: null);
                 Application.Quit();
             }
         }
@@ -388,14 +385,14 @@ namespace JEngine.Core
         {
             try
             {
-                // 1. 初始化资源包
+                // 1. Initialize resource package
                 callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.InitializingPackage);
                 InitializationOperation initOperation;
 
 #if UNITY_EDITOR
                 if (useEditorDevMode)
                 {
-                    // 如果是编辑器模拟模式，使用模拟构建的资源包
+                    // If it's editor simulation mode, use simulated built resource package
                     var buildResult = EditorSimulateModeHelper.SimulateBuild(package.PackageName);
                     var packageRoot = buildResult.PackageRootDirectory;
                     var editorFileSystemParams =
@@ -437,7 +434,7 @@ namespace JEngine.Core
                     return false;
                 }
 
-                // 2. 获取包版本
+                // 2. Get package version
                 callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.GettingVersion);
                 var operation = package.RequestPackageVersionAsync();
                 await operation.Task;
@@ -455,7 +452,7 @@ namespace JEngine.Core
                     return false;
                 }
 
-                // 3. 更新资源清单
+                // 3. Update resource manifest
                 callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.UpdatingManifest);
                 var updateOperation = package.UpdatePackageManifestAsync(packageVersion);
                 await updateOperation.Task;
@@ -469,7 +466,7 @@ namespace JEngine.Core
 
                 await UniTask.WaitForSeconds(0.5f);
 
-                // 4. 检查并下载资源
+                // 4. Check and download resources
                 callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.CheckingUpdate);
                 int downloadingMaxNum = 10;
                 int failedTryAgain = 3;
@@ -477,7 +474,7 @@ namespace JEngine.Core
 
                 if (downloader.TotalDownloadCount != 0)
                 {
-                    // 询问用户是否下载
+                    // Ask user whether to download
                     bool shouldDownload = true;
                     if (callbacks.OnDownloadPrompt != null)
                     {
@@ -490,7 +487,7 @@ namespace JEngine.Core
                         return false;
                     }
 
-                    // 开始下载
+                    // Start download
                     callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.DownloadingResources);
                     callbacks.OnDownloadStart?.Invoke();
 
@@ -530,14 +527,14 @@ namespace JEngine.Core
         {
             return status switch
             {
-                PackageInitializationStatus.InitializingPackage => "正在初始化资源包...",
-                PackageInitializationStatus.GettingVersion => "正在获取资源包版本...",
-                PackageInitializationStatus.UpdatingManifest => "正在更新资源清单...",
-                PackageInitializationStatus.CheckingUpdate => "正在检查需要下载的资源...",
-                PackageInitializationStatus.DownloadingResources => "正在下载资源...",
-                PackageInitializationStatus.Completed => "资源包初始化完成",
-                PackageInitializationStatus.Failed => "初始化失败",
-                _ => "未知状态"
+                PackageInitializationStatus.InitializingPackage => "Initializing resource package...",
+                PackageInitializationStatus.GettingVersion => "Getting resource package version...",
+                PackageInitializationStatus.UpdatingManifest => "Updating resource manifest...",
+                PackageInitializationStatus.CheckingUpdate => "Checking resources to download...",
+                PackageInitializationStatus.DownloadingResources => "Downloading resources...",
+                PackageInitializationStatus.Completed => "Resource package initialization completed",
+                PackageInitializationStatus.Failed => "Initialization failed",
+                _ => "Unknown status"
             };
         }
 
@@ -545,10 +542,10 @@ namespace JEngine.Core
         {
             return status switch
             {
-                SceneLoadStatus.Loading => "正在加载场景...",
-                SceneLoadStatus.Completed => "场景加载完成",
-                SceneLoadStatus.Failed => "场景加载失败",
-                _ => "未知状态"
+                SceneLoadStatus.Loading => "Loading scene...",
+                SceneLoadStatus.Completed => "Scene loading completed",
+                SceneLoadStatus.Failed => "Scene loading failed",
+                _ => "Unknown status"
             };
         }
 

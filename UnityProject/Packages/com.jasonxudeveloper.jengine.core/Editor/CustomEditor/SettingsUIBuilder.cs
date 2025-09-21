@@ -196,19 +196,6 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             var jengineGroup = EditorUIUtils.CreateGroup("JEngine Settings");
 
-            // Language Selection
-            var languageRow = EditorUIUtils.CreateFormRow("Display Language");
-            var languageField = new EnumField(settings.language);
-            languageField.RegisterValueChangedCallback(evt =>
-            {
-                settings.language = (JEngineLanguage)evt.newValue;
-                settings.Save();
-            });
-            languageField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(languageField);
-            languageRow.Add(languageField);
-            jengineGroup.Add(languageRow);
-
             // Startup Scene (only for Panel)
             var sceneRow = EditorUIUtils.CreateFormRow("Startup Scene");
             var currentScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(settings.startUpScenePath);

@@ -192,11 +192,11 @@ namespace JEngine.Core.Misc
         /// </summary>
         /// <param name="title">Title of the message box</param>
         /// <param name="content">Content/message text</param>
-        /// <param name="ok">Text for the OK button (default: "确定"). Pass null to hide this button.</param>
-        /// <param name="no">Text for the cancel/no button (default: "取消"). Pass null to hide this button.</param>
+        /// <param name="ok">Text for the OK button (default: "OK"). Pass null to hide this button.</param>
+        /// <param name="no">Text for the cancel/no button (default: "Cancel"). Pass null to hide this button.</param>
         /// <returns>UniTask that returns true if OK was clicked, false if Cancel/No was clicked</returns>
         /// <remarks>If both buttons are null/empty, a default OK button will be shown to prevent unusable message box.</remarks>
-        public static UniTask<bool> Show(string title, string content, string ok = "确定", string no = "取消")
+        public static UniTask<bool> Show(string title, string content, string ok = "OK", string no = "Cancel")
         {
             if (Prefab == null)
             {
@@ -325,7 +325,7 @@ namespace JEngine.Core.Misc
             // Safety check: if both buttons are null/empty, show default OK button
             if (string.IsNullOrEmpty(ok) && string.IsNullOrEmpty(no))
             {
-                ok = "确定"; // Default OK text
+                ok = "OK"; // Default OK text
             }
 
             // Handle OK button visibility and text

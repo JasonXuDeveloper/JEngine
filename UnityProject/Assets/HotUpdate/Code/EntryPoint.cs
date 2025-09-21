@@ -54,55 +54,55 @@ namespace HotUpdate.Code
                     await UniTask.SwitchToMainThread();
                     try
                     {
-                        addOnDemoButton.interactable = false; // 防止重复点击
+                        addOnDemoButton.interactable = false; // Prevent duplicate clicks
                         Debug.Log("AddOnDemoButton clicked.");
                         var packageName = "addon1";
 
-                        // 创建或获取AddOn1包
+                        // Create or get AddOn1 package
                         var package = Bootstrap.CreateOrGetPackage(packageName);
 
-                        // 设置AddOn包的初始化回调
+                        // Set up AddOn package initialization callbacks
                         var callbacks = new PackageInitializationCallbacks
                         {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] 状态: {GetStatusText(status)}"),
-                            OnVersionUpdate = static version => Debug.Log($"[AddOn1] 版本: {version}"),
-                            OnDownloadPrompt = static (count, size) => MessageBox.Show("提示",
-                                $"[AddOn1] 需要下载 {count} 个文件，总大小 {size / 1024f / 1024f:F2}MB，是否继续？",
-                                "是", "否"),
+                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] Status: {GetStatusText(status)}"),
+                            OnVersionUpdate = static version => Debug.Log($"[AddOn1] Version: {version}"),
+                            OnDownloadPrompt = static (count, size) => MessageBox.Show("Notice",
+                                $"[AddOn1] Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Continue?",
+                                "Yes", "No"),
                             OnDownloadProgress = static data =>
                             {
                                 Debug.Log(
-                                    $"[AddOn1] 下载进度: {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({Mathf.RoundToInt(data.Progress * 100)}%)");
+                                    $"[AddOn1] Download progress: {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({Mathf.RoundToInt(data.Progress * 100)}%)");
                             },
-                            OnDownloadStart = static () => Debug.Log("[AddOn1] 开始下载..."),
-                            OnDownloadComplete = static () => Debug.Log("[AddOn1] 下载完成！"),
+                            OnDownloadStart = static () => Debug.Log("[AddOn1] Starting download..."),
+                            OnDownloadComplete = static () => Debug.Log("[AddOn1] Download completed!"),
                             OnError = static async error =>
                             {
-                                Debug.LogError($"[AddOn1] 错误: {error}");
-                                await UniTask.CompletedTask; // 简单的错误处理
+                                Debug.LogError($"[AddOn1] Error: {error}");
+                                await UniTask.CompletedTask; // Simple error handling
                             }
                         };
 
-                        // 使用Bootstrap的通用初始化函数
-                        Debug.Log("[AddOn1] 开始初始化AddOn1包...");
+                        // Use Bootstrap's common initialization function
+                        Debug.Log("[AddOn1] Starting AddOn1 package initialization...");
                         bool success = await Bootstrap.UpdatePackage(package, callbacks, EncryptionOption.Xor);
 
                         if (!success)
                         {
-                            Debug.LogError("[AddOn1] AddOn1包初始化失败！");
+                            Debug.LogError("[AddOn1] AddOn1 package initialization failed!");
                             return;
                         }
 
-                        Debug.Log("[AddOn1] AddOn1包初始化成功！");
+                        Debug.Log("[AddOn1] AddOn1 package initialization successful!");
 
-                        // 加载AddOn1场景
+                        // Load AddOn1 scene
                         var sceneLoadCallbacks = new SceneLoadCallbacks
                         {
                             OnStatusUpdate = static status => Debug.Log($"[AddOn1] {GetSceneLoadStatusText(status)}"),
-                            OnProgressUpdate = static progress => Debug.Log($"[AddOn1] 加载进度: {progress * 100:F0}%"),
+                            OnProgressUpdate = static progress => Debug.Log($"[AddOn1] Loading progress: {progress * 100:F0}%"),
                             OnError = static exception =>
                             {
-                                Debug.LogError($"[AddOn1] 场景加载失败: {exception.Message}");
+                                Debug.LogError($"[AddOn1] Scene loading failed: {exception.Message}");
                                 return UniTask.CompletedTask;
                             }
                         };
@@ -112,44 +112,44 @@ namespace HotUpdate.Code
                             sceneLoadCallbacks);
                         if (handle != null)
                         {
-                            Debug.Log("进入分包场景");
+                            Debug.Log("Entered addon scene");
                         }
                         else
                         {
-                            Debug.LogError("[AddOn1] 场景加载异常");
+                            Debug.LogError("[AddOn1] Scene loading exception");
                         }
 
-                        // 加载AddOn1资源
+                        // Load AddOn1 resources
                         var textHandle = package.LoadAssetAsync<TextAsset>("Assets/HotUpdate/AddOn1/Other/test.txt");
                         await textHandle.Task;
                         if (textHandle.Status == EOperationStatus.Succeed)
                         {
                             var textAsset = textHandle.GetAssetObject<TextAsset>();
-                            Debug.Log($"[AddOn1] 加载的文本内容: {textAsset.text}");
-                            textHandle.Release(); // 记得释放资源
+                            Debug.Log($"[AddOn1] Loaded text content: {textAsset.text}");
+                            textHandle.Release(); // Remember to release resources
                         }
                         else
                         {
-                            Debug.LogWarning($"[AddOn1] 未能加载test.txt文件: {textHandle.LastError}");
+                            Debug.LogWarning($"[AddOn1] Failed to load test.txt file: {textHandle.LastError}");
                         }
 
-                        // 清理AddOn1包的缓存（可选）
+                        // Clear AddOn1 package cache (optional)
                         await Bootstrap.DeletePackageCache(package);
-                        Debug.Log("[AddOn1] 清理AddOn1包的下载缓存完成。");
+                        Debug.Log("[AddOn1] AddOn1 package download cache cleanup completed.");
                     }
                     catch (System.Exception ex)
                     {
-                        Debug.LogError($"[AddOn1] 发生异常: {ex.Message}");
+                        Debug.LogError($"[AddOn1] Exception occurred: {ex.Message}");
                     }
                     finally
                     {
                         try
                         {
-                            addOnDemoButton.interactable = true; // 恢复按钮可点击
+                            addOnDemoButton.interactable = true; // Restore button clickability
                         }
                         catch
                         {
-                            // 忽略异常
+                            // Ignore exception
                         }
                     }
                 }).Forget();
@@ -160,14 +160,14 @@ namespace HotUpdate.Code
         {
             return status switch
             {
-                PackageInitializationStatus.InitializingPackage => "正在初始化资源包...",
-                PackageInitializationStatus.GettingVersion => "正在获取资源包版本...",
-                PackageInitializationStatus.UpdatingManifest => "正在更新资源清单...",
-                PackageInitializationStatus.CheckingUpdate => "正在检查需要下载的资源...",
-                PackageInitializationStatus.DownloadingResources => "正在下载资源...",
-                PackageInitializationStatus.Completed => "资源包初始化完成",
-                PackageInitializationStatus.Failed => "初始化失败",
-                _ => "未知状态"
+                PackageInitializationStatus.InitializingPackage => "Initializing resource package...",
+                PackageInitializationStatus.GettingVersion => "Getting resource package version...",
+                PackageInitializationStatus.UpdatingManifest => "Updating resource manifest...",
+                PackageInitializationStatus.CheckingUpdate => "Checking resources to download...",
+                PackageInitializationStatus.DownloadingResources => "Downloading resources...",
+                PackageInitializationStatus.Completed => "Resource package initialization completed",
+                PackageInitializationStatus.Failed => "Initialization failed",
+                _ => "Unknown status"
             };
         }
 
@@ -175,10 +175,10 @@ namespace HotUpdate.Code
         {
             return status switch
             {
-                SceneLoadStatus.Loading => "正在加载场景...",
-                SceneLoadStatus.Completed => "场景加载完成",
-                SceneLoadStatus.Failed => "场景加载失败",
-                _ => "未知状态"
+                SceneLoadStatus.Loading => "Loading scene...",
+                SceneLoadStatus.Completed => "Scene loading completed",
+                SceneLoadStatus.Failed => "Scene loading failed",
+                _ => "Unknown status"
             };
         }
     }
