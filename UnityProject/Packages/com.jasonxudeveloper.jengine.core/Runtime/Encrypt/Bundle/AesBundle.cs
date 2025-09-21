@@ -50,6 +50,7 @@ namespace JEngine.Core.Encrypt.Bundle
 
         public EncryptResult Encrypt(EncryptFileInfo fileInfo)
         {
+#if UNITY_EDITOR
             var bytes = File.ReadAllBytes(fileInfo.FileLoadPath);
 
             // Use AES-256 CBC with PKCS7 padding for encryption
@@ -61,6 +62,9 @@ namespace JEngine.Core.Encrypt.Bundle
                 EncryptedData = encryptedData
             };
             return result;
+#else
+            throw new System.NotSupportedException("AES encryption is only supported in Unity Editor");
+#endif
         }
     }
 

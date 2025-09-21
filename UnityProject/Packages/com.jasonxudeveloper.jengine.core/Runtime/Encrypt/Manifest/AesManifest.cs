@@ -47,8 +47,12 @@ namespace JEngine.Core.Encrypt.Manifest
 
         public byte[] ProcessManifest(byte[] fileData)
         {
+#if UNITY_EDITOR
             // Use AES-256 CBC with PKCS7 padding for manifest encryption
             return AesUtil.AesEncrypt(fileData, _config.key, _config.iv);
+#else
+            throw new System.NotSupportedException("AES manifest encryption is only supported in Unity Editor");
+#endif
         }
     }
 

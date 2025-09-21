@@ -47,8 +47,12 @@ namespace JEngine.Core.Encrypt.Manifest
 
         public byte[] ProcessManifest(byte[] fileData)
         {
+#if UNITY_EDITOR
             // Use ChaCha20 stream cipher for manifest encryption
             return ChaCha20Util.ChaCha20Encrypt(fileData, _config.key, _config.nonce);
+#else
+            throw new System.NotSupportedException("ChaCha20 manifest encryption is only supported in Unity Editor");
+#endif
         }
     }
 
