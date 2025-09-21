@@ -35,8 +35,8 @@ namespace JEngine.Core.Encrypt.Bundle
     public class XorBundle : BundleEncryptionConfig<XorConfig, XorManifest, XorConfig, XorEncryptionServices,
         XorDecryptionServices>
     {
-        public override XorConfig ManifestConfig  =>  XorConfig.Instance;
-        public override XorConfig BundleConfig  =>  XorConfig.Instance;
+        public override XorConfig ManifestConfig { get; } = XorConfig.Instance;
+        public override XorConfig BundleConfig { get; } = XorConfig.Instance;
     }
 
     public class XorEncryptionServices : IEncryptionServices

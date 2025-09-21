@@ -24,15 +24,13 @@
 //  THE SOFTWARE.
 
 using System.Collections.Generic;
-using System.Linq;
 using JEngine.Core.Encrypt.Bundle;
 
 namespace JEngine.Core.Encrypt
 {
     public enum EncryptionOption
     {
-        Xor = 1,
-        Aes = 2
+        Xor = 1
     }
 
     public static class EncryptionMapping
@@ -40,18 +38,7 @@ namespace JEngine.Core.Encrypt
         public static readonly IReadOnlyDictionary<EncryptionOption, IBundleEncryptionConfig> Mapping =
             new Dictionary<EncryptionOption, IBundleEncryptionConfig>
             {
-                { EncryptionOption.Xor, new XorBundle() },
-                { EncryptionOption.Aes, new AesBundle() }
+                { EncryptionOption.Xor, new XorBundle() }
             };
-
-        public static IBundleEncryptionConfig GetBundleConfig(EncryptionOption option)
-        {
-            if (Mapping.TryGetValue(option, out var config))
-            {
-                return config;
-            }
-
-            return Mapping.Values.First();
-        }
     }
 }

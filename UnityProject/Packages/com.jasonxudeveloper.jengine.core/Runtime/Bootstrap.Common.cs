@@ -25,7 +25,6 @@
 
 using System;
 using Cysharp.Threading.Tasks;
-using JEngine.Core.Encrypt;
 using JEngine.Core.Update;
 using UnityEngine.SceneManagement;
 using YooAsset;
@@ -112,17 +111,16 @@ namespace JEngine.Core
         /// </summary>
         /// <param name="package">要初始化的资源包</param>
         /// <param name="callbacks">各种回调函数</param>
-        /// <param name="encryptionOption">分包加密方式</param>
         /// <returns>是否初始化成功</returns>
         public static async UniTask<bool> UpdatePackage(ResourcePackage package,
-            PackageInitializationCallbacks callbacks, EncryptionOption encryptionOption)
+            PackageInitializationCallbacks callbacks)
         {
             if (_instance == null)
             {
                 throw new Exception("Bootstrap instance not found in the scene.");
             }
 
-            var ret = await _instance.UpdatePackageImpl(package, callbacks, encryptionOption);
+            var ret = await _instance.UpdatePackageImpl(package, callbacks);
             if (!ret)
             {
                 await package.DestroyAsync();

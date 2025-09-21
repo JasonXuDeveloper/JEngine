@@ -25,7 +25,6 @@
 
 using Cysharp.Threading.Tasks;
 using JEngine.Core;
-using JEngine.Core.Encrypt;
 using JEngine.Core.Misc;
 using JEngine.Core.Update;
 using Obfuz;
@@ -85,7 +84,7 @@ namespace HotUpdate.Code
 
                         // 使用Bootstrap的通用初始化函数
                         Debug.Log("[AddOn1] 开始初始化AddOn1包...");
-                        bool success = await Bootstrap.UpdatePackage(package, callbacks, EncryptionOption.Xor);
+                        bool success = await Bootstrap.UpdatePackage(package, callbacks);
 
                         if (!success)
                         {

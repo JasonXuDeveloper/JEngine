@@ -272,7 +272,7 @@ namespace JEngine.Core
                         OnError = async error => await MessageBox.Show("警告", error.Message, no: null)
                     };
 
-                    bool success = await UpdatePackage(package, packageInitCallbacks, encryptionOption);
+                    bool success = await UpdatePackage(package, packageInitCallbacks);
                     if (!success)
                     {
                         continue; // Retry the loop
@@ -384,7 +384,7 @@ namespace JEngine.Core
         }
 
         private async UniTask<bool> UpdatePackageImpl(ResourcePackage package,
-            PackageInitializationCallbacks callbacks, EncryptionOption option)
+            PackageInitializationCallbacks callbacks)
         {
             try
             {
@@ -413,9 +413,9 @@ namespace JEngine.Core
                         $"{defaultHostServer}{(defaultHostServer.EndsWith("/") ? "" : "/")}{GetPlatform()}/{package.PackageName}";
                     var effectiveFallbackServer = useDefaultAsFallback ? server : fallbackHostServer;
                     var remoteServices = new RemoteServices(server, effectiveFallbackServer);
-                    var bundleConfig = EncryptionMapping.GetBundleConfig(option);
-                    var manifestRestoration = bundleConfig.ManifestEncryptionConfig.Decryption;
-                    var decryption = bundleConfig.Decryption;
+                    var manifestRestoration =
+                        EncryptionMapping.Mapping[encryptionOption].ManifestEncryptionConfig.Decryption;
+                    var decryption = EncryptionMapping.Mapping[encryptionOption].Decryption;
                     var cacheFileSystemParams =
                         FileSystemParameters.CreateDefaultCacheFileSystemParameters(remoteServices, decryption);
                     cacheFileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
