@@ -1,8 +1,9 @@
 {
   "dependencies": {
+    "com.code-philosophy.hybridclr": "https://github.com/focus-creative-games/hybridclr_unity.git",
     "com.code-philosophy.obfuz": "https://github.com/focus-creative-games/obfuz.git",
     "com.code-philosophy.obfuz4hybridclr": "https://github.com/focus-creative-games/obfuz4hybridclr.git",
-    "com.cysharp.unitask": "2.5.10",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.jasonxudeveloper.nino": "4.0.0-preview.114",
     "com.tuyoogame.yooasset": "2.3.16",
     "com.unity.2d.sprite": "1.0.0",
@@ -53,8 +54,7 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.tuyoogame.yooasset",
-        "com.jasonxudeveloper.nino",
-        "com.cysharp.unitask"
+        "com.jasonxudeveloper.nino"
       ]
     }
   ]

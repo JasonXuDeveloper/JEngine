@@ -1,0 +1,24 @@
+{
+    "name": "JEngine.Core",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4140bd2e2764f1f47ab93125ecb61942",
+        "GUID:13ba8ce62aa80c74598530029cb2d649",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:1278a46ce459c5a46b4eaeda148684ef",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:3fe1a3e70da50184f9897101cad7e4f2",
+        "GUID:dc47925d1a5fa2946bdd37746b2b5d48",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:d43f907ee0f2a4183943e0d42511252a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

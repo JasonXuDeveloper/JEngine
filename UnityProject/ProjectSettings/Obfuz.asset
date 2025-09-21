@@ -26,7 +26,7 @@ MonoBehaviour:
     - Obfuz.Generated
     nonObfuscatedButReferencingObfuscatedAssemblies: []
     additionalAssemblySearchPaths: []
-    obfuscateObfuzRuntime: 1
+    obfuscateObfuzRuntime: 0
   obfuscationPassSettings:
     enabledPasses: -1
     ruleFiles: []

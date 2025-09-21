@@ -1,0 +1,23 @@
+{
+  "name": "com.jasonxudeveloper.jengine",
+  "version": "0.8.0f7",
+  "displayName": "JEngine",
+  "description": "The solution that allows unity games update in runtime.",
+  "license": "MIT",
+  "unity": "2020.3",
+  "keywords": [
+    "HotUpdate",
+    "Unity",
+    "ILRuntime",
+    "HotFix"
+  ],
+  "author": {
+    "name": "JasonXuDeveloper",
+    "email": "jasonxudeveloper@gmail.com",
+    "url": "https://github.com/JasonXuDeveloper"
+  },
+  "dependencies": {
+    "com.ourpalm.ilruntime": "2.1.0",
+    "com.tuyoogame.yooasset": "1.4.10"
+  }
+}

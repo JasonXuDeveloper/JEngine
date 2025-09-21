@@ -1,5 +1,0 @@
-/* BootstrapEditor specific styles */
-
-#fallback-container {
-    margin-left: 10px;
-}

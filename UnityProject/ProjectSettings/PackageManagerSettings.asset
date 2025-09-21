@@ -32,7 +32,6 @@ MonoBehaviour:
     m_Scopes:
     - com.tuyoogame.yooasset
     - com.jasonxudeveloper.nino
-    - com.cysharp.unitask
     m_IsDefault: 0
     m_Capabilities: 0
     m_ConfigSource: 4
