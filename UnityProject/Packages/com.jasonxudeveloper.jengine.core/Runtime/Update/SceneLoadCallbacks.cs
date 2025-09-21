@@ -33,7 +33,7 @@ namespace JEngine.Core.Update
     /// </summary>
     public struct SceneLoadCallbacks
     {
-        public Action<SceneLoadStatus> OnStatusUpdate { get; set; }
+        public Action<string> OnStatusUpdate { get; set; }
         public Action<float> OnProgressUpdate { get; set; }
         public Func<Exception, UniTask> OnError { get; set; }
     }

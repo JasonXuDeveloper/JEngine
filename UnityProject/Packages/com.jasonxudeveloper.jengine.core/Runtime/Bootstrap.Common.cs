@@ -46,7 +46,7 @@ namespace JEngine.Core
             LoadSceneMode loadMode = LoadSceneMode.Single)
         {
             // 调用状态更新回调
-            callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Loading);
+            callbacks.OnStatusUpdate?.Invoke("正在加载场景...");
             callbacks.OnProgressUpdate?.Invoke(0f);
 
             // 保存当前活动场景，用于后续卸载
@@ -69,7 +69,7 @@ namespace JEngine.Core
                 }
 
                 // 调用完成状态回调
-                callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Completed);
+                callbacks.OnStatusUpdate?.Invoke("场景加载完成");
                 callbacks.OnProgressUpdate?.Invoke(1f);
 
                 await UniTask.DelayFrame(1); // 等待一帧，确保场景切换完成
@@ -86,7 +86,6 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                callbacks.OnStatusUpdate?.Invoke(SceneLoadStatus.Failed);
                 // 调用错误回调
                 await callbacks.OnError(e);
                 // 切换回上一个场景

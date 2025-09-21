@@ -216,7 +216,7 @@ namespace JEngine.Core
                     // 使用提取出的通用初始化函数
                     var packageInitCallbacks = new PackageInitializationCallbacks
                     {
-                        OnStatusUpdate = status => updateStatusText.text = GetStatusText(status),
+                        OnStatusUpdate = status => updateStatusText.text = status,
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
                             await MessageBox.Show("提示",
@@ -276,7 +276,7 @@ namespace JEngine.Core
                     updateStatusText.text = "正在加载场景...";
                     var sceneLoadCallbacks = new SceneLoadCallbacks
                     {
-                        OnStatusUpdate = status => updateStatusText.text = GetSceneLoadStatusText(status),
+                        OnStatusUpdate = status => updateStatusText.text = status,
                         OnProgressUpdate = progress =>
                         {
                             downloadProgressText.text = $"{Mathf.RoundToInt(progress * 100)}%";
@@ -300,7 +300,7 @@ namespace JEngine.Core
                     var dllHandle =
                         package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");
                     await dllHandle.Task;
-                    TextAsset hotUpdateDllAsset = dllHandle.GetAssetObject<TextAsset>();
+                    TextAsset hotUpdateDllAsset = (TextAsset)dllHandle.AssetObject;
                     var hotUpdateDllBytes = hotUpdateDllAsset.bytes;
                     dllHandle.Release();
 #endif
@@ -376,7 +376,7 @@ namespace JEngine.Core
             try
             {
                 // 1. 初始化资源包
-                callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.InitializingPackage);
+                callbacks.OnStatusUpdate?.Invoke("正在初始化资源包...");
                 InitializationOperation initOperation;
 
 #if UNITY_EDITOR
@@ -397,7 +397,7 @@ namespace JEngine.Core
 #endif
                 {
                     var server =
-                        $"{defaultHostServer}{(defaultHostServer.EndsWith("/") ? "" : "/")}{GetPlatform()}/{package.PackageName}";
+                        $"{(defaultHostServer.EndsWith("/") ? defaultHostServer : defaultHostServer + "/")}{GetPlatform()}/{package.PackageName}";
                     var effectiveFallbackServer = useDefaultAsFallback ? server : fallbackHostServer;
                     var remoteServices = new RemoteServices(server, effectiveFallbackServer);
                     var decryption = new FileStreamDecryption();
@@ -421,7 +421,7 @@ namespace JEngine.Core
                 }
 
                 // 2. 获取包版本
-                callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.GettingVersion);
+                callbacks.OnStatusUpdate?.Invoke("正在获取资源包版本...");
                 var operation = package.RequestPackageVersionAsync();
                 await operation.Task;
 
@@ -439,7 +439,7 @@ namespace JEngine.Core
                 }
 
                 // 3. 更新资源清单
-                callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.UpdatingManifest);
+                callbacks.OnStatusUpdate?.Invoke("正在更新资源清单...");
                 var updateOperation = package.UpdatePackageManifestAsync(packageVersion);
                 await updateOperation.Task;
 
@@ -453,7 +453,7 @@ namespace JEngine.Core
                 await UniTask.WaitForSeconds(0.5f);
 
                 // 4. 检查并下载资源
-                callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.CheckingUpdate);
+                callbacks.OnStatusUpdate?.Invoke("正在检查需要下载的资源...");
                 int downloadingMaxNum = 10;
                 int failedTryAgain = 3;
                 var downloader = package.CreateResourceDownloader(downloadingMaxNum, failedTryAgain);
@@ -474,7 +474,6 @@ namespace JEngine.Core
                     }
 
                     // 开始下载
-                    callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.DownloadingResources);
                     callbacks.OnDownloadStart?.Invoke();
 
                     await UniTask.DelayFrame(1);
@@ -495,10 +494,10 @@ namespace JEngine.Core
                 }
                 else
                 {
-                    callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.Completed);
+                    callbacks.OnStatusUpdate?.Invoke("无需下载资源");
                 }
 
-                callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.Completed);
+                callbacks.OnStatusUpdate?.Invoke("资源包初始化完成");
                 return true;
             }
             catch (Exception ex)
@@ -507,32 +506,6 @@ namespace JEngine.Core
                     await callbacks.OnError(ex);
                 return false;
             }
-        }
-
-        private static string GetStatusText(PackageInitializationStatus status)
-        {
-            return status switch
-            {
-                PackageInitializationStatus.InitializingPackage => "正在初始化资源包...",
-                PackageInitializationStatus.GettingVersion => "正在获取资源包版本...",
-                PackageInitializationStatus.UpdatingManifest => "正在更新资源清单...",
-                PackageInitializationStatus.CheckingUpdate => "正在检查需要下载的资源...",
-                PackageInitializationStatus.DownloadingResources => "正在下载资源...",
-                PackageInitializationStatus.Completed => "资源包初始化完成",
-                PackageInitializationStatus.Failed => "初始化失败",
-                _ => status.ToString()
-            };
-        }
-
-        private static string GetSceneLoadStatusText(SceneLoadStatus status)
-        {
-            return status switch
-            {
-                SceneLoadStatus.Loading => "正在加载场景...",
-                SceneLoadStatus.Completed => "场景加载完成",
-                SceneLoadStatus.Failed => "场景加载失败",
-                _ => status.ToString()
-            };
         }
 
         private class RemoteServices : IRemoteServices

@@ -63,7 +63,7 @@ namespace HotUpdate.Code
                         // 设置AddOn包的初始化回调
                         var callbacks = new PackageInitializationCallbacks
                         {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] 状态: {GetStatusText(status)}"),
+                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] 状态: {status}"),
                             OnVersionUpdate = static version => Debug.Log($"[AddOn1] 版本: {version}"),
                             OnDownloadPrompt = static (count, size) => MessageBox.Show("提示",
                                 $"[AddOn1] 需要下载 {count} 个文件，总大小 {size / 1024f / 1024f:F2}MB，是否继续？",
@@ -97,7 +97,7 @@ namespace HotUpdate.Code
                         // 加载AddOn1场景
                         var sceneLoadCallbacks = new SceneLoadCallbacks
                         {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] {GetSceneLoadStatusText(status)}"),
+                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] {status}"),
                             OnProgressUpdate = static progress => Debug.Log($"[AddOn1] 加载进度: {progress * 100:F0}%"),
                             OnError = static exception =>
                             {
@@ -153,32 +153,6 @@ namespace HotUpdate.Code
                     }
                 }).Forget();
             });
-        }
-
-        private static string GetStatusText(PackageInitializationStatus status)
-        {
-            return status switch
-            {
-                PackageInitializationStatus.InitializingPackage => "正在初始化资源包...",
-                PackageInitializationStatus.GettingVersion => "正在获取资源包版本...",
-                PackageInitializationStatus.UpdatingManifest => "正在更新资源清单...",
-                PackageInitializationStatus.CheckingUpdate => "正在检查需要下载的资源...",
-                PackageInitializationStatus.DownloadingResources => "正在下载资源...",
-                PackageInitializationStatus.Completed => "资源包初始化完成",
-                PackageInitializationStatus.Failed => "初始化失败",
-                _ => status.ToString()
-            };
-        }
-
-        private static string GetSceneLoadStatusText(SceneLoadStatus status)
-        {
-            return status switch
-            {
-                SceneLoadStatus.Loading => "正在加载场景...",
-                SceneLoadStatus.Completed => "场景加载完成",
-                SceneLoadStatus.Failed => "场景加载失败",
-                _ => status.ToString()
-            };
         }
     }
 }

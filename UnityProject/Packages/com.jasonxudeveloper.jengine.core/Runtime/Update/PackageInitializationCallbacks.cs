@@ -34,7 +34,7 @@ namespace JEngine.Core.Update
     /// </summary>
     public struct PackageInitializationCallbacks
     {
-        public Action<PackageInitializationStatus> OnStatusUpdate { get; set; }
+        public Action<string> OnStatusUpdate { get; set; }
         public Action<string> OnVersionUpdate { get; set; }
         public Func<int, long, UniTask<bool>> OnDownloadPrompt { get; set; }
         public DownloaderOperation.DownloadUpdate OnDownloadProgress { get; set; }
