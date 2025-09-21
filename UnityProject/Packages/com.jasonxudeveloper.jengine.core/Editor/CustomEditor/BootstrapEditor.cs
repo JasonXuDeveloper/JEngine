@@ -222,6 +222,26 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             var securityGroup = CreateGroup("Security Settings");
 
+            // Static Secret Key Dropdown (Resources folder)
+            var staticKeyRow = CreateFormRow("Static Secret Key (Resources)");
+            var staticKeyChoices = GetAvailableStaticSecretKeys();
+            var staticKeyField = new PopupField<string>()
+            {
+                choices = staticKeyChoices.Any()
+                    ? staticKeyChoices
+                    : new List<string> { _bootstrap.staticSecretKeyPath },
+                value = _bootstrap.staticSecretKeyPath
+            };
+            staticKeyField.AddToClassList("form-control");
+            EditorUIUtils.MakeTextResponsive(staticKeyField);
+            staticKeyField.RegisterValueChangedCallback(evt =>
+            {
+                serializedObject.FindProperty(nameof(_bootstrap.staticSecretKeyPath)).stringValue = evt.newValue;
+                serializedObject.ApplyModifiedProperties();
+            });
+            staticKeyRow.Add(staticKeyField);
+            securityGroup.Add(staticKeyRow);
+
             // Dynamic Secret Key Dropdown
             var dynamicKeyRow = CreateFormRow("Dynamic Secret Key");
             var dynamicKeyChoices = GetAvailableDynamicSecretKeys();
@@ -558,6 +578,39 @@ namespace JEngine.Core.Editor.CustomEditor
             }
 
             return new List<string>();
+        }
+
+        private List<string> GetAvailableStaticSecretKeys()
+        {
+            var secretKeys = new List<string>();
+
+            // Search for .bytes files in Resources folders
+            var resourcePaths = new[] { "Assets/Resources" };
+            var bytesGuids = AssetDatabase.FindAssets("t:TextAsset", resourcePaths);
+
+            foreach (var guid in bytesGuids)
+            {
+                var fullPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (fullPath.EndsWith(".bytes"))
+                {
+                    // Convert the full path to a Resources-relative path (without extension)
+                    var resourcesIndex = fullPath.LastIndexOf("/Resources/", StringComparison.Ordinal);
+                    if (resourcesIndex >= 0)
+                    {
+                        var relativePath = fullPath.Substring(resourcesIndex + 11); // Skip "/Resources/"
+                        relativePath = System.IO.Path.ChangeExtension(relativePath, null); // Remove .bytes extension
+                        secretKeys.Add(relativePath);
+                    }
+                }
+            }
+
+            // Add default if no keys found or ensure default is in the list
+            if (!secretKeys.Contains("Obfuz/StaticSecretKey"))
+            {
+                secretKeys.Insert(0, "Obfuz/StaticSecretKey");
+            }
+
+            return secretKeys;
         }
 
         private List<string> GetAvailableDynamicSecretKeys()

@@ -2,7 +2,6 @@
 <linker>
   <assembly fullname="JEngine.Core">
     <type fullname="JEngine.Core.Bootstrap" preserve="all" />
-    <type fullname="JEngine.Core.Encrypt.EncryptionOption" preserve="all" />
     <type fullname="JEngine.Core.Misc.MessageBox" preserve="all" />
     <type fullname="JEngine.Core.Update.PackageInitializationCallbacks" preserve="all" />
     <type fullname="JEngine.Core.Update.PackageInitializationStatus" preserve="all" />

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 namespace JEngine.Core.Editor.Misc
 {
     /// <summary>
-    /// Scene transition utilities
+    /// 跳转场景
     /// </summary>
     internal static class ChangeScene
     {

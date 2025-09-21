@@ -29,6 +29,12 @@ using UnityEngine;
 
 namespace JEngine.Core.Editor
 {
+    public enum JEngineLanguage
+    {
+        中文 = 0,
+        English = 1
+    }
+
     public class Settings : ScriptableObject
     {
         [Header("Package Settings")] public string packageName = "main";
@@ -42,10 +48,12 @@ namespace JEngine.Core.Editor
         [Tooltip("Use asset dependency database to improve build speed")]
         public bool useAssetDependDB = true;
 
-        [Tooltip("Bundle encryption option")] public EncryptionOption encryptionOption = EncryptionOption.Xor;
+        [Tooltip("Bundle encryption option")]
+        public EncryptionOption encryptionOption = EncryptionOption.Xor;
 
-        [Header("JEngine Settings")] [Tooltip("Startup scene path")]
-        public string startUpScenePath = "Assets/Init.unity";
+        [Header("JEngine Settings")] public JEngineLanguage language = JEngineLanguage.English;
+
+        [Tooltip("Startup scene path")] public string startUpScenePath = "Assets/Init.unity";
 
         [Tooltip("Jump to startup scene when launch")]
         public bool jumpStartUp = true;
@@ -75,7 +83,7 @@ namespace JEngine.Core.Editor
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
-                        // Prompt to read documentation
+                        //提示看文档
                         Debug.LogError(
                             "[JEngine] First time to use JEngine please read the document first! URL: docs.xgamedev.net");
                         EditorUtility.DisplayDialog("Kindly Notice",

@@ -26,42 +26,42 @@
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// Resource package initialization status enum
+    /// 资源包初始化状态枚举
     /// </summary>
     public enum PackageInitializationStatus
     {
         /// <summary>
-        /// Initializing resource package
+        /// 正在初始化资源包
         /// </summary>
         InitializingPackage,
 
         /// <summary>
-        /// Getting version information
+        /// 正在获取版本信息
         /// </summary>
         GettingVersion,
 
         /// <summary>
-        /// Updating manifest
+        /// 正在更新清单
         /// </summary>
         UpdatingManifest,
 
         /// <summary>
-        /// Checking for updates
+        /// 正在检查更新
         /// </summary>
         CheckingUpdate,
 
         /// <summary>
-        /// Downloading resources
+        /// 正在下载资源
         /// </summary>
         DownloadingResources,
 
         /// <summary>
-        /// Initialization completed
+        /// 初始化完成
         /// </summary>
         Completed,
 
         /// <summary>
-        /// Initialization failed
+        /// 初始化失败
         /// </summary>
         Failed
     }

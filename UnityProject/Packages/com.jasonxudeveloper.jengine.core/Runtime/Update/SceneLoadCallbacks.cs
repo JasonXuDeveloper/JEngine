@@ -29,7 +29,7 @@ using Cysharp.Threading.Tasks;
 namespace JEngine.Core.Update
 {
     /// <summary>
-    /// Scene loading callback interface
+    /// 场景加载回调接口
     /// </summary>
     public struct SceneLoadCallbacks
     {

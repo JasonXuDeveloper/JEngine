@@ -78,7 +78,7 @@ namespace JEngine.Core.Encrypt.Bundle
         }
 
         /// <summary>
-        /// Synchronously get decrypted asset bundle object
+        /// 同步方式获取解密的资源包对象
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundle(DecryptFileInfo fileInfo)
         {
@@ -91,7 +91,7 @@ namespace JEngine.Core.Encrypt.Bundle
         }
 
         /// <summary>
-        /// Asynchronously get decrypted asset bundle object
+        /// 异步方式获取解密的资源包对象
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundleAsync(DecryptFileInfo fileInfo)
         {
@@ -103,7 +103,7 @@ namespace JEngine.Core.Encrypt.Bundle
         }
 
         /// <summary>
-        /// Fallback method to get decrypted asset bundle
+        /// 后备方式获取解密的资源包
         /// </summary>
         DecryptResult IDecryptionServices.LoadAssetBundleFallback(DecryptFileInfo fileInfo)
         {
@@ -119,7 +119,7 @@ namespace JEngine.Core.Encrypt.Bundle
         }
 
         /// <summary>
-        /// Get decrypted byte data
+        /// 获取解密的字节数据
         /// </summary>
         byte[] IDecryptionServices.ReadFileData(DecryptFileInfo fileInfo)
         {
@@ -128,7 +128,7 @@ namespace JEngine.Core.Encrypt.Bundle
         }
 
         /// <summary>
-        /// Get decrypted text data
+        /// 获取解密的文本数据
         /// </summary>
         string IDecryptionServices.ReadFileText(DecryptFileInfo fileInfo)
         {
