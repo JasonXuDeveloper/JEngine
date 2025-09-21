@@ -33,7 +33,7 @@ using YooAsset;
 namespace JEngine.Core.Encrypt.Bundle
 {
     public class ChaCha20Bundle : BundleEncryptionConfig<ChaCha20Config, ChaCha20Manifest, ChaCha20Config, ChaCha20EncryptionServices,
-        ChaCha20DecryptionServices>
+        ChaCha20DecryptionServices, ChaCha20WebDecryptionServices>
     {
         public override ChaCha20Config ManifestConfig => ChaCha20Config.Instance;
         public override ChaCha20Config BundleConfig => ChaCha20Config.Instance;
@@ -130,6 +130,27 @@ namespace JEngine.Core.Encrypt.Bundle
         {
             byte[] decryptedData = ((IDecryptionServices)this).ReadFileData(fileInfo);
             return System.Text.Encoding.UTF8.GetString(decryptedData);
+        }
+    }
+
+    public class ChaCha20WebDecryptionServices : IWebDecryptionServices
+    {
+        private readonly ChaCha20Config _config;
+
+        public ChaCha20WebDecryptionServices(ChaCha20Config config)
+        {
+            _config = config;
+        }
+
+        public WebDecryptResult LoadAssetBundle(WebDecryptFileInfo fileInfo)
+        {
+            var data = fileInfo.FileData;
+            var decryptedData = ChaCha20Util.ChaCha20Decrypt(data, _config.key, _config.nonce);
+
+            var assetBundle = AssetBundle.LoadFromMemory(decryptedData);
+            WebDecryptResult decryptResult = new WebDecryptResult();
+            decryptResult.Result = assetBundle;
+            return decryptResult;
         }
     }
 }

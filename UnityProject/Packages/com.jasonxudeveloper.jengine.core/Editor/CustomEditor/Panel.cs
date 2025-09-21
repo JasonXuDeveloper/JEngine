@@ -119,7 +119,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings);
             parent.Add(jengineGroup);
         }
-        
+
         private int _currentPage;
         private int _totalPages;
         private const int ScenesPerPage = 5;
@@ -614,6 +614,26 @@ namespace JEngine.Core.Editor.CustomEditor
             var streamingAssetsRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
             var bundleEncryption = EncryptionMapping.GetBundleConfig(_settings.encryptionOption);
 
+            // Jump to Init Scene from settings 
+            EBuildinFileCopyOption copyOption = EBuildinFileCopyOption.ClearAndCopyAll;
+            if (!string.IsNullOrEmpty(_settings.startUpScenePath) && File.Exists(_settings.startUpScenePath))
+            {
+                var currentScene = SceneManager.GetActiveScene();
+                if (currentScene.isDirty)
+                {
+                    EditorSceneManager.SaveScene(currentScene);
+                }
+
+                if (currentScene.path != _settings.startUpScenePath)
+                {
+                    EditorSceneManager.OpenScene(_settings.startUpScenePath);
+                }
+
+                copyOption = _settings.packageName == FindObjectOfType<Bootstrap>().packageName
+                    ? EBuildinFileCopyOption.ClearAndCopyAll
+                    : EBuildinFileCopyOption.None;
+            }
+
             return new ScriptableBuildParameters
             {
                 BuildOutputRoot = buildOutputRoot,
@@ -625,7 +645,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 PackageVersion = packageVersion.ToString(),
                 VerifyBuildingResult = true,
                 FileNameStyle = EFileNameStyle.HashName,
-                BuildinFileCopyOption = EBuildinFileCopyOption.None,
+                BuildinFileCopyOption = copyOption,
                 BuildinFileCopyParams = string.Empty,
                 CompressOption = ECompressOption.LZ4,
                 ClearBuildCacheFiles = _settings.clearBuildCache,
