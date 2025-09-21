@@ -105,7 +105,7 @@ namespace JEngine.Core
         }
 
         private static Bootstrap _instance;
-
+        
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void SetUpStaticSecretKey()
         {
@@ -206,7 +206,8 @@ namespace JEngine.Core
                     YooAssets.Initialize();
 
                     // 创建默认的资源包
-                    var package = CreateOrGetPackage(packageName);
+                    // 如果资源包不存在，则创建一个新的资源包
+                    var package = YooAssets.TryGetPackage(packageName) ?? YooAssets.CreatePackage(packageName);
 
                     // 设置该资源包为默认的资源包，可以使用YooAssets相关加载接口加载该资源包内容。
                     YooAssets.SetDefaultPackage(package);
@@ -257,7 +258,7 @@ namespace JEngine.Core
                         OnError = async error => await MessageBox.Show("警告", error.Message, no: null)
                     };
 
-                    bool success = await UpdatePackage(package, packageInitCallbacks);
+                    bool success = await InitializePackage(package, packageInitCallbacks);
                     if (!success)
                     {
                         continue; // Retry the loop
@@ -368,7 +369,7 @@ namespace JEngine.Core
             }
         }
 
-        private async UniTask<bool> UpdatePackageImpl(ResourcePackage package,
+        private async UniTask<bool> InitializePackageImpl(ResourcePackage package,
             PackageInitializationCallbacks callbacks)
         {
             try
