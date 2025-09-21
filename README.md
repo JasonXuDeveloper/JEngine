@@ -94,7 +94,6 @@ Different built-in and additional packages for JEngine
 ## v0.1.0 New Features
 
 - Support **Hot Update Resource Encryption**
-- Significantly optimised **Hot Update Code Dynamic Decryption Performance**
 
 [Click here to see the change log](CHANGE.md)
 

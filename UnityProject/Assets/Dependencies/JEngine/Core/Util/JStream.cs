@@ -1,26 +1,28 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
-using System.Text;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Text;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace JEngine.Core
 {
-    public sealed class JStream : Stream
+    public unsafe class JStream : Stream
     {
-        private const string DefaultKey = "hello_JEngine_!_";
-        private const int MemStreamMaxLength = Int32.MaxValue;
-
-        private byte[] _buffer; // Either allocated internally or externally.
+        private byte* _buffer; // Either allocated internally or externally.
         private readonly int _origin; // For user-provided arrays, start at this origin
         private int _position; // read/write head.
-        private readonly int _length; // Number of bytes within the memory stream
-        private readonly int _capacity; // length of usable portion of buffer for stream
-        private byte[] _decryptorBuffer; // Use for decryptor
-        private readonly ICryptoTransform _decryptor;
+        private int _length; // Number of bytes within the memory stream
+        private int _capacity; // length of usable portion of buffer for stream
+        private byte[] _key; //解密密码
+        private string _defaultKey = "hello_JEngine_!_";
 
         private bool _encrypted = true; //是否aes加密了
         private bool _isOpen; // Is this stream open or closed?
+
+        private const int MemStreamMaxLength = Int32.MaxValue;
 
         public bool Encrypted
         {
@@ -30,24 +32,33 @@ namespace JEngine.Core
 
         public JStream(byte[] buffer, string key)
         {
-            _buffer = new byte[buffer.Length];
-            Unsafe.CopyBlockUnaligned(ref _buffer[0], ref buffer[0], (uint)buffer.Length);
+            _buffer = (byte*)UnsafeUtility.Malloc(buffer.Length, 1, Allocator.Persistent);
+            buffer.AsSpan().CopyTo(new Span<byte>(_buffer, buffer.Length));
             _length = _capacity = buffer.Length;
 
             _origin = 0;
             _isOpen = true;
             if (key.Length < 16)
             {
-                key = InitJEngine.Instance.key.Length < 16 ? DefaultKey : InitJEngine.Instance.key;
+                key = InitJEngine.Instance.key.Length < 16 ? _defaultKey : InitJEngine.Instance.key;
             }
 
-            var algo = Aes.Create();
-            algo.Key = Encoding.UTF8.GetBytes(key);
-            algo.Mode = CipherMode.ECB;
-            algo.Padding = PaddingMode.None;
-            _decryptor = algo.CreateDecryptor();
+            _key = Encoding.UTF8.GetBytes(key);
+            Xor();
+        }
 
-            _decryptorBuffer = new byte[64 * 1024]; // 64kb buffer for decryptor
+        private void Xor()
+        {
+            var cnt = _key.Length;
+            var i = 0;
+            fixed (byte* ptr = _key)
+            {
+                while(i < cnt)
+                {
+                    *(ptr + i) = (byte)(*(ptr + i) ^ i);
+                    i++;
+                }
+            }
         }
 
         public override bool CanRead => _isOpen;
@@ -63,8 +74,8 @@ namespace JEngine.Core
                 if (disposing)
                 {
                     _isOpen = false;
+                    UnsafeUtility.Free(_buffer, Allocator.Persistent);
                     _buffer = null;
-                    _decryptorBuffer = null;
                 }
             }
             finally
@@ -82,7 +93,7 @@ namespace JEngine.Core
         // The capacity cannot be set to a value less than the current length
         // of the stream.
         // 
-        public int Capacity
+        public virtual int Capacity
         {
             get
             {
@@ -126,10 +137,30 @@ namespace JEngine.Core
             if (n <= 0)
                 return 0;
 
+            /*
+             * JEngine的分块解密
+             * 理论上，aes是 每16字节为单位 加密
+             * 所以只需给buffer以16位单位切割即可
+             */
             if (_encrypted)
             {
-                //JEngine的分块解密
-                GetBytesAt(_position, count, buffer, offset);
+                try
+                {
+                    Xor();
+                    fixed (byte* ptr = &buffer[offset])
+                    {
+                        GetBytesAt(in _position, in count, in ptr);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.PrintError(ex);
+                    throw;
+                }
+                finally
+                {
+                    Xor();
+                }
             }
             else
             {
@@ -148,29 +179,37 @@ namespace JEngine.Core
         /// <param name="start"></param>
         /// <param name="length"></param>
         /// <param name="ret"></param>
-        /// <param name="retOffset"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void GetBytesAt(int start, int length, byte[] ret, int retOffset)
+        private void GetBytesAt(in int start, in int length, in byte* ret)
         {
-            int offset = start & 0x7ffffff0; // 偏移值，截取开始的地方，比如 67 变 64，相当于start - start % 16
-            int count = 32 + length & 0x7ffffff0; //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77%16）
+            int offset = start >> 4 << 4; // 偏移值，截取开始的地方，比如 67 变 64，相当于start - start % 16
+            int count = 32 + length >> 4 << 4; //获得需要切割的数组的长度，比如 77 变 96(80+16)，77+ （32- 77/16的余数）
             //= 77 + （32-13） = 77 + 19 = 96，多16位确保不丢东西，相当于length +(32 - length % 16);
 
-            if (_decryptorBuffer.Length < count)
-            {
-                Array.Resize(ref _decryptorBuffer, count);
-            }
+            //现在需要将buffer切割，从offset开始，到count为止
+            var encryptedData = ArrayPool<byte>.Shared.Rent(count); //创建加密数据数组
+            Array.Clear(encryptedData, 0, count);
+            var l = _length - offset;
+            if (count > l) count = l;
+            Unsafe.CopyBlockUnaligned(ref encryptedData[0], ref _buffer[offset], (uint)count); //从原始数据里分割出来
 
-            //解密
-            int decryptedBytes = _decryptor.TransformBlock(_buffer, offset, count, _decryptorBuffer, 0);
-
+            //给encryptedData解密
+            var decrypt = CryptoMgr.AesDecrypt(encryptedData, _key, 0, count, CipherMode.ECB, PaddingMode.None);
             //截取decrypt，从remainder开始，到length为止，比如余数是3，那么从3-1的元素开始
             offset = start ^ offset; //相当于start % 16
 
+            //返还借的数组
+            ArrayPool<byte>.Shared.Return(encryptedData);
+
+            //这里有个问题，比如decrypt有16字节，而result是12字节，offset是8，那么12+8 > 16，就会出现错误
+            //所以这里要改一下
+            // var total = offset + length;
+            // if (total > decrypt.Length)
+            // {
+            //     Unsafe.CopyBlockUnaligned(ref ret[0], ref decrypt[offset], (uint)(decrypt.Length));
+            // }
             //直接操作指针，可以略过边界检查
-            Unsafe.CopyBlockUnaligned(ref ret[retOffset], ref _decryptorBuffer[offset],
-                (uint)Math.Min(decryptedBytes, length));
+            Unsafe.CopyBlockUnaligned(ref ret[0], ref decrypt[offset], (uint)length);
         }
 
         public override long Seek(long offset, SeekOrigin loc)
