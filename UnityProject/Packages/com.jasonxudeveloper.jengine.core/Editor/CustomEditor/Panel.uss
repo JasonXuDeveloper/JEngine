@@ -1,6 +1,7 @@
 .header {
     padding: 20px;
     background-color: #3a3a3a;
+    margin-bottom: 10px;
     border-radius: 5px;
 }
 
