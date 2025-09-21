@@ -153,8 +153,7 @@ namespace JEngine.Core
                             duration = 0.001f;
                         }
                         
-                        var realLoopTime = Time.realtimeSinceStartup - jb._curTime;
-                        if (realLoopTime < duration)
+                        if (Time.realtimeSinceStartup - jb._curTime < duration)
                         {
                             continue;
                         }
@@ -166,7 +165,7 @@ namespace JEngine.Core
                         sw.Stop();
 
                         //操作时间
-                        var time = sw.ElapsedMilliseconds / 1000f + realLoopTime;
+                        var time = sw.ElapsedMilliseconds / 1000f + duration;
                         jb.LoopCounts++;
                         jb.LoopDeltaTime = time;
                         jb.TotalTime += time;
