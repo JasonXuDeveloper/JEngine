@@ -95,7 +95,6 @@ Different built-in and additional packages for JEngine
 
 - Support **Hot Update Resource Encryption**
 - Significantly optimised **Hot Update Code Dynamic Decryption Performance**
-- Significantly optimised **Hot Update Code Launch Speed**
 - Optimised **Hot Update Code File Watcher Performance in Editor Mode**
 
 [Click here to see the change log](CHANGE.md)
