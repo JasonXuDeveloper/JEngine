@@ -7,8 +7,6 @@ UnityProject/Temp/*
 UnityProject/obj/*
 UnityProject/*.csproj
 UnityProject/UnityProject.sln
-UnityProject/Assets/JEngine.lock
-UnityProject/Assets/JEngine.lock.meta
 UnityProject/Logs/Packages-Update.log
 UnityProject/Sandbox/*
 UnityProject/Logs/*
