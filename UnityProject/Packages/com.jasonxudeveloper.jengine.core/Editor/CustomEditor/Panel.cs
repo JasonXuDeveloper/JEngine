@@ -633,9 +633,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 ManifestProcessServices = bundleEncryption.ManifestEncryptionConfig.Encryption,
                 ManifestRestoreServices = bundleEncryption.ManifestEncryptionConfig.Decryption,
                 EncryptionServices = bundleEncryption.Encryption,
-                BuiltinShadersBundleName = GetBuiltinShaderBundleName(),
-                TrackSpriteAtlasDependencies = true,
-                StripUnityVersion = true,
+                BuiltinShadersBundleName = GetBuiltinShaderBundleName()
             };
         }
 
