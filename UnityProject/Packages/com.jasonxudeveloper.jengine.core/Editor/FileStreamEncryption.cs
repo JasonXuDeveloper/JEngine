@@ -1,4 +1,4 @@
-// EncryptionMapping.cs
+// FileStreamEncryption.cs
 // 
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,22 +23,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System.Collections.Generic;
-using JEngine.Core.Encrypt.Bundle;
+using System.IO;
+using JEngine.Core.Encrypt;
+using JEngine.Core.Update;
+using YooAsset;
 
-namespace JEngine.Core.Encrypt
+namespace JEngine.Core.Editor
 {
-    public enum EncryptionOption
+    /// <summary>
+    /// 文件流加密方式
+    /// </summary>
+    public class FileStreamEncryption : IEncryptionServices
     {
-        Xor = 1
-    }
-
-    public static class EncryptionMapping
-    {
-        public static readonly IReadOnlyDictionary<EncryptionOption, IBundleEncryptionConfig> Mapping =
-            new Dictionary<EncryptionOption, IBundleEncryptionConfig>
+        public EncryptResult Encrypt(EncryptFileInfo fileInfo)
+        {
+            var fileData = File.ReadAllBytes(fileInfo.FileLoadPath);
+            for (int i = 0; i < fileData.Length; i++)
             {
-                { EncryptionOption.Xor, new XorBundle() }
-            };
+                fileData[i] ^= BundleStream.Key;
+            }
+
+            EncryptResult result = new EncryptResult();
+            result.Encrypted = true;
+            result.EncryptedData = fileData;
+            return result;
+        }
     }
 }

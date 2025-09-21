@@ -96,35 +96,25 @@
       <field signature="int $Obfuz$RVA_Value40" newName="$FD" />
       <field signature="int $Obfuz$RVA_Value41" newName="$gD" />
       <field signature="int $Obfuz$RVA_Value42" newName="$hd" />
-      <field signature="int $Obfuz$RVA_Value43" newName="$PD" />
-      <field signature="int $Obfuz$RVA_Value44" newName="$qD" />
-      <field signature="int $Obfuz$RVA_Value45" newName="$QD" />
-      <field signature="int $Obfuz$RVA_Value46" newName="$rD" />
-      <field signature="int $Obfuz$RVA_Value47" newName="$RD" />
-      <field signature="int $Obfuz$RVA_Value48" newName="$sD" />
-      <field signature="int $Obfuz$RVA_Value49" newName="$SD" />
     </type>
     <type fullName="$Obfuz$ProxyCall" newFullName="$yA" status="Renamed">
       <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_10462300(int)" newName="$zD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_10462300(Int32)" newStackTraceSignature="$yA:$zD(Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable $Obfuz$ProxyCall::@$Obfuz$Dispatch_22075_11448108(System.Threading.CancellationToken, int)" newName="$Sc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22075_11448108(CancellationToken, Int32)" newStackTraceSignature="$yA:$Sc(CancellationToken, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1576731$1(nint, int)" newName="$ne" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1576731$1(IntPtr, Int32)" newStackTraceSignature="$yA:$ne(IntPtr, Int32)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1576731(nint, int)" newName="$tc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1576731(IntPtr, Int32)" newStackTraceSignature="$yA:$tc(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_10646_8988543(object, byte, System.Threading.CancellationToken, int)" newName="$Tc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_10646_8988543(Object, Byte, CancellationToken, Int32)" newStackTraceSignature="$yA:$Tc(Object, Byte, CancellationToken, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8988543(nint, int)" newName="$ZD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8988543(IntPtr, Int32)" newStackTraceSignature="$yA:$ZD(IntPtr, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1576731(nint, int)" newName="$Ne" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1576731(IntPtr, Int32)" newStackTraceSignature="$yA:$Ne(IntPtr, Int32)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1576731$1(nint, int)" newName="$uc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1576731$1(IntPtr, Int32)" newStackTraceSignature="$yA:$uc(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_4698020(nint, int)" newName="$Ae" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_4698020(IntPtr, Int32)" newStackTraceSignature="$yA:$Ae(IntPtr, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_2872560(nint, int)" newName="$oe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_2872560(IntPtr, Int32)" newStackTraceSignature="$yA:$oe(IntPtr, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_21712_1078935(object, object, object, object, int)" newName="$Oe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_21712_1078935(Object, Object, Object, Object, Int32)" newStackTraceSignature="$yA:$Oe(Object, Object, Object, Object, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_1078935(object, object, int)" newName="$pe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_1078935(Object, Object, Int32)" newStackTraceSignature="$yA:$pe(Object, Object, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_60558_1078935(object, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks, int)" newName="$Pe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_60558_1078935(Object, PackageInitializationCallbacks, Int32)" newStackTraceSignature="$yA:$Pe(Object, $G, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_30987_16030691(object, object, [JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks, int, int)" newName="$qe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_30987_16030691(Object, Object, SceneLoadCallbacks, Int32, Int32)" newStackTraceSignature="$yA:$qe(Object, Object, $i, Int32, Int32)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_1078935(object, object, object, int)" newName="$be" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_1078935(Object, Object, Object, Int32)" newStackTraceSignature="$yA:$be(Object, Object, Object, Int32)" />
+      <method signature="[JEngine.Core]JEngine.Core.Bootstrap $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_10474989(int)" newName="$Be" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_10474989(Int32)" newStackTraceSignature="$yA:$Be(Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_12616511(nint, int)" newName="$ce" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_12616511(IntPtr, Int32)" newStackTraceSignature="$yA:$ce(IntPtr, Int32)" />
+      <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_12091355(object, int)" newName="$Ce" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_12091355(Object, Int32)" newStackTraceSignature="$yA:$Ce(Object, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_46378_12091355(int, int, int)" newName="$Yd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_46378_12091355(Int32, Int32, Int32)" newStackTraceSignature="$yA:$Yd(Int32, Int32, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_59003_12091355(float, int)" newName="$de" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_59003_12091355(Single, Int32)" newStackTraceSignature="$yA:$de(Single, Int32)" />
+      <method signature="float $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3119315(object, int)" newName="$De" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3119315(Object, Int32)" newStackTraceSignature="$yA:$De(Object, Int32)" />
       <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11558398(object, int)" newName="$Ee" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11558398(Object, Int32)" newStackTraceSignature="$yA:$Ee(Object, Int32)" />
-      <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_25763_11558398(int, int)" newName="$Qe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_25763_11558398(Int32, Int32)" newStackTraceSignature="$yA:$Qe(Int32, Int32)" />
       <method signature="System.Threading.Tasks.Task $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_13355026(object, int)" newName="$fe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_13355026(Object, Int32)" newStackTraceSignature="$yA:$fe(Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_4780505(object, int)" newName="$zd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_4780505(Object, Int32)" newStackTraceSignature="$yA:$zd(Object, Int32)" />
-      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_12519_4780505(object, byte, int)" newName="$re" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_12519_4780505(Object, Byte, Int32)" newStackTraceSignature="$yA:$re(Object, Byte, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_19188_4780505(nint, object, int)" newName="$Fe" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_19188_4780505(IntPtr, Object, Int32)" newStackTraceSignature="$yA:$Fe(IntPtr, Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_4780505(nint, int)" newName="$ge" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_4780505(IntPtr, Int32)" newStackTraceSignature="$yA:$ge(IntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_30844_4780505(nint, nuint, nuint, int)" newName="$Ge" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_30844_4780505(IntPtr, UIntPtr, UIntPtr, Int32)" newStackTraceSignature="$yA:$Ge(IntPtr, UIntPtr, UIntPtr, Int32)" />
@@ -138,7 +128,7 @@
       <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_34824_11965409(object, object, uint, int)" newName="$Ie" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_34824_11965409(Object, Object, UInt32, Int32)" newStackTraceSignature="$yA:$Ie(Object, Object, UInt32, Int32)" />
       <method signature="[YooAsset]YooAsset.EOperationStatus $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10989665(object, int)" newName="$je" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10989665(Object, Int32)" newStackTraceSignature="$yA:$je(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.ResourcePackage $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10395823(object, int)" newName="$Je" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10395823(Object, Int32)" newStackTraceSignature="$yA:$Je(Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.SceneHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_2259553(nint, int)" newName="$Re" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_2259553(IntPtr, Int32)" newStackTraceSignature="$yA:$Re(IntPtr, Int32)" />
+      <method signature="[YooAsset]YooAsset.SceneHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_34383_2259553(object, object, int, int, byte, uint, int)" newName="$ke" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_34383_2259553(Object, Object, Int32, Int32, Byte, UInt32, Int32)" newStackTraceSignature="$yA:$ke(Object, Object, Int32, Int32, Byte, UInt32, Int32)" />
     </type>
     <type fullName="$Obfuz$RVA$0" newFullName="$XA" status="Renamed">
       <field signature="[HotUpdate.Code]$ObfuzRVA$DataHolder2048 $RVA_Data0" newName="$RC" />
@@ -214,32 +204,26 @@
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__2" newName="$nd" />
       <method signature="void HotUpdate.Code.AddOnDemo/&lt;LoadAddOn&gt;d__0::SetStateMachine([HotUpdate.Code]HotUpdate.Code.AddOnDemo/&lt;LoadAddOn&gt;d__0&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$le" oldStackTraceSignature="HotUpdate.Code.&lt;LoadAddOn&gt;d__0:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="HotUpdate.Code.$Ib:$le(IAsyncStateMachine)" />
     </type>
-    <type fullName="HotUpdate.Code.EntryPoint" newFullName="" status="NotRenamed">
-      <method signature="string HotUpdate.Code.EntryPoint::@GetStatusText([JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$Be" oldStackTraceSignature="HotUpdate.Code.EntryPoint:GetStatusText(PackageInitializationStatus)" newStackTraceSignature="HotUpdate.Code.EntryPoint:$Be($h)" />
-      <method signature="string HotUpdate.Code.EntryPoint::@GetSceneLoadStatusText([JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$Ce" oldStackTraceSignature="HotUpdate.Code.EntryPoint:GetSceneLoadStatusText(SceneLoadStatus)" newStackTraceSignature="HotUpdate.Code.EntryPoint:$Ce($I)" />
-    </type>
     <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c" newFullName="" status="NotRenamed">
       <field signature="[HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c &lt;&gt;9" newName="$Yc" />
-      <field signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt; &lt;&gt;9__0_2" newName="$GD" />
+      <field signature="System.Action`1&lt;string&gt; &lt;&gt;9__0_2" newName="$Zc" />
       <field signature="System.Action`1&lt;string&gt; &lt;&gt;9__0_3" newName="$aC" />
       <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;&gt;9__0_4" newName="$AC" />
-      <field signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate &lt;&gt;9__0_5" newName="$hD" />
+      <field signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Bootstrap/DownloadStatus&gt; &lt;&gt;9__0_5" newName="$bC" />
       <field signature="System.Action &lt;&gt;9__0_6" newName="$BC" />
       <field signature="System.Action &lt;&gt;9__0_7" newName="$cC" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__0_8" newName="$HD" />
-      <field signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt; &lt;&gt;9__0_9" newName="$iD" />
-      <field signature="System.Action`1&lt;float&gt; &lt;&gt;9__0_10" newName="$ID" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__0_11" newName="$jD" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_2([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, [JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$De" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_2(PackageInitializationStatus)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$De($h)" />
+      <field signature="System.Func`2&lt;string,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__0_8" newName="$CC" />
+      <field signature="System.Func`1&lt;[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__0_1" newName="$dC" />
+      <field signature="[UnityEngine.CoreModule]UnityEngine.Events.UnityAction &lt;&gt;9__0_0" newName="$zc" />
+      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_0([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c)" newName="$Mc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_0()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Mc()" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_1([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c)" newName="$Oc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_1()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Oc()" />
+      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_2([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, string)" newName="$pc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_2(String)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$pc(String)" />
       <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_3([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, string)" newName="$Pc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_3(String)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Pc(String)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_4([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, int, long)" newName="$qc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_4(Int32, Int64)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$qc(Int32, Int64)" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_5([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, [YooAsset]YooAsset.DownloadUpdateData)" newName="$ee" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_5(DownloadUpdateData)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$ee(DownloadUpdateData)" />
+      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_5([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, [JEngine.Core]JEngine.Core.Bootstrap/DownloadStatus)" newName="$Qc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_5(DownloadStatus)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Qc($b)" />
       <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_6([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c)" newName="$rc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_6()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$rc()" />
       <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_7([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c)" newName="$Rc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_7()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Rc()" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_8([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, System.Exception)" newName="$ke" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_8(Exception)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$ke(Exception)" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_9([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, [JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$Ke" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_9(SceneLoadStatus)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Ke($I)" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_10([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, float)" newName="$le" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_10(Single)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$le(Single)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_11([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, System.Exception)" newName="$Le" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_11(Exception)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$Le(Exception)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask HotUpdate.Code.EntryPoint/&lt;&gt;c::&lt;RunGame&gt;b__0_8([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c, string)" newName="$sc" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c:&lt;RunGame&gt;b__0_8(String)" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c:$sc(String)" />
     </type>
     <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_1&gt;d" newFullName="" status="NotRenamed">
       <field signature="int &lt;&gt;1__state" newName="$DC" />
@@ -255,27 +239,9 @@
     <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_8&gt;d" newFullName="" status="NotRenamed">
       <field signature="int &lt;&gt;1__state" newName="$ed" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$Ed" />
-      <field signature="System.Exception error" newName="$JD" />
+      <field signature="string error" newName="$fd" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$Fd" />
       <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_8&gt;d::SetStateMachine([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c/&lt;&lt;RunGame&gt;b__0_8&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$Vc" oldStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__0_8&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__0_8&gt;d:$Vc(IAsyncStateMachine)" />
-    </type>
-    <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0" newFullName="" status="NotRenamed">
-      <field signature="[UnityEngine.UI]UnityEngine.UI.Button addOnDemoButton" newName="$kD" />
-      <field signature="System.Func`1&lt;[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__1" newName="$KD" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0::&lt;RunGame&gt;b__0([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0)" newName="$me" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c__DisplayClass0_0:&lt;RunGame&gt;b__0()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c__DisplayClass0_0:$me()" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0::&lt;RunGame&gt;b__1([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0)" newName="$Me" oldStackTraceSignature="HotUpdate.Code.&lt;&gt;c__DisplayClass0_0:&lt;RunGame&gt;b__1()" newStackTraceSignature="HotUpdate.Code.&lt;&gt;c__DisplayClass0_0:$Me()" />
-    </type>
-    <type fullName="HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0/&lt;&lt;RunGame&gt;b__1&gt;d" newFullName="" status="NotRenamed">
-      <field signature="int &lt;&gt;1__state" newName="$lD" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$LD" />
-      <field signature="[HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0 &lt;&gt;4__this" newName="$mD" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable/Awaiter &lt;&gt;u__1" newName="$MD" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage &lt;package&gt;5__2" newName="$nD" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;textHandle&gt;5__3" newName="$ND" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__2" newName="$oD" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; &lt;&gt;u__3" newName="$OD" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$pD" />
-      <method signature="void HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0/&lt;&lt;RunGame&gt;b__1&gt;d::SetStateMachine([HotUpdate.Code]HotUpdate.Code.EntryPoint/&lt;&gt;c__DisplayClass0_0/&lt;&lt;RunGame&gt;b__1&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$se" oldStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__1&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="HotUpdate.Code.&lt;&lt;RunGame&gt;b__1&gt;d:$se(IAsyncStateMachine)" />
     </type>
   </assembly>
   <assembly name="JEngine.Core">
@@ -294,21 +260,21 @@
       <field signature="int $Obfuz$RVA_Value11" newName="$Ib" />
       <field signature="int $Obfuz$RVA_Value12" newName="$jb" />
       <field signature="int $Obfuz$RVA_Value13" newName="$kC" />
-      <field signature="int $Obfuz$RVA_Value14" newName="$Pd" />
+      <field signature="string $Obfuz$RVA_Value14" newName="$kb" />
       <field signature="int $Obfuz$RVA_Value15" newName="$Kb" />
       <field signature="int $Obfuz$RVA_Value16" newName="$lb" />
       <field signature="int $Obfuz$RVA_Value17" newName="$KC" />
       <field signature="int $Obfuz$RVA_Value18" newName="$lC" />
       <field signature="int $Obfuz$RVA_Value19" newName="$LC" />
-      <field signature="string $Obfuz$RVA_Value20" newName="$qd" />
+      <field signature="int $Obfuz$RVA_Value20" newName="$nb" />
       <field signature="int $Obfuz$RVA_Value21" newName="$mC" />
-      <field signature="int $Obfuz$RVA_Value22" newName="$Qd" />
-      <field signature="float $Obfuz$RVA_Value23" newName="$rd" />
+      <field signature="string $Obfuz$RVA_Value22" newName="$ob" />
+      <field signature="string $Obfuz$RVA_Value23" newName="$Ob" />
       <field signature="string $Obfuz$RVA_Value24" newName="$pb" />
-      <field signature="string $Obfuz$RVA_Value25" newName="$Rd" />
+      <field signature="float $Obfuz$RVA_Value25" newName="$Pb" />
       <field signature="int $Obfuz$RVA_Value26" newName="$qb" />
       <field signature="int $Obfuz$RVA_Value27" newName="$MC" />
-      <field signature="int $Obfuz$RVA_Value28" newName="$sd" />
+      <field signature="string $Obfuz$RVA_Value28" newName="$rb" />
       <field signature="int $Obfuz$RVA_Value29" newName="$nC" />
       <field signature="int $Obfuz$RVA_Value30" newName="$NC" />
       <field signature="int $Obfuz$RVA_Value31" newName="$Sb" />
@@ -391,47 +357,32 @@
       <field signature="int $Obfuz$RVA_Value108" newName="$fc" />
       <field signature="int $Obfuz$RVA_Value109" newName="$Fc" />
       <field signature="int $Obfuz$RVA_Value110" newName="$gc" />
-      <field signature="int $Obfuz$RVA_Value111" newName="$Sd" />
-      <field signature="int $Obfuz$RVA_Value112" newName="$td" />
-      <field signature="int $Obfuz$RVA_Value113" newName="$Td" />
-      <field signature="int $Obfuz$RVA_Value114" newName="$ud" />
-      <field signature="int $Obfuz$RVA_Value115" newName="$Ud" />
     </type>
     <type fullName="$Obfuz$ProxyCall" newFullName="$Q" status="Renamed">
       <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_10462300(int)" newName="$cb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_10462300(Int32)" newStackTraceSignature="$Q:$cb(Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_7918774(int)" newName="$LD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_7918774(Int32)" newStackTraceSignature="$Q:$LD(Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_6093314(int)" newName="$Od" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_6093314(Int32)" newStackTraceSignature="$Q:$Od(Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_8988543(object, int)" newName="$Cb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_8988543(Object, Int32)" newStackTraceSignature="$Q:$Cb(Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_23979_8988543(float, byte, int, System.Threading.CancellationToken, byte, int)" newName="$db" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_23979_8988543(Single, Byte, Int32, CancellationToken, Byte, Int32)" newStackTraceSignature="$Q:$db(Single, Byte, Int32, CancellationToken, Byte, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8988543(nint, int)" newName="$Db" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8988543(IntPtr, Int32)" newStackTraceSignature="$Q:$Db(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_8988543(object, object, int)" newName="$eb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_8988543(Object, Object, Int32)" newStackTraceSignature="$Q:$eb(Object, Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_40410_8988543(int, int, System.Threading.CancellationToken, byte, int)" newName="$Eb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_40410_8988543(Int32, Int32, CancellationToken, Byte, Int32)" newStackTraceSignature="$Q:$Eb(Int32, Int32, CancellationToken, Byte, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_65367_8988543(object, object, int, int)" newName="$pd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_65367_8988543(Object, Object, Int32, Int32)" newStackTraceSignature="$Q:$pd(Object, Object, Int32, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_1576731(object, int)" newName="$Pd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_1576731(Object, Int32)" newStackTraceSignature="$Q:$Pd(Object, Int32)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_8988543(object, object, object, int)" newName="$fb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_8988543(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$fb(Object, Object, Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1576731(nint, int)" newName="$Fb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1576731(IntPtr, Int32)" newStackTraceSignature="$Q:$Fb(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_4698020(nint, int)" newName="$gb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_4698020(IntPtr, Int32)" newStackTraceSignature="$Q:$gb(IntPtr, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_2872560(nint, int)" newName="$yd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_2872560(IntPtr, Int32)" newStackTraceSignature="$Q:$yd(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_1078935(object, int)" newName="$Gb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_1078935(Object, Int32)" newStackTraceSignature="$Q:$Gb(Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_21712_1078935(object, object, object, object, int)" newName="$hb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_21712_1078935(Object, Object, Object, Object, Int32)" newStackTraceSignature="$Q:$hb(Object, Object, Object, Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1078935(nint, int)" newName="$mD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1078935(IntPtr, Int32)" newStackTraceSignature="$Q:$mD(IntPtr, Int32)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_1078935(object, object, object, int)" newName="$MD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_1078935(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$MD(Object, Object, Object, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_52393_1078935(byte, int)" newName="$Hb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_52393_1078935(Byte, Int32)" newStackTraceSignature="$Q:$Hb(Byte, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_60558_1078935(object, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks, int)" newName="$Yd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_60558_1078935(Object, PackageInitializationCallbacks, Int32)" newStackTraceSignature="$Q:$Yd(Object, $G, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_8964_1078935(object, object, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks, int)" newName="$zd" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_8964_1078935(Object, Object, PackageInitializationCallbacks, Int32)" newStackTraceSignature="$Q:$zd(Object, Object, $G, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_16030691(nint, int)" newName="$AD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_16030691(IntPtr, Int32)" newStackTraceSignature="$Q:$AD(IntPtr, Int32)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;[YooAsset]YooAsset.SceneHandle&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_30987_16030691(object, object, [JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks, int, int)" newName="$bD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_30987_16030691(Object, Object, SceneLoadCallbacks, Int32, Int32)" newStackTraceSignature="$Q:$bD(Object, Object, $i, Int32, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTaskStatus $Obfuz$ProxyCall::@$Obfuz$Dispatch_23887_1477287(nint, short, int)" newName="$ib" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_23887_1477287(IntPtr, Int16, Int32)" newStackTraceSignature="$Q:$ib(IntPtr, Int16, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTaskStatus $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_1477287(nint, int)" newName="$Ib" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_1477287(IntPtr, Int32)" newStackTraceSignature="$Q:$Ib(IntPtr, Int32)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UnityAsyncExtensions/AsyncOperationAwaiter $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_5355630(object, int)" newName="$jb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_5355630(Object, Int32)" newStackTraceSignature="$Q:$jb(Object, Int32)" />
       <method signature="[HybridCLR.Runtime]HybridCLR.LoadImageErrorCode $Obfuz$ProxyCall::@$Obfuz$Dispatch_54639_15112779(byte[], int, int)" newName="$Jb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_54639_15112779(Byte[], Int32, Int32)" newStackTraceSignature="$Q:$Jb(Byte[], Int32, Int32)" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_14633807(int)" newName="$BD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_14633807(Int32)" newStackTraceSignature="$Q:$BD(Int32)" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_12118859(object, int)" newName="$cD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_12118859(Object, Int32)" newStackTraceSignature="$Q:$cD(Object, Int32)" />
-      <method signature="[JEngine.Core]JEngine.Core.Misc.MessageBox $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_14057261(nint, int)" newName="$CD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_14057261(IntPtr, Int32)" newStackTraceSignature="$Q:$CD(IntPtr, Int32)" />
+      <method signature="[JEngine.Core]JEngine.Core.Update.MessageBox $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_7775428(nint, int)" newName="$kb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_7775428(IntPtr, Int32)" newStackTraceSignature="$Q:$kb(IntPtr, Int32)" />
       <method signature="[Nino.Core]Nino.Core.NinoArrayBufferWriter $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_15335367(int)" newName="$Kb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_15335367(Int32)" newStackTraceSignature="$Q:$Kb(Int32)" />
-      <method signature="System.Action $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_3287101(nint, int)" newName="$dD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_3287101(IntPtr, Int32)" newStackTraceSignature="$Q:$dD(IntPtr, Int32)" />
-      <method signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8527511(nint, int)" newName="$DD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8527511(IntPtr, Int32)" newStackTraceSignature="$Q:$DD(IntPtr, Int32)" />
-      <method signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_6783544(nint, int)" newName="$eD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_6783544(IntPtr, Int32)" newStackTraceSignature="$Q:$eD(IntPtr, Int32)" />
-      <method signature="System.Action`1&lt;float&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_14759582(nint, int)" newName="$ED" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_14759582(IntPtr, Int32)" newStackTraceSignature="$Q:$ED(IntPtr, Int32)" />
-      <method signature="System.Action`1&lt;string&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8820719(nint, int)" newName="$fD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8820719(IntPtr, Int32)" newStackTraceSignature="$Q:$fD(IntPtr, Int32)" />
+      <method signature="System.Action $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3287101(object, int)" newName="$nD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3287101(Object, Int32)" newStackTraceSignature="$Q:$nD(Object, Int32)" />
+      <method signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Bootstrap/DownloadStatus&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_15474928(object, int)" newName="$ND" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_15474928(Object, Int32)" newStackTraceSignature="$Q:$ND(Object, Int32)" />
+      <method signature="System.Action`1&lt;string&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_8820719(object, int)" newName="$oD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_8820719(Object, Int32)" newStackTraceSignature="$Q:$oD(Object, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_12616511(object, int)" newName="$lb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_12616511(Object, Int32)" newStackTraceSignature="$Q:$lb(Object, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_12519_12616511(object, byte, int)" newName="$Lb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_12519_12616511(Object, Byte, Int32)" newStackTraceSignature="$Q:$Lb(Object, Byte, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_12616511(int)" newName="$mb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_12616511(Int32)" newStackTraceSignature="$Q:$mb(Int32)" />
@@ -440,26 +391,31 @@
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_12616511(nint, int)" newName="$Nb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_12616511(IntPtr, Int32)" newStackTraceSignature="$Q:$Nb(IntPtr, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_30113_12616511(nint, System.Threading.CancellationToken, int)" newName="$ob" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_30113_12616511(IntPtr, CancellationToken, Int32)" newStackTraceSignature="$Q:$ob(IntPtr, CancellationToken, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_12616511(object, object, int)" newName="$Ob" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_12616511(Object, Object, Int32)" newStackTraceSignature="$Q:$Ob(Object, Object, Int32)" />
+      <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_51425_12616511(object, int, int)" newName="$pb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_51425_12616511(Object, Int32, Int32)" newStackTraceSignature="$Q:$pb(Object, Int32, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_60431_12616511(nint, byte, int)" newName="$Pb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_60431_12616511(IntPtr, Byte, Int32)" newStackTraceSignature="$Q:$Pb(IntPtr, Byte, Int32)" />
+      <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_63018_12616511([UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene, int)" newName="$qb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_63018_12616511(Scene, Int32)" newStackTraceSignature="$Q:$qb(Scene, Int32)" />
       <method signature="bool $Obfuz$ProxyCall::@$Obfuz$Dispatch_63447_12616511(nint, nuint, int)" newName="$Qb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_63447_12616511(IntPtr, UIntPtr, Int32)" newStackTraceSignature="$Q:$Qb(IntPtr, UIntPtr, Int32)" />
       <method signature="byte[] $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_130600(object, int)" newName="$rb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_130600(Object, Int32)" newStackTraceSignature="$Q:$rb(Object, Int32)" />
+      <method signature="System.Collections.Generic.IEnumerable`1&lt;object&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_2497161(object, object, int)" newName="$Rb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_2497161(Object, Object, Int32)" newStackTraceSignature="$Q:$Rb(Object, Object, Int32)" />
+      <method signature="System.Collections.Generic.List`1&lt;object&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_8364308(object, int)" newName="$sb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_8364308(Object, Int32)" newStackTraceSignature="$Q:$sb(Object, Int32)" />
       <method signature="System.Collections.Generic.List`1&lt;string&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_24818_12724855(System.ReadOnlySpan`1&lt;byte&gt;, int)" newName="$Sb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_24818_12724855(ReadOnlySpan`1, Int32)" newStackTraceSignature="$Q:$Sb(ReadOnlySpan`1, Int32)" />
-      <method signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_14351523(nint, int)" newName="$FD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_14351523(IntPtr, Int32)" newStackTraceSignature="$Q:$FD(IntPtr, Int32)" />
-      <method signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_3690823(nint, int)" newName="$gD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_3690823(IntPtr, Int32)" newStackTraceSignature="$Q:$gD(IntPtr, Int32)" />
+      <method signature="System.Func`2&lt;string,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10422373(object, int)" newName="$OD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10422373(Object, Int32)" newStackTraceSignature="$Q:$OD(Object, Int32)" />
+      <method signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3690823(object, int)" newName="$pD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3690823(Object, Int32)" newStackTraceSignature="$Q:$pD(Object, Int32)" />
       <method signature="short $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_6919849(nint, int)" newName="$tb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_6919849(IntPtr, Int32)" newStackTraceSignature="$Q:$tb(IntPtr, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_12091355(object, int)" newName="$Tb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_12091355(Object, Int32)" newStackTraceSignature="$Q:$Tb(Object, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_33801_12091355(nint, int, int)" newName="$ub" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_33801_12091355(IntPtr, Int32, Int32)" newStackTraceSignature="$Q:$ub(IntPtr, Int32, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_46378_12091355(int, int, int)" newName="$Ub" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_46378_12091355(Int32, Int32, Int32)" newStackTraceSignature="$Q:$Ub(Int32, Int32, Int32)" />
       <method signature="int $Obfuz$ProxyCall::@$Obfuz$Dispatch_59003_12091355(float, int)" newName="$vb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_59003_12091355(Single, Int32)" newStackTraceSignature="$Q:$vb(Single, Int32)" />
       <method signature="long $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_7551190(object, int)" newName="$Vb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_7551190(Object, Int32)" newStackTraceSignature="$Q:$Vb(Object, Int32)" />
+      <method signature="long $Obfuz$ProxyCall::@$Obfuz$Dispatch_40180_7551190(long, long, int)" newName="$wb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_40180_7551190(Int64, Int64, Int32)" newStackTraceSignature="$Q:$wb(Int64, Int64, Int32)" />
       <method signature="System.ReadOnlySpan`1&lt;byte&gt; $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_2989950(object, int)" newName="$Wb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_2989950(Object, Int32)" newStackTraceSignature="$Q:$Wb(Object, Int32)" />
       <method signature="float $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3119315(object, int)" newName="$xb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3119315(Object, Int32)" newStackTraceSignature="$Q:$xb(Object, Int32)" />
-      <method signature="float $Obfuz$ProxyCall::@$Obfuz$Dispatch_47418_3119315(float, float, int)" newName="$GD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_47418_3119315(Single, Single, Int32)" newStackTraceSignature="$Q:$GD(Single, Single, Int32)" />
       <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11558398(object, int)" newName="$yb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11558398(Object, Int32)" newStackTraceSignature="$Q:$yb(Object, Int32)" />
       <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_11558398(int)" newName="$Yb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_11558398(Int32)" newStackTraceSignature="$Q:$Yb(Int32)" />
-      <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_25763_11558398(int, int)" newName="$hD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_25763_11558398(Int32, Int32)" newStackTraceSignature="$Q:$hD(Int32, Int32)" />
       <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_11558398(nint, int)" newName="$zb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_11558398(IntPtr, Int32)" newStackTraceSignature="$Q:$zb(IntPtr, Int32)" />
+      <method signature="string $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_11558398(object, object, int)" newName="$Zb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_11558398(Object, Object, Int32)" newStackTraceSignature="$Q:$Zb(Object, Object, Int32)" />
       <method signature="System.Threading.Tasks.Task $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_13355026(object, int)" newName="$aB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_13355026(Object, Int32)" newStackTraceSignature="$Q:$aB(Object, Int32)" />
+      <method signature="uint $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_3014968(int)" newName="$AB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_3014968(Int32)" newStackTraceSignature="$Q:$AB(Int32)" />
       <method signature="uint $Obfuz$ProxyCall::@$Obfuz$Dispatch_25763_3014968(int, int)" newName="$bB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_25763_3014968(Int32, Int32)" newStackTraceSignature="$Q:$bB(Int32, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_10090_4780505(nint, byte[], int)" newName="$BB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_10090_4780505(IntPtr, Byte[], Int32)" newStackTraceSignature="$Q:$BB(IntPtr, Byte[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_10222_4780505([UnityEngine.CoreModule]UnityEngine.SortingLayer[], nuint, int)" newName="$cB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_10222_4780505(SortingLayer[], UIntPtr, Int32)" newStackTraceSignature="$Q:$cB(SortingLayer[], UIntPtr, Int32)" />
@@ -467,7 +423,6 @@
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_12519_4780505(object, byte, int)" newName="$dB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_12519_4780505(Object, Byte, Int32)" newStackTraceSignature="$Q:$dB(Object, Byte, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_15535_4780505(object, nuint, int)" newName="$DB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_15535_4780505(Object, UIntPtr, Int32)" newStackTraceSignature="$Q:$DB(Object, UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_16580_4780505(nint, [UnityEngine.CoreModule]Unity.Collections.NativeArray`1&lt;[UnityEngine.CoreModule]UnityEngine.Rendering.ShaderTagId&gt;, int)" newName="$eB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_16580_4780505(IntPtr, NativeArray`1, Int32)" newStackTraceSignature="$Q:$eB(IntPtr, NativeArray`1, Int32)" />
-      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_17814_4780505(object, [JEngine.Core]JEngine.Core.Misc.MessageBox[], int)" newName="$HD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_17814_4780505(Object, MessageBox[], Int32)" newStackTraceSignature="$Q:$HD(Object, $eA[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_18119_4780505(nint, [UnityEngine.CoreModule]UnityEngine.SortingLayer[], int)" newName="$EB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_18119_4780505(IntPtr, SortingLayer[], Int32)" newStackTraceSignature="$Q:$EB(IntPtr, SortingLayer[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_18749_4780505(byte[], nuint, int)" newName="$fB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_18749_4780505(Byte[], UIntPtr, Int32)" newStackTraceSignature="$Q:$fB(Byte[], UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_19129_4780505(object, float, int)" newName="$FB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_19129_4780505(Object, Single, Int32)" newStackTraceSignature="$Q:$FB(Object, Single, Int32)" />
@@ -484,6 +439,7 @@
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_30844_4780505(nint, nuint, nuint, int)" newName="$lB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_30844_4780505(IntPtr, UIntPtr, UIntPtr, Int32)" newStackTraceSignature="$Q:$lB(IntPtr, UIntPtr, UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_31499_4780505([UnityEngine.CoreModule]UnityEngine.SortingLayer[], object, int)" newName="$LB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_31499_4780505(SortingLayer[], Object, Int32)" newStackTraceSignature="$Q:$LB(SortingLayer[], Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_3258_4780505(nint, uint, int)" newName="$mB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_3258_4780505(IntPtr, UInt32, Int32)" newStackTraceSignature="$Q:$mB(IntPtr, UInt32, Int32)" />
+      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_3304_4780505(object, long, int)" newName="$PD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_3304_4780505(Object, Int64, Int32)" newStackTraceSignature="$Q:$PD(Object, Int64, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_33597_4780505(nint, uint, int, int)" newName="$MB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_33597_4780505(IntPtr, UInt32, Int32, Int32)" newStackTraceSignature="$Q:$MB(IntPtr, UInt32, Int32, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_4780505(object, object, int)" newName="$nB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_4780505(Object, Object, Int32)" newStackTraceSignature="$Q:$nB(Object, Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_40026_4780505(byte[], object, int)" newName="$NB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_40026_4780505(Byte[], Object, Int32)" newStackTraceSignature="$Q:$NB(Byte[], Object, Int32)" />
@@ -496,44 +452,41 @@
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_48996_4780505(nint, int[], int)" newName="$rB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_48996_4780505(IntPtr, Int32[], Int32)" newStackTraceSignature="$Q:$rB(IntPtr, Int32[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_4780505(object, object, object, int)" newName="$RB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_4780505(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$RB(Object, Object, Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_51216_4780505(nint, long, int)" newName="$sB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_51216_4780505(IntPtr, Int64, Int32)" newStackTraceSignature="$Q:$sB(IntPtr, Int64, Int32)" />
+      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_51425_4780505(object, int, int)" newName="$SB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_51425_4780505(Object, Int32, Int32)" newStackTraceSignature="$Q:$SB(Object, Int32, Int32)" />
+      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_5929_4780505(object, [JEngine.Core]JEngine.Core.Update.MessageBox[], int)" newName="$tB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_5929_4780505(Object, MessageBox[], Int32)" newStackTraceSignature="$Q:$tB(Object, $h[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_59828_4780505(object, nuint, nuint, int)" newName="$TB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_59828_4780505(Object, UIntPtr, UIntPtr, Int32)" newStackTraceSignature="$Q:$TB(Object, UIntPtr, UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_60431_4780505(nint, byte, int)" newName="$uB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_60431_4780505(IntPtr, Byte, Int32)" newStackTraceSignature="$Q:$uB(IntPtr, Byte, Int32)" />
+      <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_61202_4780505(object, int, object, object, object[], int)" newName="$UB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_61202_4780505(Object, Int32, Object, Object, Object[], Int32)" newStackTraceSignature="$Q:$UB(Object, Int32, Object, Object, Object[], Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_63447_4780505(nint, nuint, int)" newName="$vB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_63447_4780505(IntPtr, UIntPtr, Int32)" newStackTraceSignature="$Q:$vB(IntPtr, UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_64489_4780505(System.Nullable`1&lt;long&gt;, nuint, int)" newName="$VB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_64489_4780505(Nullable`1, UIntPtr, Int32)" newStackTraceSignature="$Q:$VB(Nullable`1, UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_64735_4780505(int[], nuint, int)" newName="$wB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_64735_4780505(Int32[], UIntPtr, Int32)" newStackTraceSignature="$Q:$wB(Int32[], UIntPtr, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_64868_4780505(System.Nullable`1&lt;[UnityEngine.CoreModule]Unity.Collections.NativeArray`1&lt;[UnityEngine.CoreModule]UnityEngine.Rendering.ShaderTagId&gt;&gt;, object, int)" newName="$WB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_64868_4780505(Nullable`1, Object, Int32)" newStackTraceSignature="$Q:$WB(Nullable`1, Object, Int32)" />
       <method signature="void $Obfuz$ProxyCall::@$Obfuz$Dispatch_8678_4780505(nint, [UnityEngine.CoreModule]Unity.Collections.NativeArray`1&lt;[UnityEngine.CoreModule]UnityEngine.Rendering.RenderStateBlock&gt;, int)" newName="$xB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_8678_4780505(IntPtr, NativeArray`1, Int32)" newStackTraceSignature="$Q:$xB(IntPtr, NativeArray`1, Int32)" />
       <method signature="[Unity.TextMeshPro]TMPro.TextMeshProUGUI $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_4308269(object, object, int)" newName="$XB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_4308269(Object, Object, Int32)" newStackTraceSignature="$Q:$XB(Object, Object, Int32)" />
-      <method signature="[UnityEngine.AssetBundleModule]UnityEngine.AssetBundle $Obfuz$ProxyCall::@$Obfuz$Dispatch_2052_10832599(byte[], int)" newName="$iD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2052_10832599(Byte[], Int32)" newStackTraceSignature="$Q:$iD(Byte[], Int32)" />
       <method signature="[UnityEngine.AssetBundleModule]UnityEngine.AssetBundle $Obfuz$ProxyCall::@$Obfuz$Dispatch_32038_10832599(object, uint, uint, int)" newName="$yB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_32038_10832599(Object, UInt32, UInt32, Int32)" newStackTraceSignature="$Q:$yB(Object, UInt32, UInt32, Int32)" />
       <method signature="[UnityEngine.AssetBundleModule]UnityEngine.AssetBundleCreateRequest $Obfuz$ProxyCall::@$Obfuz$Dispatch_32038_3851202(object, uint, uint, int)" newName="$YB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_32038_3851202(Object, UInt32, UInt32, Int32)" newStackTraceSignature="$Q:$YB(Object, UInt32, UInt32, Int32)" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.AsyncOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_6290444(object, int)" newName="$ID" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_6290444(Object, Int32)" newStackTraceSignature="$Q:$ID(Object, Int32)" />
+      <method signature="[UnityEngine.CoreModule]UnityEngine.AsyncOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_63018_6290444([UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene, int)" newName="$zB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_63018_6290444(Scene, Int32)" newStackTraceSignature="$Q:$zB(Scene, Int32)" />
       <method signature="[UnityEngine.UIModule]UnityEngine.CanvasGroup $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11814736(object, int)" newName="$ZB" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11814736(Object, Int32)" newStackTraceSignature="$Q:$ZB(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.GameObject $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11979780(object, int)" newName="$ac" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11979780(Object, Int32)" newStackTraceSignature="$Q:$ac(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.GameObject $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_11979780(int)" newName="$Ac" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_11979780(Int32)" newStackTraceSignature="$Q:$Ac(Int32)" />
+      <method signature="[UnityEngine.CoreModule]UnityEngine.ILogHandler $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_12938690(object, int)" newName="$bc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_12938690(Object, Int32)" newStackTraceSignature="$Q:$bc(Object, Int32)" />
+      <method signature="[UnityEngine.CoreModule]UnityEngine.LogType $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_13517753(object, int)" newName="$Bc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_13517753(Object, Int32)" newStackTraceSignature="$Q:$Bc(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.Object $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11700658(object, int)" newName="$cc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11700658(Object, Int32)" newStackTraceSignature="$Q:$cc(Object, Int32)" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.RuntimePlatform $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_7124300(int)" newName="$jD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_7124300(Int32)" newStackTraceSignature="$Q:$jD(Int32)" />
+      <method signature="[UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_735318(object, int)" newName="$Cc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_735318(Object, Int32)" newStackTraceSignature="$Q:$Cc(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_735318(int)" newName="$dc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_735318(Int32)" newStackTraceSignature="$Q:$dc(Int32)" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.TextAsset $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3944058(object, int)" newName="$JD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3944058(Object, Int32)" newStackTraceSignature="$Q:$JD(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.Transform $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11509251(object, int)" newName="$Dc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11509251(Object, Int32)" newStackTraceSignature="$Q:$Dc(Object, Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.Transform $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_11509251(object, object, int)" newName="$ec" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_11509251(Object, Object, Int32)" newStackTraceSignature="$Q:$ec(Object, Object, Int32)" />
       <method signature="[UnityEngine.UI]UnityEngine.UI.Button $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_16518985(object, object, int)" newName="$Ec" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_16518985(Object, Object, Int32)" newStackTraceSignature="$Q:$Ec(Object, Object, Int32)" />
       <method signature="[UnityEngine.UI]UnityEngine.UI.Button/ButtonClickedEvent $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10350119(object, int)" newName="$fc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10350119(Object, Int32)" newStackTraceSignature="$Q:$fc(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_20882_11965409(object, uint, int)" newName="$Fc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_20882_11965409(Object, UInt32, Int32)" newStackTraceSignature="$Q:$Fc(Object, UInt32, Int32)" />
       <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_34824_11965409(object, object, uint, int)" newName="$gc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_34824_11965409(Object, Object, UInt32, Int32)" newStackTraceSignature="$Q:$gc(Object, Object, UInt32, Int32)" />
-      <method signature="[YooAsset]YooAsset.ClearCacheFilesOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_45707_10036602(object, int, object, int)" newName="$kD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_45707_10036602(Object, Int32, Object, Int32)" newStackTraceSignature="$Q:$kD(Object, Int32, Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.DestroyOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_6758420(object, int)" newName="$KD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_6758420(Object, Int32)" newStackTraceSignature="$Q:$KD(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_8773255(object, int)" newName="$Gc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_8773255(Object, Int32)" newStackTraceSignature="$Q:$Gc(Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_8773255(nint, int)" newName="$lD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_8773255(IntPtr, Int32)" newStackTraceSignature="$Q:$lD(IntPtr, Int32)" />
       <method signature="[YooAsset]YooAsset.EOperationStatus $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10989665(object, int)" newName="$hc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10989665(Object, Int32)" newStackTraceSignature="$Q:$hc(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.FileSystemParameters $Obfuz$ProxyCall::@$Obfuz$Dispatch_50754_4689158(object, object, object, int)" newName="$Hc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_50754_4689158(Object, Object, Object, Int32)" newStackTraceSignature="$Q:$Hc(Object, Object, Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.IDecryptionServices $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_5810609(object, int)" newName="$MD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_5810609(Object, Int32)" newStackTraceSignature="$Q:$MD(Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.IManifestRestoreServices $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_4257539(object, int)" newName="$nD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_4257539(Object, Int32)" newStackTraceSignature="$Q:$nD(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.InitializationOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_36812_386774(object, object, int)" newName="$ic" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_36812_386774(Object, Object, Int32)" newStackTraceSignature="$Q:$ic(Object, Object, Int32)" />
       <method signature="[YooAsset]YooAsset.RequestPackageVersionOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_14334_361653(object, byte, int, int)" newName="$Ic" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_14334_361653(Object, Byte, Int32, Int32)" newStackTraceSignature="$Q:$Ic(Object, Byte, Int32, Int32)" />
       <method signature="[YooAsset]YooAsset.ResourceDownloaderOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_60320_11096387(object, int, int, int)" newName="$jc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_60320_11096387(Object, Int32, Int32, Int32)" newStackTraceSignature="$Q:$jc(Object, Int32, Int32, Int32)" />
       <method signature="[YooAsset]YooAsset.ResourcePackage $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10395823(object, int)" newName="$Jc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10395823(Object, Int32)" newStackTraceSignature="$Q:$Jc(Object, Int32)" />
-      <method signature="[YooAsset]YooAsset.SceneHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_2966_2259553(nint, int)" newName="$ND" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_2966_2259553(IntPtr, Int32)" newStackTraceSignature="$Q:$ND(IntPtr, Int32)" />
       <method signature="[YooAsset]YooAsset.SceneHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_34383_2259553(object, object, int, int, byte, uint, int)" newName="$kc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_34383_2259553(Object, Object, Int32, Int32, Byte, UInt32, Int32)" newStackTraceSignature="$Q:$kc(Object, Object, Int32, Int32, Byte, UInt32, Int32)" />
       <method signature="[YooAsset]YooAsset.UpdatePackageManifestOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_65367_16211158(object, object, int, int)" newName="$Kc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_65367_16211158(Object, Object, Int32, Int32)" newStackTraceSignature="$Q:$Kc(Object, Object, Int32, Int32)" />
     </type>
@@ -551,13 +504,13 @@
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize32_12 $Obfuz$WatermarkDataHolderField12" newName="$XA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize48_9 $Obfuz$WatermarkDataHolderField9" newName="$yA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_7 $Obfuz$WatermarkDataHolderField7" newName="$YA" />
-      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1138 DF7E637FD060F1FAD2DFFA146D62482B4E9E3C0693138A9C39DB190A78D0690E" newName="$Od" />
+      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=373 71DEBB5356C44603833096C88753CBEA0D4DE73431F5104E83A069A622F92345" newName="$jC" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_2 $Obfuz$WatermarkDataHolderField2" newName="$ZA" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize36_6 $Obfuz$WatermarkDataHolderField6" newName="$ab" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_4 $Obfuz$WatermarkDataHolderField4" newName="$Ab" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_5 $Obfuz$WatermarkDataHolderField5" newName="$bb" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_11 $Obfuz$WatermarkDataHolderField11" newName="$Bb" />
-      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=944 7F34084F137680B63D3318A78610113E06B1D25A1896089A09DBED39D82056D1" newName="$pd" />
+      <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=291 0BEB8F4D10E0BCCF070D6611BC9C0616B2BA454DB5C92458358DFBA63F31CB2A" newName="$JC" />
       <field signature="[JEngine.Core]&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize36_8 $Obfuz$WatermarkDataHolderField8" newName="$Cb" />
     </type>
     <type fullName="&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize28_11" newFullName="$H/$N" status="Renamed" />
@@ -572,43 +525,34 @@
     <type fullName="&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_2" newFullName="$H/$j" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize44_5" newFullName="$H/$K" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/$Obfuz$WatermarkDataHolderSize48_9" newFullName="$H/$M" status="Renamed" />
-    <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=1138" newFullName="$H/$WA" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=273" newFullName="$H/$i" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=291" newFullName="$H/$I" status="Renamed" />
     <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=373" newFullName="$H/$QA" status="Renamed" />
-    <type fullName="&lt;PrivateImplementationDetails&gt;/__StaticArrayInitTypeSize=944" newFullName="$H/$wA" status="Renamed" />
     <type fullName="JEngine.Core.Bootstrap" newFullName="" status="NotRenamed">
       <field signature="[JEngine.Core]JEngine.Core.Bootstrap _instance" newName="$a" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;[YooAsset]YooAsset.SceneHandle&gt; JEngine.Core.Bootstrap::@LoadHotUpdateScene([YooAsset]YooAsset.ResourcePackage, string, [JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks, [UnityEngine.CoreModule]UnityEngine.SceneManagement.LoadSceneMode)" newName="$c" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadHotUpdateScene(ResourcePackage, String, SceneLoadCallbacks, LoadSceneMode)" newStackTraceSignature="JEngine.Core.Bootstrap:$c(ResourcePackage, String, $i, LoadSceneMode)" />
-      <method signature="[YooAsset]YooAsset.ResourcePackage JEngine.Core.Bootstrap::@CreateOrGetPackage(string)" newName="$C" oldStackTraceSignature="JEngine.Core.Bootstrap:CreateOrGetPackage(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$C(String)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap::@UpdatePackage([YooAsset]YooAsset.ResourcePackage, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks)" newName="$D" oldStackTraceSignature="JEngine.Core.Bootstrap:UpdatePackage(ResourcePackage, PackageInitializationCallbacks)" newStackTraceSignature="JEngine.Core.Bootstrap:$D(ResourcePackage, $G)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap::@DeletePackageCache([YooAsset]YooAsset.ResourcePackage, System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt;)" newName="$e" oldStackTraceSignature="JEngine.Core.Bootstrap:DeletePackageCache(ResourcePackage, Func`2)" newStackTraceSignature="JEngine.Core.Bootstrap:$e(ResourcePackage, Func`2)" />
+      <field signature="System.Nullable`1&lt;[UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene&gt; _previousScene" newName="$A" />
+      <property signature="[JEngine.Core]JEngine.Core.Bootstrap Instance" newName="$a" />
       <method signature="string JEngine.Core.Bootstrap::@GetPlatform()" newName="$a" oldStackTraceSignature="JEngine.Core.Bootstrap:GetPlatform()" newStackTraceSignature="JEngine.Core.Bootstrap:$a()" />
+      <method signature="[JEngine.Core]JEngine.Core.Bootstrap JEngine.Core.Bootstrap::@get_Instance()" newName="$D" oldStackTraceSignature="JEngine.Core.Bootstrap:get_Instance()" newStackTraceSignature="JEngine.Core.Bootstrap:$D()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::SetUpDynamicSecret([JEngine.Core]JEngine.Core.Bootstrap)" newName="$A" oldStackTraceSignature="JEngine.Core.Bootstrap:SetUpDynamicSecret()" newStackTraceSignature="JEngine.Core.Bootstrap:$A()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::LoadMetadataForAOTAssemblies([JEngine.Core]JEngine.Core.Bootstrap)" newName="$b" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadMetadataForAOTAssemblies()" newStackTraceSignature="JEngine.Core.Bootstrap:$b()" />
-      <method signature="void JEngine.Core.Bootstrap::Initialize([JEngine.Core]JEngine.Core.Bootstrap)" newName="$E" oldStackTraceSignature="JEngine.Core.Bootstrap:Initialize()" newStackTraceSignature="JEngine.Core.Bootstrap:$E()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::InitializeGame([JEngine.Core]JEngine.Core.Bootstrap)" newName="$B" oldStackTraceSignature="JEngine.Core.Bootstrap:InitializeGame()" newStackTraceSignature="JEngine.Core.Bootstrap:$B()" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::LoadSceneWithProgress([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.ResourcePackage, string)" newName="$c" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadSceneWithProgress(ResourcePackage, String)" newStackTraceSignature="JEngine.Core.Bootstrap:$c(ResourcePackage, String)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::UnloadPreviousScene([JEngine.Core]JEngine.Core.Bootstrap)" newName="$C" oldStackTraceSignature="JEngine.Core.Bootstrap:UnloadPreviousScene()" newStackTraceSignature="JEngine.Core.Bootstrap:$C()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::LoadHotCode([JEngine.Core]JEngine.Core.Bootstrap, System.Reflection.Assembly)" newName="$d" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadHotCode(Assembly)" newStackTraceSignature="JEngine.Core.Bootstrap:$d(Assembly)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap::UpdatePackageImpl([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.ResourcePackage, [JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks)" newName="$f" oldStackTraceSignature="JEngine.Core.Bootstrap:UpdatePackageImpl(ResourcePackage, PackageInitializationCallbacks)" newStackTraceSignature="JEngine.Core.Bootstrap:$f(ResourcePackage, $G)" />
-      <method signature="string JEngine.Core.Bootstrap::@GetStatusText([JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$F" oldStackTraceSignature="JEngine.Core.Bootstrap:GetStatusText(PackageInitializationStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$F($h)" />
-      <method signature="string JEngine.Core.Bootstrap::@GetSceneLoadStatusText([JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$g" oldStackTraceSignature="JEngine.Core.Bootstrap:GetSceneLoadStatusText(SceneLoadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$g($I)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;Awake&gt;b__26_0([JEngine.Core]JEngine.Core.Bootstrap)" newName="$G" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;Awake&gt;b__26_0()" newStackTraceSignature="JEngine.Core.Bootstrap:$G()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_0([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.PackageInitializationStatus)" newName="$h" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_0(PackageInitializationStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$h($h)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_1([JEngine.Core]JEngine.Core.Bootstrap, string)" newName="$H" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_1(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$H(String)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_3([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.DownloadUpdateData)" newName="$pA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_3(DownloadUpdateData)" newStackTraceSignature="JEngine.Core.Bootstrap:$pA(DownloadUpdateData)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_4([JEngine.Core]JEngine.Core.Bootstrap)" newName="$PA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_4()" newStackTraceSignature="JEngine.Core.Bootstrap:$PA()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_5([JEngine.Core]JEngine.Core.Bootstrap)" newName="$qA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_5()" newStackTraceSignature="JEngine.Core.Bootstrap:$qA()" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_7([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Update.SceneLoadStatus)" newName="$QA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_7(SceneLoadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$QA($I)" />
-      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__28_8([JEngine.Core]JEngine.Core.Bootstrap, float)" newName="$rA" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__28_8(Single)" newStackTraceSignature="JEngine.Core.Bootstrap:$rA(Single)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap::InitializePackageWithCallbacks([JEngine.Core]JEngine.Core.Bootstrap, [YooAsset]YooAsset.ResourcePackage, [JEngine.Core]JEngine.Core.Bootstrap/PackageInitializationCallbacks)" newName="$Xb" oldStackTraceSignature="JEngine.Core.Bootstrap:InitializePackageWithCallbacks(ResourcePackage, PackageInitializationCallbacks)" newStackTraceSignature="JEngine.Core.Bootstrap:$Xb(ResourcePackage, $A)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__24_0([JEngine.Core]JEngine.Core.Bootstrap, string)" newName="$Jd" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__24_0(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$Jd(String)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__24_1([JEngine.Core]JEngine.Core.Bootstrap, string)" newName="$kd" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__24_1(String)" newStackTraceSignature="JEngine.Core.Bootstrap:$kd(String)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__24_3([JEngine.Core]JEngine.Core.Bootstrap, [JEngine.Core]JEngine.Core.Bootstrap/DownloadStatus)" newName="$Kd" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__24_3(DownloadStatus)" newStackTraceSignature="JEngine.Core.Bootstrap:$Kd($b)" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__24_4([JEngine.Core]JEngine.Core.Bootstrap)" newName="$ld" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__24_4()" newStackTraceSignature="JEngine.Core.Bootstrap:$ld()" />
+      <method signature="void JEngine.Core.Bootstrap::&lt;InitializeGame&gt;b__24_5([JEngine.Core]JEngine.Core.Bootstrap)" newName="$Ld" oldStackTraceSignature="JEngine.Core.Bootstrap:&lt;InitializeGame&gt;b__24_5()" newStackTraceSignature="JEngine.Core.Bootstrap:$Ld()" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c" newFullName="" status="NotRenamed">
       <field signature="[JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c &lt;&gt;9" newName="$i" />
-      <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;&gt;9__28_2" newName="$A" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__28_6" newName="$c" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__28_9" newName="$C" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_2([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, int, long)" newName="$RA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_2(Int32, Int64)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$RA(Int32, Int64)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_6([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$sA" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_6(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$sA(Exception)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__28_9([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, System.Exception)" newName="$oD" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__28_9(Exception)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$oD(Exception)" />
+      <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;&gt;9__24_2" newName="$I" />
+      <field signature="System.Func`2&lt;string,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;&gt;9__24_6" newName="$j" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__24_2([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, int, long)" newName="$kD" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__24_2(Int32, Int64)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$kD(Int32, Int64)" />
+      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap/&lt;&gt;c::&lt;InitializeGame&gt;b__24_6([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c, string)" newName="$KD" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;InitializeGame&gt;b__24_6(String)" newStackTraceSignature="JEngine.Core.&lt;&gt;c:$KD(String)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__24_2&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$B" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$J" />
@@ -625,50 +569,6 @@
       <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$N" />
       <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__24_6&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__24_6&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$QD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__24_6&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$c:$QD(IAsyncStateMachine)" />
     </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_2&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$A" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$d" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$D" />
-      <field signature="int count" newName="$e" />
-      <field signature="long size" newName="$E" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$f" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_2&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_2&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$oD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__27_2&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$A:$oD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_6&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$b" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$F" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$g" />
-      <field signature="System.Exception error" newName="$G" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$h" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_6&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_6&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$OD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__27_6&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$b:$OD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_9&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$B" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$H" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$I" />
-      <field signature="System.Exception exception" newName="$j" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$J" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_9&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__27_9&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$pD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__27_9&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$B:$pD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$A" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$d" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$D" />
-      <field signature="int count" newName="$e" />
-      <field signature="long size" newName="$E" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$f" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_2&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$OD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_2&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$A:$OD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$b" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$F" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$g" />
-      <field signature="System.Exception error" newName="$G" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$h" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_6&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$pD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_6&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$b:$pD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_9&gt;d" newFullName="JEngine.Core.Bootstrap/&lt;&gt;c/$B" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$H" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$I" />
-      <field signature="System.Exception exception" newName="$j" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$J" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_9&gt;d::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c/&lt;&lt;InitializeGame&gt;b__28_9&gt;d&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$qD" oldStackTraceSignature="JEngine.Core.&lt;&lt;InitializeGame&gt;b__28_9&gt;d:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$B:$qD(IAsyncStateMachine)" />
-    </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;&gt;c__DisplayClass21_0" newFullName="JEngine.Core.Bootstrap/$A" status="Renamed">
       <field signature="int totalDownloadCount" newName="$c" />
       <field signature="long totalDownloadBytes" newName="$C" />
@@ -679,35 +579,6 @@
       <field signature="[JEngine.Core]JEngine.Core.Bootstrap/PackageInitializationCallbacks callbacks" newName="$o" />
       <field signature="[YooAsset]YooAsset.ResourceDownloaderOperation downloader" newName="$O" />
       <method signature="void JEngine.Core.Bootstrap/&lt;&gt;c__DisplayClass31_0::&lt;InitializePackageWithCallbacks&gt;b__0([JEngine.Core]JEngine.Core.Bootstrap/&lt;&gt;c__DisplayClass31_0, [YooAsset]YooAsset.DownloadUpdateData)" newName="$lD" oldStackTraceSignature="JEngine.Core.&lt;&gt;c__DisplayClass31_0:&lt;InitializePackageWithCallbacks&gt;b__0(DownloadUpdateData)" newStackTraceSignature="JEngine.Core.$C:$lD(DownloadUpdateData)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3" newFullName="JEngine.Core.Bootstrap/$c" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$k" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$K" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage package" newName="$l" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; onError" newName="$L" />
-      <field signature="[YooAsset]YooAsset.ClearCacheFilesOperation &lt;operation&gt;5__2" newName="$m" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$M" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;DeletePackageCache&gt;d__3&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$PD" oldStackTraceSignature="JEngine.Core.&lt;DeletePackageCache&gt;d__3:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$c:$PD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;Initialize&gt;d__26" newFullName="JEngine.Core.Bootstrap/$C" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$n" />
-      <field signature="System.Runtime.CompilerServices.AsyncVoidMethodBuilder &lt;&gt;t__builder" newName="$N" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$o" />
-      <field signature="object &lt;&gt;7__wrap1" newName="$O" />
-      <field signature="int &lt;&gt;7__wrap2" newName="$p" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$P" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__2" newName="$q" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;Initialize&gt;d__26::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;Initialize&gt;d__26&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$qD" oldStackTraceSignature="JEngine.Core.&lt;Initialize&gt;d__26:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$C:$qD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27" newFullName="JEngine.Core.Bootstrap/$C" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$n" />
-      <field signature="System.Runtime.CompilerServices.AsyncVoidMethodBuilder &lt;&gt;t__builder" newName="$N" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$o" />
-      <field signature="object &lt;&gt;7__wrap1" newName="$O" />
-      <field signature="int &lt;&gt;7__wrap2" newName="$p" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$P" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__2" newName="$q" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;Initialize&gt;d__27&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$QD" oldStackTraceSignature="JEngine.Core.&lt;Initialize&gt;d__27:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$C:$QD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__21" newFullName="JEngine.Core.Bootstrap/$b" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$D" />
@@ -735,30 +606,6 @@
       <field signature="[YooAsset]YooAsset.AssetHandle &lt;dllHandle&gt;5__3" newName="$s" />
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__3" newName="$S" />
       <method signature="void JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__24::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__24&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$rD" oldStackTraceSignature="JEngine.Core.&lt;InitializeGame&gt;d__24:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$d:$rD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__27" newFullName="JEngine.Core.Bootstrap/$d" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$Q" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$r" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$R" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage &lt;package&gt;5__2" newName="$s" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;dllHandle&gt;5__3" newName="$S" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$t" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$T" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; &lt;&gt;u__3" newName="$u" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$U" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__27::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__27&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$QD" oldStackTraceSignature="JEngine.Core.&lt;InitializeGame&gt;d__27:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$d:$QD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__28" newFullName="JEngine.Core.Bootstrap/$d" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$Q" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$r" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$R" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage &lt;package&gt;5__2" newName="$s" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;dllHandle&gt;5__3" newName="$S" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$t" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$T" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;[YooAsset]YooAsset.SceneHandle&gt; &lt;&gt;u__3" newName="$u" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$U" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__28::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;InitializeGame&gt;d__28&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$RD" oldStackTraceSignature="JEngine.Core.&lt;InitializeGame&gt;d__28:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$d:$RD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;InitializePackageWithCallbacks&gt;d__31" newFullName="JEngine.Core.Bootstrap/$D" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$t" />
@@ -801,33 +648,6 @@
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$DA" />
       <method signature="void JEngine.Core.Bootstrap/&lt;LoadHotCode&gt;d__28::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadHotCode&gt;d__28&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$sD" oldStackTraceSignature="JEngine.Core.&lt;LoadHotCode&gt;d__28:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$e:$sD(IAsyncStateMachine)" />
     </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;LoadHotCode&gt;d__29" newFullName="JEngine.Core.Bootstrap/$e" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$z" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$Z" />
-      <field signature="System.Reflection.Assembly hotUpdateAss" newName="$aA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$AA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$bA" />
-      <field signature="object &lt;&gt;7__wrap1" newName="$BA" />
-      <field signature="int &lt;&gt;7__wrap2" newName="$cA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$CA" />
-      <field signature="System.Runtime.CompilerServices.ValueTaskAwaiter &lt;&gt;u__3" newName="$dA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__4" newName="$DA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadHotCode&gt;d__29::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadHotCode&gt;d__29&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$sD" oldStackTraceSignature="JEngine.Core.&lt;LoadHotCode&gt;d__29:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$e:$sD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0" newFullName="JEngine.Core.Bootstrap/$D" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$v" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;[YooAsset]YooAsset.SceneHandle&gt; &lt;&gt;t__builder" newName="$V" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks callbacks" newName="$w" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage package" newName="$W" />
-      <field signature="string sceneName" newName="$x" />
-      <field signature="[UnityEngine.CoreModule]UnityEngine.SceneManagement.LoadSceneMode loadMode" newName="$X" />
-      <field signature="string &lt;previousSceneName&gt;5__2" newName="$y" />
-      <field signature="[YooAsset]YooAsset.SceneHandle &lt;handle&gt;5__3" newName="$Y" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__1" newName="$eA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__2" newName="$EA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UnityAsyncExtensions/AsyncOperationAwaiter &lt;&gt;u__3" newName="$fA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadHotUpdateScene&gt;d__0&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$rD" oldStackTraceSignature="JEngine.Core.&lt;LoadHotUpdateScene&gt;d__0:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$D:$rD(IAsyncStateMachine)" />
-    </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__19" newFullName="JEngine.Core.Bootstrap/$c" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$p" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$P" />
@@ -849,28 +669,6 @@
       <field signature="string &lt;aotDllName&gt;5__4" newName="$Lb" />
       <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__5" newName="$mb" />
       <method signature="void JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__21::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__21&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$SD" oldStackTraceSignature="JEngine.Core.&lt;LoadMetadataForAOTAssemblies&gt;d__21:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$i:$SD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__24" newFullName="JEngine.Core.Bootstrap/$E" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$FA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$gA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$GA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;aotListHandle&gt;5__2" newName="$hA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$HA" />
-      <field signature="System.Collections.Generic.List`1/Enumerator&lt;string&gt; &lt;&gt;7__wrap2" newName="$iA" />
-      <field signature="string &lt;aotDllName&gt;5__4" newName="$IA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__5" newName="$NA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__24::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__24&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$RD" oldStackTraceSignature="JEngine.Core.&lt;LoadMetadataForAOTAssemblies&gt;d__24:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$E:$RD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25" newFullName="JEngine.Core.Bootstrap/$E" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$FA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$gA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$GA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;aotListHandle&gt;5__2" newName="$hA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$HA" />
-      <field signature="System.Collections.Generic.List`1/Enumerator&lt;string&gt; &lt;&gt;7__wrap2" newName="$iA" />
-      <field signature="string &lt;aotDllName&gt;5__4" newName="$IA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__5" newName="$NA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;LoadMetadataForAOTAssemblies&gt;d__25&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$SD" oldStackTraceSignature="JEngine.Core.&lt;LoadMetadataForAOTAssemblies&gt;d__25:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$E:$SD(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;LoadSceneWithProgress&gt;d__23" newFullName="JEngine.Core.Bootstrap/$C" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$t" />
@@ -912,22 +710,6 @@
       <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$Gc" />
       <method signature="void JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__20::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__20&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$TD" oldStackTraceSignature="JEngine.Core.&lt;SetUpDynamicSecret&gt;d__20:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$pA:$TD(IAsyncStateMachine)" />
     </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__23" newFullName="JEngine.Core.Bootstrap/$f" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$oA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$OA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$pA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__2" newName="$PA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$qA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__23::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__23&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$SD" oldStackTraceSignature="JEngine.Core.&lt;SetUpDynamicSecret&gt;d__23:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$f:$SD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__24" newFullName="JEngine.Core.Bootstrap/$f" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$oA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder &lt;&gt;t__builder" newName="$OA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$pA" />
-      <field signature="[YooAsset]YooAsset.AssetHandle &lt;handle&gt;5__2" newName="$PA" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$qA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__24::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;SetUpDynamicSecret&gt;d__24&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$TD" oldStackTraceSignature="JEngine.Core.&lt;SetUpDynamicSecret&gt;d__24:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$f:$TD(IAsyncStateMachine)" />
-    </type>
     <type fullName="JEngine.Core.Bootstrap/&lt;Start&gt;d__20" newFullName="JEngine.Core.Bootstrap/$D" status="Renamed">
       <field signature="int &lt;&gt;1__state" newName="$aA" />
       <field signature="System.Runtime.CompilerServices.AsyncVoidMethodBuilder &lt;&gt;t__builder" newName="$AA" />
@@ -961,46 +743,6 @@
       <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$iC" />
       <field signature="[UniTask]Cysharp.Threading.Tasks.UnityAsyncExtensions/AsyncOperationAwaiter &lt;&gt;u__1" newName="$IC" />
       <method signature="void JEngine.Core.Bootstrap/&lt;UnloadPreviousScene&gt;d__27::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UnloadPreviousScene&gt;d__27&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$UD" oldStackTraceSignature="JEngine.Core.&lt;UnloadPreviousScene&gt;d__27:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$qA:$UD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2" newFullName="JEngine.Core.Bootstrap/$F" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$QA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$rA" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage package" newName="$RA" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks callbacks" newName="$sA" />
-      <field signature="bool &lt;ret&gt;5__2" newName="$SA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__1" newName="$tA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$TA" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackage&gt;d__2&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$tD" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackage&gt;d__2:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$F:$tD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__29" newFullName="JEngine.Core.Bootstrap/$g" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$uA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$UA" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks callbacks" newName="$vA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$VA" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage package" newName="$zA" />
-      <field signature="[YooAsset]YooAsset.InitializationOperation &lt;initOperation&gt;5__2" newName="$cb" />
-      <field signature="[YooAsset]YooAsset.RequestPackageVersionOperation &lt;operation&gt;5__3" newName="$Jb" />
-      <field signature="[YooAsset]YooAsset.UpdatePackageManifestOperation &lt;updateOperation&gt;5__4" newName="$kb" />
-      <field signature="[YooAsset]YooAsset.ResourceDownloaderOperation &lt;downloader&gt;5__5" newName="$Lb" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$mb" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$Mb" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__3" newName="$nb" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__29::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__29&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$TD" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackageImpl&gt;d__29:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$g:$TD(IAsyncStateMachine)" />
-    </type>
-    <type fullName="JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30" newFullName="JEngine.Core.Bootstrap/$g" status="Renamed">
-      <field signature="int &lt;&gt;1__state" newName="$uA" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1&lt;bool&gt; &lt;&gt;t__builder" newName="$UA" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks callbacks" newName="$vA" />
-      <field signature="[JEngine.Core]JEngine.Core.Bootstrap &lt;&gt;4__this" newName="$VA" />
-      <field signature="[YooAsset]YooAsset.ResourcePackage package" newName="$zA" />
-      <field signature="[YooAsset]YooAsset.InitializationOperation &lt;initOperation&gt;5__2" newName="$cb" />
-      <field signature="[YooAsset]YooAsset.RequestPackageVersionOperation &lt;operation&gt;5__3" newName="$Jb" />
-      <field signature="[YooAsset]YooAsset.UpdatePackageManifestOperation &lt;updateOperation&gt;5__4" newName="$kb" />
-      <field signature="[YooAsset]YooAsset.ResourceDownloaderOperation &lt;downloader&gt;5__5" newName="$Lb" />
-      <field signature="System.Runtime.CompilerServices.TaskAwaiter &lt;&gt;u__1" newName="$mb" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask/Awaiter &lt;&gt;u__2" newName="$Mb" />
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1/Awaiter&lt;bool&gt; &lt;&gt;u__3" newName="$nb" />
-      <method signature="void JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30::SetStateMachine([JEngine.Core]JEngine.Core.Bootstrap/&lt;UpdatePackageImpl&gt;d__30&amp;, System.Runtime.CompilerServices.IAsyncStateMachine)" newName="$Be" oldStackTraceSignature="JEngine.Core.&lt;UpdatePackageImpl&gt;d__30:SetStateMachine(IAsyncStateMachine)" newStackTraceSignature="JEngine.Core.$g:$Be(IAsyncStateMachine)" />
     </type>
     <type fullName="JEngine.Core.Bootstrap/DownloadStatus" newFullName="JEngine.Core.Bootstrap/$b" status="Renamed">
       <field signature="int &lt;CurrentDownloadCount&gt;k__BackingField" newName="$F" />
@@ -1058,91 +800,6 @@
       <field signature="string _defaultHostServer" newName="$b" />
       <field signature="string _fallbackHostServer" newName="$B" />
     </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.XorBundle" newFullName="$d.$UA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig &lt;ManifestConfig&gt;k__BackingField" newName="$Md" />
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig &lt;BundleConfig&gt;k__BackingField" newName="$nd" />
-      <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig ManifestConfig" newName="$a" />
-      <property signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig BundleConfig" newName="$A" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig JEngine.Core.Encrypt.Bundle.XorBundle::get_ManifestConfig([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorBundle)" newName="$xD" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorBundle:get_ManifestConfig()" newStackTraceSignature="$d.$UA:$xD()" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig JEngine.Core.Encrypt.Bundle.XorBundle::get_BundleConfig([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorBundle)" newName="$XD" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorBundle:get_BundleConfig()" newStackTraceSignature="$d.$UA:$XD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.XorDecryptionServices" newFullName="$d.$VA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$od" />
-      <method signature="[YooAsset]YooAsset.DecryptResult JEngine.Core.Encrypt.Bundle.XorDecryptionServices::YooAsset.IDecryptionServices.LoadAssetBundle([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorDecryptionServices, [YooAsset]YooAsset.DecryptFileInfo)" newName="$zD" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorDecryptionServices:YooAsset.IDecryptionServices.LoadAssetBundle(DecryptFileInfo)" newStackTraceSignature="$d.$VA:$zD(DecryptFileInfo)" />
-      <method signature="[YooAsset]YooAsset.DecryptResult JEngine.Core.Encrypt.Bundle.XorDecryptionServices::YooAsset.IDecryptionServices.LoadAssetBundleAsync([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorDecryptionServices, [YooAsset]YooAsset.DecryptFileInfo)" newName="$ZD" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorDecryptionServices:YooAsset.IDecryptionServices.LoadAssetBundleAsync(DecryptFileInfo)" newStackTraceSignature="$d.$VA:$ZD(DecryptFileInfo)" />
-      <method signature="[YooAsset]YooAsset.DecryptResult JEngine.Core.Encrypt.Bundle.XorDecryptionServices::YooAsset.IDecryptionServices.LoadAssetBundleFallback([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorDecryptionServices, [YooAsset]YooAsset.DecryptFileInfo)" newName="$ae" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorDecryptionServices:YooAsset.IDecryptionServices.LoadAssetBundleFallback(DecryptFileInfo)" newStackTraceSignature="$d.$VA:$ae(DecryptFileInfo)" />
-      <method signature="byte[] JEngine.Core.Encrypt.Bundle.XorDecryptionServices::YooAsset.IDecryptionServices.ReadFileData([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorDecryptionServices, [YooAsset]YooAsset.DecryptFileInfo)" newName="$Ae" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorDecryptionServices:YooAsset.IDecryptionServices.ReadFileData(DecryptFileInfo)" newStackTraceSignature="$d.$VA:$Ae(DecryptFileInfo)" />
-      <method signature="string JEngine.Core.Encrypt.Bundle.XorDecryptionServices::YooAsset.IDecryptionServices.ReadFileText([JEngine.Core]JEngine.Core.Encrypt.Bundle.XorDecryptionServices, [YooAsset]YooAsset.DecryptFileInfo)" newName="$be" oldStackTraceSignature="JEngine.Core.Encrypt.Bundle.XorDecryptionServices:YooAsset.IDecryptionServices.ReadFileText(DecryptFileInfo)" newStackTraceSignature="$d.$VA:$be(DecryptFileInfo)" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Bundle.XorEncryptionServices" newFullName="$d.$vA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$Nd" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.BundleEncryptionConfig`5" newFullName="$c.$rA`5" status="Renamed">
-      <field signature="!1 _manifestEncryptionConfigInstance" newName="$id" />
-      <field signature="!3 _encryptionInstance" newName="$Id" />
-      <field signature="!4 _decryptionInstance" newName="$jd" />
-      <property signature="!0 ManifestConfig" newName="$a" />
-      <property signature="!2 BundleConfig" newName="$A" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject ManifestConfigScriptableObject" newName="$b" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject BundleConfigScriptableObject" newName="$B" />
-      <property signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig ManifestEncryptionConfig" newName="$c" />
-      <property signature="[YooAsset]YooAsset.IEncryptionServices Encryption" newName="$C" />
-      <property signature="[YooAsset]YooAsset.IDecryptionServices Decryption" newName="$d" />
-      <method signature="!0 JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_ManifestConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$xD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_ManifestConfig()" newStackTraceSignature="$c.$rA`5:$xD()" />
-      <method signature="!2 JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_BundleConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$XD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_BundleConfig()" newStackTraceSignature="$c.$rA`5:$XD()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_ManifestConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$UD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_ManifestConfigScriptableObject()" newStackTraceSignature="$c.$rA`5:$UD()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_BundleConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$vD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_BundleConfigScriptableObject()" newStackTraceSignature="$c.$rA`5:$vD()" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_ManifestEncryptionConfig([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$VD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_ManifestEncryptionConfig()" newStackTraceSignature="$c.$rA`5:$VD()" />
-      <method signature="[YooAsset]YooAsset.IEncryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$wD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_Encryption()" newStackTraceSignature="$c.$rA`5:$wD()" />
-      <method signature="[YooAsset]YooAsset.IDecryptionServices JEngine.Core.Encrypt.BundleEncryptionConfig`5::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.BundleEncryptionConfig`5&lt;!0,!1,!2,!3,!4&gt;)" newName="$WD" oldStackTraceSignature="JEngine.Core.Encrypt.BundleEncryptionConfig`5:get_Decryption()" newStackTraceSignature="$c.$rA`5:$WD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Config.EncryptConfig`2" newFullName="" status="NotRenamed">
-      <field signature="!0 _instance" newName="$md" />
-      <property signature="!0 Instance" newName="$a" />
-      <method signature="!0 JEngine.Core.Encrypt.Config.EncryptConfig`2::@get_Instance()" newName="$od" oldStackTraceSignature="JEngine.Core.Encrypt.Config.EncryptConfig`2:get_Instance()" newStackTraceSignature="JEngine.Core.Encrypt.Config.EncryptConfig`2:$od()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.EncryptionMapping" newFullName="$c.$qA" status="Renamed">
-      <field signature="System.Collections.Generic.IReadOnlyDictionary`2&lt;[JEngine.Core]JEngine.Core.Encrypt.EncryptionOption,[JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig&gt; Mapping" newName="$Hd" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.EncryptionOption" newFullName="$c.$PA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.EncryptionOption Xor" newName="$hd" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.IBundleEncryptionConfig" newFullName="$c.$QA" status="Renamed">
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject ManifestConfigScriptableObject" newName="$a" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject BundleConfigScriptableObject" newName="$A" />
-      <property signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig ManifestEncryptionConfig" newName="$b" />
-      <property signature="[YooAsset]YooAsset.IEncryptionServices Encryption" newName="$B" />
-      <property signature="[YooAsset]YooAsset.IDecryptionServices Decryption" newName="$c" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.IBundleEncryptionConfig::get_ManifestConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$UD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_ManifestConfigScriptableObject()" newStackTraceSignature="$c.$QA:$UD()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.ScriptableObject JEngine.Core.Encrypt.IBundleEncryptionConfig::get_BundleConfigScriptableObject([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$vD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_BundleConfigScriptableObject()" newStackTraceSignature="$c.$QA:$vD()" />
-      <method signature="[JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig JEngine.Core.Encrypt.IBundleEncryptionConfig::get_ManifestEncryptionConfig([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$VD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_ManifestEncryptionConfig()" newStackTraceSignature="$c.$QA:$VD()" />
-      <method signature="[YooAsset]YooAsset.IEncryptionServices JEngine.Core.Encrypt.IBundleEncryptionConfig::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$wD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_Encryption()" newStackTraceSignature="$c.$QA:$wD()" />
-      <method signature="[YooAsset]YooAsset.IDecryptionServices JEngine.Core.Encrypt.IBundleEncryptionConfig::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.IBundleEncryptionConfig)" newName="$WD" oldStackTraceSignature="JEngine.Core.Encrypt.IBundleEncryptionConfig:get_Decryption()" newStackTraceSignature="$c.$QA:$WD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.IManifestEncryptionConfig" newFullName="$c.$RA" status="Renamed">
-      <property signature="[YooAsset]YooAsset.IManifestProcessServices Encryption" newName="$a" />
-      <property signature="[YooAsset]YooAsset.IManifestRestoreServices Decryption" newName="$A" />
-      <method signature="[YooAsset]YooAsset.IManifestProcessServices JEngine.Core.Encrypt.IManifestEncryptionConfig::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig)" newName="$yD" oldStackTraceSignature="JEngine.Core.Encrypt.IManifestEncryptionConfig:get_Encryption()" newStackTraceSignature="$c.$RA:$yD()" />
-      <method signature="[YooAsset]YooAsset.IManifestRestoreServices JEngine.Core.Encrypt.IManifestEncryptionConfig::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.IManifestEncryptionConfig)" newName="$YD" oldStackTraceSignature="JEngine.Core.Encrypt.IManifestEncryptionConfig:get_Decryption()" newStackTraceSignature="$c.$RA:$YD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Manifest.XorManifest" newFullName="$C.$tA" status="Renamed" />
-    <type fullName="JEngine.Core.Encrypt.Manifest.XorManifestProcess" newFullName="$C.$TA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$ld" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.Manifest.XorManifestRestore" newFullName="$C.$uA" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Encrypt.Config.XorConfig _config" newName="$Ld" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.ManifestEncryptionConfig`3" newFullName="$c.$sA`3" status="Renamed">
-      <field signature="[YooAsset]YooAsset.IManifestProcessServices &lt;Encryption&gt;k__BackingField" newName="$Jd" />
-      <field signature="[YooAsset]YooAsset.IManifestRestoreServices &lt;Decryption&gt;k__BackingField" newName="$kd" />
-      <property signature="[YooAsset]YooAsset.IManifestProcessServices Encryption" newName="$a" />
-      <property signature="[YooAsset]YooAsset.IManifestRestoreServices Decryption" newName="$A" />
-      <method signature="[YooAsset]YooAsset.IManifestProcessServices JEngine.Core.Encrypt.ManifestEncryptionConfig`3::get_Encryption([JEngine.Core]JEngine.Core.Encrypt.ManifestEncryptionConfig`3&lt;!0,!1,!2&gt;)" newName="$yD" oldStackTraceSignature="JEngine.Core.Encrypt.ManifestEncryptionConfig`3:get_Encryption()" newStackTraceSignature="$c.$sA`3:$yD()" />
-      <method signature="[YooAsset]YooAsset.IManifestRestoreServices JEngine.Core.Encrypt.ManifestEncryptionConfig`3::get_Decryption([JEngine.Core]JEngine.Core.Encrypt.ManifestEncryptionConfig`3&lt;!0,!1,!2&gt;)" newName="$YD" oldStackTraceSignature="JEngine.Core.Encrypt.ManifestEncryptionConfig`3:get_Decryption()" newStackTraceSignature="$c.$sA`3:$YD()" />
-    </type>
-    <type fullName="JEngine.Core.Encrypt.XorStream" newFullName="$c.$SA" status="Renamed">
-      <field signature="byte[] _key" newName="$Kd" />
-    </type>
     <type fullName="JEngine.Core.Log" newFullName="$a.$E" status="Renamed">
       <method signature="void JEngine.Core.Log::@Print(object)" newName="$e" oldStackTraceSignature="JEngine.Core.Log:Print(Object)" newStackTraceSignature="$a.$E:$e(Object)" />
       <method signature="void JEngine.Core.Log::@PrintWarning(object)" newName="$E" oldStackTraceSignature="JEngine.Core.Log:PrintWarning(Object)" newStackTraceSignature="$a.$E:$E(Object)" />
@@ -1166,61 +823,6 @@
       <field signature="System.Predicate`1&lt;object&gt; &lt;&gt;9__31_1" newName="$IA" />
       <method signature="object JEngine.Core.Logger/&lt;&gt;c::&lt;GetAllExceptionStackTrace&gt;b__31_0([JEngine.Core]JEngine.Core.Logger/&lt;&gt;c, System.Exception)" newName="$h" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;GetAllExceptionStackTrace&gt;b__31_0(Exception)" newStackTraceSignature="$a.&lt;&gt;c:$h(Exception)" />
       <method signature="bool JEngine.Core.Logger/&lt;&gt;c::&lt;GetAllExceptionStackTrace&gt;b__31_1([JEngine.Core]JEngine.Core.Logger/&lt;&gt;c, object)" newName="$H" oldStackTraceSignature="JEngine.Core.&lt;&gt;c:&lt;GetAllExceptionStackTrace&gt;b__31_1(Object)" newStackTraceSignature="$a.&lt;&gt;c:$H(Object)" />
-    </type>
-    <type fullName="JEngine.Core.Misc.MessageBox" newFullName="$A.$eA" status="Renamed">
-      <field signature="[UnityEngine.CoreModule]UnityEngine.GameObject _prefab" newName="$Ic" />
-      <field signature="[System.Core]System.Collections.Generic.HashSet`1&lt;[JEngine.Core]JEngine.Core.Misc.MessageBox&gt; ActiveMessageBoxes" newName="$jc" />
-      <field signature="System.Collections.Generic.Stack`1&lt;[JEngine.Core]JEngine.Core.Misc.MessageBox&gt; PooledMessageBoxes" newName="$Jc" />
-      <field signature="[Unity.TextMeshPro]TMPro.TextMeshProUGUI _content" newName="$kc" />
-      <field signature="[Unity.TextMeshPro]TMPro.TextMeshProUGUI _textNo" newName="$Kc" />
-      <field signature="[Unity.TextMeshPro]TMPro.TextMeshProUGUI _textOk" newName="$HC" />
-      <field signature="[Unity.TextMeshPro]TMPro.TextMeshProUGUI _title" newName="$iC" />
-      <field signature="[UnityEngine.UI]UnityEngine.UI.Button _buttonOk" newName="$IC" />
-      <field signature="[UnityEngine.UI]UnityEngine.UI.Button _buttonNo" newName="$jC" />
-      <field signature="[UnityEngine.UIModule]UnityEngine.CanvasGroup _canvasGroup" newName="$JC" />
-      <field signature="bool _visible" newName="$sC" />
-      <field signature="bool _isProcessingEvent" newName="$ed" />
-      <field signature="[JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter _awaiter" newName="$Ed" />
-      <field signature="[UnityEngine.CoreModule]UnityEngine.Vector3 InitialScale" newName="$fd" />
-      <field signature="[UnityEngine.CoreModule]UnityEngine.GameObject &lt;GameObject&gt;k__BackingField" newName="$Fd" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.GameObject Prefab" newName="$a" />
-      <property signature="[UnityEngine.CoreModule]UnityEngine.GameObject GameObject" newName="$A" />
-      <property signature="int ActiveCount" newName="$b" />
-      <property signature="int PooledCount" newName="$B" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.GameObject JEngine.Core.Misc.MessageBox::@get_Prefab()" newName="$kb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:get_Prefab()" newStackTraceSignature="$A.$eA:$kb()" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.GameObject JEngine.Core.Misc.MessageBox::get_GameObject([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$pb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:get_GameObject()" newStackTraceSignature="$A.$eA:$pb()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::set_GameObject([JEngine.Core]JEngine.Core.Misc.MessageBox, [UnityEngine.CoreModule]UnityEngine.GameObject)" newName="$qb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:set_GameObject(GameObject)" newStackTraceSignature="$A.$eA:$qb(GameObject)" />
-      <method signature="int JEngine.Core.Misc.MessageBox::@get_ActiveCount()" newName="$Rb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:get_ActiveCount()" newStackTraceSignature="$A.$eA:$Rb()" />
-      <method signature="int JEngine.Core.Misc.MessageBox::@get_PooledCount()" newName="$sb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:get_PooledCount()" newStackTraceSignature="$A.$eA:$sb()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::@Dispose()" newName="$wb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Dispose()" newStackTraceSignature="$A.$eA:$wb()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::@CloseAll()" newName="$Xb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:CloseAll()" newStackTraceSignature="$A.$eA:$Xb()" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Misc.MessageBox::@Show(string, string, string, string)" newName="$Zb" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Show(String, String, String, String)" newStackTraceSignature="$A.$eA:$Zb(String, String, String, String)" />
-      <method signature="bool JEngine.Core.Misc.MessageBox::ValidateAndCacheComponents([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$AB" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:ValidateAndCacheComponents()" newStackTraceSignature="$A.$eA:$AB()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::Destroy([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$SB" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Destroy()" newStackTraceSignature="$A.$eA:$SB()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::Init([JEngine.Core]JEngine.Core.Misc.MessageBox, string, string, string, string)" newName="$tB" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Init(String, String, String, String)" newStackTraceSignature="$A.$eA:$tB(String, String, String, String)" />
-      <method signature="!!0 JEngine.Core.Misc.MessageBox::GetComponent`1([JEngine.Core]JEngine.Core.Misc.MessageBox, string)" newName="$UB" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:GetComponent(String)" newStackTraceSignature="$A.$eA:$UB(String)" />
-      <method signature="void JEngine.Core.Misc.MessageBox::OnClickNo([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$zB" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:OnClickNo()" newStackTraceSignature="$A.$eA:$zB()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::OnClickOk([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$bc" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:OnClickOk()" newStackTraceSignature="$A.$eA:$bc()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::HandleEvent([JEngine.Core]JEngine.Core.Misc.MessageBox, bool)" newName="$Bc" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:HandleEvent(Boolean)" newStackTraceSignature="$A.$eA:$Bc(Boolean)" />
-      <method signature="void JEngine.Core.Misc.MessageBox::Close([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$Cc" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Close()" newStackTraceSignature="$A.$eA:$Cc()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::CancelAndClose([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$Jd" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:CancelAndClose()" newStackTraceSignature="$A.$eA:$Jd()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::CancelTask([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$kd" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:CancelTask()" newStackTraceSignature="$A.$eA:$kd()" />
-      <method signature="void JEngine.Core.Misc.MessageBox::Hide([JEngine.Core]JEngine.Core.Misc.MessageBox)" newName="$Kd" oldStackTraceSignature="JEngine.Core.Misc.MessageBox:Hide()" newStackTraceSignature="$A.$eA:$Kd()" />
-    </type>
-    <type fullName="JEngine.Core.Misc.MessageBox/&lt;&gt;c" newFullName="" status="NotRenamed">
-      <field signature="[JEngine.Core]JEngine.Core.Misc.MessageBox/&lt;&gt;c &lt;&gt;9" newName="$Gd" />
-      <method signature="[UnityEngine.CoreModule]UnityEngine.GameObject JEngine.Core.Misc.MessageBox/&lt;&gt;c::&lt;.cctor&gt;b__41_0([JEngine.Core]JEngine.Core.Misc.MessageBox/&lt;&gt;c)" newName="$Nd" oldStackTraceSignature="JEngine.Core.Misc.&lt;&gt;c:&lt;.cctor&gt;b__41_0()" newStackTraceSignature="$A.&lt;&gt;c:$Nd()" />
-    </type>
-    <type fullName="JEngine.Core.Misc.MessageBox/MessageBoxAwaiter" newFullName="$A.$eA/$pA" status="Renamed">
-      <field signature="[UniTask]Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1&lt;bool&gt; _core" newName="$gd" />
-      <property signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; Task" newName="$a" />
-      <property signature="bool IsCompleted" newName="$A" />
-      <method signature="void JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::Cysharp.Threading.Tasks.IUniTaskSource.GetResult([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter, short)" newName="$uD" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:Cysharp.Threading.Tasks.IUniTaskSource.GetResult(Int16)" newStackTraceSignature="$A.$pA:$uD(Int16)" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt; JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::get_Task([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter)" newName="$ld" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:get_Task()" newStackTraceSignature="$A.$pA:$ld()" />
-      <method signature="bool JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::TrySetResult([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter, bool)" newName="$Ld" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:TrySetResult(Boolean)" newStackTraceSignature="$A.$pA:$Ld(Boolean)" />
-      <method signature="void JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::TrySetCanceled([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter)" newName="$md" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:TrySetCanceled()" newStackTraceSignature="$A.$pA:$md()" />
-      <method signature="bool JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::get_IsCompleted([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter)" newName="$Md" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:get_IsCompleted()" newStackTraceSignature="$A.$pA:$Md()" />
-      <method signature="void JEngine.Core.Misc.MessageBox/MessageBoxAwaiter::Reset([JEngine.Core]JEngine.Core.Misc.MessageBox/MessageBoxAwaiter)" newName="$nd" oldStackTraceSignature="JEngine.Core.Misc.MessageBoxAwaiter:Reset()" newStackTraceSignature="$A.$pA:$nd()" />
     </type>
     <type fullName="JEngine.Core.NinoGen.Deserializer" newFullName="" status="NotRenamed">
       <field signature="bool _initialized" newName="$MA" />
@@ -1367,64 +969,6 @@
       <method signature="bool JEngine.Core.Update.MessageBoxAwaiter::get_IsCompleted([JEngine.Core]JEngine.Core.Update.MessageBoxAwaiter)" newName="$rA" oldStackTraceSignature="JEngine.Core.Update.MessageBoxAwaiter:get_IsCompleted()" newStackTraceSignature="$A.$G:$rA()" />
       <method signature="void JEngine.Core.Update.MessageBoxAwaiter::Reset([JEngine.Core]JEngine.Core.Update.MessageBoxAwaiter)" newName="$RA" oldStackTraceSignature="JEngine.Core.Update.MessageBoxAwaiter:Reset()" newStackTraceSignature="$A.$G:$RA()" />
     </type>
-    <type fullName="JEngine.Core.Update.PackageInitializationCallbacks" newFullName="$a.$G" status="Renamed">
-      <field signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt; &lt;OnStatusUpdate&gt;k__BackingField" newName="$Nb" />
-      <field signature="System.Action`1&lt;string&gt; &lt;OnVersionUpdate&gt;k__BackingField" newName="$ob" />
-      <field signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; &lt;OnDownloadPrompt&gt;k__BackingField" newName="$Ob" />
-      <field signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate &lt;OnDownloadProgress&gt;k__BackingField" newName="$Pb" />
-      <field signature="System.Action &lt;OnDownloadStart&gt;k__BackingField" newName="$Qb" />
-      <field signature="System.Action &lt;OnDownloadComplete&gt;k__BackingField" newName="$rb" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;OnError&gt;k__BackingField" newName="$Rb" />
-      <property signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt; OnStatusUpdate" newName="$a" />
-      <property signature="System.Action`1&lt;string&gt; OnVersionUpdate" newName="$A" />
-      <property signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; OnDownloadPrompt" newName="$b" />
-      <property signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate OnDownloadProgress" newName="$B" />
-      <property signature="System.Action OnDownloadStart" newName="$c" />
-      <property signature="System.Action OnDownloadComplete" newName="$C" />
-      <property signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; OnError" newName="$d" />
-      <method signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt; JEngine.Core.Update.PackageInitializationCallbacks::get_OnStatusUpdate([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$SA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnStatusUpdate()" newStackTraceSignature="$a.$G:$SA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnStatusUpdate([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus&gt;)" newName="$tA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnStatusUpdate(Action`1)" newStackTraceSignature="$a.$G:$tA(Action`1)" />
-      <method signature="System.Action`1&lt;string&gt; JEngine.Core.Update.PackageInitializationCallbacks::get_OnVersionUpdate([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$TA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnVersionUpdate()" newStackTraceSignature="$a.$G:$TA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnVersionUpdate([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Action`1&lt;string&gt;)" newName="$uA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnVersionUpdate(Action`1)" newStackTraceSignature="$a.$G:$uA(Action`1)" />
-      <method signature="System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt; JEngine.Core.Update.PackageInitializationCallbacks::get_OnDownloadPrompt([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$UA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnDownloadPrompt()" newStackTraceSignature="$a.$G:$UA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnDownloadPrompt([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Func`3&lt;int,long,[UniTask]Cysharp.Threading.Tasks.UniTask`1&lt;bool&gt;&gt;)" newName="$vA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnDownloadPrompt(Func`3)" newStackTraceSignature="$a.$G:$vA(Func`3)" />
-      <method signature="[YooAsset]YooAsset.DownloaderOperation/DownloadUpdate JEngine.Core.Update.PackageInitializationCallbacks::get_OnDownloadProgress([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$VA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnDownloadProgress()" newStackTraceSignature="$a.$G:$VA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnDownloadProgress([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, [YooAsset]YooAsset.DownloaderOperation/DownloadUpdate)" newName="$wA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnDownloadProgress(DownloadUpdate)" newStackTraceSignature="$a.$G:$wA(DownloadUpdate)" />
-      <method signature="System.Action JEngine.Core.Update.PackageInitializationCallbacks::get_OnDownloadStart([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$WA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnDownloadStart()" newStackTraceSignature="$a.$G:$WA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnDownloadStart([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Action)" newName="$xA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnDownloadStart(Action)" newStackTraceSignature="$a.$G:$xA(Action)" />
-      <method signature="System.Action JEngine.Core.Update.PackageInitializationCallbacks::get_OnDownloadComplete([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$XA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnDownloadComplete()" newStackTraceSignature="$a.$G:$XA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnDownloadComplete([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Action)" newName="$yA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnDownloadComplete(Action)" newStackTraceSignature="$a.$G:$yA(Action)" />
-      <method signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; JEngine.Core.Update.PackageInitializationCallbacks::get_OnError([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;)" newName="$YA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:get_OnError()" newStackTraceSignature="$a.$G:$YA()" />
-      <method signature="void JEngine.Core.Update.PackageInitializationCallbacks::set_OnError([JEngine.Core]JEngine.Core.Update.PackageInitializationCallbacks&amp;, System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt;)" newName="$zA" oldStackTraceSignature="JEngine.Core.Update.PackageInitializationCallbacks:set_OnError(Func`2)" newStackTraceSignature="$a.$G:$zA(Func`2)" />
-    </type>
-    <type fullName="JEngine.Core.Update.PackageInitializationStatus" newFullName="$a.$h" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus InitializingPackage" newName="$sb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus GettingVersion" newName="$tb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus UpdatingManifest" newName="$Tb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus CheckingUpdate" newName="$Ub" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus DownloadingResources" newName="$zb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus Completed" newName="$Zb" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.PackageInitializationStatus Failed" newName="$aB" />
-    </type>
-    <type fullName="JEngine.Core.Update.SceneLoadCallbacks" newFullName="$a.$i" status="Renamed">
-      <field signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt; &lt;OnStatusUpdate&gt;k__BackingField" newName="$AB" />
-      <field signature="System.Action`1&lt;float&gt; &lt;OnProgressUpdate&gt;k__BackingField" newName="$cB" />
-      <field signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; &lt;OnError&gt;k__BackingField" newName="$Gc" />
-      <property signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt; OnStatusUpdate" newName="$a" />
-      <property signature="System.Action`1&lt;float&gt; OnProgressUpdate" newName="$A" />
-      <property signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; OnError" newName="$b" />
-      <method signature="System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt; JEngine.Core.Update.SceneLoadCallbacks::get_OnStatusUpdate([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;)" newName="$ZA" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:get_OnStatusUpdate()" newStackTraceSignature="$a.$i:$ZA()" />
-      <method signature="void JEngine.Core.Update.SceneLoadCallbacks::set_OnStatusUpdate([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;, System.Action`1&lt;[JEngine.Core]JEngine.Core.Update.SceneLoadStatus&gt;)" newName="$ab" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:set_OnStatusUpdate(Action`1)" newStackTraceSignature="$a.$i:$ab(Action`1)" />
-      <method signature="System.Action`1&lt;float&gt; JEngine.Core.Update.SceneLoadCallbacks::get_OnProgressUpdate([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;)" newName="$Ab" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:get_OnProgressUpdate()" newStackTraceSignature="$a.$i:$Ab()" />
-      <method signature="void JEngine.Core.Update.SceneLoadCallbacks::set_OnProgressUpdate([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;, System.Action`1&lt;float&gt;)" newName="$bb" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:set_OnProgressUpdate(Action`1)" newStackTraceSignature="$a.$i:$bb(Action`1)" />
-      <method signature="System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt; JEngine.Core.Update.SceneLoadCallbacks::get_OnError([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;)" newName="$Bb" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:get_OnError()" newStackTraceSignature="$a.$i:$Bb()" />
-      <method signature="void JEngine.Core.Update.SceneLoadCallbacks::set_OnError([JEngine.Core]JEngine.Core.Update.SceneLoadCallbacks&amp;, System.Func`2&lt;System.Exception,[UniTask]Cysharp.Threading.Tasks.UniTask&gt;)" newName="$fb" oldStackTraceSignature="JEngine.Core.Update.SceneLoadCallbacks:set_OnError(Func`2)" newStackTraceSignature="$a.$i:$fb(Func`2)" />
-    </type>
-    <type fullName="JEngine.Core.Update.SceneLoadStatus" newFullName="$a.$I" status="Renamed">
-      <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Loading" newName="$hc" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Completed" newName="$Hc" />
-      <field signature="[JEngine.Core]JEngine.Core.Update.SceneLoadStatus Failed" newName="$ic" />
-    </type>
   </assembly>
   <assembly name="Obfuz.Generated">
     <type fullName="$Obfuz$ConstFieldHolder$0" newFullName="$z" status="Renamed">
@@ -1476,9 +1020,6 @@
     <type fullName="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine" newFullName="$b.$r" status="Renamed">
       <field signature="int[] _secretKey" newName="$nc" />
       <property signature="int OpCodeCount" newName="$a" />
-      <method signature="int Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine::get_OpCodeCount([Obfuz.Generated]Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine)" newName="$qd" oldStackTraceSignature="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine:get_OpCodeCount()" newStackTraceSignature="$b.$r:$qd()" />
-      <method signature="int Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine::Encrypt([Obfuz.Generated]Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine, int, int, int)" newName="$Qd" oldStackTraceSignature="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine:Encrypt(Int32, Int32, Int32)" newStackTraceSignature="$b.$r:$Qd(Int32, Int32, Int32)" />
-      <method signature="int Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine::Decrypt([Obfuz.Generated]Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine, int, int, int)" newName="$rd" oldStackTraceSignature="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine:Decrypt(Int32, Int32, Int32)" newStackTraceSignature="$b.$r:$rd(Int32, Int32, Int32)" />
       <method signature="int Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine::ExecuteEncrypt([Obfuz.Generated]Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine, int, int, int)" newName="$lc" oldStackTraceSignature="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine:ExecuteEncrypt(Int32, Int32, Int32)" newStackTraceSignature="$b.$r:$lc(Int32, Int32, Int32)" />
       <method signature="int Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine::ExecuteDecrypt([Obfuz.Generated]Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine, int, int, int)" newName="$Lc" oldStackTraceSignature="Obfuz.EncryptionVM.GeneratedEncryptionVirtualMachine:ExecuteDecrypt(Int32, Int32, Int32)" newStackTraceSignature="$b.$r:$Lc(Int32, Int32, Int32)" />
     </type>

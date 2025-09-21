@@ -23,11 +23,9 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System.IO;
 using JEngine.Core.Editor.CustomEditor;
 using UnityEditor;
 using UnityEngine;
-using YooAsset;
 
 namespace JEngine.Core.Editor
 {
@@ -41,24 +39,21 @@ namespace JEngine.Core.Editor
                 EditorGUIUtility.IconContent("BuildSettings.Editor.Small").image);
             window.Show();
         }
-
-        [MenuItem("JEngine/Open Editor Bundle Cache", priority = 3000)]
+        
+        [MenuItem("JEngine/Open Download Path", priority = 3000)]
         private static void OpenDownloadPath()
         {
-            var path = Path.Combine(new DirectoryInfo(Application.dataPath).Parent!.FullName,
-                YooAssetSettingsData.GetDefaultYooFolderName());
+            var path = Application.persistentDataPath;
             if (string.IsNullOrEmpty(path))
             {
                 Debug.LogWarning("JEngine: Download path is not set.");
                 return;
             }
-
-            if (!Directory.Exists(path))
+            if (!System.IO.Directory.Exists(path))
             {
                 Debug.LogWarning("JEngine: Download path does not exist.");
                 return;
             }
-
             EditorUtility.RevealInFinder(path);
         }
     }

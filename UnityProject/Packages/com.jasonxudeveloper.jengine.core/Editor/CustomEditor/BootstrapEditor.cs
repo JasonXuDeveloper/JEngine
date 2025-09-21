@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
-using JEngine.Core.Encrypt;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -62,7 +61,7 @@ namespace JEngine.Core.Editor.CustomEditor
             // Default Host Server
             var defaultHostRow = CreateFormRow("Default Host Server");
             var defaultHostField = new TextField();
-            defaultHostField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.defaultHostServer)));
+            defaultHostField.BindProperty(serializedObject.FindProperty("defaultHostServer"));
             defaultHostField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(defaultHostField);
             defaultHostRow.Add(defaultHostField);
@@ -90,7 +89,7 @@ namespace JEngine.Core.Editor.CustomEditor
             fallbackContainer.name = "fallback-container";
             var fallbackRow = CreateFormRow("Custom Fallback Server");
             var fallbackField = new TextField();
-            fallbackField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.fallbackHostServer)));
+            fallbackField.BindProperty(serializedObject.FindProperty("fallbackHostServer"));
             fallbackField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(fallbackField);
             fallbackRow.Add(fallbackField);
@@ -117,7 +116,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(packageNameField);
             packageNameField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.packageName)).stringValue = evt.newValue;
+                serializedObject.FindProperty("packageName").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             packageNameRow.Add(packageNameField);
@@ -135,7 +134,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(hotCodeField);
             hotCodeField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.hotCodeName)).stringValue = evt.newValue;
+                serializedObject.FindProperty("hotCodeName").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             hotCodeRow.Add(hotCodeField);
@@ -153,7 +152,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(hotSceneField);
             hotSceneField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.selectedHotScene)).stringValue = evt.newValue;
+                serializedObject.FindProperty("selectedHotScene").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             hotSceneRow.Add(hotSceneField);
@@ -171,7 +170,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(hotClassField);
             hotClassField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.hotUpdateClassName)).stringValue = evt.newValue;
+                serializedObject.FindProperty("hotUpdateClassName").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             hotClassRow.Add(hotClassField);
@@ -189,7 +188,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(hotMethodField);
             hotMethodField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.hotUpdateMethodName)).stringValue = evt.newValue;
+                serializedObject.FindProperty("hotUpdateMethodName").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             hotMethodRow.Add(hotMethodField);
@@ -207,7 +206,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(aotField);
             aotField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.aotDllListFilePath)).stringValue = evt.newValue;
+                serializedObject.FindProperty("aotDllListFilePath").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             aotRow.Add(aotField);
@@ -232,7 +231,7 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(staticKeyField);
             staticKeyField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.staticSecretKeyPath)).stringValue = evt.newValue;
+                serializedObject.FindProperty("staticSecretKeyPath").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             staticKeyRow.Add(staticKeyField);
@@ -250,61 +249,11 @@ namespace JEngine.Core.Editor.CustomEditor
             EditorUIUtils.MakeTextResponsive(dynamicKeyField);
             dynamicKeyField.RegisterValueChangedCallback(evt =>
             {
-                serializedObject.FindProperty(nameof(_bootstrap.dynamicSecretKeyPath)).stringValue = evt.newValue;
+                serializedObject.FindProperty("dynamicSecretKeyPath").stringValue = evt.newValue;
                 serializedObject.ApplyModifiedProperties();
             });
             dynamicKeyRow.Add(dynamicKeyField);
             securityGroup.Add(dynamicKeyRow);
-
-            // Encryption Option
-            var bundleConfig = EncryptionMapping.Mapping[_bootstrap.encryptionOption];
-            var manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
-            var bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
-
-            var encryptionRow = CreateFormRow("Encryption Option");
-            var encryptionField = new EnumField(_bootstrap.encryptionOption);
-
-            // Manifest Config Object Field
-            var manifestConfigRow = CreateFormRow("Manifest Config");
-            var manifestConfigField = new ObjectField()
-            {
-                objectType = typeof(ScriptableObject),
-                value = manifestConfigFile
-            };
-            manifestConfigField.SetEnabled(false); // Make it readonly
-            manifestConfigField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(manifestConfigField);
-            manifestConfigRow.Add(manifestConfigField);
-
-            // Bundle Config Object Field
-            var bundleConfigRow = CreateFormRow("Bundle Config");
-            var bundleConfigField = new ObjectField()
-            {
-                objectType = typeof(ScriptableObject),
-                value = bundleConfigFile
-            };
-            bundleConfigField.SetEnabled(false); // Make it readonly
-            bundleConfigField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(bundleConfigField);
-            bundleConfigRow.Add(bundleConfigField);
-
-            encryptionField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(encryptionField);
-            encryptionField.RegisterValueChangedCallback(evt =>
-            {
-                serializedObject.FindProperty(nameof(_bootstrap.encryptionOption)).enumValueIndex = (int)(EncryptionOption)evt.newValue;
-                serializedObject.ApplyModifiedProperties();
-
-                // Refresh the config object fields when encryption option changes
-                var newBundleConfig = EncryptionMapping.Mapping[(EncryptionOption)evt.newValue];
-                manifestConfigField.value = newBundleConfig.ManifestConfigScriptableObject;
-                bundleConfigField.value = newBundleConfig.BundleConfigScriptableObject;
-            });
-            encryptionRow.Add(encryptionField);
-
-            securityGroup.Add(encryptionRow);
-            securityGroup.Add(manifestConfigRow);
-            securityGroup.Add(bundleConfigRow);
 
             _root.Add(securityGroup);
         }
@@ -320,7 +269,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(TMPro.TextMeshProUGUI),
                 allowSceneObjects = true
             };
-            versionField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.versionText)));
+            versionField.BindProperty(serializedObject.FindProperty("versionText"));
             versionField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(versionField);
             versionRow.Add(versionField);
@@ -333,7 +282,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(TMPro.TextMeshProUGUI),
                 allowSceneObjects = true
             };
-            statusField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.updateStatusText)));
+            statusField.BindProperty(serializedObject.FindProperty("updateStatusText"));
             statusField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(statusField);
             statusRow.Add(statusField);
@@ -346,7 +295,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(TMPro.TextMeshProUGUI),
                 allowSceneObjects = true
             };
-            progressTextField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.downloadProgressText)));
+            progressTextField.BindProperty(serializedObject.FindProperty("downloadProgressText"));
             progressTextField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(progressTextField);
             progressTextRow.Add(progressTextField);
@@ -359,24 +308,11 @@ namespace JEngine.Core.Editor.CustomEditor
                 objectType = typeof(UnityEngine.UI.Slider),
                 allowSceneObjects = true
             };
-            progressBarField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.downloadProgressBar)));
+            progressBarField.BindProperty(serializedObject.FindProperty("downloadProgressBar"));
             progressBarField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(progressBarField);
             progressBarRow.Add(progressBarField);
             uiGroup.Add(progressBarRow);
-            
-            // Start Button
-            var startButtonRow = CreateFormRow("Start Button");
-            var startButtonField = new ObjectField()
-            {
-                objectType = typeof(UnityEngine.UI.Button),
-                allowSceneObjects = true
-            };
-            startButtonField.BindProperty(serializedObject.FindProperty(nameof(_bootstrap.startButton)));
-            startButtonField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(startButtonField);
-            startButtonRow.Add(startButtonField);
-            uiGroup.Add(startButtonRow);
 
             _root.Add(uiGroup);
         }

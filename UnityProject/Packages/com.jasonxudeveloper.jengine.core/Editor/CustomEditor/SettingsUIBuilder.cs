@@ -25,10 +25,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using JEngine.Core.Encrypt;
 using UnityEditor;
 using UnityEditor.Search;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace JEngine.Core.Editor.CustomEditor
@@ -128,56 +126,6 @@ namespace JEngine.Core.Editor.CustomEditor
             useAssetDBToggle.AddToClassList("form-control");
             useAssetDBRow.Add(useAssetDBToggle);
             buildGroup.Add(useAssetDBRow);
-
-            // Encryption Option
-            var bundleConfig = EncryptionMapping.Mapping[settings.encryptionOption];
-            var manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
-            var bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
-
-            var encryptionRow = EditorUIUtils.CreateFormRow("Encryption Option");
-            var encryptionField = new EnumField(settings.encryptionOption);
-
-            // Manifest Config Object Field
-            var manifestConfigRow = EditorUIUtils.CreateFormRow("Manifest Config");
-            var manifestConfigField = new ObjectField()
-            {
-                objectType = typeof(ScriptableObject),
-                value = manifestConfigFile
-            };
-            manifestConfigField.SetEnabled(false); // Make it readonly
-            manifestConfigField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(manifestConfigField);
-            manifestConfigRow.Add(manifestConfigField);
-
-            // Bundle Config Object Field
-            var bundleConfigRow = EditorUIUtils.CreateFormRow("Bundle Config");
-            var bundleConfigField = new ObjectField()
-            {
-                objectType = typeof(ScriptableObject),
-                value = bundleConfigFile
-            };
-            bundleConfigField.SetEnabled(false); // Make it readonly
-            bundleConfigField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(bundleConfigField);
-            bundleConfigRow.Add(bundleConfigField);
-
-            encryptionField.RegisterValueChangedCallback(evt =>
-            {
-                settings.encryptionOption = (EncryptionOption)evt.newValue;
-                settings.Save();
-
-                // Refresh the config object fields when encryption option changes
-                var newBundleConfig = EncryptionMapping.Mapping[settings.encryptionOption];
-                manifestConfigField.value = newBundleConfig.ManifestConfigScriptableObject;
-                bundleConfigField.value = newBundleConfig.BundleConfigScriptableObject;
-            });
-            encryptionField.AddToClassList("form-control");
-            EditorUIUtils.MakeTextResponsive(encryptionField);
-            encryptionRow.Add(encryptionField);
-
-            buildGroup.Add(encryptionRow);
-            buildGroup.Add(manifestConfigRow);
-            buildGroup.Add(bundleConfigRow);
 
             return buildGroup;
         }

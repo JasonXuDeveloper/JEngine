@@ -84,22 +84,19 @@ namespace JEngine.Core.Misc
             public void Reset() => _core.Reset();
         }
 
-        private static GameObject Prefab
+        private static readonly Lazy<GameObject> LazyPrefab = new(() =>
         {
-            get
+            var prefab = Resources.Load<GameObject>("Prefabs/MessageBox");
+            if (prefab == null)
             {
-                if (_prefab != null) return _prefab;
-                _prefab = Resources.Load<GameObject>("Prefabs/MessageBox");
-                if (_prefab == null)
-                {
-                    Debug.LogError("Failed to load MessageBox prefab from Resources/MessageBox");
-                }
-
-                return _prefab;
+                Debug.LogError(
+                    "MessageBox prefab not found at 'Resources/Prefabs/MessageBox'. Please ensure the prefab exists.");
             }
-        }
 
-        private static GameObject _prefab;
+            return prefab;
+        });
+
+        private static GameObject Prefab => LazyPrefab.Value;
 
         private static readonly HashSet<MessageBox> ActiveMessageBoxes = new();
         private static readonly Stack<MessageBox> PooledMessageBoxes = new();
@@ -211,14 +208,6 @@ namespace JEngine.Core.Misc
                 if (PooledMessageBoxes.Count > 0)
                 {
                     messageBox = PooledMessageBoxes.Pop();
-
-                    // Validate and cache component references
-                    if (!messageBox.ValidateAndCacheComponents())
-                    {
-                        throw new InvalidOperationException(
-                            "MessageBox prefab is missing required components. Please check the prefab structure.");
-                    }
-
                     messageBox.Init(title, content, ok, no);
                     messageBox.GameObject.SetActive(true);
                 }
@@ -240,13 +229,13 @@ namespace JEngine.Core.Misc
         {
             try
             {
-                _title ??= GetComponent<TextMeshProUGUI>("Title");
-                _content ??= GetComponent<TextMeshProUGUI>("Content/Text");
-                _textOk ??= GetComponent<TextMeshProUGUI>("Buttons/Ok/Text");
-                _textNo ??= GetComponent<TextMeshProUGUI>("Buttons/No/Text");
-                _buttonOk ??= GetComponent<Button>("Buttons/Ok");
-                _buttonNo ??= GetComponent<Button>("Buttons/No");
-                _canvasGroup ??= GameObject.GetComponent<CanvasGroup>();
+                _title = GetComponent<TextMeshProUGUI>("Title");
+                _content = GetComponent<TextMeshProUGUI>("Content/Text");
+                _textOk = GetComponent<TextMeshProUGUI>("Buttons/Ok/Text");
+                _textNo = GetComponent<TextMeshProUGUI>("Buttons/No/Text");
+                _buttonOk = GetComponent<Button>("Buttons/Ok");
+                _buttonNo = GetComponent<Button>("Buttons/No");
+                _canvasGroup = GameObject.GetComponent<CanvasGroup>();
                 if (_canvasGroup == null)
                 {
                     _canvasGroup = GameObject.AddComponent<CanvasGroup>();
@@ -359,7 +348,6 @@ namespace JEngine.Core.Misc
 
             // Set initial state for animation and play it
             GameObject.transform.localScale = InitialScale;
-            Object.DontDestroyOnLoad(GameObject);
         }
 
         private T GetComponent<T>(string path) where T : Component

@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd1afdce9715f84eb4cbc901922afc2, type: 3}
   m_Name: YooAssetSettings
   m_EditorClassIdentifier: 
-  DefaultYooFolderName: yoo
-  PackageManifestPrefix: 
+  ManifestFileName: PackageManifest

@@ -51,7 +51,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var jengineGroup = SettingsUIBuilder.CreateJEngineSettingsGroup(_settings);
             _root.Add(jengineGroup);
         }
-        
+
         private StyleSheet CreateStyleSheet()
         {
             return StyleSheetLoader.LoadPackageStyleSheet<SettingsEditor>();

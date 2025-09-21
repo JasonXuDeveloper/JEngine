@@ -1,4 +1,4 @@
-// IManifestEncryptionConfig.cs
+// BundleStream.cs
 // 
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
@@ -23,31 +23,29 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
-using UnityEngine;
-using YooAsset;
+using System.IO;
 
 namespace JEngine.Core.Encrypt
 {
-    public interface IManifestEncryptionConfig
+    /// <summary>
+    /// 资源文件解密流
+    /// </summary>
+    public class BundleStream : FileStream
     {
-        IManifestProcessServices Encryption { get; }
-        IManifestRestoreServices Decryption { get; }
-    }
+        public const byte Key = 233;
 
-    public abstract class ManifestEncryptionConfig<TConfig, TEncryption, TDecryption>
-        : IManifestEncryptionConfig
-        where TConfig : ScriptableObject
-        where TEncryption : IManifestProcessServices
-        where TDecryption : IManifestRestoreServices
-    {
-        public IManifestProcessServices Encryption { get; }
-        public IManifestRestoreServices Decryption { get; }
-
-        protected ManifestEncryptionConfig(TConfig config)
+        public BundleStream(string path, FileMode mode, FileAccess access, FileShare share) : base(path, mode, access, share)
         {
-            Encryption = (TEncryption)Activator.CreateInstance(typeof(TEncryption), new object[] { config });
-            Decryption = (TDecryption)Activator.CreateInstance(typeof(TDecryption), new object[] { config });
+        }
+
+        public override int Read(byte[] array, int offset, int count)
+        {
+            var index = base.Read(array, offset, count);
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] ^= Key;
+            }
+            return index;
         }
     }
 }
