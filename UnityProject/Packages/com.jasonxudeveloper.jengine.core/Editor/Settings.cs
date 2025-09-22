@@ -81,7 +81,7 @@ namespace JEngine.Core.Editor
                         EditorUtility.DisplayDialog("Kindly Notice",
                             "[JEngine] First time to use JEngine please read the document first! URL: jengine.xgamedev.net",
                             "Done");
-                        Application.OpenURL("https://jengine.xgamedev.net/documents/1.0/");
+                        Application.OpenURL("https://jengine.xgamedev.net/en/documents/1.0/");
                     }
                 }
 
