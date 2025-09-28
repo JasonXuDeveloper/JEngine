@@ -1,5 +1,15 @@
 ## All Versions
 
+## 1.0.1 (September 28 2025)
+
+- **AssetBundle Encryption** support (XOR, AES, ChaCha20)
+- **Code Obfuscation** support by using Obfuz to protect almost all code
+- **Dramatically improved** hot update code execution performance by migrating to HybridCLR
+- **Enhanced** game development experience (no more extra user procedure when writing any kinds of hot update code) 
+- **MiniGame** support for WeChat, TikTok, Alipay and TapTap
+> Minor Update:
+> - Upgrade **HybridCLR** to v8.6.0 (resolves building issues with latest Xcode)
+
 ## 1.0.0 (September 21 2025)
 
 - **AssetBundle Encryption** support (XOR, AES, ChaCha20)
