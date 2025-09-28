@@ -108,7 +108,15 @@ namespace HybridCLR.Editor.Installer
             {
                 UnityEngine.Debug.Log($"[BashUtil] CopyDir {src} => {dst}");
             }
-            RemoveDir(dst);
+            if (Directory.Exists(dst))
+            {
+                RemoveDir(dst);
+            }
+            else
+            {
+                string parentDir = Path.GetDirectoryName(Path.GetFullPath(dst));
+                Directory.CreateDirectory(parentDir);
+            }
 
             UnityEditor.FileUtil.CopyFileOrDirectory(src, dst);
         }

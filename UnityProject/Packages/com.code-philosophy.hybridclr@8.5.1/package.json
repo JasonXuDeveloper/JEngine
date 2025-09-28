@@ -1,6 +1,6 @@
 {
   "name": "com.code-philosophy.hybridclr",
-  "version": "8.5.1",
+  "version": "8.6.0",
   "displayName": "HybridCLR",
   "description": "HybridCLR is a fully featured, zero-cost, high-performance, low-memory solution for Unity's all-platform native c# hotupdate.",
   "category": "Scripting",
