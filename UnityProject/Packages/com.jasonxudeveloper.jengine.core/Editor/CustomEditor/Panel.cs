@@ -222,7 +222,6 @@ namespace JEngine.Core.Editor.CustomEditor
                     value = sceneAsset
                 };
                 sceneField.SetEnabled(false);
-                sceneField.AddToClassList("form-control");
                 sceneField.AddToClassList("scene-field");
                 EditorUIUtils.MakeTextResponsive(sceneField);
 

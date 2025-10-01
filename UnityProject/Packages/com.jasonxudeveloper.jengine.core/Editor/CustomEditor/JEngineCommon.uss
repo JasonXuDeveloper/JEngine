@@ -115,6 +115,7 @@ Foldout {
 .form-row {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
     margin: 4px 0;
@@ -141,6 +142,7 @@ Foldout {
     flex-grow: 1;
     flex-shrink: 1;
     min-width: 120px;
+    flex-basis: 0;
     align-self: center;
     display: flex;
     align-items: center;
@@ -150,6 +152,7 @@ Foldout {
     flex-grow: 1;
     flex-shrink: 1;
     min-width: 120px;
+    flex-basis: 0;
     margin-right: 8px;
     align-self: center;
     display: flex;
