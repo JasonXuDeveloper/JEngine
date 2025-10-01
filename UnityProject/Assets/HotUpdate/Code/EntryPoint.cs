@@ -47,113 +47,113 @@ namespace HotUpdate.Code
             Debug.Log("HotUpdateScripts EntryPoint RunGame called.");
             // Your game logic goes here
             Button addOnDemoButton = GameObject.Find("Canvas/BtnList/AddOnDemoButton").GetComponent<Button>();
-            addOnDemoButton.onClick.AddListener(() =>
+
+            async UniTask LoadAddOnPackage()
             {
-                UniTask.RunOnThreadPool(async () =>
+                try
                 {
-                    await UniTask.SwitchToMainThread();
+                    addOnDemoButton.interactable = false; // Prevent duplicate clicks
+                    Debug.Log("AddOnDemoButton clicked.");
+                    var packageName = "addon1";
+
+                    // Create or get AddOn1 package
+                    var package = Bootstrap.CreateOrGetPackage(packageName);
+
+                    // Set up AddOn package initialization callbacks
+                    var callbacks = new PackageInitializationCallbacks
+                    {
+                        OnStatusUpdate = static status => Debug.Log($"[AddOn1] Status: {GetStatusText(status)}"),
+                        OnVersionUpdate = static version => Debug.Log($"[AddOn1] Version: {version}"),
+                        OnDownloadPrompt = static (count, size) => MessageBox.Show("Notice",
+                            $"[AddOn1] Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Continue?",
+                            "Yes", "No"),
+                        OnDownloadProgress = static data =>
+                        {
+                            Debug.Log(
+                                $"[AddOn1] Download progress: {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({Mathf.RoundToInt(data.Progress * 100)}%)");
+                        },
+                        OnDownloadStart = static () => Debug.Log("[AddOn1] Starting download..."),
+                        OnDownloadComplete = static () => Debug.Log("[AddOn1] Download completed!"),
+                        OnError = static async error =>
+                        {
+                            Debug.LogError($"[AddOn1] Error: {error}");
+                            await UniTask.CompletedTask; // Simple error handling
+                        }
+                    };
+
+                    // Use Bootstrap's common initialization function
+                    Debug.Log("[AddOn1] Starting AddOn1 package initialization...");
+                    bool success = await Bootstrap.UpdatePackage(package, callbacks, EncryptionOption.Xor);
+
+                    if (!success)
+                    {
+                        Debug.LogError("[AddOn1] AddOn1 package initialization failed!");
+                        return;
+                    }
+
+                    Debug.Log("[AddOn1] AddOn1 package initialization successful!");
+
+                    // Load AddOn1 scene
+                    var sceneLoadCallbacks = new SceneLoadCallbacks
+                    {
+                        OnStatusUpdate = static status => Debug.Log($"[AddOn1] {GetSceneLoadStatusText(status)}"),
+                        OnProgressUpdate = static progress =>
+                            Debug.Log($"[AddOn1] Loading progress: {progress * 100:F0}%"),
+                        OnError = static exception =>
+                        {
+                            Debug.LogError($"[AddOn1] Scene loading failed: {exception.Message}");
+                            return UniTask.CompletedTask;
+                        }
+                    };
+
+                    var handle = await Bootstrap.LoadHotUpdateScene(package,
+                        "Assets/HotUpdate/AddOn1/Scene/test.unity",
+                        sceneLoadCallbacks);
+                    if (handle != null)
+                    {
+                        Debug.Log("Entered addon scene");
+                    }
+                    else
+                    {
+                        Debug.LogError("[AddOn1] Scene loading exception");
+                    }
+
+                    // Load AddOn1 resources
+                    var textHandle = package.LoadAssetAsync<TextAsset>("Assets/HotUpdate/AddOn1/Other/test.txt");
+                    await textHandle.Task;
+                    if (textHandle.Status == EOperationStatus.Succeed)
+                    {
+                        var textAsset = textHandle.GetAssetObject<TextAsset>();
+                        Debug.Log($"[AddOn1] Loaded text content: {textAsset.text}");
+                        textHandle.Release(); // Remember to release resources
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[AddOn1] Failed to load test.txt file: {textHandle.LastError}");
+                    }
+
+                    // Clear AddOn1 package cache (optional)
+                    await Bootstrap.DeletePackageCache(package);
+                    Debug.Log("[AddOn1] AddOn1 package download cache cleanup completed.");
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError($"[AddOn1] Exception occurred: {ex.Message}");
+                }
+                finally
+                {
                     try
                     {
-                        addOnDemoButton.interactable = false; // Prevent duplicate clicks
-                        Debug.Log("AddOnDemoButton clicked.");
-                        var packageName = "addon1";
-
-                        // Create or get AddOn1 package
-                        var package = Bootstrap.CreateOrGetPackage(packageName);
-
-                        // Set up AddOn package initialization callbacks
-                        var callbacks = new PackageInitializationCallbacks
-                        {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] Status: {GetStatusText(status)}"),
-                            OnVersionUpdate = static version => Debug.Log($"[AddOn1] Version: {version}"),
-                            OnDownloadPrompt = static (count, size) => MessageBox.Show("Notice",
-                                $"[AddOn1] Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Continue?",
-                                "Yes", "No"),
-                            OnDownloadProgress = static data =>
-                            {
-                                Debug.Log(
-                                    $"[AddOn1] Download progress: {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({Mathf.RoundToInt(data.Progress * 100)}%)");
-                            },
-                            OnDownloadStart = static () => Debug.Log("[AddOn1] Starting download..."),
-                            OnDownloadComplete = static () => Debug.Log("[AddOn1] Download completed!"),
-                            OnError = static async error =>
-                            {
-                                Debug.LogError($"[AddOn1] Error: {error}");
-                                await UniTask.CompletedTask; // Simple error handling
-                            }
-                        };
-
-                        // Use Bootstrap's common initialization function
-                        Debug.Log("[AddOn1] Starting AddOn1 package initialization...");
-                        bool success = await Bootstrap.UpdatePackage(package, callbacks, EncryptionOption.Xor);
-
-                        if (!success)
-                        {
-                            Debug.LogError("[AddOn1] AddOn1 package initialization failed!");
-                            return;
-                        }
-
-                        Debug.Log("[AddOn1] AddOn1 package initialization successful!");
-
-                        // Load AddOn1 scene
-                        var sceneLoadCallbacks = new SceneLoadCallbacks
-                        {
-                            OnStatusUpdate = static status => Debug.Log($"[AddOn1] {GetSceneLoadStatusText(status)}"),
-                            OnProgressUpdate = static progress => Debug.Log($"[AddOn1] Loading progress: {progress * 100:F0}%"),
-                            OnError = static exception =>
-                            {
-                                Debug.LogError($"[AddOn1] Scene loading failed: {exception.Message}");
-                                return UniTask.CompletedTask;
-                            }
-                        };
-
-                        var handle = await Bootstrap.LoadHotUpdateScene(package,
-                            "Assets/HotUpdate/AddOn1/Scene/test.unity",
-                            sceneLoadCallbacks);
-                        if (handle != null)
-                        {
-                            Debug.Log("Entered addon scene");
-                        }
-                        else
-                        {
-                            Debug.LogError("[AddOn1] Scene loading exception");
-                        }
-
-                        // Load AddOn1 resources
-                        var textHandle = package.LoadAssetAsync<TextAsset>("Assets/HotUpdate/AddOn1/Other/test.txt");
-                        await textHandle.Task;
-                        if (textHandle.Status == EOperationStatus.Succeed)
-                        {
-                            var textAsset = textHandle.GetAssetObject<TextAsset>();
-                            Debug.Log($"[AddOn1] Loaded text content: {textAsset.text}");
-                            textHandle.Release(); // Remember to release resources
-                        }
-                        else
-                        {
-                            Debug.LogWarning($"[AddOn1] Failed to load test.txt file: {textHandle.LastError}");
-                        }
-
-                        // Clear AddOn1 package cache (optional)
-                        await Bootstrap.DeletePackageCache(package);
-                        Debug.Log("[AddOn1] AddOn1 package download cache cleanup completed.");
+                        addOnDemoButton.interactable = true; // Restore button clickability
                     }
-                    catch (System.Exception ex)
+                    catch
                     {
-                        Debug.LogError($"[AddOn1] Exception occurred: {ex.Message}");
+                        // Ignore exception
                     }
-                    finally
-                    {
-                        try
-                        {
-                            addOnDemoButton.interactable = true; // Restore button clickability
-                        }
-                        catch
-                        {
-                            // Ignore exception
-                        }
-                    }
-                }).Forget();
-            });
+                }
+            }
+
+            addOnDemoButton.onClick.AddListener(() => { LoadAddOnPackage().Forget(); });
         }
 
         private static string GetStatusText(PackageInitializationStatus status)
