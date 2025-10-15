@@ -1,6 +1,14 @@
 ## All Versions
 
+## 1.0.3 (October 15 2025)
+
+- **Supported** Unity CDN (UOS)
+- **Optimized** WebGL asset loading throughput 
+
+
+
 ## 1.0.2 (October 15 2025)
+
 - **Fixed** development and server setting save issue
 - **Allowed** loading hot code's pdb file in order to debug in unity editor
 - **Updated** Nino to the latest verstion

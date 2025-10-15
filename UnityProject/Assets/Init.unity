@@ -843,6 +843,7 @@ MonoBehaviour:
   defaultHostServer: http://127.0.0.1/
   useDefaultAsFallback: 1
   fallbackHostServer: http://127.0.0.1/
+  appendTimeTicks: 1
   targetPlatform: 0
   packageName: main
   hotCodeName: HotUpdate.Code.dll
