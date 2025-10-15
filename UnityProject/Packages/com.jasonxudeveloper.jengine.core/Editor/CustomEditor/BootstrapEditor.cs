@@ -101,6 +101,25 @@ namespace JEngine.Core.Editor.CustomEditor
             fallbackContainer.Add(fallbackRow);
             serverGroup.Add(fallbackContainer);
 
+            // Toggle for appending time ticks
+            var appendTimeTicksRow = CreateFormRow("Append Time Ticks");
+            var appendTimeTicksButton = new Button();
+            appendTimeTicksButton.clicked += () =>
+            {
+                _bootstrap.appendTimeTicks = !_bootstrap.appendTimeTicks;
+                serializedObject.FindProperty(nameof(_bootstrap.appendTimeTicks)).boolValue =
+                    _bootstrap.appendTimeTicks;
+                EditorUtility.SetDirty(_bootstrap);
+                serializedObject.ApplyModifiedProperties();
+                UpdateAppendTimeTicksButtonState(appendTimeTicksButton);
+            };
+            appendTimeTicksButton.AddToClassList("toggle-button");
+            appendTimeTicksButton.AddToClassList("form-control");
+            EditorUIUtils.MakeFormWidthButton(appendTimeTicksButton);
+            UpdateAppendTimeTicksButtonState(appendTimeTicksButton);
+            appendTimeTicksRow.Add(appendTimeTicksButton);
+            serverGroup.Add(appendTimeTicksRow);
+
             UpdateFallbackServerVisibility();
             _root.Add(serverGroup);
         }
@@ -436,6 +455,20 @@ namespace JEngine.Core.Editor.CustomEditor
             {
                 button.text = "Host Play Mode";
                 EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Success);
+            }
+        }
+
+        private void UpdateAppendTimeTicksButtonState(Button button)
+        {
+            if (_bootstrap.appendTimeTicks)
+            {
+                button.text = "Enabled";
+                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Success);
+            }
+            else
+            {
+                button.text = "Disabled";
+                EditorUIUtils.SwitchButtonColor(button, EditorUIUtils.ButtonType.Danger);
             }
         }
 #endif

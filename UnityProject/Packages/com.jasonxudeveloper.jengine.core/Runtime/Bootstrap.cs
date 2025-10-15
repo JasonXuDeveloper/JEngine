@@ -52,6 +52,8 @@ namespace JEngine.Core
 
         public string fallbackHostServer = "http://127.0.0.1/";
 
+        public bool appendTimeTicks = true;
+
         [Header("Asset Settings")] public TargetPlatform targetPlatform = TargetPlatform.Regular;
 
         public string packageName = "main";
@@ -425,6 +427,7 @@ namespace JEngine.Core
                         case TargetPlatform.Regular:
                         {
 #if UNITY_WEBGL
+                            YooAssets.SetOperationSystemMaxTimeSlice(100);
                             var webRemoteFileSystem =
                                 FileSystemParameters.CreateDefaultWebRemoteFileSystemParameters(remoteServices,
                                     bundleConfig.WebDecryption);
@@ -444,7 +447,8 @@ namespace JEngine.Core
                             initParameters = new WebPlayModeParameters
                             {
                                 WebRemoteFileSystemParameters = webRemoteFileSystem,
-                                WebServerFileSystemParameters = webServerFileSystem
+                                WebServerFileSystemParameters = webServerFileSystem,
+                                WebGLForceSyncLoadAsset = true
                             };
 
 #else
@@ -473,6 +477,7 @@ namespace JEngine.Core
                         }
                         case TargetPlatform.WeChat:
                         {
+                            YooAssets.SetOperationSystemMaxTimeSlice(100);
 #if UNITY_WEBGL && WEIXINMINIGAME
                             string packageRoot = $"{WeChatWASM.WX.env.USER_DATA_PATH}/__GAME_FILE_CACHE/yoo";
                             var wechatFileSystemParams =
@@ -483,7 +488,8 @@ namespace JEngine.Core
 
                             initParameters = new WebPlayModeParameters
                             {
-                                WebServerFileSystemParameters = wechatFileSystemParams
+                                WebServerFileSystemParameters = wechatFileSystemParams,
+                                WebGLForceSyncLoadAsset = true
                             };
 #endif
 
@@ -491,6 +497,7 @@ namespace JEngine.Core
                         }
                         case TargetPlatform.Douyin:
                         {
+                            YooAssets.SetOperationSystemMaxTimeSlice(100);
 #if UNITY_WEBGL && DOUYINMINIGAME
                             var webRemoteFileSystem = TiktokFileSystemCreater.CreateFileSystemParameters("yoo",
                                 remoteServices, bundleConfig.WebDecryption);
@@ -499,13 +506,15 @@ namespace JEngine.Core
                             
                             initParameters = new WebPlayModeParameters
                             {
-                                WebServerFileSystemParameters = webRemoteFileSystem
+                                WebServerFileSystemParameters = webRemoteFileSystem,
+                                WebGLForceSyncLoadAsset = true
                             };
 #endif
                             break;
                         }
                         case TargetPlatform.Alipay:
                         {
+                            YooAssets.SetOperationSystemMaxTimeSlice(100);
 #if UNITY_WEBGL && UNITY_ALIMINIGAME
                             var webRemoteFileSystem = AlipayFileSystemCreater.CreateFileSystemParameters(
                                 "yoo", remoteServices, bundleConfig.WebDecryption);
@@ -514,13 +523,15 @@ namespace JEngine.Core
                             
                             initParameters = new WebPlayModeParameters
                             {
-                                WebServerFileSystemParameters = webRemoteFileSystem
+                                WebServerFileSystemParameters = webRemoteFileSystem,
+                                WebGLForceSyncLoadAsset = true
                             };
 #endif
                             break;
                         }
                         case TargetPlatform.TapTap:
                         {
+                            YooAssets.SetOperationSystemMaxTimeSlice(100);
 #if UNITY_WEBGL && TAPMINIGAME
                             var webRemoteFileSystem = TaptapFileSystemCreater.CreateFileSystemParameters(
                                 "yoo", remoteServices, bundleConfig.WebDecryption);
@@ -529,7 +540,8 @@ namespace JEngine.Core
 
                             initParameters = new WebPlayModeParameters
                             {
-                                WebServerFileSystemParameters = webRemoteFileSystem
+                                WebServerFileSystemParameters = webRemoteFileSystem,
+                                WebGLForceSyncLoadAsset = true
                             };
 #endif
                             break;
@@ -556,7 +568,7 @@ namespace JEngine.Core
 
                 // 2. Get package version
                 callbacks.OnStatusUpdate?.Invoke(PackageInitializationStatus.GettingVersion);
-                var operation = package.RequestPackageVersionAsync();
+                var operation = package.RequestPackageVersionAsync(appendTimeTicks: appendTimeTicks);
                 await operation.Task;
 
                 string packageVersion;

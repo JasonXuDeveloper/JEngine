@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.code-philosophy.hybridclr": {
-      "version": "file:com.code-philosophy.hybridclr@8.5.1",
+      "version": "file:com.code-philosophy.hybridclr@8.6.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
