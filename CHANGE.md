@@ -1,5 +1,9 @@
 ## All Versions
 
+## 1.0.4 (October 15 2025)
+
+- **Fixed** `AddComponent<T>` and `GetComponent<T>` issue under editor
+
 ## 1.0.3 (October 15 2025)
 
 - **Supported** Unity CDN (UOS)

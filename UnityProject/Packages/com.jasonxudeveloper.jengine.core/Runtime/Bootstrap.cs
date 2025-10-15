@@ -309,12 +309,21 @@ namespace JEngine.Core
                     // Load hot update DLL
                     updateStatusText.text = "Loading code...";
 #if UNITY_EDITOR
-                    // In editor, load directly from file system. Cannot read encrypted files. Encrypted files can only run on real devices.
-                    var hotUpdateDllBytes =
-                        await File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
-                    var hotUpdatePdbBytes = await File.ReadAllBytesAsync(
-                        $"Library/ScriptAssemblies/{Path.ChangeExtension(hotCodeName, "pdb")}");
-                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes, hotUpdatePdbBytes);
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    Assembly hotUpdateAss = null;
+                    foreach (var assembly in assemblies)
+                    {
+                        if (assembly.GetName().Name == Path.GetFileNameWithoutExtension(hotCodeName))
+                        {
+                            hotUpdateAss = assembly;
+                            break;
+                        }
+                    }
+                    
+                    if (hotUpdateAss == null)
+                    {
+                        throw new Exception($"Hot update assembly {hotCodeName} not found in editor mode.");
+                    }
 #else
                     var dllHandle =
                         package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");

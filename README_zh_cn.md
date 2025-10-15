@@ -57,10 +57,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.0.3)
+## 🎉 最新功能 (v1.0.4)
 
-- **支持** Unity CDN (UOS)
-- **优化** WebGL 资源加载吞吐量
+- **修复**编辑器下 `AddComponent<T>` 和 `GetComponent<T>` 问题
 
 [📋 查看完整更新日志](CHANGE.md)
 
