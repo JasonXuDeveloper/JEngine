@@ -1,5 +1,13 @@
 ## All Versions
 
+## 1.0.2 (October 15 2025)
+- **Fixed** development and server setting save issue
+- **Allowed** loading hot code's pdb file in order to debug in unity editor
+- **Updated** Nino to the latest verstion
+- **Updated** Unity to the latest 2022 LTS (fixing CVE) 
+
+
+
 ## 1.0.1 (September 28 2025)
 
 - **AssetBundle Encryption** support (XOR, AES, ChaCha20)

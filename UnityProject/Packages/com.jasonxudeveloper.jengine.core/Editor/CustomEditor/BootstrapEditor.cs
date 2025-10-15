@@ -75,7 +75,10 @@ namespace JEngine.Core.Editor.CustomEditor
             toggleButton.clicked += () =>
             {
                 _bootstrap.useDefaultAsFallback = !_bootstrap.useDefaultAsFallback;
-                serializedObject.Update();
+                serializedObject.FindProperty(nameof(_bootstrap.useDefaultAsFallback)).boolValue =
+                    _bootstrap.useDefaultAsFallback;
+                EditorUtility.SetDirty(_bootstrap);
+                serializedObject.ApplyModifiedProperties();
                 UpdateFallbackButtonState(toggleButton);
                 UpdateFallbackServerVisibility();
             };
@@ -406,7 +409,10 @@ namespace JEngine.Core.Editor.CustomEditor
             playModeButton.clicked += () =>
             {
                 _bootstrap.useEditorDevMode = !_bootstrap.useEditorDevMode;
-                serializedObject.Update();
+                serializedObject.FindProperty(nameof(_bootstrap.useEditorDevMode)).boolValue =
+                    _bootstrap.useEditorDevMode;
+                EditorUtility.SetDirty(_bootstrap);
+                serializedObject.ApplyModifiedProperties();
                 UpdatePlayModeButtonState(playModeButton);
             };
             playModeButton.AddToClassList("toggle-button");

@@ -33,12 +33,12 @@
       "source": "embedded",
       "dependencies": {
         "com.cysharp.unitask": "2.5.10",
-        "com.jasonxudeveloper.nino": "4.0.0-preview.114",
+        "com.jasonxudeveloper.nino": "4.0.0-preview.135",
         "com.tuyoogame.yooasset": "2.3.16"
       }
     },
     "com.jasonxudeveloper.nino": {
-      "version": "4.0.0-preview.114",
+      "version": "4.0.0-preview.135",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -72,7 +72,7 @@
       }
     },
     "com.unity.ai.navigation": {
-      "version": "1.1.5",
+      "version": "1.1.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -88,7 +88,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.34",
+      "version": "3.0.36",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -120,7 +120,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {
-      "version": "2.0.1",
+      "version": "2.1.0",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
