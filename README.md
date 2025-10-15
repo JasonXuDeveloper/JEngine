@@ -53,16 +53,12 @@ JEngine is a powerful Unity framework that enables **runtime hot updates** for y
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.0.1)
+## 🎉 Latest Features (v1.0.2)
 
-- **AssetBundle Encryption** support (XOR, AES, ChaCha20)
-- **Code Obfuscation** support by using Obfuz to protect almost all code
-- **Dramatically improved** hot update code execution performance by migrating to HybridCLR
-- **Enhanced** game development experience (no more extra user procedure when writing any kinds of hot update code) 
-- **MiniGame** support for WeChat, TikTok, Alipay and TapTap
-
-> Minor Update:
-> - Upgrade **HybridCLR** to v8.6.0 (resolves building issues with latest Xcode)
+- **Fixed** development and server setting save issue
+- **Allowed** loading hot code's pdb file in order to debug in unity editor
+- **Updated** Nino to the latest verstion
+- **Updated** Unity to the latest 2022 LTS (fixing CVE) 
 
 [📋 View Complete Changelog](CHANGE.md)
 

@@ -26,6 +26,7 @@
 using HybridCLR;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -308,7 +309,10 @@ namespace JEngine.Core
 #if UNITY_EDITOR
                     // In editor, load directly from file system. Cannot read encrypted files. Encrypted files can only run on real devices.
                     var hotUpdateDllBytes =
-                        await System.IO.File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
+                        await File.ReadAllBytesAsync($"Library/ScriptAssemblies/{hotCodeName}");
+                    var hotUpdatePdbBytes = await File.ReadAllBytesAsync(
+                        $"Library/ScriptAssemblies/{Path.ChangeExtension(hotCodeName, "pdb")}");
+                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes, hotUpdatePdbBytes);
 #else
                     var dllHandle =
                         package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");
@@ -316,9 +320,9 @@ namespace JEngine.Core
                     TextAsset hotUpdateDllAsset = dllHandle.GetAssetObject<TextAsset>();
                     var hotUpdateDllBytes = hotUpdateDllAsset.bytes;
                     dllHandle.Release();
+                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes);
 #endif
 
-                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes);
                     await LoadHotCode(hotUpdateAss);
 
                     // If we reach here, initialization was successful, break out of the retry loop
@@ -533,6 +537,10 @@ namespace JEngine.Core
                         default:
                             throw new NotSupportedException($"Target platform {targetPlatform} is not supported yet.");
                     }
+
+                    if (initParameters == null)
+                        throw new InvalidOperationException(
+                            $"Failed to create initialization parameters for package platform {targetPlatform} (current build target platform: {Application.platform})");
 
                     initOperation = package.InitializeAsync(initParameters);
                 }

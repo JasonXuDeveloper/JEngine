@@ -57,16 +57,12 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.0.1)
+## 🎉 最新功能 (v1.0.2)
 
-- **AssetBundle加密** 支持（XOR、AES、ChaCha20）
-- **代码混淆** 支持，使用Obfuz保护几乎所有代码
-- **大幅提升** 热更代码执行性能，迁移至HybridCLR
-- **增强** 游戏开发体验（编写热更代码时无需额外操作）
-- **小游戏** 支持微信、抖音、支付宝和TapTap
-
-> 小更新:
-> - 更新 **HybridCLR** 到 v8.6.0 （解决新版Xcode打包问题）
+- **修复** development 和 server 设置的保存问题
+- **运行** 加载热更代码的pdb文件以在编辑器下断点调试
+- **更新** Nino至最新版本
+- **更新** Unity至最新的2022 LTS版本（修复CVE） 
 
 [📋 查看完整更新日志](CHANGE.md)
 
