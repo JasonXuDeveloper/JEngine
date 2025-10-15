@@ -53,10 +53,9 @@ JEngine is a powerful Unity framework that enables **runtime hot updates** for y
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.0.3)
+## 🎉 Latest Features (v1.0.4)
 
-- **Supported** Unity CDN (UOS)
-- **Optimized** WebGL asset loading throughput 
+- **Fixed** `AddComponent<T>` and `GetComponent<T>` issue under editor
 
 [📋 View Complete Changelog](CHANGE.md)
 
