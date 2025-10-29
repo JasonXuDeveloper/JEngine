@@ -1,6 +1,6 @@
 {
   "name": "com.jasonxudeveloper.jengine.core",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "displayName": "JEngine.Core",
   "description": "The solution that allows unity games update in runtime.",
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "com.cysharp.unitask": "2.5.10",
-    "com.jasonxudeveloper.nino": "4.0.0-preview.135",
+    "com.jasonxudeveloper.nino": "4.0.0-preview.137",
     "com.tuyoogame.yooasset": "2.3.16"
   }
 }
