@@ -1,5 +1,10 @@
 ## All Versions
 
+## 1.0.5 (October 29 2025)
+
+- **Fixed** missing HotUpdate Monobehaviour issue
+- **Supported** Standalone mode
+
 ## 1.0.4 (October 15 2025)
 
 - **Fixed** `AddComponent<T>` and `GetComponent<T>` issue under editor
