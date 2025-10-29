@@ -483,6 +483,20 @@ namespace JEngine.Core
 #endif
                             break;
                         }
+                        case TargetPlatform.Standalone:
+                        {
+                            var fileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(
+                                bundleConfig.Decryption);
+                            fileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
+                                manifestRestoration);
+
+                            initParameters = new OfflinePlayModeParameters
+                            {
+                                BuildinFileSystemParameters = fileSystemParams
+                            };
+
+                            break;
+                        }
                         case TargetPlatform.WeChat:
                         {
                             YooAssets.SetOperationSystemMaxTimeSlice(100);
