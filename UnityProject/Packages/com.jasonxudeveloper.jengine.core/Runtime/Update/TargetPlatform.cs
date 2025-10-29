@@ -28,6 +28,7 @@ namespace JEngine.Core.Update
     public enum TargetPlatform
     {
         Regular,
+        Standalone,
         WeChat,
         Douyin,
         Alipay,

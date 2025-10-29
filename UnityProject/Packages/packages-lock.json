@@ -11,7 +11,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "747ee88fd391441f9471992ffc294c36d1b35b09"
+      "hash": "b582c1f24bda5676c54dc66529e9b1d6f9aead47"
     },
     "com.code-philosophy.obfuz4hybridclr": {
       "version": "https://github.com/focus-creative-games/obfuz4hybridclr.git",
@@ -33,12 +33,12 @@
       "source": "embedded",
       "dependencies": {
         "com.cysharp.unitask": "2.5.10",
-        "com.jasonxudeveloper.nino": "4.0.0-preview.135",
+        "com.jasonxudeveloper.nino": "4.0.0-preview.137",
         "com.tuyoogame.yooasset": "2.3.16"
       }
     },
     "com.jasonxudeveloper.nino": {
-      "version": "4.0.0-preview.135",
+      "version": "4.0.0-preview.137",
       "depth": 0,
       "source": "registry",
       "dependencies": {},

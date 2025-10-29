@@ -30,6 +30,7 @@ using HybridCLR.Editor;
 using HybridCLR.Editor.Commands;
 using HybridCLR.Editor.Settings;
 using JEngine.Core.Encrypt;
+using JEngine.Core.Update;
 using Nino.Core;
 using Obfuz.Settings;
 using Obfuz4HybridCLR;
@@ -628,7 +629,9 @@ namespace JEngine.Core.Editor.CustomEditor
                     EditorSceneManager.OpenScene(_settings.startUpScenePath);
                 }
 
-                copyOption = _settings.packageName == FindObjectOfType<Bootstrap>().packageName
+                var bootstrap = FindObjectOfType<Bootstrap>();
+                copyOption = _settings.packageName == bootstrap.packageName ||
+                             bootstrap.targetPlatform == TargetPlatform.Standalone
                     ? EBuildinFileCopyOption.ClearAndCopyAll
                     : EBuildinFileCopyOption.None;
             }

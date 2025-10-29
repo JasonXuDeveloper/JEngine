@@ -287,6 +287,34 @@ namespace JEngine.Core
                     updateStatusText.text = "Decrypting resources...";
                     await SetUpDynamicSecret();
 
+                    // Load hot update DLL
+                    updateStatusText.text = "Loading code...";
+#if UNITY_EDITOR
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    Assembly hotUpdateAss = null;
+                    foreach (var assembly in assemblies)
+                    {
+                        if (assembly.GetName().Name == Path.GetFileNameWithoutExtension(hotCodeName))
+                        {
+                            hotUpdateAss = assembly;
+                            break;
+                        }
+                    }
+
+                    if (hotUpdateAss == null)
+                    {
+                        throw new Exception($"Hot update assembly {hotCodeName} not found in editor mode.");
+                    }
+#else
+                    var dllHandle =
+                        package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");
+                    await dllHandle.Task;
+                    TextAsset hotUpdateDllAsset = dllHandle.GetAssetObject<TextAsset>();
+                    var hotUpdateDllBytes = hotUpdateDllAsset.bytes;
+                    dllHandle.Release();
+                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes);
+#endif
+
                     // Enter hot update scene
                     updateStatusText.text = "Loading scene...";
                     var sceneLoadCallbacks = new SceneLoadCallbacks
@@ -305,35 +333,6 @@ namespace JEngine.Core
                     };
                     downloadProgressBar.gameObject.SetActive(true);
                     await LoadHotUpdateScene(package, selectedHotScene, sceneLoadCallbacks);
-
-                    // Load hot update DLL
-                    updateStatusText.text = "Loading code...";
-#if UNITY_EDITOR
-                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                    Assembly hotUpdateAss = null;
-                    foreach (var assembly in assemblies)
-                    {
-                        if (assembly.GetName().Name == Path.GetFileNameWithoutExtension(hotCodeName))
-                        {
-                            hotUpdateAss = assembly;
-                            break;
-                        }
-                    }
-                    
-                    if (hotUpdateAss == null)
-                    {
-                        throw new Exception($"Hot update assembly {hotCodeName} not found in editor mode.");
-                    }
-#else
-                    var dllHandle =
-                        package.LoadAssetAsync<TextAsset>($"Assets/HotUpdate/Compiled/{hotCodeName}.bytes");
-                    await dllHandle.Task;
-                    TextAsset hotUpdateDllAsset = dllHandle.GetAssetObject<TextAsset>();
-                    var hotUpdateDllBytes = hotUpdateDllAsset.bytes;
-                    dllHandle.Release();
-                    Assembly hotUpdateAss = Assembly.Load(hotUpdateDllBytes);
-#endif
-
                     await LoadHotCode(hotUpdateAss);
 
                     // If we reach here, initialization was successful, break out of the retry loop
@@ -482,6 +481,20 @@ namespace JEngine.Core
                                 CacheFileSystemParameters = cacheFileSystemParams
                             };
 #endif
+                            break;
+                        }
+                        case TargetPlatform.Standalone:
+                        {
+                            var fileSystemParams = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(
+                                bundleConfig.Decryption);
+                            fileSystemParams.AddParameter(FileSystemParametersDefine.MANIFEST_SERVICES,
+                                manifestRestoration);
+
+                            initParameters = new OfflinePlayModeParameters
+                            {
+                                BuildinFileSystemParameters = fileSystemParams
+                            };
+
                             break;
                         }
                         case TargetPlatform.WeChat:
