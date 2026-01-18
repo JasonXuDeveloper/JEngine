@@ -1,3 +1,6 @@
+#if UNITY_6000_3_OR_NEWER && UNITY_EDITOR_OSX
+#define NEW_IL2CPP_PATH
+#endif
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +11,7 @@ using Debug = UnityEngine.Debug;
 using System.Text.RegularExpressions;
 using System.Linq;
 using HybridCLR.Editor.Settings;
+using System.Runtime.InteropServices;
 
 namespace HybridCLR.Editor.Installer
 {
@@ -33,7 +37,15 @@ namespace HybridCLR.Editor.Installer
         {
             _curVersion = ParseUnityVersion(Application.unityVersion);
             _versionManifest = GetHybridCLRVersionManifest();
-            _curDefaultVersion = _versionManifest.versions.FirstOrDefault(v => _curVersion.isTuanjieEngine ? v.unity_version == $"{_curVersion.major}-tuanjie" : v.unity_version == _curVersion.major.ToString());
+            _curDefaultVersion = _versionManifest.versions.FirstOrDefault(v => {
+                return _curVersion.isTuanjieEngine? v.unity_version == $"{_curVersion.major}-tuanjie"
+#if UNITY_6000_3_OR_NEWER
+                    : v.unity_version == "6000.3.x"
+#else
+                    : v.unity_version == _curVersion.major.ToString()
+#endif
+                    ;
+            });
             PackageVersion = LoadPackageInfo().version;
             InstalledLibil2cppVersion = ReadLocalVersion();
         }
@@ -127,7 +139,11 @@ namespace HybridCLR.Editor.Installer
                 case 2021: return "2021.3.0";
                 case 2022: return "2022.3.0";
                 case 2023: return "2023.2.0";
+                #if UNITY_6000_3_OR_NEWER
+                case 6000: return "6000.3.0";
+                #else
                 case 6000: return "6000.0.0";
+                #endif
                 default: return $"2020.3.0";
             }
         }
@@ -158,13 +174,27 @@ namespace HybridCLR.Editor.Installer
 
         public string Il2cppPlusLocalVersion => _curDefaultVersion?.il2cpp_plus?.branch;
 
-
-        private string GetIl2CppPathByContentPath(string contentPath)
+        public string ApplicationIl2cppPath
         {
-            return $"{contentPath}/il2cpp";
+            get
+            {
+                Debug.Log($"application path:{EditorApplication.applicationPath} {EditorApplication.applicationContentsPath}");
+#if NEW_IL2CPP_PATH
+#if UNITY_IOS
+                string platformDirName = "iOSSupport";
+#elif UNITY_TVOS
+                string platformDirName = "AppleTVSupport";
+#elif UNITY_VISIONOS
+                string platformDirName = "VisionOSPlayer";
+#else
+                string platformDirName = "iOSSupport";
+#endif
+                return $"{EditorApplication.applicationContentsPath}/../../PlaybackEngines/{platformDirName}/il2cpp";
+#else
+                return $"{EditorApplication.applicationContentsPath}/il2cpp";
+  #endif
+            }
         }
-
-        public string ApplicationIl2cppPath => GetIl2CppPathByContentPath(EditorApplication.applicationContentsPath);
 
         public string LocalVersionFile => $"{SettingsUtil.LocalIl2CppDir}/libil2cpp/hybridclr/generated/libil2cpp-version.txt";
 
@@ -266,12 +296,23 @@ namespace HybridCLR.Editor.Installer
             // create LocalIl2Cpp
             string localUnityDataDir = SettingsUtil.LocalUnityDataDir;
             BashUtil.RecreateDir(localUnityDataDir);
-
+#if !NEW_IL2CPP_PATH
             // copy MonoBleedingEdge
             BashUtil.CopyDir($"{Directory.GetParent(editorIl2cppPath)}/MonoBleedingEdge", $"{localUnityDataDir}/MonoBleedingEdge", true);
-
+#endif
             // copy il2cpp
             BashUtil.CopyDir(editorIl2cppPath, SettingsUtil.LocalIl2CppDir, true);
+#if NEW_IL2CPP_PATH
+            string buildDir = $"{SettingsUtil.LocalIl2CppDir}/build";
+            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm || RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                BashUtil.CopyDir($"{buildDir}/deploy_arm64", $"{buildDir}/deploy", false);
+            }
+            else
+            {
+                BashUtil.CopyDir($"{buildDir}/deploy_x86_64", $"{buildDir}/deploy", false);
+            }
+#endif
 
             // replace libil2cpp
             string dstLibil2cppDir = $"{SettingsUtil.LocalIl2CppDir}/libil2cpp";

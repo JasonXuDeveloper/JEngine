@@ -1,5 +1,47 @@
 # ReleaseLog
 
+## 8.9.0
+
+Release Date: 2026-01-12.
+
+### Runtime
+
+- [fix] **Unity 6.3.x**: fix bug that didn't handle interpreter type in GlobalMetadata::GetNestedTypes
+- [fix] **Unity 6.3.x**: fix crash on GlobalMetadata::GetMethodHandleFromMethodInfo because it maybe passed null as methodInfo in setup vtable.
+- [fix] **TUANJIE**: fix IL2CPP_ASSERT fail in Class::GetVirtualMethod when klass is generic class and not initialized, at this time klass->vtable_count == 0
+- [fix] **TUANJIE**: fix the bug that didn't initialize method->klass->rgctx_data after GenericMetadata::InflateRGCTXMethod
+- [change] **TUANJIE**: [merge] merge il2cpp changes from tuanjie 1.6.7 to 1.6.8
+
+## 8.8.0
+
+Release Date: 2025-12-14.
+
+### Runtime
+
+- [new] support 6000.3.x
+- [new] add instructions for ldfld and stfld while field offset >= 2^16
+- [fix] fix offset overflow issue for ldflda, ldfld, stfld while offset >= 2^16
+- [fix] fix bug of comparing array rank
+
+### Editor
+
+- [new] support 6000.3.x
+- [fix] fix deprecated warning of `PlayerSettings.GetScriptingBackend(BuildTargetGroup)` in Unity 6000
+
+## 8.7.0
+
+Release Date: 2025-11-03.
+
+### Runtime
+
+- [fix] fix a crash issue in IH_object_ctor caused by `ctx.GetCurbb()->insts` may be empty in obfuscated code
+- [merge] **Unity 6000***: merge il2cpp changes from 6000.0.44 to 6000.0.60
+- [merge] **TuanJie**: merge il2cpp changes from tuanjie 1.6.5 to 1.6.7
+
+### Editor
+
+- [fix] fix raising NullReferenceException in generating MethodBridge for MonoPInvokeCallbackAttribute while constructor arguments is empty.
+
 ## 8.6.0
 
 Release Date: 2025-09-27.
