@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.BuildProcessors;
+using HybridCLR.Editor.BuildProcessors;
 using HybridCLR.Editor.Installer;
 using System;
 using System.Collections.Generic;
@@ -141,8 +141,6 @@ namespace HybridCLR.Editor.Commands
                 };
 
                 var report = BuildPipeline.BuildPlayer(buildPlayerOptions);
-
-
 
                 if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 {

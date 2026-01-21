@@ -16,7 +16,6 @@ using UnityEditor;
 using UnityEngine;
 using System.Runtime.CompilerServices;
 
-
 /*
 >>>>>>> 原始 UnityEditor.LogEntries.Clear 一型(.net 4.x)
 0000000000403A00 < | 55                                 | push rbp                                     |
@@ -276,7 +275,6 @@ namespace MonoHook
             return true;
         }
 
-
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 好像在 IL2CPP 里无效
         private struct __ForCopy
         {
@@ -339,7 +337,7 @@ namespace MonoHook
                 if (sizeof(IntPtr) == 8)
                 {
                     long methodDataAddr = *(long*)ptr;
-                    byte* ptrData = (byte*)methodDataAddr + sizeof(IntPtr) * 2; // offset of Il2CppReflectionMethod::const MethodInfo *method;
+                    byte* ptrData = (byte*)methodDataAddr + (sizeof(IntPtr) * 2); // offset of Il2CppReflectionMethod::const MethodInfo *method;
 
                     long methodPtr = 0;
                     methodPtr = *(long*)ptrData;
@@ -348,7 +346,7 @@ namespace MonoHook
                 else
                 {
                     int methodDataAddr = *(int*)ptr;
-                    byte* ptrData = (byte*)methodDataAddr + sizeof(IntPtr) * 2; // offset of Il2CppReflectionMethod::const MethodInfo *method;
+                    byte* ptrData = (byte*)methodDataAddr + (sizeof(IntPtr) * 2); // offset of Il2CppReflectionMethod::const MethodInfo *method;
 
                     int methodPtr = 0;
                     methodPtr = *(int*)ptrData;
@@ -377,5 +375,4 @@ namespace MonoHook
 
         #endregion
     }
-
 }

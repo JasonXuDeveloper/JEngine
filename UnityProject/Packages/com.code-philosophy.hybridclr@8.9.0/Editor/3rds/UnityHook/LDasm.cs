@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace DotNetDetour
@@ -630,7 +630,6 @@ namespace DotNetDetour
                     break;
 
                 code = (void*)((ulong)code + Length);
-
             } while (Length>0);
 
             return Result;

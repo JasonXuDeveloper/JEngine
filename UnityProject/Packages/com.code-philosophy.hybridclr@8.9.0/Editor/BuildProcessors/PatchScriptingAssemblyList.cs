@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.UnityBinFileReader;
+using HybridCLR.Editor.UnityBinFileReader;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +32,6 @@ namespace HybridCLR.Editor.BuildProcessors
 #if UNITY_PS5
         , IUnityLinkerProcessor
 #endif
-
     {
         public int callbackOrder => 0;
 

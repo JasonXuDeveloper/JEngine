@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using HybridCLR.Editor.Settings;
-
 
 namespace HybridCLR.Editor
 {
@@ -83,7 +82,6 @@ namespace HybridCLR.Editor
         }
 
         public static List<string> HotUpdateAssemblyFilesExcludePreserved => HotUpdateAssemblyNamesExcludePreserved.Select(dll => dll + ".dll").ToList();
-
 
         public static List<string> HotUpdateAssemblyNamesIncludePreserved
         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace HybridCLR.Editor.ABI
 {
-
     public class ParamInfo
     {
         public TypeInfo Type { get; set; }
 
         public int Index { get; set; }
-
     }
 
     public class ReturnInfo

@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,7 +79,6 @@ namespace HybridCLR.Editor.Meta
 
             MethodDef methodDef = null;
 
-
             var decalringType = method.DeclaringType;
             typeDef = decalringType.ResolveTypeDef();
             if (typeDef == null)
@@ -104,6 +103,5 @@ namespace HybridCLR.Editor.Meta
             }
             return new GenericMethod(methodDef, klassInst, methodInst);
         }
-
     }
 }

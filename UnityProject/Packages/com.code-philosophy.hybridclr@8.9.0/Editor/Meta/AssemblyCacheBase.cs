@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,6 @@ namespace HybridCLR.Editor.Meta
         private readonly AssemblyResolver _asmResolver;
         private bool _loadedNetstandard;
 
-
         public ModuleContext ModCtx => _modCtx;
 
         public Dictionary<string, ModuleDefMD> LoadedModules { get; } = new Dictionary<string, ModuleDefMD>();
@@ -30,7 +29,6 @@ namespace HybridCLR.Editor.Meta
             _asmResolver.EnableTypeDefCache = true;
             _asmResolver.UseGAC = false;
         }
-
 
         public ModuleDefMD TryLoadModule(string moduleName, bool loadReferenceAssemblies = true)
         {

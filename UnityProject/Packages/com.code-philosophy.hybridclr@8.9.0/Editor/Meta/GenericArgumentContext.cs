@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace HybridCLR.Editor.Meta
 {
-
     public class GenericArgumentContext
     {
         private readonly List<TypeSig> typeArgsStack;
@@ -106,5 +105,4 @@ namespace HybridCLR.Editor.Meta
             return args[(int)number];
         }
     }
-
 }

@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.ABI;
 using HybridCLR.Editor.Meta;
 using System;
@@ -20,7 +20,6 @@ namespace HybridCLR.Editor.MethodBridge
 
     public class MonoPInvokeCallbackAnalyzer
     {
-
         private readonly List<ModuleDefMD> _rootModules = new List<ModuleDefMD>();
 
         private readonly List<RawMonoPInvokeCallbackMethodInfo> _reversePInvokeMethods = new List<RawMonoPInvokeCallbackMethodInfo>();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace HybridCLR.Editor.UnityBinFileReader
 {
     public class Dataunity3dPatcher
     {
-
         public void ApplyPatch(string dataunity3dFile, List<string> hotUpdateAssemblies)
         {
             var reader = new BundleFileReader();

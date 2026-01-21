@@ -1,4 +1,4 @@
-﻿#if !(UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX)
+#if !(UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX)
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -21,7 +21,7 @@ namespace MonoHook
             PropertyInfo p_SystemPageSize = typeof(Environment).GetProperty("SystemPageSize");
             if (p_SystemPageSize == null)
                 throw new NotSupportedException("Unsupported runtime");
-            _Pagesize = (int)p_SystemPageSize.GetValue(null, new object[0]);
+            _Pagesize = (int)p_SystemPageSize.GetValue(null, Array.Empty<object>());
             SetupFlushICacheFunc();
         }
 
@@ -79,7 +79,6 @@ namespace MonoHook
             return new KeyValuePair<long, long>(startPage, endPage);
         }
 
-
         const int PRINT_SPLIT = 4;
         const int PRINT_COL_SIZE = PRINT_SPLIT * 4;
         public static string HexToString(void* ptr, int size, int offset = 0)
@@ -105,12 +104,12 @@ namespace MonoHook
 
                     sb.Append($"{*(addr + count):x2}");
                     if (i % PRINT_SPLIT == 0)
-                        sb.Append(" ");
+                        sb.Append(' ');
 
                     count++;
                 }
             }
-        END:;
+        END:
             return sb.ToString();
         }
 
@@ -138,7 +137,6 @@ namespace MonoHook
             Debug.Log($"flush_icache delegate is {((flush_icache != null) ? "not " : "")}null");
 #endif
         }
-
 
         static void* s_ptr_flush_icache_arm32, s_ptr_flush_icache_arm64;
         private static byte[] s_flush_icache_arm32 = new byte[]
@@ -221,7 +219,6 @@ namespace MonoHook
             0xFF, 0xC3, 0x00, 0x91,                             // ADD             SP, SP, #0x30 ; '0'
             0xC0, 0x03, 0x5F, 0xD6,                             // RET
         };
-
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
         [Flags]

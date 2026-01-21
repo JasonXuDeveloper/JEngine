@@ -1,4 +1,4 @@
-﻿using LZ4;
+using LZ4;
 using System;
 using System.IO;
 using System.Linq;
@@ -6,10 +6,8 @@ using UnityEngine;
 
 namespace UnityFS
 {
-
     public class BundleFileReader
     {
-
         private Header m_Header;
         private StorageBlock[] m_BlocksInfo;
         private Node[] m_DirectoryInfo;
@@ -18,7 +16,6 @@ namespace UnityFS
 
         public BundleFileReader()
         {
-
         }
 
         public void Load(EndianBinaryReader reader)
@@ -30,7 +27,6 @@ namespace UnityFS
             m_Header.unityVersion = reader.ReadStringToNull();
             m_Header.unityRevision = reader.ReadStringToNull();
             System.Diagnostics.Debug.Assert(m_Header.signature == "UnityFS");
-
 
             m_Header.size = reader.ReadInt64();
             Debug.Log($"header size:{m_Header.size}");
@@ -153,7 +149,6 @@ namespace UnityFS
                 reader.AlignStream(16);
             }
         }
-
 
         private Stream CreateBlocksStream()
         {

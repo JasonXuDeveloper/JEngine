@@ -1,4 +1,4 @@
-﻿using DotNetDetour;
+using DotNetDetour;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -198,7 +198,7 @@ namespace MonoHook
         protected override unsafe byte[] GenJmpCode(void* jmpFrom, void* jmpTo)
         {
             byte[] ret = new byte[s_jmpCode.Length];
-            int val = ((int)jmpTo - (int)jmpFrom) / 4 - 2;
+            int val = (((int)jmpTo - (int)jmpFrom) / 4) - 2;
 
             fixed (void* p = &ret[0])
             {

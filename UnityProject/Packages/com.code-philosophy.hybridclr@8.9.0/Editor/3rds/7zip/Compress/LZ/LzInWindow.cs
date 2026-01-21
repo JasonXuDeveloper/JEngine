@@ -115,8 +115,10 @@ namespace SevenZip.Compression.LZ
 			UInt32 pby = _bufferOffset + _pos + (UInt32)index;
 
 			UInt32 i;
-			for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++);
-			return i;
+			for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++)
+            {
+            }
+            return i;
 		}
 
 		public UInt32 GetNumAvailableBytes() { return _streamPos - _pos; }

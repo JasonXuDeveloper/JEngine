@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace HybridCLR.Editor
     {
         public static int CombineHash(int hash1, int hash2)
         {
-            return hash1 * 1566083941 + hash2;
+            return (hash1 * 1566083941) + hash2;
         }
 
         public static int ComputHash(List<TypeSig> sigs)
@@ -20,7 +20,7 @@ namespace HybridCLR.Editor
             TypeEqualityComparer tc = TypeEqualityComparer.Instance;
             foreach (var sig in sigs)
             {
-                hash = hash * 1566083941 + tc.GetHashCode(sig);
+                hash = (hash * 1566083941) + tc.GetHashCode(sig);
             }
             return hash;
         }

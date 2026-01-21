@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace HybridCLR.Editor.AOT
 {
-
     public class ConstraintContext
     {
         public class ImplType

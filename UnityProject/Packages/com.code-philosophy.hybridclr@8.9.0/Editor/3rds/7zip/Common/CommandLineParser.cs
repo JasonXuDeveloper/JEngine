@@ -165,7 +165,6 @@ namespace SevenZip.CommandLineParser
 				}
 			}
 			return true;
-
 		}
 
 		public void ParseStrings(SwitchForm[] switchForms, string[] commandStrings)
@@ -196,7 +195,7 @@ namespace SevenZip.CommandLineParser
 				string id = commandForms[i].IDString;
 				if (commandForms[i].PostStringMode)
 				{
-					if (commandString.IndexOf(id) == 0)
+					if (commandString.StartsWith(id))
 					{
 						postString = commandString.Substring(id.Length);
 						return i;

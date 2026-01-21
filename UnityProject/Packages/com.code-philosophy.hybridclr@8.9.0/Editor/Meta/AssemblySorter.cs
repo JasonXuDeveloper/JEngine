@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace HybridCLR.Editor.Meta
 {
-
     public class AssemblySorter
     {
         class Node
@@ -22,7 +21,6 @@ namespace HybridCLR.Editor.Meta
 
         class TopologicalSorter
         {
-
             public static List<Node> Sort(List<Node> nodes)
             {
                 List<Node> sorted = new List<Node>();

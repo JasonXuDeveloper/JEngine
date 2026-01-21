@@ -21,7 +21,6 @@ namespace HybridCLR.Editor.BuildProcessors
      , IIl2CppProcessor
 #endif
     {
-
         public int callbackOrder => 0;
 
 #if UNITY_2021_1_OR_NEWER

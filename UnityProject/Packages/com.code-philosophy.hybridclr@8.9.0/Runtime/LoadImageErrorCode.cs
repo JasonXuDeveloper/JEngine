@@ -1,4 +1,4 @@
-﻿
+
 namespace HybridCLR
 {
     public enum LoadImageErrorCode
@@ -14,6 +14,6 @@ namespace HybridCLR
         UNKNOWN_IMAGE_FORMAT,
         UNSUPPORT_FORMAT_VERSION,
         UNMATCH_FORMAT_VARIANT,
-    };
+    }
 }
 

@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor;
+using HybridCLR.Editor;
 using HybridCLR.Editor.ABI;
 using HybridCLR.Editor.Meta;
 using HybridCLR.Editor.MethodBridge;
@@ -18,7 +18,6 @@ namespace HybridCLR.Editor.Commands
     using Analyzer = HybridCLR.Editor.MethodBridge.Analyzer;
     public class MethodBridgeGeneratorCommand
     {
-
         public static void CleanIl2CppBuildCache()
         {
             string il2cppBuildCachePath = SettingsUtil.Il2CppBuildCacheDir;

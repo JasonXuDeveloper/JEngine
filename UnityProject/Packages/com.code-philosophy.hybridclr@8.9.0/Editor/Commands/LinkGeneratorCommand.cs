@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.Link;
+using HybridCLR.Editor.Link;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,6 @@ namespace HybridCLR.Editor.Commands
 
     public static class LinkGeneratorCommand
     {
-
         [MenuItem("HybridCLR/Generate/LinkXml", priority = 100)]
         public static void GenerateLinkXml()
         {

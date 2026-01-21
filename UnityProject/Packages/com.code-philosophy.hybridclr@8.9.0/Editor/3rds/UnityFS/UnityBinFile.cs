@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -80,8 +80,6 @@ namespace UnityFS
                 byte[] buff = new byte[objInfo.size];
                 fsR.Position = objInfo.realPos;
                 brR.Read(buff, 0, buff.Length);
-
-
                 {// unity 的数据偏移貌似会对齐到 8
                     int newPos = (((int)ms.Position + 7) >> 3) << 3;
                     int gapSize = newPos - (int)ms.Position;
@@ -120,5 +118,4 @@ namespace UnityFS
             File.WriteAllBytes(newPath, patchedBytes);
         }
     }
-
 }

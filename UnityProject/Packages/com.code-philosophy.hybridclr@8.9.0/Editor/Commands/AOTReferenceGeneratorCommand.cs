@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.AOT;
+using HybridCLR.Editor.AOT;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace HybridCLR.Editor.Commands
     using Analyzer = HybridCLR.Editor.AOT.Analyzer;
     public static class AOTReferenceGeneratorCommand
     {
-
         [MenuItem("HybridCLR/Generate/AOTGenericReference", priority = 102)]
         public static void CompileAndGenerateAOTGenericReference()
         {
@@ -46,8 +45,6 @@ namespace HybridCLR.Editor.Commands
             AssetDatabase.Refresh();
         }
 
-
-
         //[MenuItem("HybridCLR/Generate/AOTGenericReference2", priority = 103)]
         //public static void GeneratedAOTGenericReferenceExcludeExists()
         //{
@@ -61,7 +58,6 @@ namespace HybridCLR.Editor.Commands
         /// 
         public static void GeneratedAOTGenericReferenceExcludeExistsAOTClassAndMethods(BuildTarget target)
         {
-
             var gs = SettingsUtil.HybridCLRSettings;
             List<string> hotUpdateDllNames = SettingsUtil.HotUpdateAssemblyNamesExcludePreserved;
 
@@ -73,7 +69,6 @@ namespace HybridCLR.Editor.Commands
             });
 
             hotUpdateAnalyzer.Run();
-
 
             string aotDllDir = SettingsUtil.GetAssembliesPostIl2CppStripDir(target);
             List<string> aotAssemblyNames = Directory.Exists(aotDllDir) ?
@@ -98,7 +93,6 @@ namespace HybridCLR.Editor.Commands
             writer.Write(resultTypes, resultMethods, $"{Application.dataPath}/{gs.outputAOTGenericReferenceFile}");
             AssetDatabase.Refresh();
         }
-
 
         private static (List<GenericClass>, List<GenericMethod>) ExcludeExistAOTGenericTypeAndMethodss(List<GenericClass> hotUpdateTypes, List<GenericMethod> hotUpdateMethods, List<GenericClass> aotTypes, List<GenericMethod> aotMethods)
         {

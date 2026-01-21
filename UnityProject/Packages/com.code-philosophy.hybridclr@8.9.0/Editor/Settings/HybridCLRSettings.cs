@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace HybridCLR.Editor.Settings
 {
-
     public class HybridCLRSettings : ScriptableObject
     {
         [Tooltip("enable HybridCLR")]
@@ -51,8 +50,6 @@ namespace HybridCLR.Editor.Settings
 
         [Tooltip("max iteration count of searching method bridge generic methods in AOT assemblies")]
         public int maxMethodBridgeGenericIteration = 10;
-
-
 
         private static HybridCLRSettings s_Instance;
 

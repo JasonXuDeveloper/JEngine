@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.Link;
+using HybridCLR.Editor.Link;
 using HybridCLR.Editor.Settings;
 using System;
 using System.Collections.Generic;
@@ -9,10 +9,8 @@ using UnityEngine;
 
 namespace HybridCLR.Editor.Commands
 {
-
     public static class Il2CppDefGeneratorCommand
     {
-
         [MenuItem("HybridCLR/Generate/Il2CppDef", priority = 104)]
         public static void GenerateIl2CppDef()
         {

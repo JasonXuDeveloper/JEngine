@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 namespace UnityFS
 {
@@ -25,7 +25,7 @@ namespace UnityFS
         {
             source.Position = 0;
             var bytes = new byte[source.Length];
-            source.Read(bytes, 0, bytes.Length);
+            source.ReadExactly(bytes);
             return bytes;
         }
     }

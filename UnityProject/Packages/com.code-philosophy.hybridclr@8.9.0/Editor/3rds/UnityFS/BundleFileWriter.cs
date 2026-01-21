@@ -1,4 +1,4 @@
-﻿using LZ4;
+using LZ4;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,6 @@ namespace UnityFS
             output.WriteNullEndString(_bundle.unityRevision);
 
             BuildBlockDirectoryMetadata();
-
 
             long sizePos = output.Position;
             output.Write(0L);

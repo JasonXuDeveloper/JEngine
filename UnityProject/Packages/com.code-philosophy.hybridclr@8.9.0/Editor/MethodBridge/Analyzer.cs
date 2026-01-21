@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.ABI;
 using HybridCLR.Editor.Meta;
 using System;
@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace HybridCLR.Editor.MethodBridge
 {
-
     public class Analyzer
     {
         public class Options
@@ -38,7 +37,6 @@ namespace HybridCLR.Editor.MethodBridge
         public IReadOnlyCollection<GenericClass> GenericTypes => _genericTypes;
 
         public IReadOnlyCollection<GenericMethod> GenericMethods => _genericMethods;
-
 
         private readonly MethodReferenceAnalyzer _methodReferenceAnalyzer;
 

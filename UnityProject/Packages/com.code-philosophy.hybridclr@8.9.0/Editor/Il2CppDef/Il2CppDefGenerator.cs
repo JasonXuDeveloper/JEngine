@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.ABI;
+using HybridCLR.Editor.ABI;
 using HybridCLR.Editor.Template;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,6 @@ namespace HybridCLR.Editor.Il2CppDef
         {
             _options = options;
         }
-
 
         private static readonly Regex s_unityVersionPat = new Regex(@"(\d+)\.(\d+)\.(\d+)");
 

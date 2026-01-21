@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using SevenZip.Compression.LZMA;
 
-
 namespace UnityFS
 {
     public static class ComparessHelper

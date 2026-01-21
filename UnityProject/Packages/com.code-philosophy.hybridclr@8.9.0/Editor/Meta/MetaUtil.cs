@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.Meta;
 using HybridCLR.Editor.Settings;
 using System;
@@ -13,7 +13,6 @@ namespace HybridCLR.Editor.Meta
 {
     public static class MetaUtil
     {
-
 		public static bool EqualsTypeSig(TypeSig a, TypeSig b)
 		{
 			if (a == b)
@@ -178,7 +177,6 @@ namespace HybridCLR.Editor.Meta
 		{
 			return $"{SettingsUtil.HybridCLRDataPathInPackage}/NetStandard/{assemblyName}.dll";
 		}
-
 
         public static  List<TypeSig> CreateDefaultGenericParams(ModuleDef module, int genericParamCount)
         {

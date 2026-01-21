@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,7 +31,6 @@ namespace HybridCLR.Editor.Installer
             }
         }
 
-
         public static (int ExitCode, string StdOut, string StdErr) RunCommand2(string workingDir, string program, string[] args, bool log = true)
         {
             using (Process p = new Process())
@@ -56,7 +55,6 @@ namespace HybridCLR.Editor.Installer
                 return (p.ExitCode, stdOut, stdErr);
             }
         }
-
 
         public static void RemoveDir(string dir, bool log = false)
         {

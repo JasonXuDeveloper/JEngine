@@ -79,7 +79,6 @@ namespace HybridCLR
             SetRuntimeOption(RuntimeOptionId.InterpreterThreadObjectStackSize, size);
         }
 
-
         /// <summary>
         /// get the number of interpreter thread function frames (sizeof(InterpreterFrame)*size represents the final memory size occupied)
         /// </summary>
@@ -97,7 +96,6 @@ namespace HybridCLR
         {
             SetRuntimeOption(RuntimeOptionId.InterpreterThreadFrameStackSize, size);
         }
-
 
 #if UNITY_EDITOR
 

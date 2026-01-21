@@ -4,7 +4,6 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-
 namespace HybridCLR.Editor.Installer
 {
     public class InstallerWindow : EditorWindow

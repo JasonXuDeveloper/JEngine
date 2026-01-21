@@ -1,4 +1,4 @@
-﻿using HybridCLR.Editor.Meta;
+using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -82,7 +82,6 @@ namespace HybridCLR.Editor.AOT
             codes.Add("\t};");
             codes.Add("\t// }}");
 
-
             codes.Add("");
             codes.Add("\t// {{ constraint implement type");
 
@@ -129,7 +128,6 @@ namespace HybridCLR.Editor.AOT
             codes.Add("\t}");
 
             codes.Add("}");
-
 
             var utf8WithoutBom = new System.Text.UTF8Encoding(false);
             File.WriteAllText(outputFile, string.Join("\n", codes), utf8WithoutBom);

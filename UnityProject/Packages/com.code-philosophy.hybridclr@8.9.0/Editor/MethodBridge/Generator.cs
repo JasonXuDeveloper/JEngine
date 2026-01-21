@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.ABI;
 using HybridCLR.Editor.Meta;
 using HybridCLR.Editor.Template;
@@ -264,7 +264,6 @@ namespace HybridCLR.Editor.MethodBridge
             }
         }
 
-
         private List<MethodDesc> _managed2NativeMethodList0;
         private List<MethodDesc> _native2ManagedMethodList0;
         private List<MethodDesc> _adjustThunkMethodList0;
@@ -281,7 +280,6 @@ namespace HybridCLR.Editor.MethodBridge
 
             _adjustThunkMethodList0 = _adjustThunkMethodSet.ToList();
             _adjustThunkMethodList0.Sort((a, b) => string.CompareOrdinal(a.Sig, b.Sig));
-
 
             var structTypeSet = new HashSet<TypeInfo>();
             CollectStructDefs(_managed2NativeMethodList0, structTypeSet);
@@ -320,8 +318,6 @@ namespace HybridCLR.Editor.MethodBridge
         private readonly Dictionary<TypeInfo, AnalyzeTypeInfo> _analyzeTypeInfos = new Dictionary<TypeInfo, AnalyzeTypeInfo>();
 
         private readonly Dictionary<string, TypeInfo> _signature2Type = new Dictionary<string, TypeInfo>();
-
-
 
         private bool IsBlittable(TypeSig typeSig)
         {
@@ -539,8 +535,6 @@ namespace HybridCLR.Editor.MethodBridge
             return methodMap.Values.ToList();
         }
 
-
-
         private static string MakeReversePInvokeSignature(MethodDesc desc, CallingConvention CallingConventionention)
         {
             string convStr = ((char)('A' + (int)CallingConventionention - 1)).ToString();
@@ -731,7 +725,6 @@ namespace HybridCLR.Editor.MethodBridge
             }
             GenerateManaged2NativeFunctionPointerMethodStub(_callidMethods, lines);
 
-
             frr.Replace("CODE", string.Join("\n", lines));
 
             Directory.CreateDirectory(Path.GetDirectoryName(_outputFile));
@@ -821,7 +814,6 @@ const ReversePInvokeMethodData hybridclr::interpreter::g_reversePInvokeMethodStu
                             throw new Exception($"[CollectStructDefs] method:{method.MethodDef} type:{paramInfo.Type.Klass} contains generic parameter");
                         }
                     }
-                    
                 }
                 if (method.ReturnInfo.Type.IsStruct)
                 {
@@ -832,7 +824,6 @@ const ReversePInvokeMethodData hybridclr::interpreter::g_reversePInvokeMethodStu
                     }
                 }
             }
-            
         }
 
         private void CollectStructDefs(List<MethodSig> methods, HashSet<TypeInfo> structTypes)
@@ -852,7 +843,6 @@ const ReversePInvokeMethodData hybridclr::interpreter::g_reversePInvokeMethodStu
                             throw new Exception($"[CollectStructDefs] method:{method} type:{paramType.Klass} contains generic parameter");
                         }
                     }
-
                 }
                 var returnType = GetSharedTypeInfo(MetaUtil.ToShareTypeSig(corLibTypes, method.RetType));
                 if (returnType.IsStruct)
@@ -864,7 +854,6 @@ const ReversePInvokeMethodData hybridclr::interpreter::g_reversePInvokeMethodStu
                     }
                 }
             }
-
         }
 
         class FieldInfo

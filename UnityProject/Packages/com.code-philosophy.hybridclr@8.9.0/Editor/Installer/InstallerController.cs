@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 
 namespace HybridCLR.Editor.Installer
 {
-
     public class InstallerController
     {
         private const string hybridclr_repo_path = "hybridclr_repo";
@@ -61,7 +60,6 @@ namespace HybridCLR.Editor.Installer
             string packageJson = $"{SettingsUtil.ProjectDir}/Packages/{SettingsUtil.PackageName}/package.json";
             return JsonUtility.FromJson<PackageInfo>(File.ReadAllText(packageJson, Encoding.UTF8));
         }
-
 
         [Serializable]
         class PackageInfo
@@ -121,7 +119,7 @@ namespace HybridCLR.Editor.Installer
             int major = int.Parse(match.Groups[1].Value);
             int minor1 = int.Parse(match.Groups[2].Value);
             int minor2 = int.Parse(match.Groups[3].Value);
-            bool isTuanjieEngine = versionStr.Contains("t");
+            bool isTuanjieEngine = versionStr.Contains('t');
             return new UnityVersion { major = major, minor1 = minor1, minor2 = minor2, isTuanjieEngine = isTuanjieEngine };
         }
 

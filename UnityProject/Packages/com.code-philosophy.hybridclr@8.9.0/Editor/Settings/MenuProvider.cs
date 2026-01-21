@@ -6,7 +6,6 @@ namespace HybridCLR.Editor.Settings
 {
     public static class MenuProvider
     {
-
         [MenuItem("HybridCLR/About", priority = 0)]
         public static void OpenAbout() => Application.OpenURL("https://www.hybridclr.cn/docs/intro");
 
@@ -35,5 +34,4 @@ namespace HybridCLR.Editor.Settings
         [MenuItem("HybridCLR/Documents/Bug Report")]
         public static void OpenBugReport() => Application.OpenURL("https://www.hybridclr.cn/docs/help/issue");
     }
-
 }

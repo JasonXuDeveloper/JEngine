@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,7 +7,6 @@ namespace UnityFS
 {
     public static class BinaryReaderExtensions
     {
-
         public static void AlignStream(this BinaryReader reader, int alignment)
         {
             var pos = reader.BaseStream.Position;

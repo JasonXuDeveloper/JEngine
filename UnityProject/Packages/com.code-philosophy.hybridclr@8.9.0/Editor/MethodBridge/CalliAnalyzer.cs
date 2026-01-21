@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace HybridCLR.Editor.MethodBridge
 {
-
     public class CalliAnalyzer
     {
         private readonly List<ModuleDefMD> _rootModules = new List<ModuleDefMD>();

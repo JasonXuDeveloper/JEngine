@@ -39,7 +39,6 @@ namespace SevenZip.Buffer
 			return (!m_StreamWasExhausted);
 		}
 
-
 		public void ReleaseStream()
 		{
 			// m_Stream.Close(); 

@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,6 @@ namespace HybridCLR.Editor.ABI
 {
     public class TypeInfo : IEquatable<TypeInfo>
     {
-
         public static readonly TypeInfo s_void = new TypeInfo(ParamOrReturnType.VOID);
         public static readonly TypeInfo s_i1 = new TypeInfo(ParamOrReturnType.I1);
         public static readonly TypeInfo s_u1 = new TypeInfo(ParamOrReturnType.U1);
@@ -58,7 +57,7 @@ namespace HybridCLR.Editor.ABI
 
         public override int GetHashCode()
         {
-            return (int)PorType * 23 + (Klass != null ? TypeEqualityComparer.Instance.GetHashCode(Klass) : 0);
+            return ((int)PorType * 23) + (Klass != null ? TypeEqualityComparer.Instance.GetHashCode(Klass) : 0);
         }
 
         public bool NeedExpandValue()
@@ -86,7 +85,7 @@ namespace HybridCLR.Editor.ABI
                 case ParamOrReturnType.TYPEDBYREF: return strTypedByRef;
                 case ParamOrReturnType.STRUCT: return $"s{_typeId}";
                 default: throw new NotSupportedException(PorType.ToString());
-            };
+            }
         }
 
         public string GetTypeName()
@@ -109,8 +108,7 @@ namespace HybridCLR.Editor.ABI
                 case ParamOrReturnType.TYPEDBYREF: return "Il2CppTypedRef";
                 case ParamOrReturnType.STRUCT: return $"__struct_{_typeId}__";
                 default: throw new NotImplementedException(PorType.ToString());
-            };
+            }
         }
-        
     }
 }

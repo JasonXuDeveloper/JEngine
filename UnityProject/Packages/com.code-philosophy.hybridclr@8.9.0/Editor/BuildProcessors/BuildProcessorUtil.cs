@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using UnityEditor.Build;
 
 namespace HybridCLR.Editor.BuildProcessors
 {
-
 	public static class BuildProcessorUtil
 	{
-
         public static string GetXcodeProjectFile(string pathToBuiltProject)
         {
             foreach (string dir in Directory.GetDirectories(pathToBuiltProject, "*.xcodeproj", SearchOption.TopDirectoryOnly))

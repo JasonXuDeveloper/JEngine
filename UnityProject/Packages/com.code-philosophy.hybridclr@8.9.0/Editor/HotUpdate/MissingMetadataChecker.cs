@@ -1,4 +1,4 @@
-﻿using dnlib.DotNet;
+using dnlib.DotNet;
 using HybridCLR.Editor.Meta;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,6 @@ namespace HybridCLR.Editor.HotUpdate
 
         public MissingMetadataChecker(string aotDllDir, IEnumerable<string> hotUpdateAssNames)
         {
-
             _hotUpdateAssNames = new HashSet<string>(hotUpdateAssNames ?? new List<string>());
             _aotAssNames = new HashSet<string>();
             foreach (var aotFile in Directory.GetFiles(aotDllDir, "*.dll"))
@@ -53,7 +52,6 @@ namespace HybridCLR.Editor.HotUpdate
                     anyMissing = true;
                 }
             }
-
 
             foreach (TypeRef typeRef in mod.GetTypeRefs())
             {

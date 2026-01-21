@@ -130,7 +130,7 @@ namespace SevenZip.Compression.LZMA
 
 			public byte DecodeWithMatchByte(RangeCoder.Decoder rangeDecoder, uint pos, byte prevByte, byte matchByte)
 			{ return m_Coders[GetState(pos, prevByte)].DecodeWithMatchByte(rangeDecoder, matchByte); }
-		};
+		}
 
 		LZ.OutWindow m_OutWindow = new LZ.OutWindow();
 		RangeCoder.Decoder m_RangeDecoder = new RangeCoder.Decoder();
