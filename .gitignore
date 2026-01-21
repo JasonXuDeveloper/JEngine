@@ -16,3 +16,9 @@ UnityProject/Build/*
 /UnityProject/UserSettings/Layouts
 /UnityProject/HybridCLRData
 /UnityProject/UserSettings
+
+# Unity Test Framework generated files
+UnityProject/Assets/InitTestScene*.unity
+UnityProject/Assets/InitTestScene*.unity.meta
+UnityProject/TestResults*.xml
+UnityProject/*.testsettings
