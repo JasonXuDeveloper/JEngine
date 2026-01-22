@@ -12,11 +12,13 @@ namespace JEngine.Core.Editor.Misc
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void DoChange()
         {
+#if UNITY_INCLUDE_TESTS
             // Skip scene change when running Play Mode tests
             if (TestRunnerCallbacks.IsRunningTests)
             {
                 return;
             }
+#endif
 
             var jump = Settings.Instance.jumpStartUp;
             if (!jump) return;
