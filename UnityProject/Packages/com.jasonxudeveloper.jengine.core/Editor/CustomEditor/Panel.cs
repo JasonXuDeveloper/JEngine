@@ -55,34 +55,15 @@ namespace JEngine.Core.Editor.CustomEditor
         private Label _statusLabel;
         private ProgressBar _progressBar;
         private ScrollView _logScrollView;
-        private bool _isBuilding;
-        private bool _buildErrorOccurred;
-        private int _errorCountAtBuildStart;
-
-        // Build state machine
-        private enum BuildStep
-        {
-            None,
-            GenerateEncryptionVM,
-            GenerateSecretKey,
-            GenerateAll,
-            CompileDll,
-            ObfuscateCode,
-            CopyAssemblies,
-            BuildAssets,
-            Complete
-        }
-
-        private BuildStep _currentBuildStep = BuildStep.None;
-        private bool _buildAll;
-        private int _packageVersion;
-        private int _progressId = -1;
-        private BuildTarget _buildTarget;
+        private BuildManager _buildManager;
 
         private void CreateGUI()
         {
             _settings = Settings.Instance;
             _root = rootVisualElement;
+
+            // Initialize build manager
+            _buildManager = new BuildManager(_settings, LogMessage, UpdateProgress);
 
             // Load stylesheets - Panel first, then Common to override
             var panelStyleSheet = StyleSheetLoader.LoadPackageStyleSheet<Panel>();
@@ -391,14 +372,7 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private void BuildAll()
         {
-            if (_isBuilding) return;
-
-            _isBuilding = true;
-            _buildAll = true;
-            _buildErrorOccurred = false;
-            _errorCountAtBuildStart = GetUnityErrorCount();
-            _packageVersion = GetNextPackageVersion();
-            _buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            if (_buildManager.IsBuilding) return;
 
             SetBuildButtonsEnabled(false);
             _progressBar.RemoveFromClassList("progress-bar-hidden");
@@ -406,28 +380,30 @@ namespace JEngine.Core.Editor.CustomEditor
             _progressBar.value = 0;
 
             ClearLog();
-            LogMessage("Starting full build process...");
 
-            // Start Progress API tracking
-            _progressId = Progress.Start("Building Hot Update Resources",
-                "Building code and assets",
-                Progress.Options.Managed);
-
-            // Start state machine
-            _currentBuildStep = BuildStep.GenerateEncryptionVM;
-            EditorApplication.update -= BuildStateMachineUpdate;
-            EditorApplication.update += BuildStateMachineUpdate;
+            _buildManager.StartBuildAll(
+                onComplete: () =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Build completed";
+                    EditorUtility.DisplayDialog("Build Successful", "Build completed successfully!", "OK");
+                },
+                onError: (e) =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Build failed";
+                    EditorUtility.DisplayDialog("Build Failed", $"Build failed with error:\n{e.Message}", "OK");
+                }
+            );
         }
 
         private void BuildCodeOnly()
         {
-            if (_isBuilding) return;
-
-            _isBuilding = true;
-            _buildAll = false;
-            _buildErrorOccurred = false;
-            _errorCountAtBuildStart = GetUnityErrorCount();
-            _buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            if (_buildManager.IsBuilding) return;
 
             SetBuildButtonsEnabled(false);
             _progressBar.RemoveFromClassList("progress-bar-hidden");
@@ -435,17 +411,25 @@ namespace JEngine.Core.Editor.CustomEditor
             _progressBar.value = 0;
 
             ClearLog();
-            LogMessage("Starting code build...");
 
-            // Start Progress API tracking
-            _progressId = Progress.Start("Building Hot Update Code",
-                "Compiling and obfuscating code",
-                Progress.Options.Managed);
-
-            // Start state machine
-            _currentBuildStep = BuildStep.GenerateEncryptionVM;
-            EditorApplication.update -= BuildStateMachineUpdate;
-            EditorApplication.update += BuildStateMachineUpdate;
+            _buildManager.StartBuildCodeOnly(
+                onComplete: () =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Code build completed";
+                    EditorUtility.DisplayDialog("Code Build Successful", "Code build completed successfully!", "OK");
+                },
+                onError: (e) =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Code build failed";
+                    EditorUtility.DisplayDialog("Code Build Failed", $"Code build failed with error:\n{e.Message}", "OK");
+                }
+            );
         }
 
         private void BuildAssetsOnly()
@@ -496,342 +480,6 @@ namespace JEngine.Core.Editor.CustomEditor
         /// <summary>
         /// State machine update called every editor frame during build.
         /// </summary>
-        private void BuildStateMachineUpdate()
-        {
-            if (_currentBuildStep == BuildStep.None)
-            {
-                CleanupBuildProcess();
-                return;
-            }
-
-            try
-            {
-                ExecuteBuildStep();
-            }
-            catch (Exception e)
-            {
-                _buildErrorOccurred = true;
-                LogMessage($"Build failed at step {_currentBuildStep}: {e.Message}", true);
-
-                EditorUtility.ClearProgressBar();
-                Progress.Finish(_progressId, Progress.Status.Failed);
-
-                EditorUtility.DisplayDialog("Build Failed",
-                    $"Build failed at step {_currentBuildStep}:\n{e.Message}", "OK");
-
-                _currentBuildStep = BuildStep.None;
-                CleanupBuildProcess();
-            }
-        }
-
-        /// <summary>
-        /// Executes the current build step and advances to the next.
-        /// </summary>
-        private void ExecuteBuildStep()
-        {
-            switch (_currentBuildStep)
-            {
-                case BuildStep.GenerateEncryptionVM:
-                    LogMessage("=== Phase 1: Building Code ===");
-                    LogMessage("Step 1/4: Generating Encryption VM");
-                    EditorUtility.DisplayProgressBar("Building Code", "Generating Encryption VM", 0.1f);
-                    Progress.Report(_progressId, 0.1f, "Generating Encryption VM");
-                    _progressBar.value = 0.1f;
-
-                    ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/4");
-                    CheckForBuildErrors("Step 1/4 failed");
-
-                    _currentBuildStep = BuildStep.GenerateSecretKey;
-                    break;
-
-                case BuildStep.GenerateSecretKey:
-                    LogMessage("Step 2/4: Generating Secret Key File");
-                    EditorUtility.DisplayProgressBar("Building Code", "Generating Secret Key", 0.2f);
-                    Progress.Report(_progressId, 0.2f, "Generating Secret Key");
-                    _progressBar.value = 0.2f;
-
-                    ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/4");
-                    CheckForBuildErrors("Step 2/4 failed");
-
-                    _currentBuildStep = BuildStep.GenerateAll;
-                    break;
-
-                case BuildStep.GenerateAll:
-                    LogMessage("Step 3/4: Running HybridCLR/ObfuzExtension/GenerateAll");
-                    EditorUtility.DisplayProgressBar("Building Code", "Generating HybridCLR Data", 0.3f);
-                    Progress.Report(_progressId, 0.3f, "Generating HybridCLR Data");
-                    _progressBar.value = 0.3f;
-
-                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-                    CheckForBuildErrors("Step 3/4 failed - HybridCLR generation failed");
-
-                    _currentBuildStep = BuildStep.CompileDll;
-                    break;
-
-                case BuildStep.CompileDll:
-                    LogMessage("Step 4/4: Compiling DLLs");
-                    EditorUtility.DisplayProgressBar("Building Code", "Compiling DLLs", 0.4f);
-                    Progress.Report(_progressId, 0.4f, "Compiling DLLs");
-                    _progressBar.value = 0.4f;
-
-                    CompileDllCommand.CompileDll(_buildTarget);
-                    CheckForBuildErrors("DLL compilation failed");
-
-                    _currentBuildStep = BuildStep.ObfuscateCode;
-                    break;
-
-                case BuildStep.ObfuscateCode:
-                    LogMessage("Step 4/4: Obfuscating Code");
-                    EditorUtility.DisplayProgressBar("Building Code", "Obfuscating Code", 0.45f);
-                    Progress.Report(_progressId, 0.45f, "Obfuscating Code");
-                    _progressBar.value = 0.45f;
-
-                    string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(_buildTarget);
-                    ObfuscateUtil.ObfuscateHotUpdateAssemblies(_buildTarget, obfuscatedPath);
-                    CheckForBuildErrors("Code obfuscation failed");
-
-                    _currentBuildStep = BuildStep.CopyAssemblies;
-                    break;
-
-                case BuildStep.CopyAssemblies:
-                    LogMessage("Step 4/4: Copying Assemblies");
-                    EditorUtility.DisplayProgressBar("Building Code", "Copying Assemblies", 0.5f);
-                    Progress.Report(_progressId, 0.5f, "Copying Assemblies");
-                    _progressBar.value = 0.5f;
-
-                    CopyAssemblies(_buildTarget);
-                    AssetDatabase.Refresh();
-
-                    LogMessage("Code build completed successfully!");
-
-                    if (_buildAll)
-                    {
-                        _currentBuildStep = BuildStep.BuildAssets;
-                    }
-                    else
-                    {
-                        _currentBuildStep = BuildStep.Complete;
-                    }
-                    break;
-
-                case BuildStep.BuildAssets:
-                    LogMessage("=== Phase 2: Building Assets ===");
-                    EditorUtility.DisplayProgressBar("Building Assets", "Creating asset bundles", 0.6f);
-                    Progress.Report(_progressId, 0.6f, "Building Assets");
-                    _progressBar.value = 0.6f;
-
-                    string outputDirectory = BuildAssets(_packageVersion);
-
-                    _progressBar.value = 1.0f;
-                    Progress.Report(_progressId, 1.0f, "Build Complete");
-
-                    LogMessage($"Build completed successfully! Version: {_packageVersion} Output: {outputDirectory}");
-                    EditorUtility.DisplayDialog("Build Successful",
-                        $"Build completed successfully!\nVersion: {_packageVersion}\nOutput: {outputDirectory}", "OK");
-
-                    _currentBuildStep = BuildStep.Complete;
-                    break;
-
-                case BuildStep.Complete:
-                    EditorUtility.ClearProgressBar();
-                    Progress.Finish(_progressId, Progress.Status.Succeeded);
-
-                    if (!_buildAll)
-                    {
-                        EditorUtility.DisplayDialog("Code Build Successful",
-                            "Code build completed successfully!", "OK");
-                    }
-
-                    _currentBuildStep = BuildStep.None;
-                    CleanupBuildProcess();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Cleans up after build completes or fails.
-        /// </summary>
-        private void CleanupBuildProcess()
-        {
-            EditorApplication.update -= BuildStateMachineUpdate;
-            EditorUtility.ClearProgressBar();
-
-            _isBuilding = false;
-            SetBuildButtonsEnabled(true);
-            _progressBar.RemoveFromClassList("progress-bar-visible");
-            _progressBar.AddToClassList("progress-bar-hidden");
-            _statusLabel.text = "Build completed";
-
-            _currentBuildStep = BuildStep.None;
-        }
-
-        private string BuildAssets(int packageVersion)
-        {
-            LogMessage("=== Phase 2: Building Assets ===");
-            LogMessage($"Building assets for {_settings.packageName} version {packageVersion}");
-            _progressBar.value = 0.6f;
-
-            var buildParameters = CreateBuildParameters(packageVersion);
-            var pipeline = new ScriptableBuildPipeline();
-            var result = pipeline.Run(buildParameters, true);
-
-            if (!result.Success)
-            {
-                throw new Exception($"Asset build failed: {result.ErrorInfo}");
-            }
-
-            _progressBar.value = 1.0f;
-            LogMessage($"Assets built successfully: {result.OutputPackageDirectory}");
-            return result.OutputPackageDirectory;
-        }
-
-        private void ExecuteMenuItem(string menuPath, string stepName)
-        {
-            LogMessage($"{stepName}: Executing {menuPath}");
-            if (!EditorApplication.ExecuteMenuItem(menuPath))
-            {
-                _buildErrorOccurred = true;
-                throw new Exception($"Failed to execute {menuPath} - menu item might not exist or execution failed");
-            }
-        }
-
-        private void CopyAssemblies(BuildTarget target)
-        {
-            const string codeDir = "Assets/HotUpdate/Compiled";
-            if (!AssetDatabase.IsValidFolder("Assets/HotUpdate"))
-            {
-                AssetDatabase.CreateFolder("Assets", "HotUpdate");
-            }
-
-            if (!AssetDatabase.IsValidFolder(codeDir))
-            {
-                AssetDatabase.CreateFolder("Assets/HotUpdate", "Compiled");
-            }
-
-            string hotUpdateDllPath = SettingsUtil.GetHotUpdateDllsOutputDirByTarget(target);
-            string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(target);
-            var obfuscationNames = ObfuzSettings.Instance.assemblySettings.GetObfuscationRelativeAssemblyNames();
-
-            // Copy hot update assemblies
-            foreach (string assName in SettingsUtil.HotUpdateAssemblyNamesIncludePreserved)
-            {
-                string srcDir = obfuscationNames.Contains(assName) ? obfuscatedPath : hotUpdateDllPath;
-                string srcFile = $"{srcDir}/{assName}.dll";
-                string dstFile = $"{codeDir}/{assName}.dll.bytes";
-
-                if (File.Exists(srcFile))
-                {
-                    File.Copy(srcFile, dstFile, true);
-                    AssetDatabase.ImportAsset(dstFile);
-                    LogMessage($"Copied {srcFile} to {dstFile}");
-                }
-            }
-
-            // Copy AOT assemblies
-            CopyAOTAssemblies(target, codeDir);
-        }
-
-        private void CopyAOTAssemblies(BuildTarget target, string codeDir)
-        {
-            var aotAssemblies = new List<string>();
-            string aotSrcDir = Path.Join(HybridCLRSettings.Instance.strippedAOTDllOutputRootDir, target.ToString());
-
-            if (!Directory.Exists(aotSrcDir)) return;
-
-            string aotDstDir = $"{codeDir}/AOT";
-            if (!AssetDatabase.IsValidFolder(aotDstDir))
-            {
-                AssetDatabase.CreateFolder(codeDir, "AOT");
-            }
-
-            foreach (var dllFile in Directory.GetFiles(aotSrcDir, "*.dll"))
-            {
-                var dllBytesPath = $"{aotDstDir}/{Path.GetFileName(dllFile)}.bytes";
-                aotAssemblies.Add(dllBytesPath);
-                File.Copy(dllFile, dllBytesPath, true);
-                AssetDatabase.ImportAsset(dllBytesPath);
-                LogMessage($"Copy AOT dll {dllFile} to {dllBytesPath}");
-            }
-
-            // Serialize AOT assemblies list
-            var aotAssembliesBytes = NinoSerializer.Serialize(aotAssemblies);
-            string ninoFilePath = "Assets/HotUpdate/Compiled/AOT.bytes";
-            File.WriteAllBytes(ninoFilePath, aotAssembliesBytes);
-            AssetDatabase.ImportAsset(ninoFilePath);
-        }
-
-        private ScriptableBuildParameters CreateBuildParameters(int packageVersion)
-        {
-            var buildOutputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
-            var streamingAssetsRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
-            var bundleEncryption = EncryptionMapping.GetBundleConfig(_settings.encryptionOption);
-
-            // Jump to Init Scene from settings 
-            EBuildinFileCopyOption copyOption = EBuildinFileCopyOption.ClearAndCopyAll;
-            if (!string.IsNullOrEmpty(_settings.startUpScenePath) && File.Exists(_settings.startUpScenePath))
-            {
-                var currentScene = SceneManager.GetActiveScene();
-                if (currentScene.isDirty)
-                {
-                    EditorSceneManager.SaveScene(currentScene);
-                }
-
-                if (currentScene.path != _settings.startUpScenePath)
-                {
-                    EditorSceneManager.OpenScene(_settings.startUpScenePath);
-                }
-
-                var bootstrap = FindObjectOfType<Bootstrap>();
-                copyOption = _settings.packageName == bootstrap.packageName ||
-                             bootstrap.targetPlatform == TargetPlatform.Standalone
-                    ? EBuildinFileCopyOption.ClearAndCopyAll
-                    : EBuildinFileCopyOption.None;
-            }
-
-            return new ScriptableBuildParameters
-            {
-                BuildOutputRoot = buildOutputRoot,
-                BuildinFileRoot = streamingAssetsRoot,
-                BuildPipeline = nameof(EBuildPipeline.ScriptableBuildPipeline),
-                BuildBundleType = (int)EBuildBundleType.AssetBundle,
-                BuildTarget = _settings.buildTarget,
-                PackageName = _settings.packageName,
-                PackageVersion = packageVersion.ToString(),
-                VerifyBuildingResult = true,
-                FileNameStyle = EFileNameStyle.HashName,
-                BuildinFileCopyOption = copyOption,
-                BuildinFileCopyParams = string.Empty,
-                CompressOption = ECompressOption.LZ4,
-                ClearBuildCacheFiles = _settings.clearBuildCache,
-                UseAssetDependencyDB = _settings.useAssetDependDB,
-                ManifestProcessServices = bundleEncryption.ManifestEncryptionConfig.Encryption,
-                ManifestRestoreServices = bundleEncryption.ManifestEncryptionConfig.Decryption,
-                EncryptionServices = bundleEncryption.Encryption,
-                BuiltinShadersBundleName = GetBuiltinShaderBundleName(),
-                TrackSpriteAtlasDependencies = true,
-                StripUnityVersion = true,
-            };
-        }
-
-        private string GetBuiltinShaderBundleName()
-        {
-            var uniqueBundleName = AssetBundleCollectorSettingData.Setting.UniqueBundleName;
-            var packRuleResult = DefaultPackRule.CreateShadersPackRuleResult();
-            return packRuleResult.GetBundleName(_settings.packageName, uniqueBundleName);
-        }
-
-        private int GetNextPackageVersion()
-        {
-            var now = DateTime.UtcNow;
-            var year = now.Year - 2000;
-            var month = now.Month;
-            var day = now.Day;
-            var hour = now.Hour;
-            var minute = now.Minute;
-            var second = now.Second;
-
-            return year * 10000000 + month * 100000 + day * 1000 + hour * 100 + minute * 10 + second / 6;
-        }
 
         private void LogMessage(string message, bool isError = false)
         {
@@ -855,42 +503,10 @@ namespace JEngine.Core.Editor.CustomEditor
             _statusLabel.text = "Ready to build";
         }
 
-        /// <summary>
-        /// Gets the current Unity error count from LogEntries.
-        /// </summary>
-        private int GetUnityErrorCount()
+        private void UpdateProgress(float progress, string description)
         {
-            var logEntriesType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries");
-            if (logEntriesType != null)
-            {
-                var getCountMethod = logEntriesType.GetMethod("GetCount");
-                var getCountsByTypeMethod = logEntriesType.GetMethod("GetCountsByType");
-
-                if (getCountsByTypeMethod != null)
-                {
-                    // GetCountsByType returns error, warning, log counts
-                    int errorCount = 0, warningCount = 0, logCount = 0;
-                    object[] args = { errorCount, warningCount, logCount };
-                    getCountsByTypeMethod.Invoke(null, args);
-                    return (int)args[0]; // error count
-                }
-            }
-
-            return 0;
+            _progressBar.value = progress;
+            _statusLabel.text = description;
         }
-
-        /// <summary>
-        /// Checks if new errors occurred during the build process.
-        /// </summary>
-        private void CheckForBuildErrors(string context)
-        {
-            int currentErrorCount = GetUnityErrorCount();
-            if (currentErrorCount > _errorCountAtBuildStart)
-            {
-                _buildErrorOccurred = true;
-                throw new Exception($"{context}: {currentErrorCount - _errorCountAtBuildStart} error(s) occurred. Check Unity Console for details.");
-            }
-        }
-
     }
 }
