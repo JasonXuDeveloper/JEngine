@@ -24,7 +24,6 @@
 //  THE SOFTWARE.
 
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -283,7 +282,6 @@ namespace JEngine.Core.Editor.CustomEditor
             return container;
         }
 
-
         /// <summary>
         /// Makes a button responsive with proper text wrapping and styling
         /// </summary>
@@ -330,7 +328,6 @@ namespace JEngine.Core.Editor.CustomEditor
             button.AddToClassList("form-control"); // Use same class as dropdowns
             button.AddToClassList("flex-button"); // Same class as working action buttons
         }
-
 
         private static void AdjustButtonFontSize(Button button)
         {
