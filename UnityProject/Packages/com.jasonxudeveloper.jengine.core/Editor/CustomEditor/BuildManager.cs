@@ -73,6 +73,9 @@ namespace JEngine.Core.Editor.CustomEditor
         private Action _onComplete;
         private Action<Exception> _onError;
 
+        /// <summary>
+        /// Gets a value indicating whether a build operation is currently in progress.
+        /// </summary>
         public bool IsBuilding => _currentStep != BuildStep.None;
 
         public BuildManager(Settings settings, Action<string, bool> logCallback)
@@ -143,6 +146,10 @@ namespace JEngine.Core.Editor.CustomEditor
 
             Log("Starting assets build...");
 
+            _progressId = Progress.Start("Building Hot Update Assets",
+                "Building asset bundles",
+                Progress.Options.Managed);
+
             try
             {
                 UpdateProgress(0.5f, "Building Assets");
@@ -150,12 +157,18 @@ namespace JEngine.Core.Editor.CustomEditor
                 UpdateProgress(1.0f, "Build Complete");
 
                 Log($"Assets build completed successfully! Version: {_packageVersion} Output: {outputDirectory}");
+                Progress.Finish(_progressId, Progress.Status.Succeeded);
                 _onComplete?.Invoke();
             }
             catch (Exception e)
             {
                 Log($"Assets build failed: {e.Message}", true);
+                Progress.Finish(_progressId, Progress.Status.Failed);
                 _onError?.Invoke(e);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
             }
         }
 
