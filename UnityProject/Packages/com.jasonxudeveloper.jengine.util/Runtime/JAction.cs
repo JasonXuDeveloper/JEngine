@@ -739,7 +739,10 @@ namespace JEngine.Util
             _awaitingAsync = false;
 
             // Spin until complete (timeout checked in Tick)
-            while (!Tick()) { }
+            while (!Tick())
+            {
+                // Intentionally empty - Tick() advances state each iteration
+            }
 
             return this;
         }

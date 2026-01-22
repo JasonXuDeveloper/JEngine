@@ -21,7 +21,7 @@ namespace JEngine.Util
     /// for proper compiler warnings when not awaited.
     /// </para>
     /// </remarks>
-    public readonly struct JActionAwaitable
+    public readonly struct JActionAwaitable : IEquatable<JActionAwaitable>
     {
         private readonly JAction _action;
 
@@ -29,6 +29,10 @@ namespace JEngine.Util
         {
             _action = action;
         }
+
+        public bool Equals(JActionAwaitable other) => ReferenceEquals(_action, other._action);
+        public override bool Equals(object obj) => obj is JActionAwaitable other && Equals(other);
+        public override int GetHashCode() => _action?.GetHashCode() ?? 0;
 
         /// <summary>
         /// Gets the awaiter for this awaitable.
@@ -46,7 +50,7 @@ namespace JEngine.Util
     /// This struct implements <see cref="ICriticalNotifyCompletion"/> to support
     /// both regular and unsafe continuations, enabling efficient async state machine behavior.
     /// </remarks>
-    public readonly struct JActionAwaiter : ICriticalNotifyCompletion
+    public readonly struct JActionAwaiter : ICriticalNotifyCompletion, IEquatable<JActionAwaiter>
     {
         private readonly JAction _action;
 
@@ -54,6 +58,10 @@ namespace JEngine.Util
         {
             _action = action;
         }
+
+        public bool Equals(JActionAwaiter other) => ReferenceEquals(_action, other._action);
+        public override bool Equals(object obj) => obj is JActionAwaiter other && Equals(other);
+        public override int GetHashCode() => _action?.GetHashCode() ?? 0;
 
         /// <summary>
         /// Gets whether the <see cref="JAction"/> has completed execution.
