@@ -17,6 +17,10 @@ UnityProject/Build/*
 /UnityProject/HybridCLRData
 /UnityProject/UserSettings
 
+# Unity Test Framework temporary scenes
+/UnityProject/Assets/InitTestScene*.unity
+/UnityProject/Assets/InitTestScene*.unity.meta
+
 # Auto Claude generated files
 .auto-claude/
 .auto-claude-security.json
