@@ -9,17 +9,12 @@ namespace JEngine.Core.Editor.Misc
     /// </summary>
     internal static class ChangeScene
     {
+        // Don't auto-change scenes during Play Mode tests
+#if !UNITY_INCLUDE_TESTS
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+#endif
         private static void DoChange()
         {
-#if UNITY_INCLUDE_TESTS
-            // Skip scene change when running Play Mode tests
-            if (TestRunnerCallbacks.IsRunningTests)
-            {
-                return;
-            }
-#endif
-
             var jump = Settings.Instance.jumpStartUp;
             if (!jump) return;
             var scene = SceneManager.GetActiveScene();
