@@ -22,9 +22,9 @@ MonoBehaviour:
     assembliesToObfuscate:
     - HotUpdate.Code
     - Assembly-CSharp
-    - JEngine.Core
     - Obfuz.Generated
-    nonObfuscatedButReferencingObfuscatedAssemblies: []
+    nonObfuscatedButReferencingObfuscatedAssemblies:
+    - JEngine.Core
     additionalAssemblySearchPaths: []
     obfuscateObfuzRuntime: 1
   obfuscationPassSettings:
