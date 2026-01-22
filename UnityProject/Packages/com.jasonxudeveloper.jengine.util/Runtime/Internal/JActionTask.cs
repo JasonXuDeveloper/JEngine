@@ -41,7 +41,7 @@ namespace JEngine.Util.Internal
     /// This struct is designed for minimal memory footprint and efficient execution.
     /// State is stored externally via <see cref="IStateStorage"/> to avoid boxing value types.
     /// </remarks>
-    internal record struct JActionTask
+    internal struct JActionTask
     {
         /// <summary>The type of task operation.</summary>
         internal JActionTaskType Type;

@@ -41,7 +41,7 @@ namespace JEngine.Util.Internal
         /// <summary>
         /// Marker struct for identifying our update in the PlayerLoop.
         /// </summary>
-        private record struct JActionUpdate;
+        private struct JActionUpdate { }
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
