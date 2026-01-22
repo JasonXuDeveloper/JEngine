@@ -135,6 +135,35 @@ namespace JEngine.Core.Editor.CustomEditor
         }
 
         /// <summary>
+        /// Starts an assets-only build.
+        /// </summary>
+        public void StartBuildAssetsOnly(Action onComplete, Action<Exception> onError)
+        {
+            if (IsBuilding) return;
+
+            _packageVersion = GetNextPackageVersion();
+            _onComplete = onComplete;
+            _onError = onError;
+
+            Log("Starting assets build...");
+
+            try
+            {
+                UpdateProgress(0.5f, "Building Assets");
+                string outputDirectory = BuildAssets(_packageVersion);
+                UpdateProgress(1.0f, "Build Complete");
+
+                Log($"Assets build completed successfully! Version: {_packageVersion} Output: {outputDirectory}");
+                _onComplete?.Invoke();
+            }
+            catch (Exception e)
+            {
+                Log($"Assets build failed: {e.Message}", true);
+                _onError?.Invoke(e);
+            }
+        }
+
+        /// <summary>
         /// State machine update called every editor frame.
         /// </summary>
         private void Update()

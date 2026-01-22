@@ -434,40 +434,33 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private void BuildAssetsOnly()
         {
-            if (_isBuilding) return;
+            if (_buildManager.IsBuilding) return;
 
-            try
-            {
-                _isBuilding = true;
-                SetBuildButtonsEnabled(false);
-                _progressBar.RemoveFromClassList("progress-bar-hidden");
-                _progressBar.AddToClassList("progress-bar-visible");
-                _progressBar.value = 0;
+            SetBuildButtonsEnabled(false);
+            _progressBar.RemoveFromClassList("progress-bar-hidden");
+            _progressBar.AddToClassList("progress-bar-visible");
+            _progressBar.value = 0;
 
-                ClearLog();
-                LogMessage("Starting assets build...");
-                int packageVersion = GetNextPackageVersion();
-                string outputDirectory = BuildAssets(packageVersion);
+            ClearLog();
 
-                LogMessage($"Assets build completed successfully! Version: {packageVersion} Output: {outputDirectory}");
-                EditorUtility.DisplayDialog("Assets Build Successful",
-                    $"Assets build completed successfully!\nVersion: {packageVersion}\nOutput: {outputDirectory}",
-                    "OK");
-            }
-            catch (Exception e)
-            {
-                LogMessage($"Assets build failed: {e.Message}", true);
-                EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error: {e.Message}",
-                    "OK");
-            }
-            finally
-            {
-                _isBuilding = false;
-                SetBuildButtonsEnabled(true);
-                _progressBar.RemoveFromClassList("progress-bar-visible");
-                _progressBar.AddToClassList("progress-bar-hidden");
-                _statusLabel.text = "Assets build completed";
-            }
+            _buildManager.StartBuildAssetsOnly(
+                onComplete: () =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Assets build completed";
+                    EditorUtility.DisplayDialog("Assets Build Successful", "Assets build completed successfully!", "OK");
+                },
+                onError: (e) =>
+                {
+                    SetBuildButtonsEnabled(true);
+                    _progressBar.RemoveFromClassList("progress-bar-visible");
+                    _progressBar.AddToClassList("progress-bar-hidden");
+                    _statusLabel.text = "Assets build failed";
+                    EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error:\n{e.Message}", "OK");
+                }
+            );
         }
 
         private void SetBuildButtonsEnabled(bool enabled)
