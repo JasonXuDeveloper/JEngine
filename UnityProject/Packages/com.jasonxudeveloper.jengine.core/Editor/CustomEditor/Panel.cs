@@ -59,6 +59,26 @@ namespace JEngine.Core.Editor.CustomEditor
         private bool _buildErrorOccurred;
         private int _errorCountAtBuildStart;
 
+        // Build state machine
+        private enum BuildStep
+        {
+            None,
+            GenerateEncryptionVM,
+            GenerateSecretKey,
+            GenerateAll,
+            CompileDll,
+            ObfuscateCode,
+            CopyAssemblies,
+            BuildAssets,
+            Complete
+        }
+
+        private BuildStep _currentBuildStep = BuildStep.None;
+        private bool _buildAll;
+        private int _packageVersion;
+        private int _progressId = -1;
+        private BuildTarget _buildTarget;
+
         private void CreateGUI()
         {
             _settings = Settings.Instance;
@@ -373,91 +393,59 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             if (_isBuilding) return;
 
-            try
-            {
-                _isBuilding = true;
-                _buildErrorOccurred = false;
-                _errorCountAtBuildStart = GetUnityErrorCount();
-                SetBuildButtonsEnabled(false);
-                _progressBar.RemoveFromClassList("progress-bar-hidden");
-                _progressBar.AddToClassList("progress-bar-visible");
-                _progressBar.value = 0;
+            _isBuilding = true;
+            _buildAll = true;
+            _buildErrorOccurred = false;
+            _errorCountAtBuildStart = GetUnityErrorCount();
+            _packageVersion = GetNextPackageVersion();
+            _buildTarget = EditorUserBuildSettings.activeBuildTarget;
 
-                ClearLog();
-                LogMessage("Starting full build process...");
+            SetBuildButtonsEnabled(false);
+            _progressBar.RemoveFromClassList("progress-bar-hidden");
+            _progressBar.AddToClassList("progress-bar-visible");
+            _progressBar.value = 0;
 
-                BuildCode();
+            ClearLog();
+            LogMessage("Starting full build process...");
 
-                // Check if code build had errors
-                if (_buildErrorOccurred)
-                {
-                    throw new Exception("Code build failed. Check Unity Console for details. Aborting asset build.");
-                }
+            // Start Progress API tracking
+            _progressId = Progress.Start("Building Hot Update Resources",
+                "Building code and assets",
+                Progress.Options.Managed);
 
-                int packageVersion = GetNextPackageVersion();
-                string outputDirectory = BuildAssets(packageVersion);
-
-                LogMessage($"Build completed successfully! Version: {packageVersion} Output: {outputDirectory}");
-                EditorUtility.DisplayDialog("Build Successful",
-                    $"Build completed successfully!\nVersion: {packageVersion}\nOutput: {outputDirectory}", "OK");
-            }
-            catch (Exception e)
-            {
-                LogMessage($"Build failed: {e.Message}", true);
-                EditorUtility.DisplayDialog("Build Failed", $"Build failed with error: {e.Message}", "OK");
-            }
-            finally
-            {
-                _isBuilding = false;
-                SetBuildButtonsEnabled(true);
-                _progressBar.RemoveFromClassList("progress-bar-visible");
-                _progressBar.AddToClassList("progress-bar-hidden");
-                _statusLabel.text = "Build completed";
-            }
+            // Start state machine
+            _currentBuildStep = BuildStep.GenerateEncryptionVM;
+            EditorApplication.update -= BuildStateMachineUpdate;
+            EditorApplication.update += BuildStateMachineUpdate;
         }
 
         private void BuildCodeOnly()
         {
             if (_isBuilding) return;
 
-            try
-            {
-                _isBuilding = true;
-                _buildErrorOccurred = false;
-                _errorCountAtBuildStart = GetUnityErrorCount();
-                SetBuildButtonsEnabled(false);
-                _progressBar.RemoveFromClassList("progress-bar-hidden");
-                _progressBar.AddToClassList("progress-bar-visible");
-                _progressBar.value = 0;
+            _isBuilding = true;
+            _buildAll = false;
+            _buildErrorOccurred = false;
+            _errorCountAtBuildStart = GetUnityErrorCount();
+            _buildTarget = EditorUserBuildSettings.activeBuildTarget;
 
-                ClearLog();
-                LogMessage("Starting code build...");
-                BuildCode();
+            SetBuildButtonsEnabled(false);
+            _progressBar.RemoveFromClassList("progress-bar-hidden");
+            _progressBar.AddToClassList("progress-bar-visible");
+            _progressBar.value = 0;
 
-                // Check if code build had errors
-                if (_buildErrorOccurred)
-                {
-                    throw new Exception("Code build failed. Check Unity Console for details.");
-                }
+            ClearLog();
+            LogMessage("Starting code build...");
 
-                _progressBar.value = 1.0f;
+            // Start Progress API tracking
+            _progressId = Progress.Start("Building Hot Update Code",
+                "Compiling and obfuscating code",
+                Progress.Options.Managed);
 
-                LogMessage("Code build completed successfully!");
-                EditorUtility.DisplayDialog("Code Build Successful", "Code build completed successfully!", "OK");
-            }
-            catch (Exception e)
-            {
-                LogMessage($"Code build failed: {e.Message}", true);
-                EditorUtility.DisplayDialog("Code Build Failed", $"Code build failed with error: {e.Message}", "OK");
-            }
-            finally
-            {
-                _isBuilding = false;
-                SetBuildButtonsEnabled(true);
-                _progressBar.RemoveFromClassList("progress-bar-visible");
-                _progressBar.AddToClassList("progress-bar-hidden");
-                _statusLabel.text = "Code build completed";
-            }
+            // Start state machine
+            _currentBuildStep = BuildStep.GenerateEncryptionVM;
+            EditorApplication.update -= BuildStateMachineUpdate;
+            EditorApplication.update += BuildStateMachineUpdate;
         }
 
         private void BuildAssetsOnly()
@@ -505,47 +493,176 @@ namespace JEngine.Core.Editor.CustomEditor
             _buildAssetsButton.SetEnabled(enabled);
         }
 
-        private void BuildCode()
+        /// <summary>
+        /// State machine update called every editor frame during build.
+        /// </summary>
+        private void BuildStateMachineUpdate()
         {
-            LogMessage("=== Phase 1: Building Code ===");
-            UpdateProgressAsync(0.1f);
-
-            // Execute menu items for code generation
-            ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/4");
-            CheckForBuildErrors("Step 1/4 failed");
-            UpdateProgressAsync(0.2f);
-
-            ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/4");
-            CheckForBuildErrors("Step 2/4 failed");
-            UpdateProgressAsync(0.3f);
-
-            ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-            CheckForBuildErrors("Step 3/4 failed - HybridCLR generation failed");
-            UpdateProgressAsync(0.4f);
-
-            // Compile and obfuscate
-            LogMessage("Step 4/4: Compiling and Obfuscating");
-            BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
+            if (_currentBuildStep == BuildStep.None)
+            {
+                CleanupBuildProcess();
+                return;
+            }
 
             try
             {
-                CompileDllCommand.CompileDll(target);
-                CheckForBuildErrors("DLL compilation failed");
-
-                string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(target);
-                ObfuscateUtil.ObfuscateHotUpdateAssemblies(target, obfuscatedPath);
-                CheckForBuildErrors("Code obfuscation failed");
+                ExecuteBuildStep();
             }
             catch (Exception e)
             {
                 _buildErrorOccurred = true;
-                throw new Exception($"Code compilation/obfuscation failed: {e.Message}", e);
-            }
+                LogMessage($"Build failed at step {_currentBuildStep}: {e.Message}", true);
 
-            CopyAssemblies(target);
-            AssetDatabase.Refresh();
-            UpdateProgressAsync(0.5f);
-            LogMessage("Code build completed successfully!");
+                EditorUtility.ClearProgressBar();
+                Progress.Finish(_progressId, Progress.Status.Failed);
+
+                EditorUtility.DisplayDialog("Build Failed",
+                    $"Build failed at step {_currentBuildStep}:\n{e.Message}", "OK");
+
+                _currentBuildStep = BuildStep.None;
+                CleanupBuildProcess();
+            }
+        }
+
+        /// <summary>
+        /// Executes the current build step and advances to the next.
+        /// </summary>
+        private void ExecuteBuildStep()
+        {
+            switch (_currentBuildStep)
+            {
+                case BuildStep.GenerateEncryptionVM:
+                    LogMessage("=== Phase 1: Building Code ===");
+                    LogMessage("Step 1/4: Generating Encryption VM");
+                    EditorUtility.DisplayProgressBar("Building Code", "Generating Encryption VM", 0.1f);
+                    Progress.Report(_progressId, 0.1f, "Generating Encryption VM");
+                    _progressBar.value = 0.1f;
+
+                    ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/4");
+                    CheckForBuildErrors("Step 1/4 failed");
+
+                    _currentBuildStep = BuildStep.GenerateSecretKey;
+                    break;
+
+                case BuildStep.GenerateSecretKey:
+                    LogMessage("Step 2/4: Generating Secret Key File");
+                    EditorUtility.DisplayProgressBar("Building Code", "Generating Secret Key", 0.2f);
+                    Progress.Report(_progressId, 0.2f, "Generating Secret Key");
+                    _progressBar.value = 0.2f;
+
+                    ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/4");
+                    CheckForBuildErrors("Step 2/4 failed");
+
+                    _currentBuildStep = BuildStep.GenerateAll;
+                    break;
+
+                case BuildStep.GenerateAll:
+                    LogMessage("Step 3/4: Running HybridCLR/ObfuzExtension/GenerateAll");
+                    EditorUtility.DisplayProgressBar("Building Code", "Generating HybridCLR Data", 0.3f);
+                    Progress.Report(_progressId, 0.3f, "Generating HybridCLR Data");
+                    _progressBar.value = 0.3f;
+
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
+                    CheckForBuildErrors("Step 3/4 failed - HybridCLR generation failed");
+
+                    _currentBuildStep = BuildStep.CompileDll;
+                    break;
+
+                case BuildStep.CompileDll:
+                    LogMessage("Step 4/4: Compiling DLLs");
+                    EditorUtility.DisplayProgressBar("Building Code", "Compiling DLLs", 0.4f);
+                    Progress.Report(_progressId, 0.4f, "Compiling DLLs");
+                    _progressBar.value = 0.4f;
+
+                    CompileDllCommand.CompileDll(_buildTarget);
+                    CheckForBuildErrors("DLL compilation failed");
+
+                    _currentBuildStep = BuildStep.ObfuscateCode;
+                    break;
+
+                case BuildStep.ObfuscateCode:
+                    LogMessage("Step 4/4: Obfuscating Code");
+                    EditorUtility.DisplayProgressBar("Building Code", "Obfuscating Code", 0.45f);
+                    Progress.Report(_progressId, 0.45f, "Obfuscating Code");
+                    _progressBar.value = 0.45f;
+
+                    string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(_buildTarget);
+                    ObfuscateUtil.ObfuscateHotUpdateAssemblies(_buildTarget, obfuscatedPath);
+                    CheckForBuildErrors("Code obfuscation failed");
+
+                    _currentBuildStep = BuildStep.CopyAssemblies;
+                    break;
+
+                case BuildStep.CopyAssemblies:
+                    LogMessage("Step 4/4: Copying Assemblies");
+                    EditorUtility.DisplayProgressBar("Building Code", "Copying Assemblies", 0.5f);
+                    Progress.Report(_progressId, 0.5f, "Copying Assemblies");
+                    _progressBar.value = 0.5f;
+
+                    CopyAssemblies(_buildTarget);
+                    AssetDatabase.Refresh();
+
+                    LogMessage("Code build completed successfully!");
+
+                    if (_buildAll)
+                    {
+                        _currentBuildStep = BuildStep.BuildAssets;
+                    }
+                    else
+                    {
+                        _currentBuildStep = BuildStep.Complete;
+                    }
+                    break;
+
+                case BuildStep.BuildAssets:
+                    LogMessage("=== Phase 2: Building Assets ===");
+                    EditorUtility.DisplayProgressBar("Building Assets", "Creating asset bundles", 0.6f);
+                    Progress.Report(_progressId, 0.6f, "Building Assets");
+                    _progressBar.value = 0.6f;
+
+                    string outputDirectory = BuildAssets(_packageVersion);
+
+                    _progressBar.value = 1.0f;
+                    Progress.Report(_progressId, 1.0f, "Build Complete");
+
+                    LogMessage($"Build completed successfully! Version: {_packageVersion} Output: {outputDirectory}");
+                    EditorUtility.DisplayDialog("Build Successful",
+                        $"Build completed successfully!\nVersion: {_packageVersion}\nOutput: {outputDirectory}", "OK");
+
+                    _currentBuildStep = BuildStep.Complete;
+                    break;
+
+                case BuildStep.Complete:
+                    EditorUtility.ClearProgressBar();
+                    Progress.Finish(_progressId, Progress.Status.Succeeded);
+
+                    if (!_buildAll)
+                    {
+                        EditorUtility.DisplayDialog("Code Build Successful",
+                            "Code build completed successfully!", "OK");
+                    }
+
+                    _currentBuildStep = BuildStep.None;
+                    CleanupBuildProcess();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Cleans up after build completes or fails.
+        /// </summary>
+        private void CleanupBuildProcess()
+        {
+            EditorApplication.update -= BuildStateMachineUpdate;
+            EditorUtility.ClearProgressBar();
+
+            _isBuilding = false;
+            SetBuildButtonsEnabled(true);
+            _progressBar.RemoveFromClassList("progress-bar-visible");
+            _progressBar.AddToClassList("progress-bar-hidden");
+            _statusLabel.text = "Build completed";
+
+            _currentBuildStep = BuildStep.None;
         }
 
         private string BuildAssets(int packageVersion)
@@ -775,20 +892,5 @@ namespace JEngine.Core.Editor.CustomEditor
             }
         }
 
-        /// <summary>
-        /// Updates the progress bar asynchronously to ensure UI responsiveness.
-        /// </summary>
-        private void UpdateProgressAsync(float value)
-        {
-            _progressBar.value = value;
-            // Force UI repaint by scheduling a delayed callback
-            EditorApplication.delayCall += () =>
-            {
-                if (_progressBar != null)
-                {
-                    _progressBar.MarkDirtyRepaint();
-                }
-            };
-        }
     }
 }
