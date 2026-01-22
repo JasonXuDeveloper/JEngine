@@ -895,7 +895,7 @@ namespace JEngine.Util
                         if (_delayEndTime <= 0)
                         {
                             float frameTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
-                            _delayEndTime = currentTime + task.IntParam * frameTime;
+                            _delayEndTime = currentTime + (task.IntParam * frameTime);
                         }
                         if (currentTime >= _delayEndTime)
                         {
