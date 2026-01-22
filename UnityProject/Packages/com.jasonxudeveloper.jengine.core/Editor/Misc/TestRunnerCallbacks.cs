@@ -1,3 +1,4 @@
+#if UNITY_INCLUDE_TESTS
 using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
@@ -73,3 +74,4 @@ namespace JEngine.Core.Editor.Misc
         public void TestFinished(ITestResultAdaptor result) { }
     }
 }
+#endif

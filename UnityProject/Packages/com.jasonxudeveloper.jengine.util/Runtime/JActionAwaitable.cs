@@ -21,8 +21,18 @@ namespace JEngine.Util
     /// for proper compiler warnings when not awaited.
     /// </para>
     /// </remarks>
-    public readonly record struct JActionAwaitable(JAction Action)
+    public readonly struct JActionAwaitable
     {
+        /// <summary>The JAction instance being awaited.</summary>
+        public readonly JAction Action;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JActionAwaitable"/> struct.
+        /// </summary>
+        /// <param name="action">The JAction to await.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public JActionAwaitable(JAction action) => Action = action;
+
         /// <summary>
         /// Gets the awaiter for this awaitable.
         /// </summary>
@@ -39,8 +49,18 @@ namespace JEngine.Util
     /// This struct implements <see cref="ICriticalNotifyCompletion"/> to support
     /// both regular and unsafe continuations, enabling efficient async state machine behavior.
     /// </remarks>
-    public readonly record struct JActionAwaiter(JAction Action) : ICriticalNotifyCompletion
+    public readonly struct JActionAwaiter : ICriticalNotifyCompletion
     {
+        /// <summary>The JAction instance being awaited.</summary>
+        public readonly JAction Action;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JActionAwaiter"/> struct.
+        /// </summary>
+        /// <param name="action">The JAction to await.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public JActionAwaiter(JAction action) => Action = action;
+
         /// <summary>
         /// Gets whether the <see cref="JAction"/> has completed execution.
         /// </summary>
