@@ -221,10 +221,8 @@ namespace JEngine.Core.Editor.CustomEditor
                     UpdateProgress(0.3f, "Generating HybridCLR Data");
 
                     ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-                    // TODO: Temporarily skip error check due to YooAsset bug
-                    // Known issue: "Create package main catalog file failed ! Object reference not set to an instance of an object"
-                    // This error doesn't actually break the build, so we allow it to continue
-                    // CheckForErrors("Step 3/4 failed - HybridCLR generation failed");
+                    CheckForErrorsExcluding("Step 3/4 failed - HybridCLR generation failed",
+                        "Create package main catalog file failed");
 
                     _currentStep = BuildStep.CompileDll;
                     break;
@@ -460,6 +458,97 @@ namespace JEngine.Core.Editor.CustomEditor
             if (currentErrorCount > _errorCountAtStart)
             {
                 throw new Exception($"{context}: {currentErrorCount - _errorCountAtStart} error(s) occurred. Check Unity Console for details.");
+            }
+        }
+
+        private void CheckForErrorsExcluding(string context, string excludeMessageContaining)
+        {
+            int currentErrorCount = GetUnityErrorCount();
+            if (currentErrorCount > _errorCountAtStart)
+            {
+                // Check if the new errors are only the excluded error
+                int newErrorCount = currentErrorCount - _errorCountAtStart;
+                int nonExcludedErrors = CountNonExcludedErrors(excludeMessageContaining, newErrorCount);
+
+                if (nonExcludedErrors > 0)
+                {
+                    throw new Exception($"{context}: {nonExcludedErrors} error(s) occurred. Check Unity Console for details.");
+                }
+
+                // If we have errors but they're all excluded, log a warning but continue
+                if (newErrorCount > 0)
+                {
+                    Log($"Note: {newErrorCount} known error(s) ignored (YooAsset catalog bug)");
+                }
+            }
+        }
+
+        private int CountNonExcludedErrors(string excludeMessageContaining, int recentErrorCount)
+        {
+            try
+            {
+                var logEntriesType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries");
+                if (logEntriesType == null) return recentErrorCount;
+
+                var getCountMethod = logEntriesType.GetMethod("GetCount");
+                var startGettingEntriesMethod = logEntriesType.GetMethod("StartGettingEntries");
+                var getEntryInternalMethod = logEntriesType.GetMethod("GetEntryInternal");
+                var endGettingEntriesMethod = logEntriesType.GetMethod("EndGettingEntries");
+                var logEntryType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntry");
+
+                if (getCountMethod == null || startGettingEntriesMethod == null ||
+                    getEntryInternalMethod == null || endGettingEntriesMethod == null ||
+                    logEntryType == null)
+                {
+                    return recentErrorCount;
+                }
+
+                int totalCount = (int)getCountMethod.Invoke(null, null);
+                startGettingEntriesMethod.Invoke(null, null);
+
+                int nonExcludedCount = 0;
+                int checkedErrors = 0;
+
+                // Check recent errors from the end of the log
+                for (int i = totalCount - 1; i >= 0 && checkedErrors < recentErrorCount; i--)
+                {
+                    var entry = Activator.CreateInstance(logEntryType);
+                    object[] args = { i, entry };
+                    getEntryInternalMethod.Invoke(null, args);
+                    entry = args[1];
+
+                    var modeField = logEntryType.GetField("mode");
+                    if (modeField != null)
+                    {
+                        int mode = (int)modeField.GetValue(entry);
+                        // Mode 2 = Error
+                        if (mode == 2)
+                        {
+                            checkedErrors++;
+                            var messageField = logEntryType.GetField("message");
+                            if (messageField != null)
+                            {
+                                string message = (string)messageField.GetValue(entry);
+                                if (!message.Contains(excludeMessageContaining))
+                                {
+                                    nonExcludedCount++;
+                                }
+                            }
+                            else
+                            {
+                                nonExcludedCount++;
+                            }
+                        }
+                    }
+                }
+
+                endGettingEntriesMethod.Invoke(null, null);
+                return nonExcludedCount;
+            }
+            catch
+            {
+                // If reflection fails, assume all errors are real
+                return recentErrorCount;
             }
         }
 
