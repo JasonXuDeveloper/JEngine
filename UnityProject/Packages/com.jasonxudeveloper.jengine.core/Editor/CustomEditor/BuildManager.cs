@@ -58,6 +58,7 @@ namespace JEngine.Core.Editor.CustomEditor
             GenerateEncryptionVM,
             GenerateSecretKey,
             GenerateAll,
+            GeneratePolymorphicCodes,
             CompileDll,
             ObfuscateCode,
             CopyAssemblies,
@@ -217,18 +218,28 @@ namespace JEngine.Core.Editor.CustomEditor
                     break;
 
                 case BuildStep.GenerateAll:
-                    Log("Step 3/4: Running HybridCLR/ObfuzExtension/GenerateAll");
+                    Log("Step 3/5: Running HybridCLR/ObfuzExtension/GenerateAll");
                     UpdateProgress(0.3f, "Generating HybridCLR Data");
 
-                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-                    CheckForErrorsExcluding("Step 3/4 failed - HybridCLR generation failed",
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/5");
+                    CheckForErrorsExcluding("Step 3/5 failed - HybridCLR generation failed",
                         "Create package main catalog file failed");
+
+                    _currentStep = BuildStep.GeneratePolymorphicCodes;
+                    break;
+
+                case BuildStep.GeneratePolymorphicCodes:
+                    Log("Step 4/5: Generating Polymorphic Codes");
+                    UpdateProgress(0.35f, "Generating Polymorphic Codes");
+
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GeneratePolymorphicCodes", "Step 4/5");
+                    CheckForErrors("Step 4/5 failed - Polymorphic code generation failed");
 
                     _currentStep = BuildStep.CompileDll;
                     break;
 
                 case BuildStep.CompileDll:
-                    Log("Step 4/4: Compiling DLLs");
+                    Log("Step 5/5: Compiling DLLs");
                     UpdateProgress(0.4f, "Compiling DLLs");
 
                     CompileDllCommand.CompileDll(_buildTarget);
@@ -238,7 +249,7 @@ namespace JEngine.Core.Editor.CustomEditor
                     break;
 
                 case BuildStep.ObfuscateCode:
-                    Log("Step 4/4: Obfuscating Code");
+                    Log("Step 5/5: Obfuscating Code");
                     UpdateProgress(0.45f, "Obfuscating Code");
 
                     string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(_buildTarget);
@@ -249,7 +260,7 @@ namespace JEngine.Core.Editor.CustomEditor
                     break;
 
                 case BuildStep.CopyAssemblies:
-                    Log("Step 4/4: Copying Assemblies");
+                    Log("Step 5/5: Copying Assemblies");
                     UpdateProgress(0.5f, "Copying Assemblies");
 
                     CopyAssemblies(_buildTarget);
