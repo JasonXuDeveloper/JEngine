@@ -844,224 +844,261 @@ namespace JEngine.Util
             if (_currentTaskIndex >= _tasks.Count) return true;
 
             var task = _tasks[_currentTaskIndex];
+
+            return task.Type switch
+            {
+                JActionTaskType.Action => ProcessActionTask(task),
+                JActionTaskType.AsyncFunc => ProcessAsyncFuncTask(task),
+                JActionTaskType.Delay => ProcessDelayTask(task),
+                JActionTaskType.DelayFrame => ProcessDelayFrameTask(task),
+                JActionTaskType.WaitUntil => ProcessWaitUntilTask(task),
+                JActionTaskType.WaitWhile => ProcessWaitWhileTask(task),
+                JActionTaskType.RepeatWhile => ProcessRepeatWhileTask(task),
+                JActionTaskType.RepeatUntil => ProcessRepeatUntilTask(task),
+                JActionTaskType.Repeat => ProcessRepeatTask(task),
+                _ => true
+            };
+        }
+
+        private bool ProcessActionTask(JActionTask task)
+        {
+            try { task.InvokeAction(); }
+            catch (Exception e) { Debug.LogException(e); }
+            return true;
+        }
+
+        private bool ProcessAsyncFuncTask(JActionTask task)
+        {
+            if (!_awaitingAsync)
+            {
+                try
+                {
+                    _pendingAwaitable = task.InvokeAsyncFunc();
+                    _awaitingAsync = true;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                    return true;
+                }
+            }
+
+            if (_pendingAwaitable.GetAwaiter().IsCompleted)
+            {
+                _awaitingAsync = false;
+                _pendingAwaitable = default;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessDelayTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+            if (_delayEndTime <= 0)
+                _delayEndTime = currentTime + task.FloatParam1;
+            if (currentTime >= _delayEndTime)
+            {
+                _delayEndTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessDelayFrameTask(JActionTask task)
+        {
             float currentTime = Time.realtimeSinceStartup;
             int currentFrame = Time.frameCount;
 
-            switch (task.Type)
+            if (_blockingMode)
             {
-                case JActionTaskType.Action:
-                    try { task.InvokeAction(); }
-                    catch (Exception e) { Debug.LogException(e); }
+                if (_delayEndTime <= 0)
+                {
+                    float frameTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
+                    _delayEndTime = currentTime + (task.IntParam * frameTime);
+                }
+                if (currentTime >= _delayEndTime)
+                {
+                    _delayEndTime = 0;
                     return true;
-
-                case JActionTaskType.AsyncFunc:
-                    if (!_awaitingAsync)
-                    {
-                        // Start the async operation
-                        try
-                        {
-                            _pendingAwaitable = task.InvokeAsyncFunc();
-                            _awaitingAsync = true;
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogException(e);
-                            return true;
-                        }
-                    }
-                    // Check if async operation completed
-                    if (_pendingAwaitable.GetAwaiter().IsCompleted)
-                    {
-                        _awaitingAsync = false;
-                        _pendingAwaitable = default;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.Delay:
-                    if (_delayEndTime <= 0)
-                        _delayEndTime = currentTime + task.FloatParam1;
-                    if (currentTime >= _delayEndTime)
-                    {
-                        _delayEndTime = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.DelayFrame:
-                    if (_blockingMode)
-                    {
-                        // In blocking mode, convert frames to time using last known frame time
-                        if (_delayEndTime <= 0)
-                        {
-                            float frameTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
-                            _delayEndTime = currentTime + (task.IntParam * frameTime);
-                        }
-                        if (currentTime >= _delayEndTime)
-                        {
-                            _delayEndTime = 0;
-                            return true;
-                        }
-                        return false;
-                    }
-                    if (_delayEndFrame <= 0)
-                        _delayEndFrame = currentFrame + task.IntParam;
-                    if (currentFrame >= _delayEndFrame)
-                    {
-                        _delayEndFrame = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.WaitUntil:
-                    if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                    {
-                        if (currentTime - _repeatLastTime < task.FloatParam1)
-                            return false;
-                    }
-                    _repeatLastTime = currentTime;
-
-                    if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-                    {
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-
-                    try
-                    {
-                        if (task.InvokeCondition())
-                        {
-                            _repeatLastTime = 0;
-                            return true;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.WaitWhile:
-                    if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                    {
-                        if (currentTime - _repeatLastTime < task.FloatParam1)
-                            return false;
-                    }
-                    _repeatLastTime = currentTime;
-
-                    if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-                    {
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-
-                    try
-                    {
-                        if (!task.InvokeCondition())
-                        {
-                            _repeatLastTime = 0;
-                            return true;
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.RepeatWhile:
-                    if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-                    {
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-
-                    try
-                    {
-                        if (!task.InvokeCondition())
-                        {
-                            _repeatLastTime = 0;
-                            return true;
-                        }
-
-                        if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                        {
-                            if (currentTime - _repeatLastTime < task.FloatParam1)
-                                return false;
-                        }
-
-                        _repeatLastTime = currentTime;
-                        task.InvokeAction();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.RepeatUntil:
-                    if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-                    {
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-
-                    try
-                    {
-                        if (task.InvokeCondition())
-                        {
-                            _repeatLastTime = 0;
-                            return true;
-                        }
-
-                        if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                        {
-                            if (currentTime - _repeatLastTime < task.FloatParam1)
-                                return false;
-                        }
-
-                        _repeatLastTime = currentTime;
-                        task.InvokeAction();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-                    return false;
-
-                case JActionTaskType.Repeat:
-                    if (_repeatCounter >= task.IntParam)
-                    {
-                        _repeatCounter = 0;
-                        _repeatLastTime = 0;
-                        return true;
-                    }
-
-                    if (task.FloatParam1 > 0 && _repeatCounter > 0)
-                    {
-                        if (currentTime - _repeatLastTime < task.FloatParam1)
-                            return false;
-                    }
-
-                    _repeatLastTime = currentTime;
-
-                    try { task.InvokeAction(); }
-                    catch (Exception e) { Debug.LogException(e); }
-
-                    _repeatCounter++;
-                    return _repeatCounter >= task.IntParam;
-
-                default:
-                    return true;
+                }
+                return false;
             }
+
+            if (_delayEndFrame <= 0)
+                _delayEndFrame = currentFrame + task.IntParam;
+            if (currentFrame >= _delayEndFrame)
+            {
+                _delayEndFrame = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessWaitUntilTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+
+            if (task.FloatParam1 > 0 && _repeatLastTime > 0)
+            {
+                if (currentTime - _repeatLastTime < task.FloatParam1)
+                    return false;
+            }
+            _repeatLastTime = currentTime;
+
+            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
+            {
+                _repeatLastTime = 0;
+                return true;
+            }
+
+            try
+            {
+                if (task.InvokeCondition())
+                {
+                    _repeatLastTime = 0;
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                _repeatLastTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessWaitWhileTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+
+            if (task.FloatParam1 > 0 && _repeatLastTime > 0)
+            {
+                if (currentTime - _repeatLastTime < task.FloatParam1)
+                    return false;
+            }
+            _repeatLastTime = currentTime;
+
+            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
+            {
+                _repeatLastTime = 0;
+                return true;
+            }
+
+            try
+            {
+                if (!task.InvokeCondition())
+                {
+                    _repeatLastTime = 0;
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                _repeatLastTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessRepeatWhileTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+
+            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
+            {
+                _repeatLastTime = 0;
+                return true;
+            }
+
+            try
+            {
+                if (!task.InvokeCondition())
+                {
+                    _repeatLastTime = 0;
+                    return true;
+                }
+
+                if (task.FloatParam1 > 0 && _repeatLastTime > 0)
+                {
+                    if (currentTime - _repeatLastTime < task.FloatParam1)
+                        return false;
+                }
+
+                _repeatLastTime = currentTime;
+                task.InvokeAction();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                _repeatLastTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessRepeatUntilTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+
+            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
+            {
+                _repeatLastTime = 0;
+                return true;
+            }
+
+            try
+            {
+                if (task.InvokeCondition())
+                {
+                    _repeatLastTime = 0;
+                    return true;
+                }
+
+                if (task.FloatParam1 > 0 && _repeatLastTime > 0)
+                {
+                    if (currentTime - _repeatLastTime < task.FloatParam1)
+                        return false;
+                }
+
+                _repeatLastTime = currentTime;
+                task.InvokeAction();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                _repeatLastTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessRepeatTask(JActionTask task)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+
+            if (_repeatCounter >= task.IntParam)
+            {
+                _repeatCounter = 0;
+                _repeatLastTime = 0;
+                return true;
+            }
+
+            if (task.FloatParam1 > 0 && _repeatCounter > 0)
+            {
+                if (currentTime - _repeatLastTime < task.FloatParam1)
+                    return false;
+            }
+
+            _repeatLastTime = currentTime;
+
+            try { task.InvokeAction(); }
+            catch (Exception e) { Debug.LogException(e); }
+
+            _repeatCounter++;
+            return _repeatCounter >= task.IntParam;
         }
 
         private void OnExecutionComplete()
