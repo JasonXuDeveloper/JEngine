@@ -58,9 +58,6 @@ namespace JEngine.Core.Editor.CustomEditor
             GenerateEncryptionVM,
             GenerateSecretKey,
             GenerateAll,
-            GeneratePolymorphicCodes,
-            CompileDll,
-            ObfuscateCode,
             CopyAssemblies,
             BuildAssets,
             Complete
@@ -198,69 +195,39 @@ namespace JEngine.Core.Editor.CustomEditor
             {
                 case BuildStep.GenerateEncryptionVM:
                     Log("=== Phase 1: Building Code ===");
-                    Log("Step 1/4: Generating Encryption VM");
+                    Log("Step 1/3: Generating Encryption VM");
                     UpdateProgress(0.1f, "Generating Encryption VM");
 
-                    ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/4");
-                    CheckForErrors("Step 1/4 failed");
+                    ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/3");
+                    CheckForErrors("Step 1/3 failed");
 
                     _currentStep = BuildStep.GenerateSecretKey;
                     break;
 
                 case BuildStep.GenerateSecretKey:
-                    Log("Step 2/4: Generating Secret Key File");
+                    Log("Step 2/3: Generating Secret Key File");
                     UpdateProgress(0.2f, "Generating Secret Key");
 
-                    ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/4");
-                    CheckForErrors("Step 2/4 failed");
+                    ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/3");
+                    CheckForErrors("Step 2/3 failed");
 
                     _currentStep = BuildStep.GenerateAll;
                     break;
 
                 case BuildStep.GenerateAll:
-                    Log("Step 3/5: Running HybridCLR/ObfuzExtension/GenerateAll");
-                    UpdateProgress(0.3f, "Generating HybridCLR Data");
+                    Log("Step 3/3: Running HybridCLR/ObfuzExtension/GenerateAll");
+                    Log("This step compiles DLLs, generates polymorphic codes, and obfuscates assemblies");
+                    UpdateProgress(0.3f, "Compiling and Obfuscating");
 
-                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/5");
-                    CheckForErrorsExcluding("Step 3/5 failed - HybridCLR generation failed",
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/3");
+                    CheckForErrorsExcluding("Step 3/3 failed - HybridCLR generation failed",
                         "Create package main catalog file failed");
-
-                    _currentStep = BuildStep.GeneratePolymorphicCodes;
-                    break;
-
-                case BuildStep.GeneratePolymorphicCodes:
-                    Log("Step 4/5: Generating Polymorphic Codes");
-                    UpdateProgress(0.35f, "Generating Polymorphic Codes");
-
-                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GeneratePolymorphicCodes", "Step 4/5");
-                    CheckForErrors("Step 4/5 failed - Polymorphic code generation failed");
-
-                    _currentStep = BuildStep.CompileDll;
-                    break;
-
-                case BuildStep.CompileDll:
-                    Log("Step 5/5: Compiling DLLs");
-                    UpdateProgress(0.4f, "Compiling DLLs");
-
-                    CompileDllCommand.CompileDll(_buildTarget);
-                    CheckForErrors("DLL compilation failed");
-
-                    _currentStep = BuildStep.ObfuscateCode;
-                    break;
-
-                case BuildStep.ObfuscateCode:
-                    Log("Step 5/5: Obfuscating Code");
-                    UpdateProgress(0.45f, "Obfuscating Code");
-
-                    string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(_buildTarget);
-                    ObfuscateUtil.ObfuscateHotUpdateAssemblies(_buildTarget, obfuscatedPath);
-                    CheckForErrors("Code obfuscation failed");
 
                     _currentStep = BuildStep.CopyAssemblies;
                     break;
 
                 case BuildStep.CopyAssemblies:
-                    Log("Step 5/5: Copying Assemblies");
+                    Log("Step 3/3: Copying Assemblies");
                     UpdateProgress(0.5f, "Copying Assemblies");
 
                     CopyAssemblies(_buildTarget);
