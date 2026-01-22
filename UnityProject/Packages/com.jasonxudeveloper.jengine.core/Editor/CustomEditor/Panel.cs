@@ -23,25 +23,12 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using HybridCLR.Editor;
-using HybridCLR.Editor.Commands;
-using HybridCLR.Editor.Settings;
-using JEngine.Core.Encrypt;
-using JEngine.Core.Update;
-using Nino.Core;
-using Obfuz.Settings;
-using Obfuz4HybridCLR;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using YooAsset;
-using YooAsset.Editor;
 
 namespace JEngine.Core.Editor.CustomEditor
 {
@@ -378,7 +365,7 @@ namespace JEngine.Core.Editor.CustomEditor
                     _statusLabel.text = "Build completed";
                     EditorUtility.DisplayDialog("Build Successful", "Build completed successfully!", "OK");
                 },
-                onError: (e) =>
+                onError: e =>
                 {
                     SetBuildButtonsEnabled(true);
                     _statusLabel.text = "Build failed";
@@ -401,7 +388,7 @@ namespace JEngine.Core.Editor.CustomEditor
                     _statusLabel.text = "Code build completed";
                     EditorUtility.DisplayDialog("Code Build Successful", "Code build completed successfully!", "OK");
                 },
-                onError: (e) =>
+                onError: e =>
                 {
                     SetBuildButtonsEnabled(true);
                     _statusLabel.text = "Code build failed";
@@ -424,7 +411,7 @@ namespace JEngine.Core.Editor.CustomEditor
                     _statusLabel.text = "Assets build completed";
                     EditorUtility.DisplayDialog("Assets Build Successful", "Assets build completed successfully!", "OK");
                 },
-                onError: (e) =>
+                onError: e =>
                 {
                     SetBuildButtonsEnabled(true);
                     _statusLabel.text = "Assets build failed";
