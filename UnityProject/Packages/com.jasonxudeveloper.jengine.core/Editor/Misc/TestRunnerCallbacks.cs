@@ -10,16 +10,32 @@ namespace JEngine.Core.Editor.Misc
     [InitializeOnLoad]
     internal class TestRunnerCallbacks : ICallbacks
     {
+        private const string SessionStateKey = "JEngine.TestRunnerCallbacks.IsRunningTests";
+
+        private static volatile bool _isRunningTests;
+
         /// <summary>
         /// Returns true when tests are currently running
         /// </summary>
-        public static bool IsRunningTests { get; private set; }
+        public static bool IsRunningTests
+        {
+            get => _isRunningTests;
+            private set
+            {
+                _isRunningTests = value;
+                // Persist to SessionState to survive domain reloads during test execution
+                SessionState.SetBool(SessionStateKey, value);
+            }
+        }
 
         private static readonly TestRunnerCallbacks _instance = new TestRunnerCallbacks();
         private static TestRunnerApi _api;
 
         static TestRunnerCallbacks()
         {
+            // Restore state after domain reload (e.g., recompilation during test run)
+            _isRunningTests = SessionState.GetBool(SessionStateKey, false);
+
             _api = ScriptableObject.CreateInstance<TestRunnerApi>();
             _api.RegisterCallbacks(_instance);
             EditorApplication.quitting += OnEditorQuitting;
@@ -32,9 +48,12 @@ namespace JEngine.Core.Editor.Misc
             if (_api != null)
             {
                 _api.UnregisterCallbacks(_instance);
-                ScriptableObject.DestroyImmediate(_api);
+                Object.Destroy(_api);
                 _api = null;
             }
+
+            // Clear session state on quit
+            SessionState.EraseBool(SessionStateKey);
         }
 
         public void RunStarted(ITestAdaptor testsToRun)
