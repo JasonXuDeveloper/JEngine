@@ -58,6 +58,7 @@ namespace JEngine.Core.Editor.CustomEditor
             GenerateEncryptionVM,
             GenerateSecretKey,
             GenerateAll,
+            GeneratePolymorphicCodes,
             CopyAssemblies,
             BuildAssets,
             Complete
@@ -215,19 +216,29 @@ namespace JEngine.Core.Editor.CustomEditor
                     break;
 
                 case BuildStep.GenerateAll:
-                    Log("Step 3/3: Running HybridCLR/ObfuzExtension/GenerateAll");
-                    Log("This step compiles DLLs, generates polymorphic codes, and obfuscates assemblies");
+                    Log("Step 3/4: Running HybridCLR/ObfuzExtension/GenerateAll");
+                    Log("This step compiles DLLs and obfuscates assemblies");
                     UpdateProgress(0.3f, "Compiling and Obfuscating");
 
-                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/3");
-                    CheckForErrorsExcluding("Step 3/3 failed - HybridCLR generation failed",
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
+                    CheckForErrorsExcluding("Step 3/4 failed - HybridCLR generation failed",
                         "Create package main catalog file failed");
+
+                    _currentStep = BuildStep.GeneratePolymorphicCodes;
+                    break;
+
+                case BuildStep.GeneratePolymorphicCodes:
+                    Log("Step 4/4: Generating Polymorphic Codes");
+                    UpdateProgress(0.4f, "Generating Polymorphic Codes");
+
+                    ExecuteMenuItem("HybridCLR/ObfuzExtension/GeneratePolymorphicCodes", "Step 4/4");
+                    CheckForErrors("Step 4/4 failed - Polymorphic code generation failed");
 
                     _currentStep = BuildStep.CopyAssemblies;
                     break;
 
                 case BuildStep.CopyAssemblies:
-                    Log("Step 3/3: Copying Assemblies");
+                    Log("Step 4/4: Copying Assemblies");
                     UpdateProgress(0.5f, "Copying Assemblies");
 
                     CopyAssemblies(_buildTarget);
