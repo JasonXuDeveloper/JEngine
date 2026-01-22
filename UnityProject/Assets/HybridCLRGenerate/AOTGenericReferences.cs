@@ -19,9 +19,9 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// {{ AOT generic types
 	// $B.$eA<$B.$DA>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>
 	// Cysharp.Threading.Tasks.ITaskPoolNode<object>
 	// Cysharp.Threading.Tasks.IUniTaskSource<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,byte>>>>>>>>>>
 	// Cysharp.Threading.Tasks.IUniTaskSource<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,object>>>>>>>>>>
@@ -198,7 +198,6 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ObjectEqualityComparer<System.ValueTuple<byte,object>>
 	// System.Collections.Generic.ObjectEqualityComparer<byte>
 	// System.Collections.Generic.ObjectEqualityComparer<object>
-	// System.Func<Cysharp.Threading.Tasks.UniTask>
 	// System.Func<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,byte>>>>>>>>
 	// System.Func<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,object>>>>>>>>
 	// System.Func<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,byte>>>>>>>
@@ -394,13 +393,12 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 
 	public void RefMethods()
 	{
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable.Awaiter,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>(Cysharp.Threading.Tasks.SwitchToMainThreadAwaitable.Awaiter&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d>(Cysharp.Threading.Tasks.UniTask.Awaiter&,HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<byte>,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>(Cysharp.Threading.Tasks.UniTask.Awaiter<byte>&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>(System.Runtime.CompilerServices.TaskAwaiter&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<byte>,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>(Cysharp.Threading.Tasks.UniTask.Awaiter<byte>&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>(System.Runtime.CompilerServices.TaskAwaiter&,HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d>(HotUpdate.Code.EntryPoint.<>c.<<RunGame>b__0_8>d&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d>(HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>b__1>d&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d>(HotUpdate.Code.EntryPoint.<>c__DisplayClass0_0.<<RunGame>g__LoadAddOnPackage|0>d&)
 		// object UnityEngine.GameObject.GetComponent<object>()
 		// object YooAsset.AssetHandle.GetAssetObject<object>()
 		// YooAsset.AssetHandle YooAsset.ResourcePackage.LoadAssetAsync<object>(string,uint)

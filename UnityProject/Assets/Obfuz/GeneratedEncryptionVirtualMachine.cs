@@ -64,13 +64,13 @@ namespace Obfuz.EncryptionVM
         {
             switch (opCode)
             {
-               case 0:
+                case 0:
                 {
                     // MultipleInstruction
-                    value = value *  598188269 + _secretKey[84] + salt;
+                    value = value * 598188269 + _secretKey[84] + salt;
                     return value;
                 }
-               case 1:
+                case 1:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1350058129 + _secretKey[136];
@@ -80,7 +80,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1817406469 ^ salt;
                     return value;
                 }
-               case 2:
+                case 2:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1144218503 + _secretKey[246];
@@ -90,7 +90,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 3:
+                case 3:
                 {
                     // AddRotateXorInstruction
                     value += -1207833585 + _secretKey[26];
@@ -100,7 +100,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 29411710 ^ salt;
                     return value;
                 }
-               case 4:
+                case 4:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 18;
@@ -108,7 +108,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[85]) + salt;
                     return value;
                 }
-               case 5:
+                case 5:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1447238259 + _secretKey[165];
@@ -118,7 +118,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 6:
+                case 6:
                 {
                     // AddRotateXorInstruction
                     value += -1856354856 + _secretKey[178];
@@ -128,13 +128,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1262500500 ^ salt;
                     return value;
                 }
-               case 7:
+                case 7:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[53]) + salt) ^ 665464645;
                     return value;
                 }
-               case 8:
+                case 8:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -1044567439 ^ salt;
@@ -144,13 +144,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 9:
+                case 9:
                 {
                     // MultipleInstruction
-                    value = value *  522878123 + _secretKey[196] + salt;
+                    value = value * 522878123 + _secretKey[196] + salt;
                     return value;
                 }
-               case 10:
+                case 10:
                 {
                     // XorAddRotateInstruction
                     value ^= -755609206 ^ salt;
@@ -160,13 +160,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 11:
+                case 11:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[89]) ^ salt) + -1177184477;
                     return value;
                 }
-               case 12:
+                case 12:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 29;
@@ -174,7 +174,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[23]) + salt;
                     return value;
                 }
-               case 13:
+                case 13:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -1510419150 ^ salt;
@@ -184,7 +184,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 14:
+                case 14:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 2015893433 + _secretKey[156];
@@ -194,7 +194,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1134639492 ^ salt;
                     return value;
                 }
-               case 15:
+                case 15:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 7;
@@ -202,7 +202,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[95]) + salt;
                     return value;
                 }
-               case 16:
+                case 16:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -759315565 ^ salt;
@@ -212,7 +212,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 17:
+                case 17:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1266530571 + _secretKey[75];
@@ -222,7 +222,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -3885258 ^ salt;
                     return value;
                 }
-               case 18:
+                case 18:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -259404705 + _secretKey[153];
@@ -232,7 +232,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 19:
+                case 19:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1042624059 + _secretKey[86];
@@ -242,19 +242,19 @@ namespace Obfuz.EncryptionVM
                     value ^= 792769043 ^ salt;
                     return value;
                 }
-               case 20:
+                case 20:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[194]) ^ salt) + -512520382;
                     return value;
                 }
-               case 21:
+                case 21:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[195]) + salt) ^ -1864951858;
                     return value;
                 }
-               case 22:
+                case 22:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 15;
@@ -262,19 +262,19 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[2]) + salt;
                     return value;
                 }
-               case 23:
+                case 23:
                 {
                     // MultipleInstruction
-                    value = value *  -463118297 + _secretKey[203] + salt;
+                    value = value * -463118297 + _secretKey[203] + salt;
                     return value;
                 }
-               case 24:
+                case 24:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[110]) ^ salt) + 2026667919;
                     return value;
                 }
-               case 25:
+                case 25:
                 {
                     // AddXorRotateInstruction
                     value += 848657810 + _secretKey[133];
@@ -284,7 +284,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 26:
+                case 26:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 5;
@@ -292,7 +292,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[93]) + salt;
                     return value;
                 }
-               case 27:
+                case 27:
                 {
                     // XorAddRotateInstruction
                     value ^= 1294662302 ^ salt;
@@ -302,7 +302,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 28:
+                case 28:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -1438081752 ^ salt;
@@ -312,7 +312,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 29:
+                case 29:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 6;
@@ -320,7 +320,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[240]) + salt;
                     return value;
                 }
-               case 30:
+                case 30:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1892661727 + _secretKey[215];
@@ -330,7 +330,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1594594445 ^ salt;
                     return value;
                 }
-               case 31:
+                case 31:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 19;
@@ -338,7 +338,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[49]) + salt;
                     return value;
                 }
-               case 32:
+                case 32:
                 {
                     // XorAddRotateInstruction
                     value ^= 226193183 ^ salt;
@@ -348,7 +348,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 33:
+                case 33:
                 {
                     // XorAddRotateInstruction
                     value ^= -484591087 ^ salt;
@@ -358,7 +358,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 34:
+                case 34:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1382643267 + _secretKey[211];
@@ -368,7 +368,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 35:
+                case 35:
                 {
                     // XorAddRotateInstruction
                     value ^= 1658142493 ^ salt;
@@ -378,13 +378,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 36:
+                case 36:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[90]) + salt) ^ -1892941953;
                     return value;
                 }
-               case 37:
+                case 37:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -1297440001 ^ salt;
@@ -394,7 +394,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 38:
+                case 38:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -375439505 + _secretKey[213];
@@ -404,7 +404,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1353158598 ^ salt;
                     return value;
                 }
-               case 39:
+                case 39:
                 {
                     // XorAddRotateInstruction
                     value ^= -934836680 ^ salt;
@@ -414,7 +414,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 40:
+                case 40:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1427441479 + _secretKey[140];
@@ -424,7 +424,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 41:
+                case 41:
                 {
                     // AddRotateXorInstruction
                     value += 969234286 + _secretKey[116];
@@ -434,13 +434,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -312111197 ^ salt;
                     return value;
                 }
-               case 42:
+                case 42:
                 {
                     // MultipleInstruction
-                    value = value *  -1130955295 + _secretKey[29] + salt;
+                    value = value * -1130955295 + _secretKey[29] + salt;
                     return value;
                 }
-               case 43:
+                case 43:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 28;
@@ -448,7 +448,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[1]) + salt;
                     return value;
                 }
-               case 44:
+                case 44:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 4;
@@ -456,7 +456,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[184]) + salt;
                     return value;
                 }
-               case 45:
+                case 45:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1782633617 + _secretKey[199];
@@ -466,7 +466,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 46:
+                case 46:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 196245895 ^ salt;
@@ -476,7 +476,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 47:
+                case 47:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -50587953 + _secretKey[10];
@@ -486,7 +486,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 48:
+                case 48:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1216851115 + _secretKey[238];
@@ -496,13 +496,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 49:
+                case 49:
                 {
                     // MultipleInstruction
-                    value = value *  -2133817615 + _secretKey[172] + salt;
+                    value = value * -2133817615 + _secretKey[172] + salt;
                     return value;
                 }
-               case 50:
+                case 50:
                 {
                     // AddXorRotateInstruction
                     value += 1412414820 + _secretKey[219];
@@ -512,7 +512,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 51:
+                case 51:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 10;
@@ -520,7 +520,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[97]) + salt;
                     return value;
                 }
-               case 52:
+                case 52:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1791837593 + _secretKey[63];
@@ -530,7 +530,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -21948406 ^ salt;
                     return value;
                 }
-               case 53:
+                case 53:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 7;
@@ -538,13 +538,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[221]) + salt;
                     return value;
                 }
-               case 54:
+                case 54:
                 {
                     // MultipleInstruction
-                    value = value *  -1220403071 + _secretKey[96] + salt;
+                    value = value * -1220403071 + _secretKey[96] + salt;
                     return value;
                 }
-               case 55:
+                case 55:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -867896207 + _secretKey[29];
@@ -554,7 +554,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1022882984 ^ salt;
                     return value;
                 }
-               case 56:
+                case 56:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 2122077674 ^ salt;
@@ -564,7 +564,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 57:
+                case 57:
                 {
                     // AddRotateXorInstruction
                     value += -503448718 + _secretKey[175];
@@ -574,13 +574,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -720824840 ^ salt;
                     return value;
                 }
-               case 58:
+                case 58:
                 {
                     // MultipleInstruction
-                    value = value *  -280528271 + _secretKey[231] + salt;
+                    value = value * -280528271 + _secretKey[231] + salt;
                     return value;
                 }
-               case 59:
+                case 59:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 19;
@@ -588,7 +588,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[75]) + salt;
                     return value;
                 }
-               case 60:
+                case 60:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1403438719 + _secretKey[171];
@@ -598,7 +598,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1420744071 ^ salt;
                     return value;
                 }
-               case 61:
+                case 61:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 1366253139 ^ salt;
@@ -608,7 +608,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 62:
+                case 62:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 24444809 + _secretKey[132];
@@ -618,7 +618,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 63:
+                case 63:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 22;
@@ -626,19 +626,19 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[119]) + salt;
                     return value;
                 }
-               case 64:
+                case 64:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[15]) + salt) ^ 1262347216;
                     return value;
                 }
-               case 65:
+                case 65:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[126]) ^ salt) + 1780280992;
                     return value;
                 }
-               case 66:
+                case 66:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1871888237 + _secretKey[85];
@@ -648,13 +648,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 67:
+                case 67:
                 {
                     // MultipleInstruction
-                    value = value *  931252767 + _secretKey[128] + salt;
+                    value = value * 931252767 + _secretKey[128] + salt;
                     return value;
                 }
-               case 68:
+                case 68:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 24;
@@ -662,13 +662,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[178]) + salt;
                     return value;
                 }
-               case 69:
+                case 69:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[61]) + salt) ^ 1649427052;
                     return value;
                 }
-               case 70:
+                case 70:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -100486091 + _secretKey[83];
@@ -678,7 +678,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 849172121 ^ salt;
                     return value;
                 }
-               case 71:
+                case 71:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 16;
@@ -686,7 +686,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[169]) + salt;
                     return value;
                 }
-               case 72:
+                case 72:
                 {
                     // XorAddRotateInstruction
                     value ^= 1068287172 ^ salt;
@@ -696,13 +696,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 73:
+                case 73:
                 {
                     // MultipleInstruction
-                    value = value *  -729679733 + _secretKey[34] + salt;
+                    value = value * -729679733 + _secretKey[34] + salt;
                     return value;
                 }
-               case 74:
+                case 74:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1624925351 + _secretKey[30];
@@ -712,7 +712,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -145743337 ^ salt;
                     return value;
                 }
-               case 75:
+                case 75:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1768166349 + _secretKey[142];
@@ -722,13 +722,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 280941267 ^ salt;
                     return value;
                 }
-               case 76:
+                case 76:
                 {
                     // MultipleInstruction
-                    value = value *  -1708700487 + _secretKey[156] + salt;
+                    value = value * -1708700487 + _secretKey[156] + salt;
                     return value;
                 }
-               case 77:
+                case 77:
                 {
                     // AddRotateXorInstruction
                     value += 314625916 + _secretKey[192];
@@ -738,13 +738,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 827331935 ^ salt;
                     return value;
                 }
-               case 78:
+                case 78:
                 {
                     // MultipleInstruction
-                    value = value *  875189907 + _secretKey[141] + salt;
+                    value = value * 875189907 + _secretKey[141] + salt;
                     return value;
                 }
-               case 79:
+                case 79:
                 {
                     // AddXorRotateInstruction
                     value += 1607953190 + _secretKey[133];
@@ -754,7 +754,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 80:
+                case 80:
                 {
                     // XorAddRotateInstruction
                     value ^= -1454482890 ^ salt;
@@ -764,13 +764,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 81:
+                case 81:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[195]) + salt) ^ 814860713;
                     return value;
                 }
-               case 82:
+                case 82:
                 {
                     // AddRotateXorInstruction
                     value += 1998643542 + _secretKey[171];
@@ -780,7 +780,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 213310246 ^ salt;
                     return value;
                 }
-               case 83:
+                case 83:
                 {
                     // AddRotateXorInstruction
                     value += 542686146 + _secretKey[249];
@@ -790,7 +790,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -696314173 ^ salt;
                     return value;
                 }
-               case 84:
+                case 84:
                 {
                     // AddRotateXorInstruction
                     value += 1734820207 + _secretKey[2];
@@ -800,13 +800,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 118718247 ^ salt;
                     return value;
                 }
-               case 85:
+                case 85:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[143]) + salt) ^ 1553710234;
                     return value;
                 }
-               case 86:
+                case 86:
                 {
                     // AddRotateXorInstruction
                     value += -217984331 + _secretKey[146];
@@ -816,13 +816,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1402843691 ^ salt;
                     return value;
                 }
-               case 87:
+                case 87:
                 {
                     // MultipleInstruction
-                    value = value *  1078374119 + _secretKey[5] + salt;
+                    value = value * 1078374119 + _secretKey[5] + salt;
                     return value;
                 }
-               case 88:
+                case 88:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -975647447 + _secretKey[158];
@@ -832,13 +832,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -2044505542 ^ salt;
                     return value;
                 }
-               case 89:
+                case 89:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[40]) ^ salt) + -1213654475;
                     return value;
                 }
-               case 90:
+                case 90:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -1886972278 ^ salt;
@@ -848,7 +848,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 91:
+                case 91:
                 {
                     // AddRotateXorInstruction
                     value += -1724625239 + _secretKey[223];
@@ -858,19 +858,19 @@ namespace Obfuz.EncryptionVM
                     value ^= -979249928 ^ salt;
                     return value;
                 }
-               case 92:
+                case 92:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[83]) + salt) ^ -1104541704;
                     return value;
                 }
-               case 93:
+                case 93:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[31]) + salt) ^ 311150152;
                     return value;
                 }
-               case 94:
+                case 94:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 116496631 ^ salt;
@@ -880,7 +880,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 95:
+                case 95:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1932552195 + _secretKey[87];
@@ -890,7 +890,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2133438141 ^ salt;
                     return value;
                 }
-               case 96:
+                case 96:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 126641773 + _secretKey[174];
@@ -900,7 +900,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 225535005 ^ salt;
                     return value;
                 }
-               case 97:
+                case 97:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1013570837 + _secretKey[175];
@@ -910,7 +910,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1703839105 ^ salt;
                     return value;
                 }
-               case 98:
+                case 98:
                 {
                     // XorAddRotateInstruction
                     value ^= -447564571 ^ salt;
@@ -920,13 +920,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 99:
+                case 99:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[111]) + salt) ^ -316631669;
                     return value;
                 }
-               case 100:
+                case 100:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -405694625 ^ salt;
@@ -936,7 +936,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 101:
+                case 101:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -910384311 + _secretKey[212];
@@ -946,19 +946,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 102:
+                case 102:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[18]) ^ salt) + -853736135;
                     return value;
                 }
-               case 103:
+                case 103:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[116]) ^ salt) + 1321376878;
                     return value;
                 }
-               case 104:
+                case 104:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1039555235 + _secretKey[7];
@@ -968,7 +968,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 541697309 ^ salt;
                     return value;
                 }
-               case 105:
+                case 105:
                 {
                     // AddRotateXorInstruction
                     value += -822594180 + _secretKey[1];
@@ -978,13 +978,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1176608900 ^ salt;
                     return value;
                 }
-               case 106:
+                case 106:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[110]) ^ salt) + -882893600;
                     return value;
                 }
-               case 107:
+                case 107:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -346726819 + _secretKey[114];
@@ -994,13 +994,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1566546809 ^ salt;
                     return value;
                 }
-               case 108:
+                case 108:
                 {
                     // MultipleInstruction
-                    value = value *  -981516343 + _secretKey[97] + salt;
+                    value = value * -981516343 + _secretKey[97] + salt;
                     return value;
                 }
-               case 109:
+                case 109:
                 {
                     // XorAddRotateInstruction
                     value ^= -72794161 ^ salt;
@@ -1010,13 +1010,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 110:
+                case 110:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[238]) ^ salt) + -1619543125;
                     return value;
                 }
-               case 111:
+                case 111:
                 {
                     // XorAddRotateInstruction
                     value ^= 1170459122 ^ salt;
@@ -1026,7 +1026,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 112:
+                case 112:
                 {
                     // AddXorRotateInstruction
                     value += 251687012 + _secretKey[219];
@@ -1036,13 +1036,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 113:
+                case 113:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[97]) ^ salt) + -1049972438;
                     return value;
                 }
-               case 114:
+                case 114:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -492239002 ^ salt;
@@ -1052,13 +1052,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 115:
+                case 115:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[221]) ^ salt) + -748126329;
                     return value;
                 }
-               case 116:
+                case 116:
                 {
                     // AddXorRotateInstruction
                     value += -441051263 + _secretKey[96];
@@ -1068,7 +1068,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 117:
+                case 117:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1850062787 + _secretKey[88];
@@ -1078,13 +1078,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 543895274 ^ salt;
                     return value;
                 }
-               case 118:
+                case 118:
                 {
                     // MultipleInstruction
-                    value = value *  -747527445 + _secretKey[140] + salt;
+                    value = value * -747527445 + _secretKey[140] + salt;
                     return value;
                 }
-               case 119:
+                case 119:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 18;
@@ -1092,7 +1092,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[175]) + salt;
                     return value;
                 }
-               case 120:
+                case 120:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 345252089 + _secretKey[57];
@@ -1102,7 +1102,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1300544743 ^ salt;
                     return value;
                 }
-               case 121:
+                case 121:
                 {
                     // XorAddRotateInstruction
                     value ^= -547380749 ^ salt;
@@ -1112,7 +1112,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 122:
+                case 122:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 683601851 ^ salt;
@@ -1122,7 +1122,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 123:
+                case 123:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 20;
@@ -1130,7 +1130,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[15]) + salt;
                     return value;
                 }
-               case 124:
+                case 124:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 8;
@@ -1138,19 +1138,19 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[132]) + salt;
                     return value;
                 }
-               case 125:
+                case 125:
                 {
                     // MultipleInstruction
-                    value = value *  1436085223 + _secretKey[120] + salt;
+                    value = value * 1436085223 + _secretKey[120] + salt;
                     return value;
                 }
-               case 126:
+                case 126:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[197]) ^ salt) + -1374139785;
                     return value;
                 }
-               case 127:
+                case 127:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 15;
@@ -1158,7 +1158,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[26]) + salt;
                     return value;
                 }
-               case 128:
+                case 128:
                 {
                     // XorAddRotateInstruction
                     value ^= 1415280510 ^ salt;
@@ -1168,7 +1168,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 129:
+                case 129:
                 {
                     // AddRotateXorInstruction
                     value += 1410706317 + _secretKey[165];
@@ -1178,7 +1178,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2132310656 ^ salt;
                     return value;
                 }
-               case 130:
+                case 130:
                 {
                     // XorAddRotateInstruction
                     value ^= 1264971736 ^ salt;
@@ -1188,7 +1188,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 131:
+                case 131:
                 {
                     // AddXorRotateInstruction
                     value += -1872731835 + _secretKey[53];
@@ -1198,7 +1198,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 132:
+                case 132:
                 {
                     // AddXorRotateInstruction
                     value += 264114638 + _secretKey[240];
@@ -1208,7 +1208,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 133:
+                case 133:
                 {
                     // AddRotateXorInstruction
                     value += 824712252 + _secretKey[138];
@@ -1218,7 +1218,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1266414649 ^ salt;
                     return value;
                 }
-               case 134:
+                case 134:
                 {
                     // AddRotateXorInstruction
                     value += -766337246 + _secretKey[35];
@@ -1228,7 +1228,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2133737246 ^ salt;
                     return value;
                 }
-               case 135:
+                case 135:
                 {
                     // AddXorRotateInstruction
                     value += -1997614825 + _secretKey[165];
@@ -1238,7 +1238,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 136:
+                case 136:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 278699987 + _secretKey[57];
@@ -1248,7 +1248,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 137:
+                case 137:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 28;
@@ -1256,19 +1256,19 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[192]) + salt;
                     return value;
                 }
-               case 138:
+                case 138:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[135]) + salt) ^ 1715223135;
                     return value;
                 }
-               case 139:
+                case 139:
                 {
                     // MultipleInstruction
-                    value = value *  1809423757 + _secretKey[79] + salt;
+                    value = value * 1809423757 + _secretKey[79] + salt;
                     return value;
                 }
-               case 140:
+                case 140:
                 {
                     // AddRotateXorInstruction
                     value += -408450171 + _secretKey[11];
@@ -1278,13 +1278,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 806320034 ^ salt;
                     return value;
                 }
-               case 141:
+                case 141:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[95]) ^ salt) + -433941646;
                     return value;
                 }
-               case 142:
+                case 142:
                 {
                     // AddXorRotateInstruction
                     value += 1775820811 + _secretKey[169];
@@ -1294,7 +1294,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 143:
+                case 143:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 457346731 + _secretKey[19];
@@ -1304,7 +1304,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 144:
+                case 144:
                 {
                     // AddRotateXorInstruction
                     value += -650723591 + _secretKey[206];
@@ -1314,19 +1314,19 @@ namespace Obfuz.EncryptionVM
                     value ^= -1181275232 ^ salt;
                     return value;
                 }
-               case 145:
+                case 145:
                 {
                     // MultipleInstruction
-                    value = value *  1369495811 + _secretKey[169] + salt;
+                    value = value * 1369495811 + _secretKey[169] + salt;
                     return value;
                 }
-               case 146:
+                case 146:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[154]) + salt) ^ -1297404981;
                     return value;
                 }
-               case 147:
+                case 147:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 787548271 + _secretKey[181];
@@ -1336,7 +1336,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 801710213 ^ salt;
                     return value;
                 }
-               case 148:
+                case 148:
                 {
                     // AddXorRotateInstruction
                     value += -1933121809 + _secretKey[230];
@@ -1346,7 +1346,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 149:
+                case 149:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 30;
@@ -1354,7 +1354,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[188]) + salt;
                     return value;
                 }
-               case 150:
+                case 150:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 30;
@@ -1362,13 +1362,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[53]) + salt;
                     return value;
                 }
-               case 151:
+                case 151:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[138]) ^ salt) + -2119615805;
                     return value;
                 }
-               case 152:
+                case 152:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1289692111 + _secretKey[102];
@@ -1378,7 +1378,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 221292457 ^ salt;
                     return value;
                 }
-               case 153:
+                case 153:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -414757417 + _secretKey[248];
@@ -1388,13 +1388,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1486712056 ^ salt;
                     return value;
                 }
-               case 154:
+                case 154:
                 {
                     // MultipleInstruction
-                    value = value *  1625437745 + _secretKey[72] + salt;
+                    value = value * 1625437745 + _secretKey[72] + salt;
                     return value;
                 }
-               case 155:
+                case 155:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1500723835 + _secretKey[247];
@@ -1404,7 +1404,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -81016400 ^ salt;
                     return value;
                 }
-               case 156:
+                case 156:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -939493617 + _secretKey[252];
@@ -1414,7 +1414,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1187848798 ^ salt;
                     return value;
                 }
-               case 157:
+                case 157:
                 {
                     // AddXorRotateInstruction
                     value += 605454035 + _secretKey[108];
@@ -1424,7 +1424,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 158:
+                case 158:
                 {
                     // AddXorRotateInstruction
                     value += 2112611413 + _secretKey[235];
@@ -1434,13 +1434,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 159:
+                case 159:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[229]) + salt) ^ 1660696922;
                     return value;
                 }
-               case 160:
+                case 160:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1280312911 + _secretKey[111];
@@ -1450,7 +1450,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -431219573 ^ salt;
                     return value;
                 }
-               case 161:
+                case 161:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 1658933717 ^ salt;
@@ -1460,7 +1460,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 162:
+                case 162:
                 {
                     // AddRotateXorInstruction
                     value += -1278798944 + _secretKey[72];
@@ -1470,7 +1470,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 609336148 ^ salt;
                     return value;
                 }
-               case 163:
+                case 163:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -1217570675 + _secretKey[57];
@@ -1480,7 +1480,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 164:
+                case 164:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1129428085 + _secretKey[225];
@@ -1490,7 +1490,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 165:
+                case 165:
                 {
                     // XorAddRotateInstruction
                     value ^= 318043677 ^ salt;
@@ -1500,7 +1500,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 166:
+                case 166:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 601748357 + _secretKey[184];
@@ -1510,13 +1510,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 167:
+                case 167:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[114]) + salt) ^ -312123044;
                     return value;
                 }
-               case 168:
+                case 168:
                 {
                     // AddXorRotateInstruction
                     value += 1897551751 + _secretKey[139];
@@ -1526,7 +1526,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 169:
+                case 169:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 15;
@@ -1534,13 +1534,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[10]) + salt;
                     return value;
                 }
-               case 170:
+                case 170:
                 {
                     // MultipleInstruction
-                    value = value *  -1716044921 + _secretKey[60] + salt;
+                    value = value * -1716044921 + _secretKey[60] + salt;
                     return value;
                 }
-               case 171:
+                case 171:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 820953326 ^ salt;
@@ -1550,19 +1550,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 172:
+                case 172:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[89]) + salt) ^ 921116076;
                     return value;
                 }
-               case 173:
+                case 173:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[82]) ^ salt) + -1261901861;
                     return value;
                 }
-               case 174:
+                case 174:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1029416329 + _secretKey[42];
@@ -1572,7 +1572,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1758870671 ^ salt;
                     return value;
                 }
-               case 175:
+                case 175:
                 {
                     // XorAddRotateInstruction
                     value ^= -99371457 ^ salt;
@@ -1582,7 +1582,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 176:
+                case 176:
                 {
                     // AddXorRotateInstruction
                     value += 1901168605 + _secretKey[131];
@@ -1592,7 +1592,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 177:
+                case 177:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 383500913 + _secretKey[29];
@@ -1602,7 +1602,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -805817000 ^ salt;
                     return value;
                 }
-               case 178:
+                case 178:
                 {
                     // AddXorRotateInstruction
                     value += 28490730 + _secretKey[13];
@@ -1612,7 +1612,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 179:
+                case 179:
                 {
                     // XorAddRotateInstruction
                     value ^= 1812019570 ^ salt;
@@ -1622,13 +1622,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 180:
+                case 180:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[231]) + salt) ^ 1563652208;
                     return value;
                 }
-               case 181:
+                case 181:
                 {
                     // AddRotateXorInstruction
                     value += -542613261 + _secretKey[75];
@@ -1638,7 +1638,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1148350591 ^ salt;
                     return value;
                 }
-               case 182:
+                case 182:
                 {
                     // AddXorRotateInstruction
                     value += 1462569147 + _secretKey[135];
@@ -1648,7 +1648,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 183:
+                case 183:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 934570325 + _secretKey[15];
@@ -1658,7 +1658,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 184:
+                case 184:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 5;
@@ -1666,7 +1666,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[230]) + salt;
                     return value;
                 }
-               case 185:
+                case 185:
                 {
                     // AddRotateXorInstruction
                     value += 45305078 + _secretKey[119];
@@ -1676,7 +1676,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1218428368 ^ salt;
                     return value;
                 }
-               case 186:
+                case 186:
                 {
                     // AddXorRotateInstruction
                     value += 148564506 + _secretKey[160];
@@ -1686,7 +1686,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 187:
+                case 187:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 21;
@@ -1694,7 +1694,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[242]) + salt;
                     return value;
                 }
-               case 188:
+                case 188:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1881635163 + _secretKey[30];
@@ -1704,7 +1704,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 730302816 ^ salt;
                     return value;
                 }
-               case 189:
+                case 189:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 18;
@@ -1712,7 +1712,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[93]) + salt;
                     return value;
                 }
-               case 190:
+                case 190:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 29;
@@ -1720,7 +1720,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[69]) + salt;
                     return value;
                 }
-               case 191:
+                case 191:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 1474104403 ^ salt;
@@ -1730,13 +1730,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 192:
+                case 192:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[170]) ^ salt) + 1345231273;
                     return value;
                 }
-               case 193:
+                case 193:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 28;
@@ -1744,7 +1744,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[138]) + salt;
                     return value;
                 }
-               case 194:
+                case 194:
                 {
                     // AddRotateXorInstruction
                     value += -1649692985 + _secretKey[138];
@@ -1754,7 +1754,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1086752221 ^ salt;
                     return value;
                 }
-               case 195:
+                case 195:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 216360478 ^ salt;
@@ -1764,7 +1764,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 196:
+                case 196:
                 {
                     // XorAddRotateInstruction
                     value ^= 1736125070 ^ salt;
@@ -1774,7 +1774,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 197:
+                case 197:
                 {
                     // XorAddRotateInstruction
                     value ^= -1590872932 ^ salt;
@@ -1784,7 +1784,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 198:
+                case 198:
                 {
                     // AddXorRotateInstruction
                     value += -2086916257 + _secretKey[135];
@@ -1794,19 +1794,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 199:
+                case 199:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[133]) + salt) ^ -1188487898;
                     return value;
                 }
-               case 200:
+                case 200:
                 {
                     // MultipleInstruction
-                    value = value *  -165216181 + _secretKey[162] + salt;
+                    value = value * -165216181 + _secretKey[162] + salt;
                     return value;
                 }
-               case 201:
+                case 201:
                 {
                     // XorAddRotateInstruction
                     value ^= 2087683186 ^ salt;
@@ -1816,7 +1816,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 202:
+                case 202:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -1941291837 + _secretKey[58];
@@ -1826,13 +1826,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1855365205 ^ salt;
                     return value;
                 }
-               case 203:
+                case 203:
                 {
                     // MultipleInstruction
-                    value = value *  2036569383 + _secretKey[66] + salt;
+                    value = value * 2036569383 + _secretKey[66] + salt;
                     return value;
                 }
-               case 204:
+                case 204:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 795577849 + _secretKey[206];
@@ -1842,13 +1842,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 205:
+                case 205:
                 {
                     // MultipleInstruction
-                    value = value *  -1063887357 + _secretKey[169] + salt;
+                    value = value * -1063887357 + _secretKey[169] + salt;
                     return value;
                 }
-               case 206:
+                case 206:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -387621173 ^ salt;
@@ -1858,13 +1858,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 207:
+                case 207:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[133]) + salt) ^ -1302837102;
                     return value;
                 }
-               case 208:
+                case 208:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 1201861103 ^ salt;
@@ -1874,13 +1874,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 209:
+                case 209:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[188]) ^ salt) + -1698116194;
                     return value;
                 }
-               case 210:
+                case 210:
                 {
                     // XorAddRotateInstruction
                     value ^= 955827838 ^ salt;
@@ -1890,7 +1890,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 211:
+                case 211:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1209501053 + _secretKey[206];
@@ -1900,19 +1900,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 212:
+                case 212:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[215]) + salt) ^ 1451245279;
                     return value;
                 }
-               case 213:
+                case 213:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[248]) ^ salt) + -48271475;
                     return value;
                 }
-               case 214:
+                case 214:
                 {
                     // MultipleRotateXorInstruction
                     value = value * -685299407 + _secretKey[72];
@@ -1922,7 +1922,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 280704379 ^ salt;
                     return value;
                 }
-               case 215:
+                case 215:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1188587057 + _secretKey[176];
@@ -1932,7 +1932,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1507466225 ^ salt;
                     return value;
                 }
-               case 216:
+                case 216:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 23;
@@ -1940,13 +1940,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[162]) + salt;
                     return value;
                 }
-               case 217:
+                case 217:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[108]) + salt) ^ -1329546797;
                     return value;
                 }
-               case 218:
+                case 218:
                 {
                     // XorAddRotateInstruction
                     value ^= 846489904 ^ salt;
@@ -1956,13 +1956,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 219:
+                case 219:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[127]) + salt) ^ -339712479;
                     return value;
                 }
-               case 220:
+                case 220:
                 {
                     // XorAddRotateInstruction
                     value ^= -1008587035 ^ salt;
@@ -1972,25 +1972,25 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 221:
+                case 221:
                 {
                     // MultipleInstruction
-                    value = value *  -2016434293 + _secretKey[111] + salt;
+                    value = value * -2016434293 + _secretKey[111] + salt;
                     return value;
                 }
-               case 222:
+                case 222:
                 {
                     // MultipleInstruction
-                    value = value *  -491329185 + _secretKey[198] + salt;
+                    value = value * -491329185 + _secretKey[198] + salt;
                     return value;
                 }
-               case 223:
+                case 223:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[160]) ^ salt) + -449129672;
                     return value;
                 }
-               case 224:
+                case 224:
                 {
                     // MultipleXorRotateInstruction
                     value = value * -86469931 + _secretKey[84];
@@ -2000,13 +2000,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 225:
+                case 225:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[58]) + salt) ^ 946019090;
                     return value;
                 }
-               case 226:
+                case 226:
                 {
                     // AddRotateXorInstruction
                     value += 694016884 + _secretKey[225];
@@ -2016,7 +2016,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1350981383 ^ salt;
                     return value;
                 }
-               case 227:
+                case 227:
                 {
                     // AddRotateXorInstruction
                     value += -870643939 + _secretKey[168];
@@ -2026,7 +2026,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1680252929 ^ salt;
                     return value;
                 }
-               case 228:
+                case 228:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 4;
@@ -2034,7 +2034,7 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[184]) + salt;
                     return value;
                 }
-               case 229:
+                case 229:
                 {
                     // AddRotateXorInstruction
                     value += 1785715822 + _secretKey[199];
@@ -2044,13 +2044,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1727043214 ^ salt;
                     return value;
                 }
-               case 230:
+                case 230:
                 {
                     // XorInstruction
                     value = ((value ^ _secretKey[139]) + salt) ^ -1277148537;
                     return value;
                 }
-               case 231:
+                case 231:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1298248033 + _secretKey[226];
@@ -2060,7 +2060,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 232:
+                case 232:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -879839609 ^ salt;
@@ -2070,19 +2070,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 233:
+                case 233:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[181]) ^ salt) + 328489970;
                     return value;
                 }
-               case 234:
+                case 234:
                 {
                     // MultipleInstruction
-                    value = value *  -1393808723 + _secretKey[89] + salt;
+                    value = value * -1393808723 + _secretKey[89] + salt;
                     return value;
                 }
-               case 235:
+                case 235:
                 {
                     // XorAddRotateInstruction
                     value ^= 1290000091 ^ salt;
@@ -2092,13 +2092,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 236:
+                case 236:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[113]) ^ salt) + 1890859361;
                     return value;
                 }
-               case 237:
+                case 237:
                 {
                     // AddRotateXorInstruction
                     value += 1045620543 + _secretKey[216];
@@ -2108,7 +2108,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1434413518 ^ salt;
                     return value;
                 }
-               case 238:
+                case 238:
                 {
                     // AddXorRotateInstruction
                     value += -1706485027 + _secretKey[131];
@@ -2118,7 +2118,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 239:
+                case 239:
                 {
                     // AddXorRotateInstruction
                     value += 1271081841 + _secretKey[29];
@@ -2128,7 +2128,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 240:
+                case 240:
                 {
                     // XorMultipleRotateInstruction
                     value ^= -842525462 ^ salt;
@@ -2138,13 +2138,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 241:
+                case 241:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[175]) ^ salt) + 1030822002;
                     return value;
                 }
-               case 242:
+                case 242:
                 {
                     // MultipleRotateXorInstruction
                     value = value * 1176352505 + _secretKey[57];
@@ -2154,7 +2154,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 811922151 ^ salt;
                     return value;
                 }
-               case 243:
+                case 243:
                 {
                     // AddRotateXorInstruction
                     value += 656680947 + _secretKey[75];
@@ -2164,7 +2164,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1258702719 ^ salt;
                     return value;
                 }
-               case 244:
+                case 244:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 90809787 ^ salt;
@@ -2174,7 +2174,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 245:
+                case 245:
                 {
                     // AddRotateXorInstruction
                     value += -532913580 + _secretKey[15];
@@ -2184,7 +2184,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 99436168 ^ salt;
                     return value;
                 }
-               case 246:
+                case 246:
                 {
                     // MultipleXorRotateInstruction
                     value = value * 1306804229 + _secretKey[230];
@@ -2194,7 +2194,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 247:
+                case 247:
                 {
                     // XorMultipleRotateInstruction
                     value ^= 1941306053 ^ salt;
@@ -2204,7 +2204,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 248:
+                case 248:
                 {
                     // AddRotateXorInstruction
                     value += 883137918 + _secretKey[96];
@@ -2214,7 +2214,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2045091157 ^ salt;
                     return value;
                 }
-               case 249:
+                case 249:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 13;
@@ -2222,13 +2222,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[165]) + salt;
                     return value;
                 }
-               case 250:
+                case 250:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[96]) ^ salt) + -394947456;
                     return value;
                 }
-               case 251:
+                case 251:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 18;
@@ -2236,13 +2236,13 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[93]) + salt;
                     return value;
                 }
-               case 252:
+                case 252:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[69]) ^ salt) + 1917332797;
                     return value;
                 }
-               case 253:
+                case 253:
                 {
                     // AddXorRotateInstruction
                     value += 1006809939 + _secretKey[113];
@@ -2252,7 +2252,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 254:
+                case 254:
                 {
                     // BitRotateInstruction
                     uint part1 = (uint)value << 9;
@@ -2260,15 +2260,14 @@ namespace Obfuz.EncryptionVM
                     value = ((int)(part1 | part2) ^ _secretKey[170]) + salt;
                     return value;
                 }
-               case 255:
+                case 255:
                 {
                     // AddInstruction
                     value = ((value + _secretKey[138]) ^ salt) + 683715132;
                     return value;
                 }
 
-                default:
-                    throw new System.Exception($"Invalid opCode:{opCode}");
+                default: throw new System.Exception($"Invalid opCode:{opCode}");
             }
         }
 
@@ -2276,13 +2275,13 @@ namespace Obfuz.EncryptionVM
         {
             switch (opCode)
             {
-               case 0:
+                case 0:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[84] - salt) * -1954824987;
                     return value;
                 }
-               case 1:
+                case 1:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1817406469 ^ salt;
@@ -2292,7 +2291,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[136]) * -2114748303;
                     return value;
                 }
-               case 2:
+                case 2:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 5;
@@ -2302,7 +2301,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[246]) * -203485751;
                     return value;
                 }
-               case 3:
+                case 3:
                 {
                     // AddRotateXorInstruction
                     value ^= 29411710 ^ salt;
@@ -2312,7 +2311,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1207833585 + _secretKey[26];
                     return value;
                 }
-               case 4:
+                case 4:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[85]);
@@ -2321,7 +2320,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 5:
+                case 5:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 0;
@@ -2331,7 +2330,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[165]) * -327424699;
                     return value;
                 }
-               case 6:
+                case 6:
                 {
                     // AddRotateXorInstruction
                     value ^= -1262500500 ^ salt;
@@ -2341,13 +2340,13 @@ namespace Obfuz.EncryptionVM
                     value -= -1856354856 + _secretKey[178];
                     return value;
                 }
-               case 7:
+                case 7:
                 {
                     // XorInstruction
                     value = ((value ^ 665464645) - salt) ^ _secretKey[53];
                     return value;
                 }
-               case 8:
+                case 8:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 16;
@@ -2357,13 +2356,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1044567439 ^ salt;
                     return value;
                 }
-               case 9:
+                case 9:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[196] - salt) * 2125307395;
                     return value;
                 }
-               case 10:
+                case 10:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 10;
@@ -2373,13 +2372,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -755609206 ^ salt;
                     return value;
                 }
-               case 11:
+                case 11:
                 {
                     // AddInstruction
-                    value = ((value  - -1177184477) ^ salt) - _secretKey[89];
+                    value = ((value - -1177184477) ^ salt) - _secretKey[89];
                     return value;
                 }
-               case 12:
+                case 12:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[23]);
@@ -2388,7 +2387,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 13:
+                case 13:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 19;
@@ -2398,7 +2397,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1510419150 ^ salt;
                     return value;
                 }
-               case 14:
+                case 14:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1134639492 ^ salt;
@@ -2408,7 +2407,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[156]) * 275824265;
                     return value;
                 }
-               case 15:
+                case 15:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[95]);
@@ -2417,7 +2416,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 16:
+                case 16:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 6;
@@ -2427,7 +2426,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -759315565 ^ salt;
                     return value;
                 }
-               case 17:
+                case 17:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -3885258 ^ salt;
@@ -2437,7 +2436,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[75]) * -1943909725;
                     return value;
                 }
-               case 18:
+                case 18:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 9;
@@ -2447,7 +2446,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[153]) * 1985974175;
                     return value;
                 }
-               case 19:
+                case 19:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 792769043 ^ salt;
@@ -2457,19 +2456,19 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[86]) * 1412922099;
                     return value;
                 }
-               case 20:
+                case 20:
                 {
                     // AddInstruction
-                    value = ((value  - -512520382) ^ salt) - _secretKey[194];
+                    value = ((value - -512520382) ^ salt) - _secretKey[194];
                     return value;
                 }
-               case 21:
+                case 21:
                 {
                     // XorInstruction
                     value = ((value ^ -1864951858) - salt) ^ _secretKey[195];
                     return value;
                 }
-               case 22:
+                case 22:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[2]);
@@ -2478,19 +2477,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 23:
+                case 23:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[203] - salt) * 891162519;
                     return value;
                 }
-               case 24:
+                case 24:
                 {
                     // AddInstruction
-                    value = ((value  - 2026667919) ^ salt) - _secretKey[110];
+                    value = ((value - 2026667919) ^ salt) - _secretKey[110];
                     return value;
                 }
-               case 25:
+                case 25:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 15;
@@ -2500,7 +2499,7 @@ namespace Obfuz.EncryptionVM
                     value -= 848657810 + _secretKey[133];
                     return value;
                 }
-               case 26:
+                case 26:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[93]);
@@ -2509,7 +2508,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 27:
+                case 27:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 30;
@@ -2519,7 +2518,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1294662302 ^ salt;
                     return value;
                 }
-               case 28:
+                case 28:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 29;
@@ -2529,7 +2528,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1438081752 ^ salt;
                     return value;
                 }
-               case 29:
+                case 29:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[240]);
@@ -2538,7 +2537,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 30:
+                case 30:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1594594445 ^ salt;
@@ -2548,7 +2547,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[215]) * 1857241631;
                     return value;
                 }
-               case 31:
+                case 31:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[49]);
@@ -2557,7 +2556,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 32:
+                case 32:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 17;
@@ -2567,7 +2566,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 226193183 ^ salt;
                     return value;
                 }
-               case 33:
+                case 33:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 23;
@@ -2577,7 +2576,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -484591087 ^ salt;
                     return value;
                 }
-               case 34:
+                case 34:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -2587,7 +2586,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[211]) * 1159592341;
                     return value;
                 }
-               case 35:
+                case 35:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 15;
@@ -2597,13 +2596,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1658142493 ^ salt;
                     return value;
                 }
-               case 36:
+                case 36:
                 {
                     // XorInstruction
                     value = ((value ^ -1892941953) - salt) ^ _secretKey[90];
                     return value;
                 }
-               case 37:
+                case 37:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 31;
@@ -2613,7 +2612,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1297440001 ^ salt;
                     return value;
                 }
-               case 38:
+                case 38:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1353158598 ^ salt;
@@ -2623,7 +2622,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[213]) * 803536783;
                     return value;
                 }
-               case 39:
+                case 39:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 20;
@@ -2633,7 +2632,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -934836680 ^ salt;
                     return value;
                 }
-               case 40:
+                case 40:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 18;
@@ -2643,7 +2642,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[140]) * 1881436791;
                     return value;
                 }
-               case 41:
+                case 41:
                 {
                     // AddRotateXorInstruction
                     value ^= -312111197 ^ salt;
@@ -2653,13 +2652,13 @@ namespace Obfuz.EncryptionVM
                     value -= 969234286 + _secretKey[116];
                     return value;
                 }
-               case 42:
+                case 42:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[29] - salt) * 2102789665;
                     return value;
                 }
-               case 43:
+                case 43:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[1]);
@@ -2668,7 +2667,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 44:
+                case 44:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[184]);
@@ -2677,7 +2676,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 45:
+                case 45:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 18;
@@ -2687,7 +2686,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[199]) * 85627791;
                     return value;
                 }
-               case 46:
+                case 46:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 1;
@@ -2697,7 +2696,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 196245895 ^ salt;
                     return value;
                 }
-               case 47:
+                case 47:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 7;
@@ -2707,7 +2706,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[10]) * -1413533649;
                     return value;
                 }
-               case 48:
+                case 48:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 18;
@@ -2717,13 +2716,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[238]) * 665251331;
                     return value;
                 }
-               case 49:
+                case 49:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[172] - salt) * -818173423;
                     return value;
                 }
-               case 50:
+                case 50:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 11;
@@ -2733,7 +2732,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1412414820 + _secretKey[219];
                     return value;
                 }
-               case 51:
+                case 51:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[97]);
@@ -2742,7 +2741,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 52:
+                case 52:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -21948406 ^ salt;
@@ -2752,7 +2751,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[63]) * -99761833;
                     return value;
                 }
-               case 53:
+                case 53:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[221]);
@@ -2761,13 +2760,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 54:
+                case 54:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[96] - salt) * -2034360447;
                     return value;
                 }
-               case 55:
+                case 55:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1022882984 ^ salt;
@@ -2777,7 +2776,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[29]) * -899658607;
                     return value;
                 }
-               case 56:
+                case 56:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 12;
@@ -2787,7 +2786,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2122077674 ^ salt;
                     return value;
                 }
-               case 57:
+                case 57:
                 {
                     // AddRotateXorInstruction
                     value ^= -720824840 ^ salt;
@@ -2797,13 +2796,13 @@ namespace Obfuz.EncryptionVM
                     value -= -503448718 + _secretKey[175];
                     return value;
                 }
-               case 58:
+                case 58:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[231] - salt) * 913639057;
                     return value;
                 }
-               case 59:
+                case 59:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[75]);
@@ -2812,7 +2811,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 60:
+                case 60:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1420744071 ^ salt;
@@ -2822,7 +2821,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[171]) * 238093953;
                     return value;
                 }
-               case 61:
+                case 61:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 15;
@@ -2832,7 +2831,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1366253139 ^ salt;
                     return value;
                 }
-               case 62:
+                case 62:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 6;
@@ -2842,7 +2841,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[132]) * 303900345;
                     return value;
                 }
-               case 63:
+                case 63:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[119]);
@@ -2851,19 +2850,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 64:
+                case 64:
                 {
                     // XorInstruction
                     value = ((value ^ 1262347216) - salt) ^ _secretKey[15];
                     return value;
                 }
-               case 65:
+                case 65:
                 {
                     // AddInstruction
-                    value = ((value  - 1780280992) ^ salt) - _secretKey[126];
+                    value = ((value - 1780280992) ^ salt) - _secretKey[126];
                     return value;
                 }
-               case 66:
+                case 66:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 13;
@@ -2873,13 +2872,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[85]) * 1314512283;
                     return value;
                 }
-               case 67:
+                case 67:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[128] - salt) * 463417823;
                     return value;
                 }
-               case 68:
+                case 68:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[178]);
@@ -2888,13 +2887,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 69:
+                case 69:
                 {
                     // XorInstruction
                     value = ((value ^ 1649427052) - salt) ^ _secretKey[61];
                     return value;
                 }
-               case 70:
+                case 70:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 849172121 ^ salt;
@@ -2904,7 +2903,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[83]) * 368180765;
                     return value;
                 }
-               case 71:
+                case 71:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[169]);
@@ -2913,7 +2912,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 72:
+                case 72:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 20;
@@ -2923,13 +2922,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1068287172 ^ salt;
                     return value;
                 }
-               case 73:
+                case 73:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[34] - salt) * -495145181;
                     return value;
                 }
-               case 74:
+                case 74:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -145743337 ^ salt;
@@ -2939,7 +2938,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[30]) * 1735064809;
                     return value;
                 }
-               case 75:
+                case 75:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 280941267 ^ salt;
@@ -2949,13 +2948,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[142]) * 442035963;
                     return value;
                 }
-               case 76:
+                case 76:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[156] - salt) * -971441783;
                     return value;
                 }
-               case 77:
+                case 77:
                 {
                     // AddRotateXorInstruction
                     value ^= 827331935 ^ salt;
@@ -2965,13 +2964,13 @@ namespace Obfuz.EncryptionVM
                     value -= 314625916 + _secretKey[192];
                     return value;
                 }
-               case 78:
+                case 78:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[141] - salt) * -1649657957;
                     return value;
                 }
-               case 79:
+                case 79:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 11;
@@ -2981,7 +2980,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1607953190 + _secretKey[133];
                     return value;
                 }
-               case 80:
+                case 80:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 25;
@@ -2991,13 +2990,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -1454482890 ^ salt;
                     return value;
                 }
-               case 81:
+                case 81:
                 {
                     // XorInstruction
                     value = ((value ^ 814860713) - salt) ^ _secretKey[195];
                     return value;
                 }
-               case 82:
+                case 82:
                 {
                     // AddRotateXorInstruction
                     value ^= 213310246 ^ salt;
@@ -3007,7 +3006,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1998643542 + _secretKey[171];
                     return value;
                 }
-               case 83:
+                case 83:
                 {
                     // AddRotateXorInstruction
                     value ^= -696314173 ^ salt;
@@ -3017,7 +3016,7 @@ namespace Obfuz.EncryptionVM
                     value -= 542686146 + _secretKey[249];
                     return value;
                 }
-               case 84:
+                case 84:
                 {
                     // AddRotateXorInstruction
                     value ^= 118718247 ^ salt;
@@ -3027,13 +3026,13 @@ namespace Obfuz.EncryptionVM
                     value -= 1734820207 + _secretKey[2];
                     return value;
                 }
-               case 85:
+                case 85:
                 {
                     // XorInstruction
                     value = ((value ^ 1553710234) - salt) ^ _secretKey[143];
                     return value;
                 }
-               case 86:
+                case 86:
                 {
                     // AddRotateXorInstruction
                     value ^= -1402843691 ^ salt;
@@ -3043,13 +3042,13 @@ namespace Obfuz.EncryptionVM
                     value -= -217984331 + _secretKey[146];
                     return value;
                 }
-               case 87:
+                case 87:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[5] - salt) * -814971689;
                     return value;
                 }
-               case 88:
+                case 88:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -2044505542 ^ salt;
@@ -3059,13 +3058,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[158]) * 681320217;
                     return value;
                 }
-               case 89:
+                case 89:
                 {
                     // AddInstruction
-                    value = ((value  - -1213654475) ^ salt) - _secretKey[40];
+                    value = ((value - -1213654475) ^ salt) - _secretKey[40];
                     return value;
                 }
-               case 90:
+                case 90:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 6;
@@ -3075,7 +3074,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1886972278 ^ salt;
                     return value;
                 }
-               case 91:
+                case 91:
                 {
                     // AddRotateXorInstruction
                     value ^= -979249928 ^ salt;
@@ -3085,19 +3084,19 @@ namespace Obfuz.EncryptionVM
                     value -= -1724625239 + _secretKey[223];
                     return value;
                 }
-               case 92:
+                case 92:
                 {
                     // XorInstruction
                     value = ((value ^ -1104541704) - salt) ^ _secretKey[83];
                     return value;
                 }
-               case 93:
+                case 93:
                 {
                     // XorInstruction
                     value = ((value ^ 311150152) - salt) ^ _secretKey[31];
                     return value;
                 }
-               case 94:
+                case 94:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 17;
@@ -3107,7 +3106,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 116496631 ^ salt;
                     return value;
                 }
-               case 95:
+                case 95:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 2133438141 ^ salt;
@@ -3117,7 +3116,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[87]) * 1779203413;
                     return value;
                 }
-               case 96:
+                case 96:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 225535005 ^ salt;
@@ -3127,7 +3126,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[174]) * 521638757;
                     return value;
                 }
-               case 97:
+                case 97:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1703839105 ^ salt;
@@ -3137,7 +3136,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[175]) * -1131776573;
                     return value;
                 }
-               case 98:
+                case 98:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 15;
@@ -3147,13 +3146,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -447564571 ^ salt;
                     return value;
                 }
-               case 99:
+                case 99:
                 {
                     // XorInstruction
                     value = ((value ^ -316631669) - salt) ^ _secretKey[111];
                     return value;
                 }
-               case 100:
+                case 100:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 24;
@@ -3163,7 +3162,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -405694625 ^ salt;
                     return value;
                 }
-               case 101:
+                case 101:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 6;
@@ -3173,19 +3172,19 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[212]) * -22167815;
                     return value;
                 }
-               case 102:
+                case 102:
                 {
                     // AddInstruction
-                    value = ((value  - -853736135) ^ salt) - _secretKey[18];
+                    value = ((value - -853736135) ^ salt) - _secretKey[18];
                     return value;
                 }
-               case 103:
+                case 103:
                 {
                     // AddInstruction
-                    value = ((value  - 1321376878) ^ salt) - _secretKey[116];
+                    value = ((value - 1321376878) ^ salt) - _secretKey[116];
                     return value;
                 }
-               case 104:
+                case 104:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 541697309 ^ salt;
@@ -3195,7 +3194,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[7]) * -1964889845;
                     return value;
                 }
-               case 105:
+                case 105:
                 {
                     // AddRotateXorInstruction
                     value ^= 1176608900 ^ salt;
@@ -3205,13 +3204,13 @@ namespace Obfuz.EncryptionVM
                     value -= -822594180 + _secretKey[1];
                     return value;
                 }
-               case 106:
+                case 106:
                 {
                     // AddInstruction
-                    value = ((value  - -882893600) ^ salt) - _secretKey[110];
+                    value = ((value - -882893600) ^ salt) - _secretKey[110];
                     return value;
                 }
-               case 107:
+                case 107:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1566546809 ^ salt;
@@ -3221,13 +3220,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[114]) * 406480373;
                     return value;
                 }
-               case 108:
+                case 108:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[97] - salt) * 200608377;
                     return value;
                 }
-               case 109:
+                case 109:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 7;
@@ -3237,13 +3236,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -72794161 ^ salt;
                     return value;
                 }
-               case 110:
+                case 110:
                 {
                     // AddInstruction
-                    value = ((value  - -1619543125) ^ salt) - _secretKey[238];
+                    value = ((value - -1619543125) ^ salt) - _secretKey[238];
                     return value;
                 }
-               case 111:
+                case 111:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 12;
@@ -3253,7 +3252,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1170459122 ^ salt;
                     return value;
                 }
-               case 112:
+                case 112:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 11;
@@ -3263,13 +3262,13 @@ namespace Obfuz.EncryptionVM
                     value -= 251687012 + _secretKey[219];
                     return value;
                 }
-               case 113:
+                case 113:
                 {
                     // AddInstruction
-                    value = ((value  - -1049972438) ^ salt) - _secretKey[97];
+                    value = ((value - -1049972438) ^ salt) - _secretKey[97];
                     return value;
                 }
-               case 114:
+                case 114:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 10;
@@ -3279,13 +3278,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -492239002 ^ salt;
                     return value;
                 }
-               case 115:
+                case 115:
                 {
                     // AddInstruction
-                    value = ((value  - -748126329) ^ salt) - _secretKey[221];
+                    value = ((value - -748126329) ^ salt) - _secretKey[221];
                     return value;
                 }
-               case 116:
+                case 116:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 17;
@@ -3295,7 +3294,7 @@ namespace Obfuz.EncryptionVM
                     value -= -441051263 + _secretKey[96];
                     return value;
                 }
-               case 117:
+                case 117:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 543895274 ^ salt;
@@ -3305,13 +3304,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[88]) * 1253478165;
                     return value;
                 }
-               case 118:
+                case 118:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[140] - salt) * 1897067971;
                     return value;
                 }
-               case 119:
+                case 119:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[175]);
@@ -3320,7 +3319,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 120:
+                case 120:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1300544743 ^ salt;
@@ -3330,7 +3329,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[57]) * -927555255;
                     return value;
                 }
-               case 121:
+                case 121:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 1;
@@ -3340,7 +3339,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -547380749 ^ salt;
                     return value;
                 }
-               case 122:
+                case 122:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 19;
@@ -3350,7 +3349,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 683601851 ^ salt;
                     return value;
                 }
-               case 123:
+                case 123:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[15]);
@@ -3359,7 +3358,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 124:
+                case 124:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[132]);
@@ -3368,19 +3367,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 125:
+                case 125:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[120] - salt) * 412809175;
                     return value;
                 }
-               case 126:
+                case 126:
                 {
                     // AddInstruction
-                    value = ((value  - -1374139785) ^ salt) - _secretKey[197];
+                    value = ((value - -1374139785) ^ salt) - _secretKey[197];
                     return value;
                 }
-               case 127:
+                case 127:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[26]);
@@ -3389,7 +3388,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 128:
+                case 128:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 21;
@@ -3399,7 +3398,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1415280510 ^ salt;
                     return value;
                 }
-               case 129:
+                case 129:
                 {
                     // AddRotateXorInstruction
                     value ^= 2132310656 ^ salt;
@@ -3409,7 +3408,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1410706317 + _secretKey[165];
                     return value;
                 }
-               case 130:
+                case 130:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 12;
@@ -3419,7 +3418,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1264971736 ^ salt;
                     return value;
                 }
-               case 131:
+                case 131:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 17;
@@ -3429,7 +3428,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1872731835 + _secretKey[53];
                     return value;
                 }
-               case 132:
+                case 132:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 10;
@@ -3439,7 +3438,7 @@ namespace Obfuz.EncryptionVM
                     value -= 264114638 + _secretKey[240];
                     return value;
                 }
-               case 133:
+                case 133:
                 {
                     // AddRotateXorInstruction
                     value ^= -1266414649 ^ salt;
@@ -3449,7 +3448,7 @@ namespace Obfuz.EncryptionVM
                     value -= 824712252 + _secretKey[138];
                     return value;
                 }
-               case 134:
+                case 134:
                 {
                     // AddRotateXorInstruction
                     value ^= 2133737246 ^ salt;
@@ -3459,7 +3458,7 @@ namespace Obfuz.EncryptionVM
                     value -= -766337246 + _secretKey[35];
                     return value;
                 }
-               case 135:
+                case 135:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 14;
@@ -3469,7 +3468,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1997614825 + _secretKey[165];
                     return value;
                 }
-               case 136:
+                case 136:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 28;
@@ -3479,7 +3478,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[57]) * 949096539;
                     return value;
                 }
-               case 137:
+                case 137:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[192]);
@@ -3488,19 +3487,19 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 138:
+                case 138:
                 {
                     // XorInstruction
                     value = ((value ^ 1715223135) - salt) ^ _secretKey[135];
                     return value;
                 }
-               case 139:
+                case 139:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[79] - salt) * -307106491;
                     return value;
                 }
-               case 140:
+                case 140:
                 {
                     // AddRotateXorInstruction
                     value ^= 806320034 ^ salt;
@@ -3510,13 +3509,13 @@ namespace Obfuz.EncryptionVM
                     value -= -408450171 + _secretKey[11];
                     return value;
                 }
-               case 141:
+                case 141:
                 {
                     // AddInstruction
-                    value = ((value  - -433941646) ^ salt) - _secretKey[95];
+                    value = ((value - -433941646) ^ salt) - _secretKey[95];
                     return value;
                 }
-               case 142:
+                case 142:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 26;
@@ -3526,7 +3525,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1775820811 + _secretKey[169];
                     return value;
                 }
-               case 143:
+                case 143:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 2;
@@ -3536,7 +3535,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[19]) * 1566112771;
                     return value;
                 }
-               case 144:
+                case 144:
                 {
                     // AddRotateXorInstruction
                     value ^= -1181275232 ^ salt;
@@ -3546,19 +3545,19 @@ namespace Obfuz.EncryptionVM
                     value -= -650723591 + _secretKey[206];
                     return value;
                 }
-               case 145:
+                case 145:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[169] - salt) * 39803307;
                     return value;
                 }
-               case 146:
+                case 146:
                 {
                     // XorInstruction
                     value = ((value ^ -1297404981) - salt) ^ _secretKey[154];
                     return value;
                 }
-               case 147:
+                case 147:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 801710213 ^ salt;
@@ -3568,7 +3567,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[181]) * -1217833329;
                     return value;
                 }
-               case 148:
+                case 148:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 29;
@@ -3578,7 +3577,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1933121809 + _secretKey[230];
                     return value;
                 }
-               case 149:
+                case 149:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[188]);
@@ -3587,7 +3586,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 150:
+                case 150:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[53]);
@@ -3596,13 +3595,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 151:
+                case 151:
                 {
                     // AddInstruction
-                    value = ((value  - -2119615805) ^ salt) - _secretKey[138];
+                    value = ((value - -2119615805) ^ salt) - _secretKey[138];
                     return value;
                 }
-               case 152:
+                case 152:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 221292457 ^ salt;
@@ -3612,7 +3611,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[102]) * -1630338257;
                     return value;
                 }
-               case 153:
+                case 153:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 1486712056 ^ salt;
@@ -3622,13 +3621,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[248]) * -1360595481;
                     return value;
                 }
-               case 154:
+                case 154:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[72] - salt) * 1812161233;
                     return value;
                 }
-               case 155:
+                case 155:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -81016400 ^ salt;
@@ -3638,7 +3637,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[247]) * -47344461;
                     return value;
                 }
-               case 156:
+                case 156:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1187848798 ^ salt;
@@ -3648,7 +3647,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[252]) * -1858496529;
                     return value;
                 }
-               case 157:
+                case 157:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 16;
@@ -3658,7 +3657,7 @@ namespace Obfuz.EncryptionVM
                     value -= 605454035 + _secretKey[108];
                     return value;
                 }
-               case 158:
+                case 158:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 1;
@@ -3668,13 +3667,13 @@ namespace Obfuz.EncryptionVM
                     value -= 2112611413 + _secretKey[235];
                     return value;
                 }
-               case 159:
+                case 159:
                 {
                     // XorInstruction
                     value = ((value ^ 1660696922) - salt) ^ _secretKey[229];
                     return value;
                 }
-               case 160:
+                case 160:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -431219573 ^ salt;
@@ -3684,7 +3683,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[111]) * 1706905775;
                     return value;
                 }
-               case 161:
+                case 161:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 28;
@@ -3694,7 +3693,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1658933717 ^ salt;
                     return value;
                 }
-               case 162:
+                case 162:
                 {
                     // AddRotateXorInstruction
                     value ^= 609336148 ^ salt;
@@ -3704,7 +3703,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1278798944 + _secretKey[72];
                     return value;
                 }
-               case 163:
+                case 163:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 26;
@@ -3714,7 +3713,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[57]) * -620746171;
                     return value;
                 }
-               case 164:
+                case 164:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 7;
@@ -3724,7 +3723,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[225]) * 2035776477;
                     return value;
                 }
-               case 165:
+                case 165:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 1;
@@ -3734,7 +3733,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 318043677 ^ salt;
                     return value;
                 }
-               case 166:
+                case 166:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -3744,13 +3743,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[184]) * -748679859;
                     return value;
                 }
-               case 167:
+                case 167:
                 {
                     // XorInstruction
                     value = ((value ^ -312123044) - salt) ^ _secretKey[114];
                     return value;
                 }
-               case 168:
+                case 168:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 1;
@@ -3760,7 +3759,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1897551751 + _secretKey[139];
                     return value;
                 }
-               case 169:
+                case 169:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[10]);
@@ -3769,13 +3768,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 170:
+                case 170:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[60] - salt) * 609589815;
                     return value;
                 }
-               case 171:
+                case 171:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 21;
@@ -3785,19 +3784,19 @@ namespace Obfuz.EncryptionVM
                     value ^= 820953326 ^ salt;
                     return value;
                 }
-               case 172:
+                case 172:
                 {
                     // XorInstruction
                     value = ((value ^ 921116076) - salt) ^ _secretKey[89];
                     return value;
                 }
-               case 173:
+                case 173:
                 {
                     // AddInstruction
-                    value = ((value  - -1261901861) ^ salt) - _secretKey[82];
+                    value = ((value - -1261901861) ^ salt) - _secretKey[82];
                     return value;
                 }
-               case 174:
+                case 174:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1758870671 ^ salt;
@@ -3807,7 +3806,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[42]) * -1163763527;
                     return value;
                 }
-               case 175:
+                case 175:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -3817,7 +3816,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -99371457 ^ salt;
                     return value;
                 }
-               case 176:
+                case 176:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 0;
@@ -3827,7 +3826,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1901168605 + _secretKey[131];
                     return value;
                 }
-               case 177:
+                case 177:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -805817000 ^ salt;
@@ -3837,7 +3836,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[29]) * -1809334639;
                     return value;
                 }
-               case 178:
+                case 178:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 12;
@@ -3847,7 +3846,7 @@ namespace Obfuz.EncryptionVM
                     value -= 28490730 + _secretKey[13];
                     return value;
                 }
-               case 179:
+                case 179:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 24;
@@ -3857,13 +3856,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1812019570 ^ salt;
                     return value;
                 }
-               case 180:
+                case 180:
                 {
                     // XorInstruction
                     value = ((value ^ 1563652208) - salt) ^ _secretKey[231];
                     return value;
                 }
-               case 181:
+                case 181:
                 {
                     // AddRotateXorInstruction
                     value ^= -1148350591 ^ salt;
@@ -3873,7 +3872,7 @@ namespace Obfuz.EncryptionVM
                     value -= -542613261 + _secretKey[75];
                     return value;
                 }
-               case 182:
+                case 182:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 19;
@@ -3883,7 +3882,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1462569147 + _secretKey[135];
                     return value;
                 }
-               case 183:
+                case 183:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 8;
@@ -3893,7 +3892,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[15]) * -663204867;
                     return value;
                 }
-               case 184:
+                case 184:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[230]);
@@ -3902,7 +3901,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 185:
+                case 185:
                 {
                     // AddRotateXorInstruction
                     value ^= 1218428368 ^ salt;
@@ -3912,7 +3911,7 @@ namespace Obfuz.EncryptionVM
                     value -= 45305078 + _secretKey[119];
                     return value;
                 }
-               case 186:
+                case 186:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 0;
@@ -3922,7 +3921,7 @@ namespace Obfuz.EncryptionVM
                     value -= 148564506 + _secretKey[160];
                     return value;
                 }
-               case 187:
+                case 187:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[242]);
@@ -3931,7 +3930,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 188:
+                case 188:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 730302816 ^ salt;
@@ -3941,7 +3940,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[30]) * -1488719571;
                     return value;
                 }
-               case 189:
+                case 189:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[93]);
@@ -3950,7 +3949,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 190:
+                case 190:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[69]);
@@ -3959,7 +3958,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 191:
+                case 191:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -3969,13 +3968,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1474104403 ^ salt;
                     return value;
                 }
-               case 192:
+                case 192:
                 {
                     // AddInstruction
-                    value = ((value  - 1345231273) ^ salt) - _secretKey[170];
+                    value = ((value - 1345231273) ^ salt) - _secretKey[170];
                     return value;
                 }
-               case 193:
+                case 193:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[138]);
@@ -3984,7 +3983,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 194:
+                case 194:
                 {
                     // AddRotateXorInstruction
                     value ^= -1086752221 ^ salt;
@@ -3994,7 +3993,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1649692985 + _secretKey[138];
                     return value;
                 }
-               case 195:
+                case 195:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 5;
@@ -4004,7 +4003,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 216360478 ^ salt;
                     return value;
                 }
-               case 196:
+                case 196:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 25;
@@ -4014,7 +4013,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1736125070 ^ salt;
                     return value;
                 }
-               case 197:
+                case 197:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 0;
@@ -4024,7 +4023,7 @@ namespace Obfuz.EncryptionVM
                     value ^= -1590872932 ^ salt;
                     return value;
                 }
-               case 198:
+                case 198:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 13;
@@ -4034,19 +4033,19 @@ namespace Obfuz.EncryptionVM
                     value -= -2086916257 + _secretKey[135];
                     return value;
                 }
-               case 199:
+                case 199:
                 {
                     // XorInstruction
                     value = ((value ^ -1188487898) - salt) ^ _secretKey[133];
                     return value;
                 }
-               case 200:
+                case 200:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[162] - salt) * -1592735389;
                     return value;
                 }
-               case 201:
+                case 201:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 11;
@@ -4056,7 +4055,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 2087683186 ^ salt;
                     return value;
                 }
-               case 202:
+                case 202:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1855365205 ^ salt;
@@ -4066,13 +4065,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[58]) * -1429384213;
                     return value;
                 }
-               case 203:
+                case 203:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[66] - salt) * 180652695;
                     return value;
                 }
-               case 204:
+                case 204:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 0;
@@ -4082,13 +4081,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[206]) * 715760713;
                     return value;
                 }
-               case 205:
+                case 205:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[169] - salt) * -19415893;
                     return value;
                 }
-               case 206:
+                case 206:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -4098,13 +4097,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -387621173 ^ salt;
                     return value;
                 }
-               case 207:
+                case 207:
                 {
                     // XorInstruction
                     value = ((value ^ -1302837102) - salt) ^ _secretKey[133];
                     return value;
                 }
-               case 208:
+                case 208:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 29;
@@ -4114,13 +4113,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1201861103 ^ salt;
                     return value;
                 }
-               case 209:
+                case 209:
                 {
                     // AddInstruction
-                    value = ((value  - -1698116194) ^ salt) - _secretKey[188];
+                    value = ((value - -1698116194) ^ salt) - _secretKey[188];
                     return value;
                 }
-               case 210:
+                case 210:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 3;
@@ -4130,7 +4129,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 955827838 ^ salt;
                     return value;
                 }
-               case 211:
+                case 211:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 16;
@@ -4140,19 +4139,19 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[206]) * 250403797;
                     return value;
                 }
-               case 212:
+                case 212:
                 {
                     // XorInstruction
                     value = ((value ^ 1451245279) - salt) ^ _secretKey[215];
                     return value;
                 }
-               case 213:
+                case 213:
                 {
                     // AddInstruction
-                    value = ((value  - -48271475) ^ salt) - _secretKey[248];
+                    value = ((value - -48271475) ^ salt) - _secretKey[248];
                     return value;
                 }
-               case 214:
+                case 214:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 280704379 ^ salt;
@@ -4162,7 +4161,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[72]) * -1743417391;
                     return value;
                 }
-               case 215:
+                case 215:
                 {
                     // MultipleRotateXorInstruction
                     value ^= -1507466225 ^ salt;
@@ -4172,7 +4171,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[176]) * -795921711;
                     return value;
                 }
-               case 216:
+                case 216:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[162]);
@@ -4181,13 +4180,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 217:
+                case 217:
                 {
                     // XorInstruction
                     value = ((value ^ -1329546797) - salt) ^ _secretKey[108];
                     return value;
                 }
-               case 218:
+                case 218:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 11;
@@ -4197,13 +4196,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 846489904 ^ salt;
                     return value;
                 }
-               case 219:
+                case 219:
                 {
                     // XorInstruction
                     value = ((value ^ -339712479) - salt) ^ _secretKey[127];
                     return value;
                 }
-               case 220:
+                case 220:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 15;
@@ -4213,25 +4212,25 @@ namespace Obfuz.EncryptionVM
                     value ^= -1008587035 ^ salt;
                     return value;
                 }
-               case 221:
+                case 221:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[111] - salt) * 773277731;
                     return value;
                 }
-               case 222:
+                case 222:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[198] - salt) * 1149219487;
                     return value;
                 }
-               case 223:
+                case 223:
                 {
                     // AddInstruction
-                    value = ((value  - -449129672) ^ salt) - _secretKey[160];
+                    value = ((value - -449129672) ^ salt) - _secretKey[160];
                     return value;
                 }
-               case 224:
+                case 224:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 12;
@@ -4241,13 +4240,13 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[84]) * 102372989;
                     return value;
                 }
-               case 225:
+                case 225:
                 {
                     // XorInstruction
                     value = ((value ^ 946019090) - salt) ^ _secretKey[58];
                     return value;
                 }
-               case 226:
+                case 226:
                 {
                     // AddRotateXorInstruction
                     value ^= 1350981383 ^ salt;
@@ -4257,7 +4256,7 @@ namespace Obfuz.EncryptionVM
                     value -= 694016884 + _secretKey[225];
                     return value;
                 }
-               case 227:
+                case 227:
                 {
                     // AddRotateXorInstruction
                     value ^= 1680252929 ^ salt;
@@ -4267,7 +4266,7 @@ namespace Obfuz.EncryptionVM
                     value -= -870643939 + _secretKey[168];
                     return value;
                 }
-               case 228:
+                case 228:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[184]);
@@ -4276,7 +4275,7 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 229:
+                case 229:
                 {
                     // AddRotateXorInstruction
                     value ^= -1727043214 ^ salt;
@@ -4286,13 +4285,13 @@ namespace Obfuz.EncryptionVM
                     value -= 1785715822 + _secretKey[199];
                     return value;
                 }
-               case 230:
+                case 230:
                 {
                     // XorInstruction
                     value = ((value ^ -1277148537) - salt) ^ _secretKey[139];
                     return value;
                 }
-               case 231:
+                case 231:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 10;
@@ -4302,7 +4301,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[226]) * -528829791;
                     return value;
                 }
-               case 232:
+                case 232:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 14;
@@ -4312,19 +4311,19 @@ namespace Obfuz.EncryptionVM
                     value ^= -879839609 ^ salt;
                     return value;
                 }
-               case 233:
+                case 233:
                 {
                     // AddInstruction
-                    value = ((value  - 328489970) ^ salt) - _secretKey[181];
+                    value = ((value - 328489970) ^ salt) - _secretKey[181];
                     return value;
                 }
-               case 234:
+                case 234:
                 {
                     // MultipleInstruction
                     value = (value - _secretKey[89] - salt) * -1387476699;
                     return value;
                 }
-               case 235:
+                case 235:
                 {
                     // XorAddRotateInstruction
                     uint value2 = (uint)value >> 8;
@@ -4334,13 +4333,13 @@ namespace Obfuz.EncryptionVM
                     value ^= 1290000091 ^ salt;
                     return value;
                 }
-               case 236:
+                case 236:
                 {
                     // AddInstruction
-                    value = ((value  - 1890859361) ^ salt) - _secretKey[113];
+                    value = ((value - 1890859361) ^ salt) - _secretKey[113];
                     return value;
                 }
-               case 237:
+                case 237:
                 {
                     // AddRotateXorInstruction
                     value ^= 1434413518 ^ salt;
@@ -4350,7 +4349,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1045620543 + _secretKey[216];
                     return value;
                 }
-               case 238:
+                case 238:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 0;
@@ -4360,7 +4359,7 @@ namespace Obfuz.EncryptionVM
                     value -= -1706485027 + _secretKey[131];
                     return value;
                 }
-               case 239:
+                case 239:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 24;
@@ -4370,7 +4369,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1271081841 + _secretKey[29];
                     return value;
                 }
-               case 240:
+                case 240:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 12;
@@ -4380,13 +4379,13 @@ namespace Obfuz.EncryptionVM
                     value ^= -842525462 ^ salt;
                     return value;
                 }
-               case 241:
+                case 241:
                 {
                     // AddInstruction
-                    value = ((value  - 1030822002) ^ salt) - _secretKey[175];
+                    value = ((value - 1030822002) ^ salt) - _secretKey[175];
                     return value;
                 }
-               case 242:
+                case 242:
                 {
                     // MultipleRotateXorInstruction
                     value ^= 811922151 ^ salt;
@@ -4396,7 +4395,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[57]) * 769862473;
                     return value;
                 }
-               case 243:
+                case 243:
                 {
                     // AddRotateXorInstruction
                     value ^= -1258702719 ^ salt;
@@ -4406,7 +4405,7 @@ namespace Obfuz.EncryptionVM
                     value -= 656680947 + _secretKey[75];
                     return value;
                 }
-               case 244:
+                case 244:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 19;
@@ -4416,7 +4415,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 90809787 ^ salt;
                     return value;
                 }
-               case 245:
+                case 245:
                 {
                     // AddRotateXorInstruction
                     value ^= 99436168 ^ salt;
@@ -4426,7 +4425,7 @@ namespace Obfuz.EncryptionVM
                     value -= -532913580 + _secretKey[15];
                     return value;
                 }
-               case 246:
+                case 246:
                 {
                     // MultipleXorRotateInstruction
                     uint value2 = (uint)value >> 22;
@@ -4436,7 +4435,7 @@ namespace Obfuz.EncryptionVM
                     value = (value - _secretKey[230]) * -599880499;
                     return value;
                 }
-               case 247:
+                case 247:
                 {
                     // XorMultipleRotateInstruction
                     uint value2 = (uint)value >> 26;
@@ -4446,7 +4445,7 @@ namespace Obfuz.EncryptionVM
                     value ^= 1941306053 ^ salt;
                     return value;
                 }
-               case 248:
+                case 248:
                 {
                     // AddRotateXorInstruction
                     value ^= 2045091157 ^ salt;
@@ -4456,7 +4455,7 @@ namespace Obfuz.EncryptionVM
                     value -= 883137918 + _secretKey[96];
                     return value;
                 }
-               case 249:
+                case 249:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[165]);
@@ -4465,13 +4464,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 250:
+                case 250:
                 {
                     // AddInstruction
-                    value = ((value  - -394947456) ^ salt) - _secretKey[96];
+                    value = ((value - -394947456) ^ salt) - _secretKey[96];
                     return value;
                 }
-               case 251:
+                case 251:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[93]);
@@ -4480,13 +4479,13 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 252:
+                case 252:
                 {
                     // AddInstruction
-                    value = ((value  - 1917332797) ^ salt) - _secretKey[69];
+                    value = ((value - 1917332797) ^ salt) - _secretKey[69];
                     return value;
                 }
-               case 253:
+                case 253:
                 {
                     // AddXorRotateInstruction
                     uint part1 = (uint)value >> 14;
@@ -4496,7 +4495,7 @@ namespace Obfuz.EncryptionVM
                     value -= 1006809939 + _secretKey[113];
                     return value;
                 }
-               case 254:
+                case 254:
                 {
                     // BitRotateInstruction
                     uint value2 = (uint)((value - salt) ^ _secretKey[170]);
@@ -4505,15 +4504,14 @@ namespace Obfuz.EncryptionVM
                     value = (int)(part1 | part2);
                     return value;
                 }
-               case 255:
+                case 255:
                 {
                     // AddInstruction
-                    value = ((value  - 683715132) ^ salt) - _secretKey[138];
+                    value = ((value - 683715132) ^ salt) - _secretKey[138];
                     return value;
                 }
 
-                default:
-                    throw new System.Exception($"Invalid opCode:{opCode}");
+                default: throw new System.Exception($"Invalid opCode:{opCode}");
             }
         }
 
