@@ -31,8 +31,10 @@ namespace JEngine.Core.Editor.Misc
             IsRunningTests = false;
         }
 
+        // Required by ICallbacks interface but not needed - we only track overall run state
         public void TestStarted(ITestAdaptor test) { }
 
+        // Required by ICallbacks interface but not needed - we only track overall run state
         public void TestFinished(ITestResultAdaptor result) { }
     }
 }
