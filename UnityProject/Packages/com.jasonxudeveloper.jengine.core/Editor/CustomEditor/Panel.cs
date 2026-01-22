@@ -56,6 +56,8 @@ namespace JEngine.Core.Editor.CustomEditor
         private ProgressBar _progressBar;
         private ScrollView _logScrollView;
         private bool _isBuilding;
+        private bool _buildErrorOccurred;
+        private int _errorCountAtBuildStart;
 
         private void CreateGUI()
         {
@@ -374,6 +376,8 @@ namespace JEngine.Core.Editor.CustomEditor
             try
             {
                 _isBuilding = true;
+                _buildErrorOccurred = false;
+                _errorCountAtBuildStart = GetUnityErrorCount();
                 SetBuildButtonsEnabled(false);
                 _progressBar.RemoveFromClassList("progress-bar-hidden");
                 _progressBar.AddToClassList("progress-bar-visible");
@@ -383,6 +387,13 @@ namespace JEngine.Core.Editor.CustomEditor
                 LogMessage("Starting full build process...");
 
                 BuildCode();
+
+                // Check if code build had errors
+                if (_buildErrorOccurred)
+                {
+                    throw new Exception("Code build failed. Check Unity Console for details. Aborting asset build.");
+                }
+
                 int packageVersion = GetNextPackageVersion();
                 string outputDirectory = BuildAssets(packageVersion);
 
@@ -412,6 +423,8 @@ namespace JEngine.Core.Editor.CustomEditor
             try
             {
                 _isBuilding = true;
+                _buildErrorOccurred = false;
+                _errorCountAtBuildStart = GetUnityErrorCount();
                 SetBuildButtonsEnabled(false);
                 _progressBar.RemoveFromClassList("progress-bar-hidden");
                 _progressBar.AddToClassList("progress-bar-visible");
@@ -420,6 +433,13 @@ namespace JEngine.Core.Editor.CustomEditor
                 ClearLog();
                 LogMessage("Starting code build...");
                 BuildCode();
+
+                // Check if code build had errors
+                if (_buildErrorOccurred)
+                {
+                    throw new Exception("Code build failed. Check Unity Console for details.");
+                }
+
                 _progressBar.value = 1.0f;
 
                 LogMessage("Code build completed successfully!");
@@ -488,29 +508,43 @@ namespace JEngine.Core.Editor.CustomEditor
         private void BuildCode()
         {
             LogMessage("=== Phase 1: Building Code ===");
-            _progressBar.value = 0.1f;
+            UpdateProgressAsync(0.1f);
 
             // Execute menu items for code generation
             ExecuteMenuItem("Obfuz/GenerateEncryptionVM", "Step 1/4");
-            _progressBar.value = 0.2f;
+            CheckForBuildErrors("Step 1/4 failed");
+            UpdateProgressAsync(0.2f);
 
             ExecuteMenuItem("Obfuz/GenerateSecretKeyFile", "Step 2/4");
-            _progressBar.value = 0.3f;
+            CheckForBuildErrors("Step 2/4 failed");
+            UpdateProgressAsync(0.3f);
 
             ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-            _progressBar.value = 0.4f;
+            CheckForBuildErrors("Step 3/4 failed - HybridCLR generation failed");
+            UpdateProgressAsync(0.4f);
 
             // Compile and obfuscate
             LogMessage("Step 4/4: Compiling and Obfuscating");
             BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
-            CompileDllCommand.CompileDll(target);
 
-            string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(target);
-            ObfuscateUtil.ObfuscateHotUpdateAssemblies(target, obfuscatedPath);
+            try
+            {
+                CompileDllCommand.CompileDll(target);
+                CheckForBuildErrors("DLL compilation failed");
+
+                string obfuscatedPath = PrebuildCommandExt.GetObfuscatedHotUpdateAssemblyOutputPath(target);
+                ObfuscateUtil.ObfuscateHotUpdateAssemblies(target, obfuscatedPath);
+                CheckForBuildErrors("Code obfuscation failed");
+            }
+            catch (Exception e)
+            {
+                _buildErrorOccurred = true;
+                throw new Exception($"Code compilation/obfuscation failed: {e.Message}", e);
+            }
 
             CopyAssemblies(target);
             AssetDatabase.Refresh();
-            _progressBar.value = 0.5f;
+            UpdateProgressAsync(0.5f);
             LogMessage("Code build completed successfully!");
         }
 
@@ -534,12 +568,13 @@ namespace JEngine.Core.Editor.CustomEditor
             return result.OutputPackageDirectory;
         }
 
-        private static void ExecuteMenuItem(string menuPath, string stepName)
+        private void ExecuteMenuItem(string menuPath, string stepName)
         {
-            Debug.Log($"{stepName}: Executing {menuPath}");
+            LogMessage($"{stepName}: Executing {menuPath}");
             if (!EditorApplication.ExecuteMenuItem(menuPath))
             {
-                Debug.LogWarning($"Failed to execute {menuPath} - menu item might not exist");
+                _buildErrorOccurred = true;
+                throw new Exception($"Failed to execute {menuPath} - menu item might not exist or execution failed");
             }
         }
 
@@ -701,6 +736,59 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             _logScrollView.Clear();
             _statusLabel.text = "Ready to build";
+        }
+
+        /// <summary>
+        /// Gets the current Unity error count from LogEntries.
+        /// </summary>
+        private int GetUnityErrorCount()
+        {
+            var logEntriesType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries");
+            if (logEntriesType != null)
+            {
+                var getCountMethod = logEntriesType.GetMethod("GetCount");
+                var getCountsByTypeMethod = logEntriesType.GetMethod("GetCountsByType");
+
+                if (getCountsByTypeMethod != null)
+                {
+                    // GetCountsByType returns error, warning, log counts
+                    int errorCount = 0, warningCount = 0, logCount = 0;
+                    object[] args = { errorCount, warningCount, logCount };
+                    getCountsByTypeMethod.Invoke(null, args);
+                    return (int)args[0]; // error count
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// Checks if new errors occurred during the build process.
+        /// </summary>
+        private void CheckForBuildErrors(string context)
+        {
+            int currentErrorCount = GetUnityErrorCount();
+            if (currentErrorCount > _errorCountAtBuildStart)
+            {
+                _buildErrorOccurred = true;
+                throw new Exception($"{context}: {currentErrorCount - _errorCountAtBuildStart} error(s) occurred. Check Unity Console for details.");
+            }
+        }
+
+        /// <summary>
+        /// Updates the progress bar asynchronously to ensure UI responsiveness.
+        /// </summary>
+        private void UpdateProgressAsync(float value)
+        {
+            _progressBar.value = value;
+            // Force UI repaint by scheduling a delayed callback
+            EditorApplication.delayCall += () =>
+            {
+                if (_progressBar != null)
+                {
+                    _progressBar.MarkDirtyRepaint();
+                }
+            };
         }
     }
 }
