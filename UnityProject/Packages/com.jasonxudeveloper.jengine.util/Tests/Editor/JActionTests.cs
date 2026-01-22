@@ -1,6 +1,8 @@
 // JActionTests.cs
 // EditMode unit tests for JAction (synchronous execution)
 
+using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace JEngine.Util.Tests
@@ -92,7 +94,7 @@ namespace JEngine.Util.Tests
             int result = 0;
 
             JAction.Create()
-                .Do((int x) => result = x, 42)
+                .Do(x => result = x, 42)
                 .Execute();
 
             Assert.AreEqual(42, result);
@@ -105,7 +107,7 @@ namespace JEngine.Util.Tests
             int result = 0;
 
             JAction.Create()
-                .Do((TestData d) => result = d.Value, data)
+                .Do(d => result = d.Value, data)
                 .Execute();
 
             Assert.AreEqual(10, result);
@@ -129,7 +131,7 @@ namespace JEngine.Util.Tests
             int sum = 0;
 
             JAction.Create()
-                .Repeat((int x) => sum += x, state: 10, count: 3)
+                .Repeat(x => sum += x, state: 10, count: 3)
                 .Execute();
 
             Assert.AreEqual(30, sum);
@@ -156,8 +158,8 @@ namespace JEngine.Util.Tests
 
             // Force executing state and cancel
             typeof(JAction).GetField("IsExecuting",
-                System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Instance)
+                BindingFlags.NonPublic |
+                BindingFlags.Instance)
                 ?.SetValue(action2, true);
 
             action2.Cancel();
@@ -173,12 +175,12 @@ namespace JEngine.Util.Tests
             int result = 0;
 
             var action = JAction.Create()
-                .OnCancel((int x) => result = x, 42);
+                .OnCancel(x => result = x, 42);
 
             // Force executing state
             typeof(JAction).GetField("IsExecuting",
-                System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Instance)
+                BindingFlags.NonPublic |
+                BindingFlags.Instance)
                 ?.SetValue(action, true);
 
             action.Cancel();
@@ -293,7 +295,7 @@ namespace JEngine.Util.Tests
             int result = 0;
 
             JAction.Create()
-                .Do((int x) => result = x, 123)
+                .Do(x => result = x, 123)
                 .Execute();
 
             Assert.AreEqual(123, result);
@@ -305,7 +307,7 @@ namespace JEngine.Util.Tests
             float result = 0;
 
             JAction.Create()
-                .Do((float x) => result = x, 3.14f)
+                .Do(x => result = x, 3.14f)
                 .Execute();
 
             Assert.AreEqual(3.14f, result, 0.001f);
@@ -317,7 +319,7 @@ namespace JEngine.Util.Tests
             bool result = false;
 
             JAction.Create()
-                .Do((bool x) => result = x, true)
+                .Do(x => result = x, true)
                 .Execute();
 
             Assert.IsTrue(result);
@@ -349,8 +351,8 @@ namespace JEngine.Util.Tests
 
             // Start execution
             typeof(JAction).GetField("IsExecuting",
-                System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Instance)
+                BindingFlags.NonPublic |
+                BindingFlags.Instance)
                 ?.SetValue(action, true);
 
             action.Dispose();
@@ -378,7 +380,7 @@ namespace JEngine.Util.Tests
         [Test]
         public void ComplexChain_ExecutesInOrder()
         {
-            var order = new System.Collections.Generic.List<int>();
+            var order = new List<int>();
 
             JAction.Create()
                 .Do(() => order.Add(1))
@@ -402,10 +404,10 @@ namespace JEngine.Util.Tests
             int sum = 0;
 
             JAction.Create()
-                .Do((int x) => sum += x, 1)
-                .Do((int x) => sum += x, 10)
-                .Repeat((int x) => sum += x, state: 100, count: 2)
-                .Do((int x) => sum += x, 1000)
+                .Do(x => sum += x, 1)
+                .Do(x => sum += x, 10)
+                .Repeat(x => sum += x, state: 100, count: 2)
+                .Do(x => sum += x, 1000)
                 .Execute();
 
             Assert.AreEqual(1211, sum); // 1 + 10 + 100 + 100 + 1000
@@ -414,15 +416,15 @@ namespace JEngine.Util.Tests
         [Test]
         public void ComplexChain_MixedStaticAndState_WorksCorrectly()
         {
-            var results = new System.Collections.Generic.List<string>();
+            var results = new List<string>();
 
             // Mix static lambdas (no closure) with state overloads
             using var action = JAction.Create()
                 .Do(static () => { }) // static lambda, no state needed
-                .Do(static (System.Collections.Generic.List<string> r) => r.Add("step1"), results)
+                .Do(static r => r.Add("step1"), results)
                 .Delay(0.01f)
-                .Do(static (System.Collections.Generic.List<string> r) => r.Add("step2"), results)
-                .Repeat(static (System.Collections.Generic.List<string> r) => r.Add("repeat"), results, count: 2)
+                .Do(static r => r.Add("step2"), results)
+                .Repeat(static r => r.Add("repeat"), results, count: 2)
                 .Execute();
 
             Assert.AreEqual(4, results.Count);
@@ -437,7 +439,7 @@ namespace JEngine.Util.Tests
         {
             int initialPoolCount = JAction.PooledCount;
 
-            using (var action = JAction.Create().Do(() => { }).Execute())
+            using (JAction.Create().Do(() => { }).Execute())
             {
                 Assert.AreEqual(initialPoolCount, JAction.PooledCount);
             }
@@ -457,7 +459,7 @@ namespace JEngine.Util.Tests
             bool completed = false;
 
             JAction.Create()
-                .WaitUntil((TestData d) =>
+                .WaitUntil(d =>
                 {
                     d.Value++;
                     return d.Value >= 3;
@@ -476,7 +478,7 @@ namespace JEngine.Util.Tests
             bool completed = false;
 
             JAction.Create()
-                .WaitWhile((TestData d) =>
+                .WaitWhile(d =>
                 {
                     d.Value++;
                     return d.Value < 3;
@@ -496,8 +498,8 @@ namespace JEngine.Util.Tests
 
             JAction.Create()
                 .RepeatWhile(
-                    (TestData d) => { actionCount++; d.Value++; },
-                    (TestData d) => d.Value < 5,
+                    d => { actionCount++; d.Value++; },
+                    d => d.Value < 5,
                     data)
                 .Execute();
 
@@ -513,8 +515,8 @@ namespace JEngine.Util.Tests
 
             JAction.Create()
                 .RepeatUntil(
-                    (TestData d) => { actionCount++; d.Value++; },
-                    (TestData d) => d.Value >= 5,
+                    d => { actionCount++; d.Value++; },
+                    d => d.Value >= 5,
                     data)
                 .Execute();
 
