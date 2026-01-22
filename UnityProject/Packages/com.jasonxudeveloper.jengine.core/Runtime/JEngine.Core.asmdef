@@ -1,6 +1,6 @@
 {
     "name": "JEngine.Core",
-    "rootNamespace": "",
+    "rootNamespace": "JEngine.Core",
     "references": [
         "GUID:4140bd2e2764f1f47ab93125ecb61942",
         "GUID:13ba8ce62aa80c74598530029cb2d649",

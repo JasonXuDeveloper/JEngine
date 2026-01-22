@@ -1,6 +1,6 @@
 {
     "name": "JEngine.Core.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "JEngine.Core",
     "references": [
         "GUID:ba02d1bbd77cf4a0c8606d3e5cbbbe79",
         "GUID:2373f786d14518f44b0f475db77ba4de",
@@ -10,7 +10,8 @@
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:e34a5702dd353724aa315fb8011f08c3",
-        "GUID:3743e71edcd5bd8499007797ef02cbfb"
+        "GUID:3743e71edcd5bd8499007797ef02cbfb",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a"
     ],
     "includePlatforms": [
         "Editor"
