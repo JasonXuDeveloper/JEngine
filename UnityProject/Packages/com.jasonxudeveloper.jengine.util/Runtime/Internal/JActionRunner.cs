@@ -41,12 +41,7 @@ namespace JEngine.Util.Internal
         /// <summary>
         /// Marker struct for identifying our update in the PlayerLoop.
         /// </summary>
-        private struct JActionUpdate : IEquatable<JActionUpdate>
-        {
-            public bool Equals(JActionUpdate other) => true;
-            public override bool Equals(object obj) => obj is JActionUpdate;
-            public override int GetHashCode() => 0;
-        }
+        private record struct JActionUpdate;
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]

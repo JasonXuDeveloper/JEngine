@@ -21,25 +21,14 @@ namespace JEngine.Util
     /// for proper compiler warnings when not awaited.
     /// </para>
     /// </remarks>
-    public readonly struct JActionAwaitable : IEquatable<JActionAwaitable>
+    public readonly record struct JActionAwaitable(JAction Action)
     {
-        private readonly JAction _action;
-
-        internal JActionAwaitable(JAction action)
-        {
-            _action = action;
-        }
-
-        public bool Equals(JActionAwaitable other) => ReferenceEquals(_action, other._action);
-        public override bool Equals(object obj) => obj is JActionAwaitable other && Equals(other);
-        public override int GetHashCode() => _action?.GetHashCode() ?? 0;
-
         /// <summary>
         /// Gets the awaiter for this awaitable.
         /// </summary>
         /// <returns>A <see cref="JActionAwaiter"/> instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public JActionAwaiter GetAwaiter() => new(_action);
+        public JActionAwaiter GetAwaiter() => new(Action);
     }
 
     /// <summary>
@@ -50,19 +39,8 @@ namespace JEngine.Util
     /// This struct implements <see cref="ICriticalNotifyCompletion"/> to support
     /// both regular and unsafe continuations, enabling efficient async state machine behavior.
     /// </remarks>
-    public readonly struct JActionAwaiter : ICriticalNotifyCompletion, IEquatable<JActionAwaiter>
+    public readonly record struct JActionAwaiter(JAction Action) : ICriticalNotifyCompletion
     {
-        private readonly JAction _action;
-
-        internal JActionAwaiter(JAction action)
-        {
-            _action = action;
-        }
-
-        public bool Equals(JActionAwaiter other) => ReferenceEquals(_action, other._action);
-        public override bool Equals(object obj) => obj is JActionAwaiter other && Equals(other);
-        public override int GetHashCode() => _action?.GetHashCode() ?? 0;
-
         /// <summary>
         /// Gets whether the <see cref="JAction"/> has completed execution.
         /// </summary>
@@ -73,7 +51,7 @@ namespace JEngine.Util
         public bool IsCompleted
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _action == null || !_action.IsExecuting;
+            get => Action == null || !Action.IsExecuting;
         }
 
         /// <summary>
@@ -96,12 +74,12 @@ namespace JEngine.Util
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnCompleted(Action continuation)
         {
-            if (_action == null || !_action.IsExecuting)
+            if (Action == null || !Action.IsExecuting)
             {
                 continuation?.Invoke();
                 return;
             }
-            _action.ContinuationCallback = continuation;
+            Action.ContinuationCallback = continuation;
         }
 
         /// <summary>

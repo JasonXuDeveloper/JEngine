@@ -41,7 +41,7 @@ namespace JEngine.Util.Internal
     /// This struct is designed for minimal memory footprint and efficient execution.
     /// State is stored externally via <see cref="IStateStorage"/> to avoid boxing value types.
     /// </remarks>
-    internal struct JActionTask : IEquatable<JActionTask>
+    internal record struct JActionTask
     {
         /// <summary>The type of task operation.</summary>
         internal JActionTaskType Type;
@@ -119,36 +119,6 @@ namespace JEngine.Util.Internal
                 return Condition?.Invoke() ?? false;
             }
             return State.InvokeCondition(ConditionDelegate);
-        }
-
-        public bool Equals(JActionTask other) =>
-            Type == other.Type &&
-            ReferenceEquals(SyncAction, other.SyncAction) &&
-            ReferenceEquals(AsyncFunc, other.AsyncFunc) &&
-            ReferenceEquals(Condition, other.Condition) &&
-            ReferenceEquals(ActionDelegate, other.ActionDelegate) &&
-            ReferenceEquals(ConditionDelegate, other.ConditionDelegate) &&
-            ReferenceEquals(State, other.State) &&
-            FloatParam1.Equals(other.FloatParam1) &&
-            FloatParam2.Equals(other.FloatParam2) &&
-            IntParam == other.IntParam;
-
-        public override bool Equals(object obj) => obj is JActionTask other && Equals(other);
-
-        public override int GetHashCode()
-        {
-            var hash = new HashCode();
-            hash.Add(Type);
-            hash.Add(SyncAction);
-            hash.Add(AsyncFunc);
-            hash.Add(Condition);
-            hash.Add(ActionDelegate);
-            hash.Add(ConditionDelegate);
-            hash.Add(State);
-            hash.Add(FloatParam1);
-            hash.Add(FloatParam2);
-            hash.Add(IntParam);
-            return hash.ToHashCode();
         }
     }
 }
