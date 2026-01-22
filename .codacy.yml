@@ -6,6 +6,8 @@ exclude_paths:
   - "UnityProject/Packages/**"
   # Ignore samples
   - "UnityProject/Assets/Samples/**"
+  # Ignore HybridCLR generated code
+  - "UnityProject/Assets/HybridCLRGenerate/**"
 
 include_paths:
   # But include JEngine packages
