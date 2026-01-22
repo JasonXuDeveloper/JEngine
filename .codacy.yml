@@ -1,0 +1,16 @@
+# Codacy configuration file
+# Only scan JEngine code, ignore 3rd party packages and samples
+
+exclude_paths:
+  # Ignore all 3rd party packages
+  - "UnityProject/Packages/**"
+  # Ignore samples
+  - "UnityProject/Assets/Samples/**"
+  # Ignore HybridCLR generated code
+  - "UnityProject/Assets/HybridCLRGenerate/**"
+  # Ignore Obfuz (3rd party obfuscation tool)
+  - "UnityProject/Assets/Obfuz/**"
+
+include_paths:
+  # But include JEngine packages
+  - "UnityProject/Packages/com.jasonxudeveloper.jengine*/**"
