@@ -38,6 +38,7 @@ JEngine is a powerful Unity framework that enables **runtime hot updates** for y
 | Package | Description | Type |
 |---------|-------------|------|
 | **JEngine.Core** | Hot update support with secure, high-performance features | Built-in |
+| **JEngine.Util** | Utility classes for JEngine framework | Built-in |
 
 ### Additional Packages
 | Package | Description | Link |

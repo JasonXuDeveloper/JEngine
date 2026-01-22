@@ -1,0 +1,22 @@
+{
+  "name": "com.jasonxudeveloper.jengine.util",
+  "version": "1.0.0",
+  "displayName": "JEngine.Util",
+  "description": "Utility classes for JEngine framework.",
+  "license": "MIT",
+  "unity": "2022.3",
+  "documentationUrl": "https://jengine.xgamedev.net/",
+  "changelogUrl": "https://github.com/JasonXuDeveloper/JEngine/blob/master/CHANGE.md",
+  "keywords": [
+    "Utility",
+    "JEngine",
+    "Framework"
+  ],
+  "author": {
+    "name": "Jason Xu",
+    "email": "jason@xgamedev.com",
+    "url": "https://github.com/JasonXuDeveloper"
+  },
+  "dependencies": {
+  }
+}
