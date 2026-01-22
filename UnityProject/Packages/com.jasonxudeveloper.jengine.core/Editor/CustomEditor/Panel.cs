@@ -271,7 +271,6 @@ namespace JEngine.Core.Editor.CustomEditor
             }
         }
 
-
         private void CreateBuildSection(VisualElement parent)
         {
             var buildGroup = new VisualElement();
@@ -430,7 +429,6 @@ namespace JEngine.Core.Editor.CustomEditor
         /// <summary>
         /// State machine update called every editor frame during build.
         /// </summary>
-
         private void LogMessage(string message, bool isError = false)
         {
             var logEntry = new Label(message);

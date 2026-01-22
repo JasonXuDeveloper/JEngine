@@ -429,7 +429,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var minute = now.Minute;
             var second = now.Second;
 
-            return year * 10000000 + month * 100000 + day * 1000 + hour * 100 + minute * 10 + second / 6;
+            return (year * 10000000) + (month * 100000) + (day * 1000) + (hour * 100) + (minute * 10) + (second / 6);
         }
 
         private void ExecuteMenuItem(string menuPath, string stepName)
