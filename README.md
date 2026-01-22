@@ -30,7 +30,6 @@ JEngine is a powerful Unity framework that enables **runtime hot updates** for y
 | `0.7.x` | 🔒 Legacy | Most popular 2022 version (no longer maintained) |
 | `0.6.x` | 🔒 Legacy | Complete with full documentation (no longer maintained) |
 | `0.5.x` | 🔒 Legacy | Used by some commercial projects (no longer maintained) |
-| `development` | 🔧 Development | Active development branch - PRs welcome! |
 
 ## 📦 Packages
 
