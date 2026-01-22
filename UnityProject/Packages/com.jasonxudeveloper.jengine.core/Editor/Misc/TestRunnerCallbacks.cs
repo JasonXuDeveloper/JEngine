@@ -11,14 +11,30 @@ namespace JEngine.Core.Editor.Misc
     internal class TestRunnerCallbacks : ICallbacks
     {
         /// <summary>
-        /// Returns true when Play Mode tests are currently running
+        /// Returns true when tests are currently running
         /// </summary>
         public static bool IsRunningTests { get; private set; }
 
+        private static readonly TestRunnerCallbacks _instance = new TestRunnerCallbacks();
+        private static TestRunnerApi _api;
+
         static TestRunnerCallbacks()
         {
-            var api = ScriptableObject.CreateInstance<TestRunnerApi>();
-            api.RegisterCallbacks(new TestRunnerCallbacks());
+            _api = ScriptableObject.CreateInstance<TestRunnerApi>();
+            _api.RegisterCallbacks(_instance);
+            EditorApplication.quitting += OnEditorQuitting;
+        }
+
+        private static void OnEditorQuitting()
+        {
+            EditorApplication.quitting -= OnEditorQuitting;
+
+            if (_api != null)
+            {
+                _api.UnregisterCallbacks(_instance);
+                ScriptableObject.DestroyImmediate(_api);
+                _api = null;
+            }
         }
 
         public void RunStarted(ITestAdaptor testsToRun)
