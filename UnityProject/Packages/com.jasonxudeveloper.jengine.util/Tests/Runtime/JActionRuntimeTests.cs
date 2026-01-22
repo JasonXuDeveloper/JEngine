@@ -1,7 +1,9 @@
 // JActionRuntimeTests.cs
 // PlayMode tests for JAction (require Unity frame execution)
 
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
@@ -27,7 +29,7 @@ namespace JEngine.Util.Tests
         /// <summary>
         /// Helper to run async code in coroutine context and wait for completion.
         /// </summary>
-        private IEnumerator RunAsync(System.Func<Task> asyncFunc)
+        private IEnumerator RunAsync(Func<Task> asyncFunc)
         {
             var task = asyncFunc();
 
@@ -192,7 +194,7 @@ namespace JEngine.Util.Tests
             {
                 using var action = await JAction.Create()
                     .Do(() => step1 = true)
-                    .DelayFrame(1)
+                    .DelayFrame()
                     .Do(() => step2 = true)
                     .ExecuteAsync();
 
@@ -277,7 +279,7 @@ namespace JEngine.Util.Tests
             return RunAsync(async () =>
             {
                 using var action = await JAction.Create()
-                    .WaitUntil(static (TestData d) =>
+                    .WaitUntil(static d =>
                     {
                         d.Counter++;
                         return d.Counter >= 3;
@@ -300,8 +302,8 @@ namespace JEngine.Util.Tests
             {
                 using var action = await JAction.Create()
                     .RepeatWhile(
-                        static (TestData d) => d.Counter++,
-                        static (TestData d) => d.Counter < 5,
+                        static d => d.Counter++,
+                        static d => d.Counter < 5,
                         data)
                     .Do(() => completed = true)
                     .ExecuteAsync();
@@ -318,13 +320,13 @@ namespace JEngine.Util.Tests
         [UnityTest]
         public IEnumerator ComplexChain_Async_ExecutesInOrder()
         {
-            var order = new System.Collections.Generic.List<int>();
+            var order = new List<int>();
 
             return RunAsync(async () =>
             {
                 using var action = await JAction.Create()
                     .Do(() => order.Add(1))
-                    .DelayFrame(1)
+                    .DelayFrame()
                     .Do(() => order.Add(2))
                     .Delay(0.05f)
                     .Do(() => order.Add(3))
@@ -345,18 +347,18 @@ namespace JEngine.Util.Tests
         [UnityTest]
         public IEnumerator ComplexChain_Async_WithStaticLambdasAndState()
         {
-            var results = new System.Collections.Generic.List<string>();
+            var results = new List<string>();
             bool completed = false;
 
             return RunAsync(async () =>
             {
                 // Mix static lambdas with state overloads - zero closure allocations
                 using var action = await JAction.Create()
-                    .Do(static (System.Collections.Generic.List<string> r) => r.Add("start"), results)
-                    .DelayFrame(1)
-                    .Do(static (System.Collections.Generic.List<string> r) => r.Add("after_frame"), results)
+                    .Do(static r => r.Add("start"), results)
+                    .DelayFrame()
+                    .Do(static r => r.Add("after_frame"), results)
                     .Delay(0.05f)
-                    .Repeat(static (System.Collections.Generic.List<string> r) => r.Add("repeat"), results, count: 2)
+                    .Repeat(static r => r.Add("repeat"), results, count: 2)
                     .Do(() => completed = true) // This one has closure (for test verification)
                     .ExecuteAsync();
 
@@ -384,7 +386,7 @@ namespace JEngine.Util.Tests
                 // Use explicit using block so we can check pool count after disposal
                 using (var action = await JAction.Create()
                     .Do(() => completed = true)
-                    .DelayFrame(1)
+                    .DelayFrame()
                     .ExecuteAsync())
                 {
                     Assert.IsTrue(completed);
