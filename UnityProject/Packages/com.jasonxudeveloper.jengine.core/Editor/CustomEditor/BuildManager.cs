@@ -51,7 +51,6 @@ namespace JEngine.Core.Editor.CustomEditor
     {
         private readonly Settings _settings;
         private readonly Action<string, bool> _logCallback;
-        private readonly Action<float, string> _progressCallback;
 
         // Build state
         private enum BuildStep
@@ -78,11 +77,10 @@ namespace JEngine.Core.Editor.CustomEditor
 
         public bool IsBuilding => _currentStep != BuildStep.None;
 
-        public BuildManager(Settings settings, Action<string, bool> logCallback, Action<float, string> progressCallback)
+        public BuildManager(Settings settings, Action<string, bool> logCallback)
         {
             _settings = settings;
             _logCallback = logCallback;
-            _progressCallback = progressCallback;
         }
 
         /// <summary>
@@ -484,7 +482,6 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             EditorUtility.DisplayProgressBar("Building", description, progress);
             Progress.Report(_progressId, progress, description);
-            _progressCallback?.Invoke(progress, description);
         }
 
         private void Log(string message, bool isError = false)

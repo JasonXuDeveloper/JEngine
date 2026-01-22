@@ -53,7 +53,6 @@ namespace JEngine.Core.Editor.CustomEditor
         private Button _buildCodeButton;
         private Button _buildAssetsButton;
         private Label _statusLabel;
-        private ProgressBar _progressBar;
         private ScrollView _logScrollView;
         private BuildManager _buildManager;
 
@@ -63,7 +62,7 @@ namespace JEngine.Core.Editor.CustomEditor
             _root = rootVisualElement;
 
             // Initialize build manager
-            _buildManager = new BuildManager(_settings, LogMessage, UpdateProgress);
+            _buildManager = new BuildManager(_settings, LogMessage);
 
             // Load stylesheets - Panel first, then Common to override
             var panelStyleSheet = StyleSheetLoader.LoadPackageStyleSheet<Panel>();
@@ -355,11 +354,6 @@ namespace JEngine.Core.Editor.CustomEditor
             _statusLabel.AddToClassList("status-label");
             statusGroup.Add(_statusLabel);
 
-            _progressBar = new ProgressBar();
-            _progressBar.AddToClassList("progress-bar");
-            _progressBar.AddToClassList("progress-bar-hidden");
-            statusGroup.Add(_progressBar);
-
             // Log area
             _logScrollView = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
             _logScrollView.AddToClassList("log-scroll");
@@ -375,26 +369,18 @@ namespace JEngine.Core.Editor.CustomEditor
             if (_buildManager.IsBuilding) return;
 
             SetBuildButtonsEnabled(false);
-            _progressBar.RemoveFromClassList("progress-bar-hidden");
-            _progressBar.AddToClassList("progress-bar-visible");
-            _progressBar.value = 0;
-
             ClearLog();
 
             _buildManager.StartBuildAll(
                 onComplete: () =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Build completed";
                     EditorUtility.DisplayDialog("Build Successful", "Build completed successfully!", "OK");
                 },
                 onError: (e) =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Build failed";
                     EditorUtility.DisplayDialog("Build Failed", $"Build failed with error:\n{e.Message}", "OK");
                 }
@@ -406,26 +392,18 @@ namespace JEngine.Core.Editor.CustomEditor
             if (_buildManager.IsBuilding) return;
 
             SetBuildButtonsEnabled(false);
-            _progressBar.RemoveFromClassList("progress-bar-hidden");
-            _progressBar.AddToClassList("progress-bar-visible");
-            _progressBar.value = 0;
-
             ClearLog();
 
             _buildManager.StartBuildCodeOnly(
                 onComplete: () =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Code build completed";
                     EditorUtility.DisplayDialog("Code Build Successful", "Code build completed successfully!", "OK");
                 },
                 onError: (e) =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Code build failed";
                     EditorUtility.DisplayDialog("Code Build Failed", $"Code build failed with error:\n{e.Message}", "OK");
                 }
@@ -437,26 +415,18 @@ namespace JEngine.Core.Editor.CustomEditor
             if (_buildManager.IsBuilding) return;
 
             SetBuildButtonsEnabled(false);
-            _progressBar.RemoveFromClassList("progress-bar-hidden");
-            _progressBar.AddToClassList("progress-bar-visible");
-            _progressBar.value = 0;
-
             ClearLog();
 
             _buildManager.StartBuildAssetsOnly(
                 onComplete: () =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Assets build completed";
                     EditorUtility.DisplayDialog("Assets Build Successful", "Assets build completed successfully!", "OK");
                 },
                 onError: (e) =>
                 {
                     SetBuildButtonsEnabled(true);
-                    _progressBar.RemoveFromClassList("progress-bar-visible");
-                    _progressBar.AddToClassList("progress-bar-hidden");
                     _statusLabel.text = "Assets build failed";
                     EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error:\n{e.Message}", "OK");
                 }
@@ -494,12 +464,6 @@ namespace JEngine.Core.Editor.CustomEditor
         {
             _logScrollView.Clear();
             _statusLabel.text = "Ready to build";
-        }
-
-        private void UpdateProgress(float progress, string description)
-        {
-            _progressBar.value = progress;
-            _statusLabel.text = description;
         }
     }
 }
