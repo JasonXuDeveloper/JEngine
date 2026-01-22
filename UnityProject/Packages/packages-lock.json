@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.code-philosophy.hybridclr": {
-      "version": "file:com.code-philosophy.hybridclr@8.6.0",
+      "version": "file:com.code-philosophy.hybridclr@8.9.0",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
@@ -11,14 +11,14 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "b582c1f24bda5676c54dc66529e9b1d6f9aead47"
+      "hash": "3615bbcce922c2131161d356eddc708a3106477c"
     },
     "com.code-philosophy.obfuz4hybridclr": {
       "version": "https://github.com/focus-creative-games/obfuz4hybridclr.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "59804e17a0d1562ca0f847db986ed93b25825b6d"
+      "hash": "c9214b2cf9869cf93e060442ec12b9fa828d98d5"
     },
     "com.cysharp.unitask": {
       "version": "2.5.10",
@@ -37,15 +37,21 @@
         "com.tuyoogame.yooasset": "2.3.16"
       }
     },
+    "com.jasonxudeveloper.jengine.util": {
+      "version": "file:com.jasonxudeveloper.jengine.util",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.jasonxudeveloper.nino": {
-      "version": "4.0.0-preview.137",
+      "version": "4.0.0-preview.143",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://package.openupm.com"
     },
     "com.tuyoogame.yooasset": {
-      "version": "2.3.16",
+      "version": "2.3.18",
       "depth": 0,
       "source": "registry",
       "dependencies": {
