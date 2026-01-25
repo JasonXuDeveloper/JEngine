@@ -95,4 +95,4 @@ JEngine relies on the following third-party packages. Keep them updated:
 
 | Date | Version | Security Changes |
 |------|---------|------------------|
-| 2026 | 1.0.0+  | Initial security policy established |
+| January 2026 | 1.0.0+  | Initial security policy established |
