@@ -3,29 +3,47 @@ name: CodeQL Security Analysis
 on:
   push:
     branches: [master]
-    paths:
-      # Only run when JEngine code changes
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
-      - 'UnityProject/Assets/HotUpdate/Code/**'
-      - '.github/codeql/**'
-      - '.github/workflows/codeql.yml'
+    # Path filtering moved to job level for push events
   pull_request:
     branches: [master]
-    paths:
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
-      - 'UnityProject/Assets/HotUpdate/Code/**'
-      - '.github/codeql/**'
-      - '.github/workflows/codeql.yml'
+    # Path filtering moved to job level using dorny/paths-filter
+    # This ensures the workflow always runs and reports a status
   schedule:
     # Run weekly on Sunday at 00:00 UTC
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    # Only run path detection for push/pull_request events
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    outputs:
+      should_analyze: ${{ steps.filter.outputs.src }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+              - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+              - 'UnityProject/Assets/HotUpdate/Code/**'
+              - '.github/codeql/**'
+              - '.github/workflows/codeql.yml'
+
   analyze:
     name: Analyze C# Code
+    needs: changes
+    # Run if: 1) changes detected, 2) schedule event, or 3) manual dispatch
+    if: |
+      always() && (
+        needs.changes.outputs.should_analyze == 'true' ||
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch'
+      )
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -50,3 +68,16 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/language:csharp"
+
+  skip-analyze:
+    name: Analyze C# Code
+    needs: changes
+    # Only skip for push/pull_request when no relevant changes
+    if: |
+      always() &&
+      (github.event_name == 'push' || github.event_name == 'pull_request') &&
+      needs.changes.outputs.should_analyze == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip analysis
+        run: echo "No relevant changes detected, skipping CodeQL analysis"
