@@ -1,5 +1,3 @@
-# JEngine
-
 <div align="center">
 
 ![JEngine](https://socialify.git.ci/JasonXuDeveloper/JEngine/image?font=JetBrains+Mono&forks=1&issues=1&logo=https%3A%2F%2Fjengine.xgamedev.net%2Flogo.png&name=1&owner=1&pulls=1&stargazers=1&theme=Auto)
