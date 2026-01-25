@@ -177,11 +177,14 @@ jobs:
           OTHER=""
           CONTRIBUTORS=""
 
+          # Store regex in variable to avoid bash parsing issues with special characters
+          COMMIT_PATTERN='^([a-z]+)(\(([^)]+)\))?!?:[[:space:]](.+)$'
+
           while IFS='|' read -r hash subject author; do
             [ -z "$hash" ] && continue
 
             # Extract commit type and scope
-            if [[ $subject =~ ^([a-z]+)(\(([^)]+)\))?!?:\ (.+)$ ]]; then
+            if [[ $subject =~ $COMMIT_PATTERN ]]; then
               type="${BASH_REMATCH[1]}"
               scope="${BASH_REMATCH[3]}"
               description="${BASH_REMATCH[4]}"
