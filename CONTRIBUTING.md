@@ -69,8 +69,9 @@ JEngine/
 │   │       │   └── JObjectPool.cs               # Generic object pooling
 │   │       └── Tests/                           # Unit tests
 │   └── Assets/
-│       ├── HotUpdate/                           # Hot-updateable code
-│       └── Samples/                             # Sample implementations
+│       ├── HotUpdate/                           # Hot update assets
+│       │   └── Code/                            # Hot update code
+│       └── Samples/                             # Dependency extensions (do not modify)
 ├── .github/
 │   └── workflows/                               # CI/CD workflows
 ├── README.md                                    # English documentation
