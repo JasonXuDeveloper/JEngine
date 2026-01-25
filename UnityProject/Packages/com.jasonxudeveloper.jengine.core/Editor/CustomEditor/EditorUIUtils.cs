@@ -428,17 +428,17 @@ namespace JEngine.Core.Editor.CustomEditor
             if (property.arraySize == 0)
                 return "Empty";
 
-            var hex = "";
+            var hex = new System.Text.StringBuilder();
             for (int i = 0; i < property.arraySize; i++)
             {
                 if (i > 0 && i % 16 == 0)
-                    hex += "\n";
+                    hex.Append('\n');
                 else if (i > 0)
-                    hex += " ";
+                    hex.Append(' ');
 
-                hex += property.GetArrayElementAtIndex(i).intValue.ToString("X2");
+                hex.Append(property.GetArrayElementAtIndex(i).intValue.ToString("X2"));
             }
-            return hex;
+            return hex.ToString();
         }
     }
 }
