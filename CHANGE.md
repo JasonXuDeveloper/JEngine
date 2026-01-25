@@ -1,4 +1,36 @@
 ## All Versions
+## 1.0.9 (January 25 2026)
+
+- Add DCO sign-off check for pull requests ([#558](https://github.com/JasonXuDeveloper/JEngine/pull/558)) (ci)
+- Include non-conventional commits in changelog ([#557](https://github.com/JasonXuDeveloper/JEngine/pull/557)) (ci)
+- Add automated testing and release workflows ([#554](https://github.com/JasonXuDeveloper/JEngine/pull/554)) (ci)
+- Use app token for releases and consistent CHANGE.md formatting ([#571](https://github.com/JasonXuDeveloper/JEngine/pull/571)) (ci)
+- Revert 1.0.7 release and fix workflow bugs ([#570](https://github.com/JasonXuDeveloper/JEngine/pull/570)) (ci)
+- Use pipe delimiter in sed to avoid URL slash conflict ([#569](https://github.com/JasonXuDeveloper/JEngine/pull/569)) (ci)
+- Improve changelog with PR hyperlinks and proper contributors ([#568](https://github.com/JasonXuDeveloper/JEngine/pull/568)) (ci)
+- Use awk for reliable README multiline replacement ([#567](https://github.com/JasonXuDeveloper/JEngine/pull/567)) (ci)
+- Improve release workflow ([#566](https://github.com/JasonXuDeveloper/JEngine/pull/566)) (ci)
+- Store regex in variable to fix bash parsing error ([#564](https://github.com/JasonXuDeveloper/JEngine/pull/564)) (ci)
+- Use buildless mode for CodeQL Unity analysis ([#563](https://github.com/JasonXuDeveloper/JEngine/pull/563)) (ci)
+- Configure CodeQL to scan only JEngine source code ([#562](https://github.com/JasonXuDeveloper/JEngine/pull/562)) (ci)
+- Correct test artifact paths in unity-tests workflow ([#561](https://github.com/JasonXuDeveloper/JEngine/pull/561)) (ci)
+- Revert "chore(release): v1.0.6" ([#565](https://github.com/JasonXuDeveloper/JEngine/pull/565))
+- Fix build error handling and refactor Panel.cs ([#552](https://github.com/JasonXuDeveloper/JEngine/pull/552))
+- Fix play mode test issues and refactor test code ([#551](https://github.com/JasonXuDeveloper/JEngine/pull/551))
+- Fix play mode tests jumping to init scene instead of running ([#550](https://github.com/JasonXuDeveloper/JEngine/pull/550))
+- Fix C# 9.0 Compilation Errors ([#548](https://github.com/JasonXuDeveloper/JEngine/pull/548))
+- Add JEngine.Util package ([#543](https://github.com/JasonXuDeveloper/JEngine/pull/543))
+- Add rootNamespace and TestRunnerCallbacks to JEngine.Core ([#545](https://github.com/JasonXuDeveloper/JEngine/pull/545))
+- Add CLAUDE.md and GitHub Copilot custom instructions ([#547](https://github.com/JasonXuDeveloper/JEngine/pull/547))
+- Remove development branch from documentation ([#546](https://github.com/JasonXuDeveloper/JEngine/pull/546))
+- Update YooAsset samples to 2.3.18 and update dependencies ([#544](https://github.com/JasonXuDeveloper/JEngine/pull/544))
+- Update hybridclr to 8.9.0 and add Codacy configuration ([#542](https://github.com/JasonXuDeveloper/JEngine/pull/542))
+- Claude Code Review workflow
+- Claude PR Assistant workflow
+- Add using UnityEditor.UIElements to SettingsUIBuilder.cs and EditorUIUtils.cs
+- Fix Unitask HandleBaseExtensions Add underline
+
+
 ## 1.0.8 (January 25 2026)
 
 - **Add DCO sign-off check for pull requests ([#558](https://github.com/JasonXuDeveloper/JEngine/pull/558))** (ci)

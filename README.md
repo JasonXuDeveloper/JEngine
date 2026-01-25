@@ -53,11 +53,12 @@ JEngine is a powerful Unity framework that enables **runtime hot updates** for y
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.0.8)
+## 🎉 Latest Features (v1.0.9)
 
 - **ci**: add DCO sign-off check for pull requests ([#558](https://github.com/JasonXuDeveloper/JEngine/pull/558))
 - **ci**: include non-conventional commits in changelog ([#557](https://github.com/JasonXuDeveloper/JEngine/pull/557))
 - **ci**: add automated testing and release workflows ([#554](https://github.com/JasonXuDeveloper/JEngine/pull/554))
+- **ci**: use app token for releases and consistent CHANGE.md formatting ([#571](https://github.com/JasonXuDeveloper/JEngine/pull/571))
 - **ci**: revert 1.0.7 release and fix workflow bugs ([#570](https://github.com/JasonXuDeveloper/JEngine/pull/570))
 - **ci**: use pipe delimiter in sed to avoid URL slash conflict ([#569](https://github.com/JasonXuDeveloper/JEngine/pull/569))
 - **ci**: improve changelog with PR hyperlinks and proper contributors ([#568](https://github.com/JasonXuDeveloper/JEngine/pull/568))
