@@ -174,9 +174,12 @@ jobs:
           FEATURES=""
           FIXES=""
           BREAKING=""
+          OTHER=""
           CONTRIBUTORS=""
 
           while IFS='|' read -r hash subject author; do
+            [ -z "$hash" ] && continue
+
             # Extract commit type and scope
             if [[ $subject =~ ^([a-z]+)(\(([^)]+)\))?!?:\ (.+)$ ]]; then
               type="${BASH_REMATCH[1]}"
@@ -198,6 +201,7 @@ jobs:
                 fix)
                   FIXES="${FIXES}- $entry\n"
                   ;;
+                # Other conventional types (chore, docs, refactor, etc.) are intentionally excluded
               esac
 
               # Check for breaking changes
@@ -207,6 +211,13 @@ jobs:
                   breaking_desc="$description"
                 fi
                 BREAKING="${BREAKING}- $breaking_desc\n"
+              fi
+            else
+              # Non-conventional commit - add to Other Changes
+              # Clean up the subject (remove quotes if present)
+              clean_subject=$(echo "$subject" | sed 's/^"//;s/"$//')
+              if [ -n "$clean_subject" ]; then
+                OTHER="${OTHER}- $clean_subject\n"
               fi
             fi
 
@@ -243,6 +254,11 @@ jobs:
             CHANGELOG="${CHANGELOG}### 🐛 Bug Fixes\n\n${FIXES}\n"
           fi
 
+          # Add other changes (non-feat/fix conventional commits and non-conventional commits)
+          if [ -n "$OTHER" ]; then
+            CHANGELOG="${CHANGELOG}### 📦 Other Changes\n\n${OTHER}\n"
+          fi
+
           # Add manual changelog if provided
           if [ -n "${{ inputs.manual_changelog }}" ]; then
             CHANGELOG="${CHANGELOG}### 📝 Additional Changes\n\n${{ inputs.manual_changelog }}\n\n"
@@ -254,7 +270,7 @@ jobs:
           fi
 
           # If no changelog content, add placeholder
-          if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$BREAKING" ] && [ -z "${{ inputs.manual_changelog }}" ]; then
+          if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$BREAKING" ] && [ -z "$OTHER" ] && [ -z "${{ inputs.manual_changelog }}" ]; then
             CHANGELOG="${CHANGELOG}Minor updates and improvements.\n"
           fi
 
@@ -342,6 +358,16 @@ jobs:
                   CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
                 fi
               done <<< "$FIXES"
+            fi
+          fi
+
+          # Extract other changes (non-conventional commits)
+          if echo "$CHANGELOG" | grep -q "### 📦 Other Changes"; then
+            OTHERS=$(echo "$CHANGELOG" | sed -n '/### 📦 Other Changes/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            if [ -n "$OTHERS" ]; then
+              while IFS= read -r line; do
+                CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
+              done <<< "$OTHERS"
             fi
           fi
 
