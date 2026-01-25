@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://jengine.xgamedev.net/
+    about: Check the documentation for guides and API reference
+  - name: QQ Group (Chinese)
+    url: https://jq.qq.com/?_wv=1027&k=cF4hODjW
+    about: Join the QQ group for Chinese community support (921271552)
+  - name: Ask DeepWiki
+    url: https://deepwiki.com/JasonXuDeveloper/JEngine
+    about: Ask AI about JEngine codebase
