@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Starting from 2026, only JEngine version 1.x receives security updates. Earlier versions (0.x) are no longer maintained and users are strongly encouraged to upgrade.
+From version 1.0.0 onwards (released September 2025), only JEngine version 1.x receives security updates. Earlier versions (0.x) are no longer maintained and users are strongly encouraged to upgrade.
 
 | Version | Supported          |
 | ------- | ------------------ |
