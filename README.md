@@ -17,7 +17,7 @@
 - **10x+ Performance** - HybridCLR outperforms ILRuntime/Lua hot update solutions
 - **Zero/Minimal GC** - UniTask (GC-free async) + Nino (high-performance serialization)
 - **All Platforms** - iOS, Android, Windows, macOS, WebGL, WeChat, Douyin, Alipay, TapTap
-- **Secure Updates** - Encrypt hot update resources (assets & DLL/PDB) with XOR/AES/ChaCha20
+- **Secure Updates** - Obfuscate hot update DLL + encrypt resources (assets & DLL/PDB) with XOR/AES/ChaCha20
 - **Commercial Ready** - Production-proven by individuals and enterprise teams
 
 ## Overview
