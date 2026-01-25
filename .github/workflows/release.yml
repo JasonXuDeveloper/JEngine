@@ -34,6 +34,7 @@ jobs:
       core_version: ${{ steps.validate.outputs.core_version }}
       util_version: ${{ steps.validate.outputs.util_version }}
       release_tag: ${{ steps.validate.outputs.release_tag }}
+      create_github_release: ${{ steps.validate.outputs.create_github_release }}
 
     steps:
       - name: Checkout repository
@@ -101,31 +102,15 @@ jobs:
             echo "util_version=$CURRENT_UTIL_VERSION" >> $GITHUB_OUTPUT
           fi
 
-          # Determine release tag (use higher version if both packages released)
-          if [ "${{ inputs.release_core }}" == "true" ] && [ "${{ inputs.release_util }}" == "true" ]; then
-            # Compare versions and use higher one
-            IFS='.' read -r -a core_parts <<< "${{ inputs.core_version }}"
-            IFS='.' read -r -a util_parts <<< "${{ inputs.util_version }}"
-
-            use_core=false
-            for i in 0 1 2; do
-              if [ "${core_parts[$i]}" -gt "${util_parts[$i]}" ]; then
-                use_core=true
-                break
-              elif [ "${core_parts[$i]}" -lt "${util_parts[$i]}" ]; then
-                break
-              fi
-            done
-
-            if [ "$use_core" == "true" ]; then
-              echo "release_tag=v${{ inputs.core_version }}" >> $GITHUB_OUTPUT
-            else
-              echo "release_tag=v${{ inputs.util_version }}" >> $GITHUB_OUTPUT
-            fi
-          elif [ "${{ inputs.release_core }}" == "true" ]; then
+          # Release tag always follows Core version
+          # GitHub releases are only created when Core is released
+          if [ "${{ inputs.release_core }}" == "true" ]; then
             echo "release_tag=v${{ inputs.core_version }}" >> $GITHUB_OUTPUT
+            echo "create_github_release=true" >> $GITHUB_OUTPUT
           else
-            echo "release_tag=v${{ inputs.util_version }}" >> $GITHUB_OUTPUT
+            # If only Util is released, use current Core version (no GitHub release)
+            echo "release_tag=v$CURRENT_CORE_VERSION" >> $GITHUB_OUTPUT
+            echo "create_github_release=false" >> $GITHUB_OUTPUT
           fi
 
           echo "✅ Validation passed"
@@ -162,37 +147,11 @@ jobs:
       - name: Determine changelog base tag
         id: base-tag
         run: |
-          # Get current package versions
+          # Get current Core version
           CURRENT_CORE=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
-          CURRENT_UTIL=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json)
 
-          # Determine which version to use as base for changelog
-          # If both packages being released, use the higher current version
-          # If only one package being released, use that package's current version
-          if [ "${{ inputs.release_core }}" == "true" ] && [ "${{ inputs.release_util }}" == "true" ]; then
-            IFS='.' read -r -a core_parts <<< "$CURRENT_CORE"
-            IFS='.' read -r -a util_parts <<< "$CURRENT_UTIL"
-
-            use_core=false
-            for i in 0 1 2; do
-              if [ "${core_parts[$i]}" -gt "${util_parts[$i]}" ]; then
-                use_core=true
-                break
-              elif [ "${core_parts[$i]}" -lt "${util_parts[$i]}" ]; then
-                break
-              fi
-            done
-
-            if [ "$use_core" == "true" ]; then
-              BASE_TAG="v$CURRENT_CORE"
-            else
-              BASE_TAG="v$CURRENT_UTIL"
-            fi
-          elif [ "${{ inputs.release_core }}" == "true" ]; then
-            BASE_TAG="v$CURRENT_CORE"
-          else
-            BASE_TAG="v$CURRENT_UTIL"
-          fi
+          # Always use Core version for changelog base (releases follow Core version)
+          BASE_TAG="v$CURRENT_CORE"
 
           echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
           echo "Using base tag for changelog: $BASE_TAG"
@@ -323,8 +282,9 @@ jobs:
           mv /tmp/package.json UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json
           echo "✅ Updated Util package.json to v${{ needs.validate.outputs.util_version }}"
 
-      # Update README files
+      # Update README files (only when releasing Core)
       - name: Update README.md
+        if: inputs.release_core == true
         run: |
           VERSION="${{ needs.validate.outputs.release_tag }}"
           VERSION="${VERSION#v}"  # Remove 'v' prefix
@@ -332,6 +292,7 @@ jobs:
           echo "✅ Updated README.md version reference"
 
       - name: Update README_zh_cn.md
+        if: inputs.release_core == true
         run: |
           VERSION="${{ needs.validate.outputs.release_tag }}"
           VERSION="${VERSION#v}"  # Remove 'v' prefix
@@ -349,7 +310,12 @@ jobs:
           CHANGELOG=$(cat /tmp/changelog.txt)
 
           # Convert changelog to CHANGE.md format
-          CHANGE_ENTRY="## $VERSION ($DATE)\n\n"
+          # For Util-only releases, note that Core version didn't change
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            CHANGE_ENTRY="## $VERSION ($DATE)\n\n"
+          else
+            CHANGE_ENTRY="## $VERSION ($DATE) - Util v${{ needs.validate.outputs.util_version }}\n\n"
+          fi
 
           # Extract features and fixes from changelog
           if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
@@ -397,21 +363,54 @@ jobs:
           git config user.email "release-bot[bot]@jengine.xgamedev.net"
 
           git add UnityProject/Packages/*/package.json README*.md CHANGE.md
-          git commit -m "chore(release): ${{ needs.validate.outputs.release_tag }}"
+
+          # Different commit message based on what's being released
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            git commit -m "chore(release): ${{ needs.validate.outputs.release_tag }}"
+          else
+            git commit -m "chore(util): update to v${{ needs.validate.outputs.util_version }}"
+          fi
+
           git push origin ${{ github.ref_name }}
 
           echo "✅ Committed and pushed changes"
 
-      # Create Git tag
+      # Create Git tag (only when releasing Core)
       - name: Create Git tag
+        if: needs.validate.outputs.create_github_release == 'true'
         run: |
           git tag ${{ needs.validate.outputs.release_tag }}
           git push origin ${{ needs.validate.outputs.release_tag }}
           echo "✅ Created and pushed tag ${{ needs.validate.outputs.release_tag }}"
 
+      # Summary
+      - name: Release Summary
+        run: |
+          echo "## 📦 Package Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            echo "✅ **JEngine.Core**: v${{ needs.validate.outputs.core_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.release_util }}" == "true" ]; then
+            echo "✅ **JEngine.Util**: v${{ needs.validate.outputs.util_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.validate.outputs.create_github_release }}" == "true" ]; then
+            echo "🏷️ **GitHub Release**: Will be created with tag ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **Note**: No GitHub release created (Util-only update)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "OpenUPM will automatically detect the Util package update from package.json changes." >> $GITHUB_STEP_SUMMARY
+          fi
+
   create-release:
     name: Create GitHub Release
     needs: [validate, prepare-release]
+    if: needs.validate.outputs.create_github_release == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
