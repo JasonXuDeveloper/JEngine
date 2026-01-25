@@ -60,6 +60,7 @@ jobs:
           projectPath: ${{ inputs.project_path }}
           unityVersion: ${{ inputs.unity_version }}
           testMode: EditMode
+          artifactsPath: artifacts/EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: EditMode Test Results
 
@@ -76,6 +77,7 @@ jobs:
           projectPath: ${{ inputs.project_path }}
           unityVersion: ${{ inputs.unity_version }}
           testMode: PlayMode
+          artifactsPath: artifacts/PlayMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: PlayMode Test Results
 
@@ -85,7 +87,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: EditMode-results-${{ inputs.unity_version }}
-          path: ${{ inputs.project_path }}/artifacts/EditMode
+          path: artifacts/EditMode
+          if-no-files-found: warn
           retention-days: 14
 
       - name: Upload PlayMode test results
@@ -93,7 +96,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PlayMode-results-${{ inputs.unity_version }}
-          path: ${{ inputs.project_path }}/artifacts/PlayMode
+          path: artifacts/PlayMode
+          if-no-files-found: warn
           retention-days: 14
 
       # Generate test summary
