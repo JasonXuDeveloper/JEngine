@@ -27,6 +27,7 @@ jobs:
     if: always()
     permissions:
       pull-requests: write
+      statuses: write
 
     steps:
       - name: Comment PR with test results
