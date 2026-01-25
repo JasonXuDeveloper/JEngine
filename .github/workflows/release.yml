@@ -105,11 +105,13 @@ jobs:
           # Release tag always follows Core version
           # GitHub releases are only created when Core is released
           if [ "${{ inputs.release_core }}" == "true" ]; then
-            echo "release_tag=v${{ inputs.core_version }}" >> $GITHUB_OUTPUT
+            # No 'v' prefix to match existing tag format (1.0.5, not v1.0.5)
+            echo "release_tag=${{ inputs.core_version }}" >> $GITHUB_OUTPUT
             echo "create_github_release=true" >> $GITHUB_OUTPUT
           else
             # If only Util is released, create tag for OpenUPM but no GitHub release
-            echo "release_tag=util-v${{ inputs.util_version }}" >> $GITHUB_OUTPUT
+            # No 'v' prefix to match existing tag format
+            echo "release_tag=util-${{ inputs.util_version }}" >> $GITHUB_OUTPUT
             echo "create_github_release=false" >> $GITHUB_OUTPUT
           fi
 
@@ -151,7 +153,8 @@ jobs:
           CURRENT_CORE=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
 
           # Always use Core version for changelog base (releases follow Core version)
-          BASE_TAG="v$CURRENT_CORE"
+          # Note: existing tags don't have 'v' prefix (e.g., 1.0.5 not v1.0.5)
+          BASE_TAG="$CURRENT_CORE"
 
           echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
           echo "Using base tag for changelog: $BASE_TAG"
@@ -305,18 +308,59 @@ jobs:
       - name: Update README.md
         if: inputs.release_core == true
         run: |
-          VERSION="${{ needs.validate.outputs.release_tag }}"
-          VERSION="${VERSION#v}"  # Remove 'v' prefix
-          sed -i "s/^## 🎉 Latest Features (v[0-9.]*)/## 🎉 Latest Features (v$VERSION)/" README.md
-          echo "✅ Updated README.md version reference"
+          VERSION="${{ needs.validate.outputs.core_version }}"
+          CHANGELOG=$(cat /tmp/changelog.txt)
+
+          # Extract feature bullet points from changelog for README
+          FEATURES=""
+          if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
+          fi
+          if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " || true)
+            FEATURES="${FEATURES}"$'\n'"${FIXES}"
+          fi
+
+          # If no features/fixes, use a generic message
+          if [ -z "$FEATURES" ]; then
+            FEATURES="- Minor updates and improvements"
+          fi
+
+          # Create the new Latest Features section
+          NEW_SECTION="## 🎉 Latest Features (v$VERSION)"$'\n'$'\n'"$FEATURES"$'\n'$'\n'"[📋 View Complete Changelog](CHANGE.md)"
+
+          # Replace the entire Latest Features section in README.md
+          # Match from "## 🎉 Latest Features" to just before "## 📊 Project Statistics"
+          sed -i '/^## 🎉 Latest Features/,/^\[📋 View Complete Changelog\]/c\'"$NEW_SECTION" README.md
+          echo "✅ Updated README.md with new features"
 
       - name: Update README_zh_cn.md
         if: inputs.release_core == true
         run: |
-          VERSION="${{ needs.validate.outputs.release_tag }}"
-          VERSION="${VERSION#v}"  # Remove 'v' prefix
-          sed -i "s/^## 🎉 最新功能 (v[0-9.]*)/## 🎉 最新功能 (v$VERSION)/" README_zh_cn.md
-          echo "✅ Updated README_zh_cn.md version reference"
+          VERSION="${{ needs.validate.outputs.core_version }}"
+          CHANGELOG=$(cat /tmp/changelog.txt)
+
+          # Extract feature bullet points from changelog for README
+          FEATURES=""
+          if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
+          fi
+          if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " || true)
+            FEATURES="${FEATURES}"$'\n'"${FIXES}"
+          fi
+
+          # If no features/fixes, use a generic message
+          if [ -z "$FEATURES" ]; then
+            FEATURES="- 小更新和改进"
+          fi
+
+          # Create the new Latest Features section (Chinese)
+          NEW_SECTION="## 🎉 最新功能 (v$VERSION)"$'\n'$'\n'"$FEATURES"$'\n'$'\n'"[📋 查看完整更新日志](CHANGE.md)"
+
+          # Replace the entire Latest Features section in README_zh_cn.md
+          sed -i '/^## 🎉 最新功能/,/^\[📋 查看完整更新日志\]/c\'"$NEW_SECTION" README_zh_cn.md
+          echo "✅ Updated README_zh_cn.md with new features"
 
       # Update CHANGE.md
       - name: Update CHANGE.md
@@ -387,9 +431,12 @@ jobs:
 
       # Commit and push changes
       - name: Commit and push changes
+        env:
+          APP_ID: ${{ secrets.RELEASE_APP_ID }}
         run: |
-          git config user.name "JEngine Release Bot[bot]"
-          git config user.email "release-bot[bot]@jengine.xgamedev.net"
+          # Use GitHub's bot email format so the app avatar shows on commits
+          git config user.name "jengine-release-bot[bot]"
+          git config user.email "${APP_ID}+jengine-release-bot[bot]@users.noreply.github.com"
 
           git add UnityProject/Packages/*/package.json README*.md CHANGE.md
 
@@ -457,7 +504,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ needs.validate.outputs.release_tag }}
-          release_name: Release ${{ needs.validate.outputs.release_tag }}
+          release_name: v${{ needs.validate.outputs.release_tag }}
           body: |
             ${{ needs.prepare-release.outputs.changelog }}
 
