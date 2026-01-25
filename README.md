@@ -41,23 +41,18 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 
 ## Packages
 
-### Core Package (Required)
+### Official Packages
 
-| Package | Description |
-|---------|-------------|
-| **JEngine.Core** | Hot update support with secure, high-performance features |
-
-### Optional Package
-
-| Package | Description |
-|---------|-------------|
-| **JEngine.Util** | Utility classes including JAction and JObjectPool |
+| Package | Type | Description |
+|---------|------|-------------|
+| **JEngine.Core** | Required | Hot update support with secure, high-performance features |
+| **JEngine.Util** | Optional | Utility classes including JAction and JObjectPool |
 
 **JEngine.Util Features:**
 - **JAction** - Zero-GC chainable async task framework with fluent API, object pooling, delays, conditions, and loops
 - **JObjectPool** - Thread-safe, lock-free generic object pooling using CAS operations
 
-### Additional Packages
+### Third-Party Packages
 
 | Package | Description | Link |
 |---------|-------------|------|
