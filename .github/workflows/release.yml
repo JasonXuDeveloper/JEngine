@@ -314,24 +314,41 @@ jobs:
           # Extract feature bullet points from changelog for README
           FEATURES=""
           if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
-            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/^###/p' | grep "^- " || true)
           fi
           if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
-            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " || true)
-            FEATURES="${FEATURES}"$'\n'"${FIXES}"
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/^###/p' | grep "^- " || true)
+            if [ -n "$FEATURES" ] && [ -n "$FIXES" ]; then
+              FEATURES="${FEATURES}"$'\n'"${FIXES}"
+            elif [ -n "$FIXES" ]; then
+              FEATURES="$FIXES"
+            fi
           fi
+
+          # Trim leading/trailing whitespace and empty lines
+          FEATURES=$(echo "$FEATURES" | sed '/^$/d')
 
           # If no features/fixes, use a generic message
           if [ -z "$FEATURES" ]; then
             FEATURES="- Minor updates and improvements"
           fi
 
-          # Create the new Latest Features section
-          NEW_SECTION="## 🎉 Latest Features (v$VERSION)"$'\n'$'\n'"$FEATURES"$'\n'$'\n'"[📋 View Complete Changelog](CHANGE.md)"
+          # Write replacement content to temp file (avoids sed multiline issues)
+          {
+            echo "## 🎉 Latest Features (v$VERSION)"
+            echo ""
+            echo "$FEATURES"
+            echo ""
+            echo "[📋 View Complete Changelog](CHANGE.md)"
+          } > /tmp/new_section.txt
 
-          # Replace the entire Latest Features section in README.md
-          # Match from "## 🎉 Latest Features" to just before "## 📊 Project Statistics"
-          sed -i '/^## 🎉 Latest Features/,/^\[📋 View Complete Changelog\]/c\'"$NEW_SECTION" README.md
+          # Use awk for reliable multiline replacement
+          awk '
+            /^## 🎉 Latest Features/ { skip=1; while((getline line < "/tmp/new_section.txt") > 0) print line; close("/tmp/new_section.txt") }
+            /^\[📋 View Complete Changelog\]/ { skip=0; next }
+            !skip { print }
+          ' README.md > /tmp/README.md.new
+          mv /tmp/README.md.new README.md
           echo "✅ Updated README.md with new features"
 
       - name: Update README_zh_cn.md
@@ -343,23 +360,41 @@ jobs:
           # Extract feature bullet points from changelog for README
           FEATURES=""
           if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
-            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/^###/p' | grep "^- " || true)
           fi
           if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
-            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " || true)
-            FEATURES="${FEATURES}"$'\n'"${FIXES}"
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/^###/p' | grep "^- " || true)
+            if [ -n "$FEATURES" ] && [ -n "$FIXES" ]; then
+              FEATURES="${FEATURES}"$'\n'"${FIXES}"
+            elif [ -n "$FIXES" ]; then
+              FEATURES="$FIXES"
+            fi
           fi
+
+          # Trim leading/trailing whitespace and empty lines
+          FEATURES=$(echo "$FEATURES" | sed '/^$/d')
 
           # If no features/fixes, use a generic message
           if [ -z "$FEATURES" ]; then
             FEATURES="- 小更新和改进"
           fi
 
-          # Create the new Latest Features section (Chinese)
-          NEW_SECTION="## 🎉 最新功能 (v$VERSION)"$'\n'$'\n'"$FEATURES"$'\n'$'\n'"[📋 查看完整更新日志](CHANGE.md)"
+          # Write replacement content to temp file (avoids sed multiline issues)
+          {
+            echo "## 🎉 最新功能 (v$VERSION)"
+            echo ""
+            echo "$FEATURES"
+            echo ""
+            echo "[📋 查看完整更新日志](CHANGE.md)"
+          } > /tmp/new_section_zh.txt
 
-          # Replace the entire Latest Features section in README_zh_cn.md
-          sed -i '/^## 🎉 最新功能/,/^\[📋 查看完整更新日志\]/c\'"$NEW_SECTION" README_zh_cn.md
+          # Use awk for reliable multiline replacement
+          awk '
+            /^## 🎉 最新功能/ { skip=1; while((getline line < "/tmp/new_section_zh.txt") > 0) print line; close("/tmp/new_section_zh.txt") }
+            /^\[📋 查看完整更新日志\]/ { skip=0; next }
+            !skip { print }
+          ' README_zh_cn.md > /tmp/README_zh_cn.md.new
+          mv /tmp/README_zh_cn.md.new README_zh_cn.md
           echo "✅ Updated README_zh_cn.md with new features"
 
       # Update CHANGE.md
