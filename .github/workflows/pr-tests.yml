@@ -2,12 +2,10 @@ name: PR Tests
 
 on:
   pull_request:
+    branches: [master]
     types: [opened, synchronize, reopened]
-    paths:
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
-      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
-      - 'UnityProject/Assets/Tests/**'
-      - '.github/workflows/**'
+    # Path filtering moved to job level using dorny/paths-filter
+    # This ensures the workflow always runs and reports a status
 
 # Ensure only one test run per PR at a time
 concurrency:
@@ -20,19 +18,47 @@ permissions:
   statuses: write
 
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      should_test: ${{ steps.filter.outputs.src }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+              - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+              - 'UnityProject/Assets/Tests/**'
+              - '.github/workflows/**'
+
   run-tests:
     name: Run Unity Tests
+    needs: changes
+    if: needs.changes.outputs.should_test == 'true'
     permissions:
       contents: read
       checks: write
     uses: ./.github/workflows/unity-tests.yml
     secrets: inherit
 
+  skip-tests:
+    name: Run Unity Tests
+    needs: changes
+    if: needs.changes.outputs.should_test == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip tests
+        run: echo "No relevant changes detected, skipping tests"
+
   comment-results:
     name: Comment Test Results
-    needs: run-tests
+    needs: [changes, run-tests, skip-tests]
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && needs.changes.outputs.should_test == 'true'
     permissions:
       pull-requests: write
       statuses: write
