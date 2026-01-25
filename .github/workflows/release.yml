@@ -162,15 +162,18 @@ jobs:
       # Generate changelog from conventional commits
       - name: Generate changelog
         id: generate-changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           BASE_TAG="${{ steps.base-tag.outputs.base_tag }}"
 
           # Get commits since last tag
           if git rev-parse "$BASE_TAG" >/dev/null 2>&1; then
-            COMMITS=$(git log $BASE_TAG..HEAD --pretty=format:"%H|%s|%an" --no-merges)
+            COMMITS=$(git log $BASE_TAG..HEAD --pretty=format:"%H|%s" --no-merges)
           else
             echo "Warning: Tag $BASE_TAG not found, using all commits"
-            COMMITS=$(git log --pretty=format:"%H|%s|%an" --no-merges)
+            COMMITS=$(git log --pretty=format:"%H|%s" --no-merges)
           fi
 
           # Parse conventional commits
@@ -178,13 +181,30 @@ jobs:
           FIXES=""
           BREAKING=""
           OTHER=""
-          CONTRIBUTORS=""
+          declare -A CONTRIBUTORS_MAP
 
           # Store regex in variable to avoid bash parsing issues with special characters
           COMMIT_PATTERN='^([a-z]+)(\(([^)]+)\))?!?:[[:space:]](.+)$'
+          # Pattern to extract PR number from commit message like "message (#123)"
+          PR_PATTERN='\(#([0-9]+)\)$'
 
-          while IFS='|' read -r hash subject author; do
+          while IFS='|' read -r hash subject; do
             [ -z "$hash" ] && continue
+
+            # Extract PR number if present and convert to hyperlink
+            pr_link=""
+            if [[ $subject =~ $PR_PATTERN ]]; then
+              pr_num="${BASH_REMATCH[1]}"
+              pr_link="[#${pr_num}](https://github.com/${REPO}/pull/${pr_num})"
+              # Replace (#123) with the hyperlink
+              subject=$(echo "$subject" | sed "s/(#${pr_num})/(${pr_link})/")
+
+              # Get contributor from PR using GitHub API
+              pr_author=$(gh api "repos/${REPO}/pulls/${pr_num}" --jq '.user.login' 2>/dev/null || echo "")
+              if [ -n "$pr_author" ] && [ "$pr_author" != "null" ]; then
+                CONTRIBUTORS_MAP["$pr_author"]=1
+              fi
+            fi
 
             # Extract commit type and scope
             if [[ $subject =~ $COMMIT_PATTERN ]]; then
@@ -226,14 +246,17 @@ jobs:
                 OTHER="${OTHER}- $clean_subject\n"
               fi
             fi
-
-            # Collect unique contributors
-            if ! echo "$CONTRIBUTORS" | grep -q "@$author"; then
-              CONTRIBUTORS="${CONTRIBUTORS}@$author, "
-            fi
           done <<< "$COMMITS"
 
-          # Remove trailing comma from contributors
+          # Build contributors list from the associative array (excludes bots)
+          CONTRIBUTORS=""
+          for contributor in "${!CONTRIBUTORS_MAP[@]}"; do
+            # Skip bot accounts
+            if [[ "$contributor" != *"[bot]"* ]] && [[ "$contributor" != *"-bot"* ]]; then
+              CONTRIBUTORS="${CONTRIBUTORS}[@${contributor}](https://github.com/${contributor}), "
+            fi
+          done
+          # Remove trailing comma
           CONTRIBUTORS=$(echo "$CONTRIBUTORS" | sed 's/, $//')
 
           # Build changelog
@@ -399,6 +422,8 @@ jobs:
 
       # Update CHANGE.md
       - name: Update CHANGE.md
+        env:
+          REPO: ${{ github.repository }}
         run: |
           DATE=$(date +"%B %d %Y")
 
@@ -415,14 +440,18 @@ jobs:
             CHANGE_ENTRY="## $VERSION ($DATE) - Util v${{ needs.validate.outputs.util_version }}\n\n"
           fi
 
-          # Extract features and fixes from changelog
+          # Extract features and fixes from changelog (already contains PR hyperlinks)
           if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
-            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
             if [ -n "$FEATURES" ]; then
               while IFS= read -r line; do
-                # Convert **scope**: format to prefix format
+                # Convert **scope**: format to prefix format, preserve hyperlinks
                 if [[ $line =~ ^\-\ \*\*([^*]+)\*\*:\ (.+)$ ]]; then
-                  CHANGE_ENTRY="${CHANGE_ENTRY}- **$(echo ${BASH_REMATCH[2]} | sed 's/^./\u&/')** (${BASH_REMATCH[1]})\n"
+                  scope="${BASH_REMATCH[1]}"
+                  desc="${BASH_REMATCH[2]}"
+                  # Capitalize first letter of description
+                  desc_cap="$(echo "${desc:0:1}" | tr '[:lower:]' '[:upper:]')${desc:1}"
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- **${desc_cap}** (${scope})\n"
                 else
                   CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
                 fi
@@ -431,11 +460,14 @@ jobs:
           fi
 
           if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
-            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " || true)
             if [ -n "$FIXES" ]; then
               while IFS= read -r line; do
                 if [[ $line =~ ^\-\ \*\*([^*]+)\*\*:\ (.+)$ ]]; then
-                  CHANGE_ENTRY="${CHANGE_ENTRY}- **$(echo ${BASH_REMATCH[2]} | sed 's/^./\u&/')** (${BASH_REMATCH[1]})\n"
+                  scope="${BASH_REMATCH[1]}"
+                  desc="${BASH_REMATCH[2]}"
+                  desc_cap="$(echo "${desc:0:1}" | tr '[:lower:]' '[:upper:]')${desc:1}"
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- **${desc_cap}** (${scope})\n"
                 else
                   CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
                 fi
@@ -443,9 +475,9 @@ jobs:
             fi
           fi
 
-          # Extract other changes (non-conventional commits)
+          # Extract other changes (non-conventional commits) - already contains PR hyperlinks
           if echo "$CHANGELOG" | grep -q "### 📦 Other Changes"; then
-            OTHERS=$(echo "$CHANGELOG" | sed -n '/### 📦 Other Changes/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            OTHERS=$(echo "$CHANGELOG" | sed -n '/### 📦 Other Changes/,/###/p' | grep "^- " || true)
             if [ -n "$OTHERS" ]; then
               while IFS= read -r line; do
                 CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
@@ -466,12 +498,12 @@ jobs:
 
       # Commit and push changes
       - name: Commit and push changes
-        env:
-          APP_ID: ${{ secrets.RELEASE_APP_ID }}
         run: |
           # Use GitHub's bot email format so the app avatar shows on commits
+          # The user ID (257041894) is from: gh api '/users/jengine-release-bot[bot]' --jq '.id'
+          # This is different from the App ID - it's the bot account's user ID
           git config user.name "jengine-release-bot[bot]"
-          git config user.email "${APP_ID}+jengine-release-bot[bot]@users.noreply.github.com"
+          git config user.email "257041894+jengine-release-bot[bot]@users.noreply.github.com"
 
           git add UnityProject/Packages/*/package.json README*.md CHANGE.md
 
