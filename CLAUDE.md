@@ -232,3 +232,30 @@ BREAKING CHANGE: EncryptionManager.Encrypt() now requires EncryptionConfig param
 - Separate subject from body with blank line
 - Wrap body at 72 characters
 - Use body to explain what and why (not how)
+
+### Developer Certificate of Origin (DCO)
+
+All commits must be signed off to certify that you have the right to submit the code under the project's open source license. This is done using the `--signoff` (or `-s`) flag when committing.
+
+**Always use signed commits:**
+
+```bash
+git commit -s -m "feat(core): add new feature"
+```
+
+This adds a `Signed-off-by` line to your commit message:
+
+```
+feat(core): add new feature
+
+Signed-off-by: Your Name <your.email@example.com>
+```
+
+The sign-off certifies that you agree to the Developer Certificate of Origin (DCO), which states that you have the right to submit the work under the project's license and that you understand it will be distributed under that license.
+
+**Important:** Configure your git identity before signing off:
+
+```bash
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+```
