@@ -4,20 +4,20 @@ on:
   workflow_call:
     inputs:
       unity_version:
-        description: 'Unity version to use for testing'
+        description: 'Unity version (leave empty to use .github/unity-config.env)'
         required: false
         type: string
-        default: '2022.3.55f1'
+        default: ''
       test_mode:
         description: 'Test mode to run (All, EditMode, PlayMode)'
         required: false
         type: string
         default: 'All'
       project_path:
-        description: 'Path to Unity project directory'
+        description: 'Path to Unity project (leave empty to use .github/unity-config.env)'
         required: false
         type: string
-        default: 'UnityProject'
+        default: ''
     outputs:
       test_results:
         description: 'Test results summary'
@@ -38,23 +38,37 @@ jobs:
       results: ${{ steps.test-summary.outputs.summary }}
 
     steps:
-      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # Cache Unity Library folder for faster builds
+      # Load centralized Unity configuration
+      - name: Load Unity config
+        id: config
+        run: |
+          source .github/unity-config.env
+          # Use input if provided, otherwise use config file value
+          if [ -n "${{ inputs.unity_version }}" ]; then
+            echo "version=${{ inputs.unity_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=$UNITY_VERSION" >> $GITHUB_OUTPUT
+          fi
+          if [ -n "${{ inputs.project_path }}" ]; then
+            echo "project_path=${{ inputs.project_path }}" >> $GITHUB_OUTPUT
+          else
+            echo "project_path=$UNITY_PROJECT_PATH" >> $GITHUB_OUTPUT
+          fi
+
       - name: Cache Unity Library
         uses: actions/cache@v4
         with:
-          path: ${{ inputs.project_path }}/Library
-          key: Library-${{ inputs.project_path }}-${{ inputs.unity_version }}-${{ hashFiles(format('{0}/Packages/packages-lock.json', inputs.project_path)) }}
+          path: ${{ steps.config.outputs.project_path }}/Library
+          key: Library-${{ steps.config.outputs.project_path }}-${{ steps.config.outputs.version }}-${{ hashFiles(format('{0}/Packages/packages-lock.json', steps.config.outputs.project_path)) }}
           restore-keys: |
-            Library-${{ inputs.project_path }}-${{ inputs.unity_version }}-
-            Library-${{ inputs.project_path }}-
+            Library-${{ steps.config.outputs.project_path }}-${{ steps.config.outputs.version }}-
+            Library-${{ steps.config.outputs.project_path }}-
 
-      # Run EditMode tests
       - name: Run EditMode tests
         if: inputs.test_mode == 'All' || inputs.test_mode == 'EditMode'
         uses: game-ci/unity-test-runner@v4
@@ -64,14 +78,13 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
-          projectPath: ${{ inputs.project_path }}
-          unityVersion: ${{ inputs.unity_version }}
+          projectPath: ${{ steps.config.outputs.project_path }}
+          unityVersion: ${{ steps.config.outputs.version }}
           testMode: EditMode
           artifactsPath: artifacts/EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: EditMode Test Results
 
-      # Run PlayMode tests
       - name: Run PlayMode tests
         if: inputs.test_mode == 'All' || inputs.test_mode == 'PlayMode'
         uses: game-ci/unity-test-runner@v4
@@ -81,19 +94,18 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
-          projectPath: ${{ inputs.project_path }}
-          unityVersion: ${{ inputs.unity_version }}
+          projectPath: ${{ steps.config.outputs.project_path }}
+          unityVersion: ${{ steps.config.outputs.version }}
           testMode: PlayMode
           artifactsPath: artifacts/PlayMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: PlayMode Test Results
 
-      # Upload test results as artifacts
       - name: Upload EditMode test results
         if: always() && (inputs.test_mode == 'All' || inputs.test_mode == 'EditMode')
         uses: actions/upload-artifact@v4
         with:
-          name: EditMode-results-${{ inputs.unity_version }}
+          name: EditMode-results-${{ steps.config.outputs.version }}
           path: artifacts/EditMode
           if-no-files-found: warn
           retention-days: 14
@@ -102,12 +114,11 @@ jobs:
         if: always() && (inputs.test_mode == 'All' || inputs.test_mode == 'PlayMode')
         uses: actions/upload-artifact@v4
         with:
-          name: PlayMode-results-${{ inputs.unity_version }}
+          name: PlayMode-results-${{ steps.config.outputs.version }}
           path: artifacts/PlayMode
           if-no-files-found: warn
           retention-days: 14
 
-      # Generate test summary
       - name: Generate test summary
         id: test-summary
         if: always()
@@ -132,14 +143,13 @@ jobs:
             fi
           fi
 
-          SUMMARY="${SUMMARY}\n**Unity Version**: ${{ inputs.unity_version }}\n"
-          SUMMARY="${SUMMARY}**Project Path**: ${{ inputs.project_path }}"
+          SUMMARY="${SUMMARY}\n**Unity Version**: ${{ steps.config.outputs.version }}\n"
+          SUMMARY="${SUMMARY}**Project Path**: ${{ steps.config.outputs.project_path }}"
 
           echo "summary<<EOF" >> $GITHUB_OUTPUT
           echo -e "$SUMMARY" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # Return Unity license
       - name: Return Unity license
         uses: game-ci/unity-return-license@v2
         if: always()

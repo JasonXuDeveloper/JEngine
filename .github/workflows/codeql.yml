@@ -4,7 +4,6 @@ on:
   push:
     branches: [master]
     paths:
-      # Only run when JEngine code changes
       - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
       - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
       - 'UnityProject/Assets/HotUpdate/Code/**'
@@ -19,7 +18,6 @@ on:
       - '.github/codeql/**'
       - '.github/workflows/codeql.yml'
   schedule:
-    # Run weekly on Sunday at 00:00 UTC
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
@@ -35,16 +33,51 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Load centralized Unity configuration
+      - name: Load Unity config
+        id: unity-config
+        run: |
+          source .github/unity-config.env
+          echo "version=$UNITY_VERSION" >> $GITHUB_OUTPUT
+          echo "project_path=$UNITY_PROJECT_PATH" >> $GITHUB_OUTPUT
+          echo "target_platform=$UNITY_TARGET_PLATFORM" >> $GITHUB_OUTPUT
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.unity-config.outputs.project_path }}/Library
+          key: Library-CodeQL-${{ steps.unity-config.outputs.version }}-${{ hashFiles(format('{0}/Packages/packages-lock.json', steps.unity-config.outputs.project_path)) }}
+          restore-keys: |
+            Library-CodeQL-${{ steps.unity-config.outputs.version }}-
+            Library-CodeQL-
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: csharp
           config-file: ./.github/codeql/codeql-config.yml
-          # Use security-and-quality queries for comprehensive analysis
           queries: security-and-quality
-          # Use buildless mode for Unity projects (no standard .NET build)
-          build-mode: none
+          build-mode: manual
+
+      - name: Compile Unity Scripts
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: ${{ steps.unity-config.outputs.project_path }}
+          unityVersion: ${{ steps.unity-config.outputs.version }}
+          targetPlatform: ${{ steps.unity-config.outputs.target_platform }}
+          buildName: CodeQL
+          customParameters: -nographics -quit
+
+      - name: Return Unity license
+        uses: game-ci/unity-return-license@v2
+        if: always()
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
