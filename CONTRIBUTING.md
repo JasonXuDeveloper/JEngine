@@ -208,6 +208,7 @@ BREAKING CHANGE: EncryptionManager.Encrypt() now requires EncryptionConfig param
 
 ### Guidelines
 
+- **Write commit messages in English** (preferred for consistency)
 - Keep subject line under 72 characters
 - Use imperative mood ("add" not "added" or "adds")
 - Don't capitalize first letter of subject
@@ -287,6 +288,7 @@ The sign-off certifies that you agree to the [Developer Certificate of Origin](h
 
    - Go to your fork on GitHub
    - Click "Compare & pull request"
+   - **Write PR title and description in English** (required)
    - Fill in the PR template
    - Link any related issues
 
