@@ -71,7 +71,7 @@ JEngine/
 │   └── Assets/
 │       ├── HotUpdate/                           # Hot update assets
 │       │   └── Code/                            # Hot update code
-│       └── Samples/                             # Dependency extensions (do not modify)
+│       └── Samples/                             # Dependency extensions (only modify when updating/adding package extensions)
 ├── .github/
 │   └── workflows/                               # CI/CD workflows
 ├── README.md                                    # English documentation
@@ -90,12 +90,12 @@ JEngine/
 
 ### File Headers
 
-All C# files should include the standard header:
+All new C# files should include the standard header with your information:
 
 ```csharp
 // FileName.cs
 //
-// Author: JasonXuDeveloper <jason@xgamedev.net>
+// Author: Your Name <your.email@example.com>
 // Copyright (c) 2025 JEngine - MIT License
 ```
 
