@@ -446,17 +446,18 @@ jobs:
           fi
 
           # Extract features and fixes from changelog (already contains PR hyperlinks)
+          # Format: "- Description (scope)" for conventional commits, "- Description" for others
           if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
             FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " || true)
             if [ -n "$FEATURES" ]; then
               while IFS= read -r line; do
-                # Convert **scope**: format to prefix format, preserve hyperlinks
+                # Convert **scope**: format to "Description (scope)" format
                 if [[ $line =~ ^\-\ \*\*([^*]+)\*\*:\ (.+)$ ]]; then
                   scope="${BASH_REMATCH[1]}"
                   desc="${BASH_REMATCH[2]}"
                   # Capitalize first letter of description
                   desc_cap="$(echo "${desc:0:1}" | tr '[:lower:]' '[:upper:]')${desc:1}"
-                  CHANGE_ENTRY="${CHANGE_ENTRY}- **${desc_cap}** (${scope})\n"
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- ${desc_cap} (${scope})\n"
                 else
                   CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
                 fi
@@ -472,7 +473,7 @@ jobs:
                   scope="${BASH_REMATCH[1]}"
                   desc="${BASH_REMATCH[2]}"
                   desc_cap="$(echo "${desc:0:1}" | tr '[:lower:]' '[:upper:]')${desc:1}"
-                  CHANGE_ENTRY="${CHANGE_ENTRY}- **${desc_cap}** (${scope})\n"
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- ${desc_cap} (${scope})\n"
                 else
                   CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
                 fi
@@ -565,6 +566,14 @@ jobs:
       contents: write
 
     steps:
+      # Generate GitHub App token so the release is created by JEngine Release Bot
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -572,7 +581,7 @@ jobs:
 
       - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Create release body
           cat > /tmp/release_body.md << 'RELEASE_EOF'
