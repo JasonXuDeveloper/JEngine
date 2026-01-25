@@ -1,0 +1,46 @@
+# Codecov configuration for JEngine
+# https://docs.codecov.com/docs/codecovyml-reference
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+
+# Flag management for per-package coverage tracking
+flag_management:
+  default_rules:
+    # Prevents "unknown" coverage when only one package changes in a PR
+    carryforward: true
+  individual_flags:
+    - name: util
+      paths:
+        - UnityProject/Packages/com.jasonxudeveloper.jengine.util/
+      carryforward: true
+    # Add future packages here as they become testable
+    # - name: another-package
+    #   paths:
+    #     - UnityProject/Packages/com.jasonxudeveloper.another-package/
+    #   carryforward: true
+
+# Ignore files that shouldn't affect coverage
+ignore:
+  - "**/*Tests*/**"
+  - "**/*.Tests.cs"
+  - "**/Editor/**"
+  - "**/Samples/**"
+  # Ignore third-party packages (not JEngine's)
+  - "UnityProject/Packages/com.code-philosophy.*/**"
+  - "UnityProject/Packages/com.unity.*/**"
+  - "UnityProject/Packages/com.tuyoogame.*/**"
+  - "UnityProject/Packages/com.focus-creative-games.*/**"
+
+comment:
+  layout: "reach,diff,flags,components"
+  behavior: default
+  require_changes: true

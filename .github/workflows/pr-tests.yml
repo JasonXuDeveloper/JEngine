@@ -54,6 +54,31 @@ jobs:
       - name: Skip tests
         run: echo "No relevant changes detected, skipping tests"
 
+  upload-coverage:
+    name: Upload Coverage
+    needs: [changes, run-tests]
+    runs-on: ubuntu-latest
+    if: needs.changes.outputs.should_test == 'true' && needs.run-tests.result == 'success'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Coverage-results-2022.3.55f1
+          path: coverage
+
+      - name: Upload coverage to Codecov (util package)
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/**/coverage.xml
+          flags: util
+          name: jengine-util
+          fail_ci_if_error: false
+          verbose: true
+
   comment-results:
     name: Comment Test Results
     needs: [changes, run-tests, skip-tests]
