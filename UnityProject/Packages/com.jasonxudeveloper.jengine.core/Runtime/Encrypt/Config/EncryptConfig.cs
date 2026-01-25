@@ -39,7 +39,7 @@ namespace JEngine.Core.Encrypt.Config
             {
                 if (_instance == null)
                 {
-                    const string path = "EncryptConfigs/";
+                    const string path = "EncryptConfigs";
                     _instance = Resources.Load<T>(Path.Combine(path, typeof(T).Name));
                     if (_instance == null)
                     {

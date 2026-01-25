@@ -34,3 +34,18 @@ paths-ignore:
 # Query configuration
 queries:
   - uses: security-and-quality
+
+# Exclude rules that are intentional design decisions for this project
+query-filters:
+  # Generic catch clauses are intentional for crash prevention in game framework
+  - exclude:
+      id: cs/catch-of-all-exceptions
+  # Nested if-statements are acceptable code style
+  - exclude:
+      id: cs/nested-if-statements
+  # Complex blocks are acceptable for algorithm implementations
+  - exclude:
+      id: cs/complex-block
+  # Project intentionally avoids LINQ for performance
+  - exclude:
+      id: cs/linq/missed-where

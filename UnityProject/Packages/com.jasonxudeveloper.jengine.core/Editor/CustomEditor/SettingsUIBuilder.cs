@@ -68,8 +68,11 @@ namespace JEngine.Core.Editor.CustomEditor
             var buildTargetField = new EnumField(settings.buildTarget);
             buildTargetField.RegisterValueChangedCallback(evt =>
             {
-                settings.buildTarget = (BuildTarget)evt.newValue;
-                settings.Save();
+                if (evt.newValue is BuildTarget newTarget)
+                {
+                    settings.buildTarget = newTarget;
+                    settings.Save();
+                }
             });
             buildTargetField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(buildTargetField);

@@ -259,14 +259,7 @@ namespace JEngine.Core.Editor.CustomEditor
 
                     Log("Code build completed successfully!");
 
-                    if (_buildAll)
-                    {
-                        _currentStep = BuildStep.BuildAssets;
-                    }
-                    else
-                    {
-                        _currentStep = BuildStep.Complete;
-                    }
+                    _currentStep = _buildAll ? BuildStep.BuildAssets : BuildStep.Complete;
                     break;
 
                 case BuildStep.BuildAssets:

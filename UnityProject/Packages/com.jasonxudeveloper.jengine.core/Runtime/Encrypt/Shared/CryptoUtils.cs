@@ -37,6 +37,10 @@ namespace JEngine.Core.Encrypt.Shared
             return bytes;
         }
 
+        /// <summary>
+        /// Check if byte array is null or contains only zeros.
+        /// Using foreach for performance (no LINQ allocation).
+        /// </summary>
         public static bool IsEmpty(byte[] array)
         {
             if (array == null) return true;

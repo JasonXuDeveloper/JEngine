@@ -23,6 +23,10 @@ on:
         description: 'Test results summary'
         value: ${{ jobs.test.outputs.results }}
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   test:
     name: Run Unity Tests

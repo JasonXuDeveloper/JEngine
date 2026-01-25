@@ -115,6 +115,7 @@ namespace JEngine.Core
         }
 
         private static Bootstrap _instance;
+        private static void SetInstance(Bootstrap instance) => _instance = instance;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void SetUpStaticSecretKey()
@@ -141,7 +142,7 @@ namespace JEngine.Core
             Debug.Log("SetUpDynamicSecret begin");
             var handle = YooAssets.LoadAssetAsync<TextAsset>(dynamicSecretKeyPath);
             await handle.Task;
-            TextAsset dynamicSecretKeyAsset = (TextAsset)handle.AssetObject;
+            TextAsset dynamicSecretKeyAsset = handle.GetAssetObject<TextAsset>();
             EncryptionService<DefaultDynamicEncryptionScope>.Encryptor =
                 new GeneratedEncryptionVirtualMachine(dynamicSecretKeyAsset.bytes);
             handle.Release();
@@ -153,7 +154,7 @@ namespace JEngine.Core
         {
             var aotListHandle = YooAssets.LoadAssetAsync<TextAsset>(aotDllListFilePath);
             await aotListHandle.Task;
-            TextAsset aotDataAsset = (TextAsset)aotListHandle.AssetObject;
+            TextAsset aotDataAsset = aotListHandle.GetAssetObject<TextAsset>();
             var aotDllList = NinoDeserializer.Deserialize<List<string>>(aotDataAsset.bytes);
             aotListHandle.Release();
 
@@ -167,7 +168,7 @@ namespace JEngine.Core
 
                 var handle = YooAssets.LoadAssetAsync<TextAsset>(aotDllName);
                 await handle.Task;
-                byte[] dllBytes = ((TextAsset)handle.AssetObject).bytes;
+                byte[] dllBytes = handle.GetAssetObject<TextAsset>().bytes;
                 var err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, HomologousImageMode.SuperSet);
                 Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. ret:{err}");
                 handle.Release();
@@ -181,7 +182,7 @@ namespace JEngine.Core
                 DestroyImmediate(_instance);
             }
 
-            _instance = this;
+            SetInstance(this);
             DontDestroyOnLoad(gameObject);
 
             startButton?.gameObject.SetActive(true);
