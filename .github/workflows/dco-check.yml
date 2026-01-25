@@ -1,0 +1,81 @@
+name: DCO Check
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  dco-check:
+    name: Verify DCO Sign-off
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all commits for PR
+
+      - name: Check DCO sign-off on all commits
+        run: |
+          echo "Checking DCO sign-off for all commits in this PR..."
+          echo ""
+
+          # Get the base and head commits
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          # Get list of commits in the PR
+          COMMITS=$(git rev-list --no-merges $BASE_SHA..$HEAD_SHA)
+
+          if [ -z "$COMMITS" ]; then
+            echo "No commits to check."
+            exit 0
+          fi
+
+          FAILED=0
+          TOTAL=0
+
+          for COMMIT in $COMMITS; do
+            TOTAL=$((TOTAL + 1))
+            SUBJECT=$(git log -1 --format="%s" $COMMIT)
+            AUTHOR=$(git log -1 --format="%an <%ae>" $COMMIT)
+
+            # Check for Signed-off-by line
+            if git log -1 --format="%B" $COMMIT | grep -q "^Signed-off-by: "; then
+              echo "✅ $COMMIT: $SUBJECT"
+            else
+              echo "❌ $COMMIT: $SUBJECT"
+              echo "   Author: $AUTHOR"
+              echo "   Missing 'Signed-off-by' line"
+              echo ""
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          echo ""
+          echo "----------------------------------------"
+          echo "Total commits checked: $TOTAL"
+          echo "Commits with sign-off: $((TOTAL - FAILED))"
+          echo "Commits missing sign-off: $FAILED"
+          echo "----------------------------------------"
+
+          if [ $FAILED -gt 0 ]; then
+            echo ""
+            echo "❌ DCO check failed!"
+            echo ""
+            echo "All commits must be signed off to certify you have the right to submit"
+            echo "the code under the project's open source license."
+            echo ""
+            echo "To sign off your commits, use the --signoff (or -s) flag:"
+            echo "  git commit -s -m \"your commit message\""
+            echo ""
+            echo "To fix existing commits, you can:"
+            echo "  1. Amend the last commit: git commit --amend -s"
+            echo "  2. Rebase and sign all: git rebase --signoff HEAD~$FAILED"
+            echo ""
+            echo "For more information, see: https://developercertificate.org/"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All commits are properly signed off!"
