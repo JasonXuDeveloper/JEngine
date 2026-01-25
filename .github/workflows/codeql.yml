@@ -43,17 +43,8 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
           # Use security-and-quality queries for comprehensive analysis
           queries: security-and-quality
-
-      # Build step for C# - CodeQL needs to observe the build
-      # For Unity projects, we set up a minimal build environment
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.0.x'
-
-      # Autobuild attempts to build the project automatically
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+          # Use buildless mode for Unity projects (no standard .NET build)
+          build-mode: none
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
