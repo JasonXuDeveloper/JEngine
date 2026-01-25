@@ -1,0 +1,42 @@
+# Auto-labeler configuration
+# https://github.com/actions/labeler
+
+# Core package changes
+core:
+  - changed-files:
+      - any-glob-to-any-file: 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+
+# Util package changes
+util:
+  - changed-files:
+      - any-glob-to-any-file: 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+
+# CI/CD changes
+ci:
+  - changed-files:
+      - any-glob-to-any-file: '.github/workflows/**'
+      - any-glob-to-any-file: '.github/*.yml'
+
+# Documentation changes
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: '**/*.md'
+      - any-glob-to-any-file: 'docs/**'
+
+# Test changes
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'UnityProject/Assets/Tests/**'
+      - any-glob-to-any-file: '**/*Tests*/**'
+      - any-glob-to-any-file: '**/*.Tests.cs'
+
+# Editor code changes
+editor:
+  - changed-files:
+      - any-glob-to-any-file: '**/Editor/**'
+
+# Sample/demo changes
+samples:
+  - changed-files:
+      - any-glob-to-any-file: 'UnityProject/Assets/Samples/**'
+      - any-glob-to-any-file: '**/Samples~/**'
