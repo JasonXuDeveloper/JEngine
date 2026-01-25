@@ -1,0 +1,36 @@
+name: "JEngine CodeQL Configuration"
+
+# Only analyze JEngine source code, exclude third-party dependencies
+paths:
+  # JEngine Core package
+  - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core'
+  # JEngine Util package
+  - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util'
+  # Hot update code
+  - 'UnityProject/Assets/HotUpdate/Code'
+
+paths-ignore:
+  # Third-party packages
+  - 'UnityProject/Packages/com.code-philosophy.hybridclr'
+  - 'UnityProject/Packages/com.focus-creative-games.*'
+  - 'UnityProject/Packages/com.tuyoogame.*'
+  - 'UnityProject/Packages/com.unity.*'
+  - 'UnityProject/Packages/com.cysharp.*'
+  # Unity generated files
+  - 'UnityProject/Library'
+  - 'UnityProject/Temp'
+  - 'UnityProject/Logs'
+  - 'UnityProject/obj'
+  # Build outputs
+  - 'UnityProject/Builds'
+  - 'UnityProject/ServerData'
+  # Test files (optional - remove if you want tests scanned)
+  - 'UnityProject/Assets/Tests'
+  # Third-party assets
+  - 'UnityProject/Assets/Plugins'
+  # Samples
+  - 'UnityProject/Assets/Samples'
+
+# Query configuration
+queries:
+  - uses: security-and-quality

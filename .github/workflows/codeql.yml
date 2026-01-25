@@ -1,0 +1,61 @@
+name: CodeQL Security Analysis
+
+on:
+  push:
+    branches: [master]
+    paths:
+      # Only run when JEngine code changes
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+      - 'UnityProject/Assets/HotUpdate/Code/**'
+      - '.github/codeql/**'
+      - '.github/workflows/codeql.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+      - 'UnityProject/Assets/HotUpdate/Code/**'
+      - '.github/codeql/**'
+      - '.github/workflows/codeql.yml'
+  schedule:
+    # Run weekly on Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze C# Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          config-file: ./.github/codeql/codeql-config.yml
+          # Use security-and-quality queries for comprehensive analysis
+          queries: security-and-quality
+
+      # Build step for C# - CodeQL needs to observe the build
+      # For Unity projects, we set up a minimal build environment
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      # Autobuild attempts to build the project automatically
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp"
