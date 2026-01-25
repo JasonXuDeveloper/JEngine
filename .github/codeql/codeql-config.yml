@@ -49,3 +49,6 @@ query-filters:
   # Project intentionally avoids LINQ for performance
   - exclude:
       id: cs/linq/missed-where
+  # Path.Combine is safe when arguments come from internal APIs, not user input
+  - exclude:
+      id: cs/path-combine

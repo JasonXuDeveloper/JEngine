@@ -31,6 +31,9 @@ jobs:
   test:
     name: Run Unity Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     outputs:
       results: ${{ steps.test-summary.outputs.summary }}
 

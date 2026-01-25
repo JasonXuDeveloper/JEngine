@@ -22,6 +22,9 @@ permissions:
 jobs:
   run-tests:
     name: Run Unity Tests
+    permissions:
+      contents: read
+      checks: write
     uses: ./.github/workflows/unity-tests.yml
     secrets: inherit
 

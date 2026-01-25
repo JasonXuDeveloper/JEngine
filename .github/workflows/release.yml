@@ -33,6 +33,8 @@ jobs:
   validate:
     name: Validate Inputs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       core_version: ${{ steps.validate.outputs.core_version }}
       util_version: ${{ steps.validate.outputs.util_version }}
@@ -123,6 +125,9 @@ jobs:
   run-tests:
     name: Run Unity Tests
     needs: validate
+    permissions:
+      contents: read
+      checks: write
     uses: ./.github/workflows/unity-tests.yml
     secrets: inherit
 
@@ -130,6 +135,8 @@ jobs:
     name: Prepare Release
     needs: [validate, run-tests]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       changelog: ${{ steps.generate-changelog.outputs.changelog }}
 
