@@ -1,6 +1,6 @@
 {
   "name": "com.jasonxudeveloper.jengine.util",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "displayName": "JEngine.Util",
   "description": "Utility classes for JEngine framework.",
   "license": "MIT",
@@ -17,6 +17,5 @@
     "email": "jason@xgamedev.com",
     "url": "https://github.com/JasonXuDeveloper"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

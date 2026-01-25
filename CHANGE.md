@@ -1,4 +1,32 @@
 ## All Versions
+## 1.0.6 (January 25 2026)
+
+- **Add DCO sign-off check for pull requests (#558)** (ci)
+- **Include non-conventional commits in changelog (#557)** (ci)
+- **Add automated testing and release workflows (#554)** (ci)
+- **Use awk for reliable README multiline replacement (#567)** (ci)
+- **Improve release workflow (#566)** (ci)
+- **Store regex in variable to fix bash parsing error (#564)** (ci)
+- **Use buildless mode for CodeQL Unity analysis (#563)** (ci)
+- **Configure CodeQL to scan only JEngine source code (#562)** (ci)
+- **Correct test artifact paths in unity-tests workflow (#561)** (ci)
+- Revert "chore(release): v1.0.6" (#565)
+- Fix build error handling and refactor Panel.cs (#552)
+- Fix play mode test issues and refactor test code (#551)
+- Fix play mode tests jumping to init scene instead of running (#550)
+- Fix C# 9.0 Compilation Errors (#548)
+- Add JEngine.Util package (#543)
+- Add rootNamespace and TestRunnerCallbacks to JEngine.Core (#545)
+- Add CLAUDE.md and GitHub Copilot custom instructions (#547)
+- Remove development branch from documentation (#546)
+- Update YooAsset samples to 2.3.18 and update dependencies (#544)
+- Update hybridclr to 8.9.0 and add Codacy configuration (#542)
+- Claude Code Review workflow
+- Claude PR Assistant workflow
+- Add using UnityEditor.UIElements to SettingsUIBuilder.cs and EditorUIUtils.cs
+- Fix Unitask HandleBaseExtensions Add underline
+
+
 
 ## 1.0.5 (October 29 2025)
 

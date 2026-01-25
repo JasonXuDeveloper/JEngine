@@ -57,10 +57,17 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.0.5)
+## 🎉 最新功能 (v1.0.6)
 
-- **修复**丢失热更MonoBehaviour问题
-- **支持**单机模式
+- **ci**: add DCO sign-off check for pull requests (#558)
+- **ci**: include non-conventional commits in changelog (#557)
+- **ci**: add automated testing and release workflows (#554)
+- **ci**: use awk for reliable README multiline replacement (#567)
+- **ci**: improve release workflow (#566)
+- **ci**: store regex in variable to fix bash parsing error (#564)
+- **ci**: use buildless mode for CodeQL Unity analysis (#563)
+- **ci**: configure CodeQL to scan only JEngine source code (#562)
+- **ci**: correct test artifact paths in unity-tests workflow (#561)
 
 [📋 查看完整更新日志](CHANGE.md)
 
