@@ -196,8 +196,8 @@ jobs:
             if [[ $subject =~ $PR_PATTERN ]]; then
               pr_num="${BASH_REMATCH[1]}"
               pr_link="[#${pr_num}](https://github.com/${REPO}/pull/${pr_num})"
-              # Replace (#123) with the hyperlink
-              subject=$(echo "$subject" | sed "s/(#${pr_num})/(${pr_link})/")
+              # Replace (#123) with the hyperlink (use | as delimiter to avoid conflict with URL slashes)
+              subject=$(echo "$subject" | sed "s|(#${pr_num})|(${pr_link})|")
 
               # Get contributor from PR using GitHub API
               pr_author=$(gh api "repos/${REPO}/pulls/${pr_num}" --jq '.user.login' 2>/dev/null || echo "")
