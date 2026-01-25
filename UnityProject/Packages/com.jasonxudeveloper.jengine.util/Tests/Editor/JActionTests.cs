@@ -146,14 +146,14 @@ namespace JEngine.Util.Tests
         {
             bool cancelled = false;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .Do(() => { })
                 .OnCancel(() => cancelled = true);
 
             action.Execute();
 
             cancelled = false;
-            var action2 = JAction.Create()
+            using var action2 = JAction.Create()
                 .OnCancel(() => cancelled = true);
 
             // Force executing state and cancel
@@ -164,9 +164,6 @@ namespace JEngine.Util.Tests
 
             action2.Cancel();
             Assert.IsTrue(cancelled);
-
-            action.Dispose();
-            action2.Dispose();
         }
 
         [Test]
@@ -174,7 +171,7 @@ namespace JEngine.Util.Tests
         {
             int result = 0;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .OnCancel(x => result = x, 42);
 
             // Force executing state
@@ -186,7 +183,6 @@ namespace JEngine.Util.Tests
             action.Cancel();
 
             Assert.AreEqual(42, result);
-            action.Dispose();
         }
 
         #endregion
@@ -253,7 +249,7 @@ namespace JEngine.Util.Tests
         {
             int counter = 0;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .Do(() => counter++)
                 .Do(() => counter++);
 
@@ -261,8 +257,6 @@ namespace JEngine.Util.Tests
             action.Execute();
 
             Assert.AreEqual(0, counter);
-
-            action.Dispose();
         }
 
         [Test]
@@ -270,7 +264,7 @@ namespace JEngine.Util.Tests
         {
             int counter = 0;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .Do(() => counter++)
                 .Execute();
 
@@ -281,8 +275,6 @@ namespace JEngine.Util.Tests
                 .Execute();
 
             Assert.AreEqual(11, counter);
-
-            action.Dispose();
         }
 
         #endregion
@@ -345,7 +337,7 @@ namespace JEngine.Util.Tests
         {
             bool cancelled = false;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .Delay(1f)
                 .OnCancel(() => cancelled = true);
 
@@ -355,6 +347,8 @@ namespace JEngine.Util.Tests
                 BindingFlags.Instance)
                 ?.SetValue(action, true);
 
+            // Dispose is called by using statement, which will cancel first
+            // We need to manually trigger for the assertion
             action.Dispose();
 
             Assert.IsTrue(cancelled);
