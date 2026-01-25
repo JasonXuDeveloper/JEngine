@@ -149,15 +149,19 @@ jobs:
       - name: Determine changelog base tag
         id: base-tag
         run: |
-          # Get current Core version
-          CURRENT_CORE=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
+          # Find the latest existing semantic version tag (e.g., 1.0.5, not v1.0.5)
+          # Sort by version number and get the latest one
+          BASE_TAG=$(git tag -l '[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1)
 
-          # Always use Core version for changelog base (releases follow Core version)
-          # Note: existing tags don't have 'v' prefix (e.g., 1.0.5 not v1.0.5)
-          BASE_TAG="$CURRENT_CORE"
+          if [ -z "$BASE_TAG" ]; then
+            echo "Warning: No existing version tags found"
+            BASE_TAG=""
+          else
+            echo "Found latest tag: $BASE_TAG"
+          fi
 
           echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
-          echo "Using base tag for changelog: $BASE_TAG"
+          echo "Using base tag for changelog: ${BASE_TAG:-'(none - will use all commits)'}"
 
       # Generate changelog from conventional commits
       - name: Generate changelog
@@ -169,10 +173,11 @@ jobs:
           BASE_TAG="${{ steps.base-tag.outputs.base_tag }}"
 
           # Get commits since last tag
-          if git rev-parse "$BASE_TAG" >/dev/null 2>&1; then
-            COMMITS=$(git log $BASE_TAG..HEAD --pretty=format:"%H|%s" --no-merges)
+          if [ -n "$BASE_TAG" ] && git rev-parse "$BASE_TAG" >/dev/null 2>&1; then
+            echo "Getting commits since tag: $BASE_TAG"
+            COMMITS=$(git log ${BASE_TAG}..HEAD --pretty=format:"%H|%s" --no-merges)
           else
-            echo "Warning: Tag $BASE_TAG not found, using all commits"
+            echo "Warning: No valid base tag, using all commits"
             COMMITS=$(git log --pretty=format:"%H|%s" --no-merges)
           fi
 
@@ -566,36 +571,38 @@ jobs:
           ref: ${{ needs.validate.outputs.release_tag }}
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.validate.outputs.release_tag }}
-          release_name: v${{ needs.validate.outputs.release_tag }}
-          body: |
-            ${{ needs.prepare-release.outputs.changelog }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create release body
+          cat > /tmp/release_body.md << 'RELEASE_EOF'
+          ${{ needs.prepare-release.outputs.changelog }}
 
-            ---
+          ---
 
-            ## 📦 Installation
+          ## 📦 Installation
 
-            Install via [OpenUPM](https://openupm.com/):
+          Install via [OpenUPM](https://openupm.com/):
 
-            ```bash
-            openupm add com.jasonxudeveloper.jengine.core
-            openupm add com.jasonxudeveloper.jengine.util
-            ```
+          ```bash
+          openupm add com.jasonxudeveloper.jengine.core
+          openupm add com.jasonxudeveloper.jengine.util
+          ```
 
-            ## 📖 Documentation
+          ## 📖 Documentation
 
-            - [English Documentation](https://jengine.xgamedev.net/)
-            - [中文文档](https://jengine.xgamedev.net/zh/)
+          - [English Documentation](https://jengine.xgamedev.net/)
+          - [中文文档](https://jengine.xgamedev.net/zh/)
 
-            ---
+          ---
 
-            *This release was automatically created by the JEngine Release Bot*
-          draft: false
-          prerelease: false
+          *This release was automatically created by the JEngine Release Bot*
+          RELEASE_EOF
+
+          # Create the release using gh CLI (no deprecated set-output)
+          gh release create "${{ needs.validate.outputs.release_tag }}" \
+            --title "v${{ needs.validate.outputs.release_tag }}" \
+            --notes-file /tmp/release_body.md
 
       - name: Summary
         run: |

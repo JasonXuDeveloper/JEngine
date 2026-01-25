@@ -1,6 +1,6 @@
 {
   "name": "com.jasonxudeveloper.jengine.util",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "displayName": "JEngine.Util",
   "description": "Utility classes for JEngine framework.",
   "license": "MIT",
