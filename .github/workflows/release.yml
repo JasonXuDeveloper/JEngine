@@ -222,13 +222,13 @@ jobs:
           # Build changelog
           CHANGELOG=""
 
-          # Add package release info
+          # Add package release info (always show both versions for clarity)
           if [ "${{ inputs.release_core }}" == "true" ] && [ "${{ inputs.release_util }}" == "true" ]; then
             CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }}, JEngine.Util v${{ needs.validate.outputs.util_version }}\n\n"
           elif [ "${{ inputs.release_core }}" == "true" ]; then
-            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }}\n\n"
+            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }} (Util remains v${{ needs.validate.outputs.util_version }})\n\n"
           else
-            CHANGELOG="${CHANGELOG}**Released**: JEngine.Util v${{ needs.validate.outputs.util_version }}\n\n"
+            CHANGELOG="${CHANGELOG}**Released**: JEngine.Util v${{ needs.validate.outputs.util_version }} (Core remains v${{ needs.validate.outputs.core_version }})\n\n"
           fi
 
           if [ -n "$BREAKING" ]; then
