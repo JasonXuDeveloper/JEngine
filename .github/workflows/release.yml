@@ -1,0 +1,475 @@
+name: Release Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_core:
+        description: 'Release JEngine.Core?'
+        required: true
+        type: boolean
+        default: false
+      core_version:
+        description: 'New Core version (e.g., 1.0.6)'
+        required: false
+        type: string
+      release_util:
+        description: 'Release JEngine.Util?'
+        required: true
+        type: boolean
+        default: false
+      util_version:
+        description: 'New Util version (e.g., 1.0.1)'
+        required: false
+        type: string
+      manual_changelog:
+        description: 'Manual changelog entries (optional)'
+        required: false
+        type: string
+
+jobs:
+  validate:
+    name: Validate Inputs
+    runs-on: ubuntu-latest
+    outputs:
+      core_version: ${{ steps.validate.outputs.core_version }}
+      util_version: ${{ steps.validate.outputs.util_version }}
+      release_tag: ${{ steps.validate.outputs.release_tag }}
+      create_github_release: ${{ steps.validate.outputs.create_github_release }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate inputs
+        id: validate
+        run: |
+          # Check at least one package is selected
+          if [ "${{ inputs.release_core }}" != "true" ] && [ "${{ inputs.release_util }}" != "true" ]; then
+            echo "Error: At least one package must be selected for release"
+            exit 1
+          fi
+
+          # Validate semantic version format
+          validate_version() {
+            local version=$1
+            if ! [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Error: Invalid version format '$version'. Must be X.Y.Z (e.g., 1.0.6)"
+              exit 1
+            fi
+          }
+
+          # Get current versions from package.json
+          CURRENT_CORE_VERSION=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
+          CURRENT_UTIL_VERSION=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json)
+
+          echo "Current Core version: $CURRENT_CORE_VERSION"
+          echo "Current Util version: $CURRENT_UTIL_VERSION"
+
+          # Validate Core version if releasing
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            if [ -z "${{ inputs.core_version }}" ]; then
+              echo "Error: Core version is required when releasing Core package"
+              exit 1
+            fi
+            validate_version "${{ inputs.core_version }}"
+
+            # Compare versions (simple string comparison for semantic versions)
+            if [ "${{ inputs.core_version }}" == "$CURRENT_CORE_VERSION" ]; then
+              echo "Error: New Core version must be different from current version"
+              exit 1
+            fi
+
+            echo "core_version=${{ inputs.core_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "core_version=$CURRENT_CORE_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+          # Validate Util version if releasing
+          if [ "${{ inputs.release_util }}" == "true" ]; then
+            if [ -z "${{ inputs.util_version }}" ]; then
+              echo "Error: Util version is required when releasing Util package"
+              exit 1
+            fi
+            validate_version "${{ inputs.util_version }}"
+
+            if [ "${{ inputs.util_version }}" == "$CURRENT_UTIL_VERSION" ]; then
+              echo "Error: New Util version must be different from current version"
+              exit 1
+            fi
+
+            echo "util_version=${{ inputs.util_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "util_version=$CURRENT_UTIL_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+          # Release tag always follows Core version
+          # GitHub releases are only created when Core is released
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            echo "release_tag=v${{ inputs.core_version }}" >> $GITHUB_OUTPUT
+            echo "create_github_release=true" >> $GITHUB_OUTPUT
+          else
+            # If only Util is released, create tag for OpenUPM but no GitHub release
+            echo "release_tag=util-v${{ inputs.util_version }}" >> $GITHUB_OUTPUT
+            echo "create_github_release=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "✅ Validation passed"
+
+  run-tests:
+    name: Run Unity Tests
+    needs: validate
+    uses: ./.github/workflows/unity-tests.yml
+    secrets: inherit
+
+  prepare-release:
+    name: Prepare Release
+    needs: [validate, run-tests]
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.generate-changelog.outputs.changelog }}
+
+    steps:
+      # Generate GitHub App token for authenticated commits
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0  # Full history for changelog generation
+
+      # Determine the tag to use for changelog generation
+      - name: Determine changelog base tag
+        id: base-tag
+        run: |
+          # Get current Core version
+          CURRENT_CORE=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
+
+          # Always use Core version for changelog base (releases follow Core version)
+          BASE_TAG="v$CURRENT_CORE"
+
+          echo "base_tag=$BASE_TAG" >> $GITHUB_OUTPUT
+          echo "Using base tag for changelog: $BASE_TAG"
+
+      # Generate changelog from conventional commits
+      - name: Generate changelog
+        id: generate-changelog
+        run: |
+          BASE_TAG="${{ steps.base-tag.outputs.base_tag }}"
+
+          # Get commits since last tag
+          if git rev-parse "$BASE_TAG" >/dev/null 2>&1; then
+            COMMITS=$(git log $BASE_TAG..HEAD --pretty=format:"%H|%s|%an" --no-merges)
+          else
+            echo "Warning: Tag $BASE_TAG not found, using all commits"
+            COMMITS=$(git log --pretty=format:"%H|%s|%an" --no-merges)
+          fi
+
+          # Parse conventional commits
+          FEATURES=""
+          FIXES=""
+          BREAKING=""
+          CONTRIBUTORS=""
+
+          while IFS='|' read -r hash subject author; do
+            # Extract commit type and scope
+            if [[ $subject =~ ^([a-z]+)(\(([^)]+)\))?!?:\ (.+)$ ]]; then
+              type="${BASH_REMATCH[1]}"
+              scope="${BASH_REMATCH[3]}"
+              description="${BASH_REMATCH[4]}"
+              is_breaking="${subject//[^!]/}"
+
+              # Format with scope if present
+              if [ -n "$scope" ]; then
+                entry="**$scope**: $description"
+              else
+                entry="$description"
+              fi
+
+              case $type in
+                feat)
+                  FEATURES="${FEATURES}- $entry\n"
+                  ;;
+                fix)
+                  FIXES="${FIXES}- $entry\n"
+                  ;;
+              esac
+
+              # Check for breaking changes
+              if [ -n "$is_breaking" ] || git show -s --format=%B $hash | grep -q "BREAKING CHANGE:"; then
+                breaking_desc=$(git show -s --format=%B $hash | sed -n '/BREAKING CHANGE:/,/^$/p' | tail -n +2 | head -n 1)
+                if [ -z "$breaking_desc" ]; then
+                  breaking_desc="$description"
+                fi
+                BREAKING="${BREAKING}- $breaking_desc\n"
+              fi
+            fi
+
+            # Collect unique contributors
+            if ! echo "$CONTRIBUTORS" | grep -q "@$author"; then
+              CONTRIBUTORS="${CONTRIBUTORS}@$author, "
+            fi
+          done <<< "$COMMITS"
+
+          # Remove trailing comma from contributors
+          CONTRIBUTORS=$(echo "$CONTRIBUTORS" | sed 's/, $//')
+
+          # Build changelog
+          CHANGELOG=""
+
+          # Add package release info (always show both versions for clarity)
+          if [ "${{ inputs.release_core }}" == "true" ] && [ "${{ inputs.release_util }}" == "true" ]; then
+            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }}, JEngine.Util v${{ needs.validate.outputs.util_version }}\n\n"
+          elif [ "${{ inputs.release_core }}" == "true" ]; then
+            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }} (Util remains v${{ needs.validate.outputs.util_version }})\n\n"
+          else
+            CHANGELOG="${CHANGELOG}**Released**: JEngine.Util v${{ needs.validate.outputs.util_version }} (Core remains v${{ needs.validate.outputs.core_version }})\n\n"
+          fi
+
+          if [ -n "$BREAKING" ]; then
+            CHANGELOG="${CHANGELOG}### ⚠️ BREAKING CHANGES\n\n${BREAKING}\n"
+          fi
+
+          if [ -n "$FEATURES" ]; then
+            CHANGELOG="${CHANGELOG}### ✨ Features\n\n${FEATURES}\n"
+          fi
+
+          if [ -n "$FIXES" ]; then
+            CHANGELOG="${CHANGELOG}### 🐛 Bug Fixes\n\n${FIXES}\n"
+          fi
+
+          # Add manual changelog if provided
+          if [ -n "${{ inputs.manual_changelog }}" ]; then
+            CHANGELOG="${CHANGELOG}### 📝 Additional Changes\n\n${{ inputs.manual_changelog }}\n\n"
+          fi
+
+          # Add contributors
+          if [ -n "$CONTRIBUTORS" ]; then
+            CHANGELOG="${CHANGELOG}### 👥 Contributors\n\n${CONTRIBUTORS}\n"
+          fi
+
+          # If no changelog content, add placeholder
+          if [ -z "$FEATURES" ] && [ -z "$FIXES" ] && [ -z "$BREAKING" ] && [ -z "${{ inputs.manual_changelog }}" ]; then
+            CHANGELOG="${CHANGELOG}Minor updates and improvements.\n"
+          fi
+
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Save to file for CHANGE.md update
+          echo -e "$CHANGELOG" > /tmp/changelog.txt
+
+      # Update package.json files
+      - name: Update Core package.json
+        if: inputs.release_core == true
+        run: |
+          jq '.version = "${{ needs.validate.outputs.core_version }}"' \
+            UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json > /tmp/package.json
+          mv /tmp/package.json UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json
+          echo "✅ Updated Core package.json to v${{ needs.validate.outputs.core_version }}"
+
+      - name: Update Util package.json
+        if: inputs.release_util == true
+        run: |
+          jq '.version = "${{ needs.validate.outputs.util_version }}"' \
+            UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json > /tmp/package.json
+          mv /tmp/package.json UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json
+          echo "✅ Updated Util package.json to v${{ needs.validate.outputs.util_version }}"
+
+      # Update README files (only when releasing Core)
+      - name: Update README.md
+        if: inputs.release_core == true
+        run: |
+          VERSION="${{ needs.validate.outputs.release_tag }}"
+          VERSION="${VERSION#v}"  # Remove 'v' prefix
+          sed -i "s/^## 🎉 Latest Features (v[0-9.]*)/## 🎉 Latest Features (v$VERSION)/" README.md
+          echo "✅ Updated README.md version reference"
+
+      - name: Update README_zh_cn.md
+        if: inputs.release_core == true
+        run: |
+          VERSION="${{ needs.validate.outputs.release_tag }}"
+          VERSION="${VERSION#v}"  # Remove 'v' prefix
+          sed -i "s/^## 🎉 最新功能 (v[0-9.]*)/## 🎉 最新功能 (v$VERSION)/" README_zh_cn.md
+          echo "✅ Updated README_zh_cn.md version reference"
+
+      # Update CHANGE.md
+      - name: Update CHANGE.md
+        run: |
+          DATE=$(date +"%B %d %Y")
+
+          # Read the generated changelog
+          CHANGELOG=$(cat /tmp/changelog.txt)
+
+          # Convert changelog to CHANGE.md format
+          # For Core releases, use Core version. For Util-only, use Core version with note
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            VERSION="${{ needs.validate.outputs.core_version }}"
+            CHANGE_ENTRY="## $VERSION ($DATE)\n\n"
+          else
+            VERSION="${{ needs.validate.outputs.core_version }}"
+            CHANGE_ENTRY="## $VERSION ($DATE) - Util v${{ needs.validate.outputs.util_version }}\n\n"
+          fi
+
+          # Extract features and fixes from changelog
+          if echo "$CHANGELOG" | grep -q "### ✨ Features"; then
+            FEATURES=$(echo "$CHANGELOG" | sed -n '/### ✨ Features/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            if [ -n "$FEATURES" ]; then
+              while IFS= read -r line; do
+                # Convert **scope**: format to prefix format
+                if [[ $line =~ ^\-\ \*\*([^*]+)\*\*:\ (.+)$ ]]; then
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- **$(echo ${BASH_REMATCH[2]} | sed 's/^./\u&/')** (${BASH_REMATCH[1]})\n"
+                else
+                  CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
+                fi
+              done <<< "$FEATURES"
+            fi
+          fi
+
+          if echo "$CHANGELOG" | grep -q "### 🐛 Bug Fixes"; then
+            FIXES=$(echo "$CHANGELOG" | sed -n '/### 🐛 Bug Fixes/,/###/p' | grep "^- " | sed 's/^- /- /' || true)
+            if [ -n "$FIXES" ]; then
+              while IFS= read -r line; do
+                if [[ $line =~ ^\-\ \*\*([^*]+)\*\*:\ (.+)$ ]]; then
+                  CHANGE_ENTRY="${CHANGE_ENTRY}- **$(echo ${BASH_REMATCH[2]} | sed 's/^./\u&/')** (${BASH_REMATCH[1]})\n"
+                else
+                  CHANGE_ENTRY="${CHANGE_ENTRY}${line}\n"
+                fi
+              done <<< "$FIXES"
+            fi
+          fi
+
+          # Add manual changelog entries
+          if [ -n "${{ inputs.manual_changelog }}" ]; then
+            CHANGE_ENTRY="${CHANGE_ENTRY}${{ inputs.manual_changelog }}\n"
+          fi
+
+          CHANGE_ENTRY="${CHANGE_ENTRY}\n"
+
+          # Prepend to CHANGE.md (after "## All Versions" line)
+          sed -i "2i\\$CHANGE_ENTRY" CHANGE.md
+          echo "✅ Updated CHANGE.md"
+
+      # Commit and push changes
+      - name: Commit and push changes
+        run: |
+          git config user.name "JEngine Release Bot[bot]"
+          git config user.email "release-bot[bot]@jengine.xgamedev.net"
+
+          git add UnityProject/Packages/*/package.json README*.md CHANGE.md
+
+          # Different commit message based on what's being released
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            git commit -m "chore(release): ${{ needs.validate.outputs.release_tag }}"
+          else
+            git commit -m "chore(util): update to v${{ needs.validate.outputs.util_version }}"
+          fi
+
+          git push origin ${{ github.ref_name }}
+
+          echo "✅ Committed and pushed changes"
+
+      # Create Git tag (always - needed for OpenUPM detection)
+      - name: Create Git tag
+        run: |
+          git tag ${{ needs.validate.outputs.release_tag }}
+          git push origin ${{ needs.validate.outputs.release_tag }}
+          echo "✅ Created and pushed tag ${{ needs.validate.outputs.release_tag }}"
+
+      # Summary
+      - name: Release Summary
+        run: |
+          echo "## 📦 Package Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            echo "✅ **JEngine.Core**: v${{ needs.validate.outputs.core_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.release_util }}" == "true" ]; then
+            echo "✅ **JEngine.Util**: v${{ needs.validate.outputs.util_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🏷️ **Git Tag**: ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.validate.outputs.create_github_release }}" == "true" ]; then
+            echo "📋 **GitHub Release**: Will be created" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ **GitHub Release**: Not created (Util-only update)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **OpenUPM**: Will detect update from git tag \`${{ needs.validate.outputs.release_tag }}\`" >> $GITHUB_STEP_SUMMARY
+
+  create-release:
+    name: Create GitHub Release
+    needs: [validate, prepare-release]
+    if: needs.validate.outputs.create_github_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate.outputs.release_tag }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.validate.outputs.release_tag }}
+          release_name: Release ${{ needs.validate.outputs.release_tag }}
+          body: |
+            ${{ needs.prepare-release.outputs.changelog }}
+
+            ---
+
+            ## 📦 Installation
+
+            Install via [OpenUPM](https://openupm.com/):
+
+            ```bash
+            openupm add com.jasonxudeveloper.jengine.core
+            openupm add com.jasonxudeveloper.jengine.util
+            ```
+
+            ## 📖 Documentation
+
+            - [English Documentation](https://jengine.xgamedev.net/)
+            - [中文文档](https://jengine.xgamedev.net/zh/)
+
+            ---
+
+            *This release was automatically created by the JEngine Release Bot*
+          draft: false
+          prerelease: false
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Release Created Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag**: ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            echo "✅ **JEngine.Core**: v${{ needs.validate.outputs.core_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.release_util }}" == "true" ]; then
+            echo "✅ **JEngine.Util**: v${{ needs.validate.outputs.util_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**OpenUPM will automatically detect and build the packages within 10-15 minutes.**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📋 [View Release](https://github.com/${{ github.repository }}/releases/tag/${{ needs.validate.outputs.release_tag }})" >> $GITHUB_STEP_SUMMARY
