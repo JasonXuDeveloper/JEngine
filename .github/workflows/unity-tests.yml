@@ -1,0 +1,134 @@
+name: Unity Tests (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      unity_version:
+        description: 'Unity version to use for testing'
+        required: false
+        type: string
+        default: '2022.3.55f1'
+      test_mode:
+        description: 'Test mode to run (All, EditMode, PlayMode)'
+        required: false
+        type: string
+        default: 'All'
+      project_path:
+        description: 'Path to Unity project directory'
+        required: false
+        type: string
+        default: 'UnityProject'
+    outputs:
+      test_results:
+        description: 'Test results summary'
+        value: ${{ jobs.test.outputs.results }}
+
+jobs:
+  test:
+    name: Run Unity Tests
+    runs-on: ubuntu-latest
+    outputs:
+      results: ${{ steps.test-summary.outputs.summary }}
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      # Cache Unity Library folder for faster builds
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: ${{ inputs.project_path }}/Library
+          key: Library-${{ inputs.project_path }}-${{ inputs.unity_version }}-${{ hashFiles(format('{0}/Packages/packages-lock.json', inputs.project_path)) }}
+          restore-keys: |
+            Library-${{ inputs.project_path }}-${{ inputs.unity_version }}-
+            Library-${{ inputs.project_path }}-
+
+      # Run EditMode tests
+      - name: Run EditMode tests
+        if: inputs.test_mode == 'All' || inputs.test_mode == 'EditMode'
+        uses: game-ci/unity-test-runner@v4
+        id: editmode-tests
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: ${{ inputs.project_path }}
+          unityVersion: ${{ inputs.unity_version }}
+          testMode: EditMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: EditMode Test Results
+
+      # Run PlayMode tests
+      - name: Run PlayMode tests
+        if: inputs.test_mode == 'All' || inputs.test_mode == 'PlayMode'
+        uses: game-ci/unity-test-runner@v4
+        id: playmode-tests
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: ${{ inputs.project_path }}
+          unityVersion: ${{ inputs.unity_version }}
+          testMode: PlayMode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: PlayMode Test Results
+
+      # Upload test results as artifacts
+      - name: Upload EditMode test results
+        if: always() && (inputs.test_mode == 'All' || inputs.test_mode == 'EditMode')
+        uses: actions/upload-artifact@v4
+        with:
+          name: EditMode-results-${{ inputs.unity_version }}
+          path: ${{ inputs.project_path }}/artifacts/EditMode
+          retention-days: 14
+
+      - name: Upload PlayMode test results
+        if: always() && (inputs.test_mode == 'All' || inputs.test_mode == 'PlayMode')
+        uses: actions/upload-artifact@v4
+        with:
+          name: PlayMode-results-${{ inputs.unity_version }}
+          path: ${{ inputs.project_path }}/artifacts/PlayMode
+          retention-days: 14
+
+      # Generate test summary
+      - name: Generate test summary
+        id: test-summary
+        if: always()
+        run: |
+          SUMMARY="## Unity Test Results\n\n"
+
+          if [ "${{ inputs.test_mode }}" == "All" ] || [ "${{ inputs.test_mode }}" == "EditMode" ]; then
+            EDITMODE_RESULT="${{ steps.editmode-tests.outcome }}"
+            if [ "$EDITMODE_RESULT" == "success" ]; then
+              SUMMARY="${SUMMARY}✅ **EditMode**: All tests passed\n"
+            else
+              SUMMARY="${SUMMARY}❌ **EditMode**: Tests failed\n"
+            fi
+          fi
+
+          if [ "${{ inputs.test_mode }}" == "All" ] || [ "${{ inputs.test_mode }}" == "PlayMode" ]; then
+            PLAYMODE_RESULT="${{ steps.playmode-tests.outcome }}"
+            if [ "$PLAYMODE_RESULT" == "success" ]; then
+              SUMMARY="${SUMMARY}✅ **PlayMode**: All tests passed\n"
+            else
+              SUMMARY="${SUMMARY}❌ **PlayMode**: Tests failed\n"
+            fi
+          fi
+
+          SUMMARY="${SUMMARY}\n**Unity Version**: ${{ inputs.unity_version }}\n"
+          SUMMARY="${SUMMARY}**Project Path**: ${{ inputs.project_path }}"
+
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Return Unity license
+      - name: Return Unity license
+        uses: game-ci/unity-return-license@v2
+        if: always()

@@ -1,0 +1,99 @@
+name: PR Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
+      - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+      - 'UnityProject/Assets/Tests/**'
+      - '.github/workflows/**'
+
+# Ensure only one test run per PR at a time
+concurrency:
+  group: pr-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run-tests:
+    name: Run Unity Tests
+    uses: ./.github/workflows/unity-tests.yml
+    secrets: inherit
+
+  comment-results:
+    name: Comment Test Results
+    needs: run-tests
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Comment PR with test results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const testResults = `${{ needs.run-tests.outputs.test_results }}`;
+            const jobStatus = '${{ needs.run-tests.result }}';
+
+            let comment = testResults;
+
+            if (jobStatus === 'success') {
+              comment += '\n\n✅ All tests passed! The PR is ready for review.';
+            } else if (jobStatus === 'failure') {
+              comment += '\n\n❌ Some tests failed. Please fix the failing tests before merging.';
+            } else {
+              comment += '\n\n⚠️ Test execution was cancelled or encountered an error.';
+            }
+
+            comment += `\n\n<details><summary>View workflow run</summary>\n\n[Click here to view the full workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n</details>`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Unity Test Results')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Set PR check status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobStatus = '${{ needs.run-tests.result }}';
+            const state = jobStatus === 'success' ? 'success' : 'failure';
+            const description = jobStatus === 'success'
+              ? 'All Unity tests passed'
+              : 'Unity tests failed';
+
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.pull_request.head.sha,
+              state: state,
+              target_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: description,
+              context: 'Unity Tests'
+            });
