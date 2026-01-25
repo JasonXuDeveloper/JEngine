@@ -108,8 +108,8 @@ jobs:
             echo "release_tag=v${{ inputs.core_version }}" >> $GITHUB_OUTPUT
             echo "create_github_release=true" >> $GITHUB_OUTPUT
           else
-            # If only Util is released, use current Core version (no GitHub release)
-            echo "release_tag=v$CURRENT_CORE_VERSION" >> $GITHUB_OUTPUT
+            # If only Util is released, create tag for OpenUPM but no GitHub release
+            echo "release_tag=util-v${{ inputs.util_version }}" >> $GITHUB_OUTPUT
             echo "create_github_release=false" >> $GITHUB_OUTPUT
           fi
 
@@ -302,18 +302,18 @@ jobs:
       # Update CHANGE.md
       - name: Update CHANGE.md
         run: |
-          VERSION="${{ needs.validate.outputs.release_tag }}"
-          VERSION="${VERSION#v}"  # Remove 'v' prefix
           DATE=$(date +"%B %d %Y")
 
           # Read the generated changelog
           CHANGELOG=$(cat /tmp/changelog.txt)
 
           # Convert changelog to CHANGE.md format
-          # For Util-only releases, note that Core version didn't change
+          # For Core releases, use Core version. For Util-only, use Core version with note
           if [ "${{ inputs.release_core }}" == "true" ]; then
+            VERSION="${{ needs.validate.outputs.core_version }}"
             CHANGE_ENTRY="## $VERSION ($DATE)\n\n"
           else
+            VERSION="${{ needs.validate.outputs.core_version }}"
             CHANGE_ENTRY="## $VERSION ($DATE) - Util v${{ needs.validate.outputs.util_version }}\n\n"
           fi
 
@@ -375,9 +375,8 @@ jobs:
 
           echo "✅ Committed and pushed changes"
 
-      # Create Git tag (only when releasing Core)
+      # Create Git tag (always - needed for OpenUPM detection)
       - name: Create Git tag
-        if: needs.validate.outputs.create_github_release == 'true'
         run: |
           git tag ${{ needs.validate.outputs.release_tag }}
           git push origin ${{ needs.validate.outputs.release_tag }}
@@ -398,14 +397,16 @@ jobs:
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🏷️ **Git Tag**: ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.validate.outputs.create_github_release }}" == "true" ]; then
-            echo "🏷️ **GitHub Release**: Will be created with tag ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
+            echo "📋 **GitHub Release**: Will be created" >> $GITHUB_STEP_SUMMARY
           else
-            echo "ℹ️ **Note**: No GitHub release created (Util-only update)" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "OpenUPM will automatically detect the Util package update from package.json changes." >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ **GitHub Release**: Not created (Util-only update)" >> $GITHUB_STEP_SUMMARY
           fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **OpenUPM**: Will detect update from git tag \`${{ needs.validate.outputs.release_tag }}\`" >> $GITHUB_STEP_SUMMARY
 
   create-release:
     name: Create GitHub Release
