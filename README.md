@@ -6,7 +6,7 @@
 
 **An out-of-the-box Unity framework for hot updatable games**
 
-[Documentation](https://jengine.xgamedev.net/) | [Chinese Documentation](https://github.com/JasonXuDeveloper/JEngine/blob/master/README_zh_cn.md)
+[Documentation](https://jengine.xgamedev.net/) | [中文文档](https://github.com/JasonXuDeveloper/JEngine/blob/master/README_zh_cn.md)
 
 </div>
 
