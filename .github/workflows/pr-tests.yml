@@ -69,6 +69,9 @@ jobs:
           name: Coverage-results-2022.3.55f1
           path: coverage
 
+      - name: List coverage files
+        run: find coverage -name "*.xml" -type f 2>/dev/null || echo "No XML files found"
+
       - name: Upload coverage to Codecov (util package)
         uses: codecov/codecov-action@v4
         with:
