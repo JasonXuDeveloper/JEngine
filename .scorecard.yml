@@ -37,3 +37,13 @@ annotations:
       - sast
     reasons:
       - reason: not-detected # CodeQL is configured but may not be recognized
+
+  # Token permissions: Write permissions required for CI functionality
+  # - checks: write - GameCI publishes test results as check runs
+  # - statuses: write - Setting commit status for branch protection
+  # - pull-requests: write - Commenting test results on PRs
+  # - contents: write - Release workflow creates tags and commits
+  - checks:
+      - token-permissions
+    reasons:
+      - reason: not-applicable # Write permissions required for test reporting and release automation

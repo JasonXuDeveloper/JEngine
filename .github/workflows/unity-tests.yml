@@ -23,6 +23,7 @@ on:
         description: 'Test results summary'
         value: ${{ jobs.test.outputs.results }}
 
+# Workflow-level permissions for reusable workflow
 permissions:
   contents: read
   checks: write
