@@ -47,3 +47,13 @@ annotations:
       - token-permissions
     reasons:
       - reason: not-applicable # Write permissions required for test reporting and release automation
+
+  # Branch protection: Using GitHub Rulesets with auto-approve bot
+  # - Rulesets require 1 approver (provided by auto-approve bot)
+  # - Code owner review is required
+  # - last_push_approval disabled to allow auto-approve bot to work
+  # - bypass_actors: [] prevents admin bypass
+  - checks:
+      - branch-protection
+    reasons:
+      - reason: not-applicable # Using Rulesets with auto-approve bot requiring last_push_approval disabled
