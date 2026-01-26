@@ -13,14 +13,14 @@ on:
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  security-events: write
+permissions: read-all
 
 jobs:
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     # Only run path detection for push/pull_request events
     if: github.event_name == 'push' || github.event_name == 'pull_request'
     outputs:

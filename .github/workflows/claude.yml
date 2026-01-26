@@ -10,11 +10,7 @@ on:
   pull_request_review:
     types: [submitted]
 
-permissions:
-  contents: read
-  pull-requests: read
-  issues: read
-  id-token: write
+permissions: read-all
 
 jobs:
   claude:

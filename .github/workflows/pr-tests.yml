@@ -46,13 +46,29 @@ jobs:
     secrets: inherit
 
   skip-tests:
-    name: Run Unity Tests
+    name: Skip Unity Tests
     needs: changes
     if: needs.changes.outputs.should_test == 'false'
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write
     steps:
       - name: Skip tests
         run: echo "No relevant changes detected, skipping tests"
+
+      - name: Set PR check status (skipped)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.pull_request.head.sha,
+              state: 'success',
+              target_url: `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              description: 'Skipped - no relevant changes',
+              context: 'Unity Tests'
+            });
 
   upload-coverage:
     name: Upload Coverage
