@@ -48,12 +48,13 @@ annotations:
     reasons:
       - reason: not-applicable # Write permissions required for test reporting and release automation
 
-  # Branch protection: Using GitHub Rulesets with auto-approve bot
+  # Branch protection: Using GitHub Rulesets instead of classic branch protection
   # - Rulesets require 1 approver (provided by auto-approve bot)
   # - Code owner review is required
-  # - last_push_approval disabled to allow auto-approve bot to work
-  # - bypass_actors: [] prevents admin bypass
+  # - last_push_approval enabled
+  # - bypass_actors: [] prevents admin bypass (equivalent to "apply to administrators")
+  # Scorecard may not fully recognize ruleset settings vs classic branch protection
   - checks:
       - branch-protection
     reasons:
-      - reason: not-applicable # Using Rulesets with auto-approve bot requiring last_push_approval disabled
+      - reason: not-applicable # Using Rulesets; Scorecard may not recognize all settings
