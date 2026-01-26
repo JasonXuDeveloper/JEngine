@@ -19,7 +19,9 @@ jobs:
       statuses: write
     if: |
       (github.event_name == 'pull_request_target') ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request && github.event.comment.body == 'recheck')
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request &&
+        (github.event.comment.body == 'recheck' ||
+         contains(github.event.comment.body, 'I have read the Developer Certificate of Origin')))
     steps:
       - name: CLA Assistant
         uses: contributor-assistant/github-action@v2.6.1
@@ -31,8 +33,8 @@ jobs:
           # Store signatures in the repository
           path-to-signatures: 'signatures/cla.json'
           branch: 'master'
-          # Allowlist for bots that don't need to sign
-          allowlist: 'bot*,*[bot],dependabot*,github-actions*,jengine-release-bot*'
+          # Allowlist for bots and maintainer (maintainer added to bootstrap CLA workflow)
+          allowlist: 'bot*,*[bot],dependabot*,github-actions*,jengine-release-bot*,JasonXuDeveloper'
           # Custom messages
           custom-notsigned-prcomment: |
             Thank you for your contribution! Before we can merge this PR, we need you to sign the [Developer Certificate of Origin](https://developercertificate.org/).

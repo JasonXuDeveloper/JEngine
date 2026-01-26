@@ -1,27 +1,39 @@
 # OpenSSF Scorecard Configuration
-# See https://github.com/ossf/scorecard/blob/main/docs/config.md
+# See https://github.com/ossf/scorecard/tree/main/config
 
 annotations:
-  # Binary artifacts that are required for Unity framework functionality
+  # Binary artifacts required for Unity hot-update framework:
+  # - HybridCLR Plugin: Native DLLs for IL2CPP hot-update
+  # - YooAsset Bundles: Sample project assets
+  # - AOT Compiled DLLs: Unity engine module references
+  # These are from trusted sources and essential for the framework
   - checks:
       - binary-artifacts
     reasons:
-      - reason: not-applicable
-        annotation: |
-          JEngine is a Unity hot-update framework that requires certain binary files:
+      - reason: not-applicable # Unity framework requires platform-specific binaries that cannot be built from source
 
-          1. HybridCLR Plugin (com.code-philosophy.hybridclr):
-             - Native DLLs for IL2CPP hot-update functionality
-             - Required for runtime C# code execution
+  # Pinned dependencies: Using version tags (@v4) for maintainability
+  # SHA pinning would make updates more difficult with minimal security benefit
+  # for this Unity project that doesn't process untrusted input
+  - checks:
+      - pinned-dependencies
+    reasons:
+      - reason: not-applicable # Version tags preferred for maintainability in Unity project
 
-          2. YooAsset Bundles (Assets/StreamingAssets/yoo):
-             - Pre-built asset bundles for sample project
-             - Demonstrate framework capabilities
+  # Dependency update tools like Dependabot don't work well with Unity/OpenUPM
+  - checks:
+      - dependency-update-tool
+    reasons:
+      - reason: not-supported # Unity uses OpenUPM which is not supported by Dependabot/Renovate
 
-          3. AOT Compiled DLLs (Assets/HotUpdate/Compiled/AOT):
-             - Unity engine module references
-             - Required for IL2CPP builds
+  # Fuzzing is not practical for Unity C# game framework code
+  - checks:
+      - fuzzing
+    reasons:
+      - reason: not-applicable # Unity C# framework is not suited for traditional fuzzing
 
-          These binaries are from trusted sources (Unity, HybridCLR) and are
-          essential for the framework to function. They cannot be built from
-          source as they are platform-specific Unity artifacts.
+  # SAST is handled by CodeQL but may not be fully detected
+  - checks:
+      - sast
+    reasons:
+      - reason: not-detected # CodeQL is configured but may not be recognized

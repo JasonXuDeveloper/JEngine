@@ -1,0 +1,107 @@
+name: Auto Approve
+
+on:
+  # Trigger when check runs complete
+  check_suite:
+    types: [completed]
+  # Also trigger on workflow run completion for reusable workflows
+  workflow_run:
+    workflows: ["PR Tests", "Claude Code Review"]
+    types: [completed]
+
+permissions: read-all
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    # Only run on pull requests, not pushes
+    if: |
+      github.event.check_suite.pull_requests[0] != null ||
+      github.event.workflow_run.pull_requests[0] != null
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Get PR number
+        id: pr
+        run: |
+          if [ "${{ github.event_name }}" == "check_suite" ]; then
+            PR_NUMBER="${{ github.event.check_suite.pull_requests[0].number }}"
+          else
+            PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          fi
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "PR number: $PR_NUMBER"
+
+      - name: Check required statuses
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR number found, skipping"
+            echo "should_approve=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get PR head SHA
+          HEAD_SHA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.head.sha')
+          echo "Head SHA: $HEAD_SHA"
+
+          # Check Claude review status
+          CLAUDE_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs --jq '.check_runs[] | select(.name == "claude-review") | .conclusion' | head -1)
+          echo "Claude review status: $CLAUDE_STATUS"
+
+          # Check Unity Tests status (commit status, not check run)
+          UNITY_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/status --jq '.statuses[] | select(.context == "Unity Tests") | .state' | head -1)
+          echo "Unity Tests status: $UNITY_STATUS"
+
+          # If Unity Tests doesn't exist (skipped scenario), check if Skip Unity Tests completed
+          if [ -z "$UNITY_STATUS" ]; then
+            SKIP_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs --jq '.check_runs[] | select(.name == "Skip Unity Tests") | .conclusion' | head -1)
+            echo "Skip Unity Tests status: $SKIP_STATUS"
+            if [ "$SKIP_STATUS" == "skipped" ] || [ "$SKIP_STATUS" == "success" ]; then
+              UNITY_STATUS="success"
+            fi
+          fi
+
+          # Determine if we should approve
+          if [ "$CLAUDE_STATUS" == "success" ] && [ "$UNITY_STATUS" == "success" ]; then
+            echo "All required checks passed!"
+            echo "should_approve=true" >> $GITHUB_OUTPUT
+          else
+            echo "Required checks not yet passed"
+            echo "should_approve=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if already approved
+        id: existing
+        if: steps.check.outputs.should_approve == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+
+          # Check for existing approval from github-actions bot
+          EXISTING=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews --jq '[.[] | select(.user.login == "github-actions[bot]" and .state == "APPROVED")] | length')
+
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "Already approved by bot"
+            echo "already_approved=true" >> $GITHUB_OUTPUT
+          else
+            echo "Not yet approved by bot"
+            echo "already_approved=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Auto approve PR
+        if: steps.check.outputs.should_approve == 'true' && steps.existing.outputs.already_approved == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.number }}"
+
+          gh pr review $PR_NUMBER --approve --body "Auto-approved: Claude review passed and Unity Tests passed (or were skipped for non-code changes)."
+
+          echo "PR #$PR_NUMBER approved!"
