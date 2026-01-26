@@ -1,0 +1,27 @@
+# OpenSSF Scorecard Configuration
+# See https://github.com/ossf/scorecard/blob/main/docs/config.md
+
+annotations:
+  # Binary artifacts that are required for Unity framework functionality
+  - checks:
+      - binary-artifacts
+    reasons:
+      - reason: not-applicable
+        annotation: |
+          JEngine is a Unity hot-update framework that requires certain binary files:
+
+          1. HybridCLR Plugin (com.code-philosophy.hybridclr):
+             - Native DLLs for IL2CPP hot-update functionality
+             - Required for runtime C# code execution
+
+          2. YooAsset Bundles (Assets/StreamingAssets/yoo):
+             - Pre-built asset bundles for sample project
+             - Demonstrate framework capabilities
+
+          3. AOT Compiled DLLs (Assets/HotUpdate/Compiled/AOT):
+             - Unity engine module references
+             - Required for IL2CPP builds
+
+          These binaries are from trusted sources (Unity, HybridCLR) and are
+          essential for the framework to function. They cannot be built from
+          source as they are platform-specific Unity artifacts.
