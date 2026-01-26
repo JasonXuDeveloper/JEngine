@@ -50,17 +50,19 @@ jobs:
           HEAD_SHA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.head.sha')
           echo "Head SHA: $HEAD_SHA"
 
-          # Check Claude review status and output
-          CLAUDE_CHECK=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs --jq '.check_runs[] | select(.name == "claude-review")')
-          CLAUDE_STATUS=$(echo "$CLAUDE_CHECK" | jq -r '.conclusion' | head -1)
-          CLAUDE_OUTPUT=$(echo "$CLAUDE_CHECK" | jq -r '.output.summary // .output.text // ""' | head -1)
-          echo "Claude review status: $CLAUDE_STATUS"
-          echo "Claude review output: $CLAUDE_OUTPUT"
+          # Check Claude review - look for "No issues found" comment from claude[bot]
+          # Claude posts a comment with this exact message when review passes
+          CLAUDE_COMMENTS=$(gh api "repos/${{ github.repository }}/issues/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "claude[bot]") | .body] | join("\n")')
 
-          # Check if Claude found no issues (exact message check)
           CLAUDE_APPROVED="false"
-          if [ "$CLAUDE_STATUS" == "success" ] && echo "$CLAUDE_OUTPUT" | grep -q "No issues found. Checked for bugs and CLAUDE.md compliance"; then
+          if echo "$CLAUDE_COMMENTS" | grep -q "No issues found. Checked for bugs and CLAUDE.md compliance"; then
+            echo "Claude review found: No issues"
             CLAUDE_APPROVED="true"
+          else
+            echo "Claude review: Issues found or review not complete"
+            # Check if claude-review check status for debugging
+            CLAUDE_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/check-runs --jq '.check_runs[] | select(.name == "claude-review") | .conclusion' | head -1)
+            echo "Claude review check status: $CLAUDE_STATUS"
           fi
           echo "Claude approved: $CLAUDE_APPROVED"
 
