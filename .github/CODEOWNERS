@@ -1,0 +1,18 @@
+# CODEOWNERS - Auto-assign reviewers for pull requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @JasonXuDeveloper
+
+# Core package
+/UnityProject/Packages/com.jasonxudeveloper.jengine.core/ @JasonXuDeveloper
+
+# Util package
+/UnityProject/Packages/com.jasonxudeveloper.jengine.util/ @JasonXuDeveloper
+
+# CI/CD workflows
+/.github/workflows/ @JasonXuDeveloper
+
+# Documentation
+/*.md @JasonXuDeveloper
+/docs/ @JasonXuDeveloper

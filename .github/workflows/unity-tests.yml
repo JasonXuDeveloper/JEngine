@@ -70,6 +70,7 @@ jobs:
           artifactsPath: artifacts/EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: EditMode Test Results
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
 
       # Run PlayMode tests
       - name: Run PlayMode tests
@@ -87,6 +88,7 @@ jobs:
           artifactsPath: artifacts/PlayMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: PlayMode Test Results
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
 
       # Upload test results as artifacts
       - name: Upload EditMode test results
@@ -104,6 +106,34 @@ jobs:
         with:
           name: PlayMode-results-${{ inputs.unity_version }}
           path: artifacts/PlayMode
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Fix coverage file permissions (generated as root by Docker)
+      - name: Fix coverage permissions
+        if: always()
+        run: |
+          if [ -d "${{ steps.editmode-tests.outputs.coveragePath }}" ]; then
+            sudo chown -R $(whoami) "${{ steps.editmode-tests.outputs.coveragePath }}"
+          fi
+          if [ -d "${{ steps.playmode-tests.outputs.coveragePath }}" ]; then
+            sudo chown -R $(whoami) "${{ steps.playmode-tests.outputs.coveragePath }}"
+          fi
+          # List coverage files for debugging
+          echo "Coverage paths:"
+          echo "EditMode: ${{ steps.editmode-tests.outputs.coveragePath }}"
+          echo "PlayMode: ${{ steps.playmode-tests.outputs.coveragePath }}"
+          find . -name "*.xml" -path "*/CodeCoverage/*" 2>/dev/null || echo "No coverage XML files found"
+
+      # Upload coverage results
+      - name: Upload coverage results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Coverage-results-${{ inputs.unity_version }}
+          path: |
+            ${{ steps.editmode-tests.outputs.coveragePath }}
+            ${{ steps.playmode-tests.outputs.coveragePath }}
           if-no-files-found: warn
           retention-days: 14
 
