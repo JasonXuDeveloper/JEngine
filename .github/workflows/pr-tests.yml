@@ -12,15 +12,20 @@ concurrency:
   group: pr-tests-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+# Workflow-level permissions set to maximum needed by any job
+# Individual jobs further restrict to only what they need
 permissions:
   contents: read
-  pull-requests: write
+  checks: write
   statuses: write
+  pull-requests: write
 
 jobs:
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       should_test: ${{ steps.filter.outputs.src }}
     steps:
@@ -75,6 +80,8 @@ jobs:
     needs: [changes, run-tests]
     runs-on: ubuntu-latest
     if: needs.changes.outputs.should_test == 'true' && needs.run-tests.result == 'success'
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
