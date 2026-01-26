@@ -51,9 +51,10 @@ annotations:
   # Branch protection: Using GitHub Rulesets with auto-approve bot
   # - Rulesets require 1 approver (provided by auto-approve bot)
   # - Code owner review is required
-  # - last_push_approval disabled to allow auto-approve bot to work
-  # - bypass_actors: [] prevents admin bypass
+  # - last_push_approval enabled (bot approval counts as different user from pusher)
+  # - bypass_actors: [] prevents admin bypass (equivalent to "apply to administrators")
+  # Scorecard may not fully recognize ruleset settings vs classic branch protection
   - checks:
       - branch-protection
     reasons:
-      - reason: not-applicable # Using Rulesets with auto-approve bot requiring last_push_approval disabled
+      - reason: not-applicable # Using Rulesets; Scorecard may not recognize all settings
