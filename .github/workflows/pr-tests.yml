@@ -12,15 +12,14 @@ concurrency:
   group: pr-tests-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  pull-requests: write
-  statuses: write
+permissions: read-all
 
 jobs:
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       should_test: ${{ steps.filter.outputs.src }}
     steps:

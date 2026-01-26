@@ -10,10 +10,7 @@ on:
     #   - "src/**/*.js"
     #   - "src/**/*.jsx"
 
-permissions:
-  contents: read
-  pull-requests: read
-  issues: read
+permissions: read-all
 
 jobs:
   claude-review:
