@@ -23,7 +23,9 @@ on:
         description: 'Test results summary'
         value: ${{ jobs.test.outputs.results }}
 
-permissions: read-all
+permissions:
+  contents: read
+  checks: write
 
 jobs:
   test:
