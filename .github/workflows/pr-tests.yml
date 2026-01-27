@@ -38,7 +38,8 @@ jobs:
               - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
               - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
               - 'UnityProject/Assets/Tests/**'
-              - '.github/workflows/**'
+              - '.github/workflows/unity-tests.yml'
+              - '.github/workflows/pr-tests.yml'
 
   run-tests:
     name: Run Unity Tests

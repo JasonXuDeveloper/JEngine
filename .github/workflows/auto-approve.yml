@@ -6,7 +6,7 @@ on:
     types: [completed]
   # Also trigger on workflow run completion for reusable workflows
   workflow_run:
-    workflows: ["PR Tests", "Claude Code Review"]
+    workflows: ["PR Tests"]
     types: [completed]
 
 permissions: read-all
@@ -50,18 +50,29 @@ jobs:
           HEAD_SHA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.head.sha')
           echo "Head SHA: $HEAD_SHA"
 
-          # Check Claude review - look for "No issues found" comment from claude[bot]
-          # Claude posts a PR comment with this message when review passes
-          CLAUDE_COMMENTS=$(gh api "repos/${{ github.repository }}/issues/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "claude[bot]") | .body] | join("\n")')
+          # Check Copilot review - must verify Copilot has actually reviewed first
+          # Copilot leaves "COMMENTED" reviews (never "APPROVED" or "CHANGES_REQUESTED")
+          # We need to: 1) Confirm a review exists, 2) Check for UNRESOLVED comments
+          # Note: Copilot uses "copilot-pull-request-reviewer[bot]" for reviews
+          COPILOT_REVIEW=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | length')
 
-          CLAUDE_APPROVED="false"
-          if echo "$CLAUDE_COMMENTS" | grep -q "No issues found. Checked for bugs and CLAUDE.md compliance"; then
-            echo "Claude review: No issues found"
-            CLAUDE_APPROVED="true"
+          # Use GraphQL to count unresolved Copilot review threads
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.repository }}"
+          REPO_NAME="${REPO_NAME#*/}"  # Extract repo name from owner/repo
+          UNRESOLVED_THREADS=$(gh api graphql -f query="query { repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") { pullRequest(number: $PR_NUMBER) { reviewThreads(first: 100) { nodes { isResolved comments(first: 1) { nodes { author { login } } } } } } } }" \
+            --jq '[.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false and .comments.nodes[0].author.login == "copilot-pull-request-reviewer")] | length')
+
+          COPILOT_OK="false"
+          if [ "$COPILOT_REVIEW" -eq 0 ]; then
+            echo "Copilot review: Not yet reviewed (no review found)"
+          elif [ "$UNRESOLVED_THREADS" -eq 0 ]; then
+            echo "Copilot review: Reviewed with no unresolved issues"
+            COPILOT_OK="true"
           else
-            echo "Claude review: Issues found or not yet complete"
+            echo "Copilot review: Found $UNRESOLVED_THREADS unresolved threads - issues need addressing"
           fi
-          echo "Claude approved: $CLAUDE_APPROVED"
+          echo "Copilot OK: $COPILOT_OK"
 
           # Check Unity Tests status (commit status, not check run)
           UNITY_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/status --jq '.statuses[] | select(.context == "Unity Tests") | .state' | head -1)
@@ -77,11 +88,11 @@ jobs:
           fi
 
           # Determine if we should approve
-          if [ "$CLAUDE_APPROVED" == "true" ] && [ "$UNITY_STATUS" == "success" ]; then
-            echo "All required checks passed and Claude found no issues!"
+          if [ "$COPILOT_OK" == "true" ] && [ "$UNITY_STATUS" == "success" ]; then
+            echo "All required checks passed and Copilot found no issues!"
             echo "should_approve=true" >> $GITHUB_OUTPUT
           else
-            echo "Required checks not yet passed or Claude found issues"
+            echo "Required checks not yet passed or Copilot found issues"
             echo "should_approve=false" >> $GITHUB_OUTPUT
           fi
 
@@ -111,6 +122,6 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.pr.outputs.number }}"
 
-          gh pr review $PR_NUMBER -R ${{ github.repository }} --approve --body "Auto-approved: Claude review found no issues and Unity Tests passed (or were skipped for non-code changes)."
+          gh pr review $PR_NUMBER -R ${{ github.repository }} --approve --body "Auto-approved: Copilot review found no issues and Unity Tests passed (or were skipped for non-code changes)."
 
           echo "PR #$PR_NUMBER approved!"
