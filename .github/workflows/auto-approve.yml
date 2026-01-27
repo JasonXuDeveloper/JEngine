@@ -57,21 +57,10 @@ jobs:
           COPILOT_REVIEW=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | length')
 
           # Use GraphQL to count unresolved Copilot review threads
-          UNRESOLVED_THREADS=$(gh api graphql -f query='
-            query($owner: String!, $repo: String!, $pr: Int!) {
-              repository(owner: $owner, name: $repo) {
-                pullRequest(number: $pr) {
-                  reviewThreads(first: 100) {
-                    nodes {
-                      isResolved
-                      comments(first: 1) {
-                        nodes { author { login } }
-                      }
-                    }
-                  }
-                }
-              }
-            }' -f owner="${{ github.repository_owner }}" -f repo="${{ github.event.repository.name }}" -F pr="$PR_NUMBER" \
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.repository }}"
+          REPO_NAME="${REPO_NAME#*/}"  # Extract repo name from owner/repo
+          UNRESOLVED_THREADS=$(gh api graphql -f query="query { repository(owner: \"$REPO_OWNER\", name: \"$REPO_NAME\") { pullRequest(number: $PR_NUMBER) { reviewThreads(first: 100) { nodes { isResolved comments(first: 1) { nodes { author { login } } } } } } } }" \
             --jq '[.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false and .comments.nodes[0].author.login == "copilot-pull-request-reviewer")] | length')
 
           COPILOT_OK="false"
