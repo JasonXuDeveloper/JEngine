@@ -53,8 +53,9 @@ jobs:
           # Check Copilot review - must verify Copilot has actually reviewed first
           # Copilot leaves "COMMENTED" reviews (never "APPROVED" or "CHANGES_REQUESTED")
           # We need to: 1) Confirm a review exists, 2) Check for inline comments
-          COPILOT_REVIEW=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --jq '[.[] | select(.user.login == "copilot[bot]")] | length')
-          COPILOT_COMMENTS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "copilot[bot]")] | length')
+          # Note: Copilot uses different usernames for reviews vs comments
+          COPILOT_REVIEW=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | length')
+          COPILOT_COMMENTS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "Copilot")] | length')
 
           COPILOT_OK="false"
           if [ "$COPILOT_REVIEW" -eq 0 ]; then
