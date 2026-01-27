@@ -52,19 +52,36 @@ jobs:
 
           # Check Copilot review - must verify Copilot has actually reviewed first
           # Copilot leaves "COMMENTED" reviews (never "APPROVED" or "CHANGES_REQUESTED")
-          # We need to: 1) Confirm a review exists, 2) Check for inline comments
-          # Note: Copilot uses different usernames for reviews vs comments
+          # We need to: 1) Confirm a review exists, 2) Check for UNRESOLVED comments
+          # Note: Copilot uses "copilot-pull-request-reviewer[bot]" for reviews
           COPILOT_REVIEW=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | length')
-          COPILOT_COMMENTS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "Copilot")] | length')
+
+          # Use GraphQL to count unresolved Copilot review threads
+          UNRESOLVED_THREADS=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!, $pr: Int!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequest(number: $pr) {
+                  reviewThreads(first: 100) {
+                    nodes {
+                      isResolved
+                      comments(first: 1) {
+                        nodes { author { login } }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f owner="${{ github.repository_owner }}" -f repo="${{ github.event.repository.name }}" -F pr="$PR_NUMBER" \
+            --jq '[.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false and .comments.nodes[0].author.login == "copilot-pull-request-reviewer")] | length')
 
           COPILOT_OK="false"
           if [ "$COPILOT_REVIEW" -eq 0 ]; then
             echo "Copilot review: Not yet reviewed (no review found)"
-          elif [ "$COPILOT_COMMENTS" -eq 0 ]; then
-            echo "Copilot review: Reviewed with no issues (0 inline comments)"
+          elif [ "$UNRESOLVED_THREADS" -eq 0 ]; then
+            echo "Copilot review: Reviewed with no unresolved issues"
             COPILOT_OK="true"
           else
-            echo "Copilot review: Found $COPILOT_COMMENTS inline comments - issues need addressing"
+            echo "Copilot review: Found $UNRESOLVED_THREADS unresolved threads - issues need addressing"
           fi
           echo "Copilot OK: $COPILOT_OK"
 
