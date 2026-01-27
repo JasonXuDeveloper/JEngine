@@ -29,6 +29,7 @@ using JEngine.Core.Encrypt;
 using JEngine.Core.Update;
 using UnityEngine.SceneManagement;
 using YooAsset;
+using SceneHandle = YooAsset.SceneHandle;
 
 namespace JEngine.Core
 {
