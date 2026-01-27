@@ -6,7 +6,7 @@ on:
     types: [completed]
   # Also trigger on workflow run completion for reusable workflows
   workflow_run:
-    workflows: ["PR Tests", "Claude Code Review"]
+    workflows: ["PR Tests"]
     types: [completed]
 
 permissions: read-all
@@ -50,18 +50,19 @@ jobs:
           HEAD_SHA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER --jq '.head.sha')
           echo "Head SHA: $HEAD_SHA"
 
-          # Check Claude review - look for "No issues found" comment from claude[bot]
-          # Claude posts a PR comment with this message when review passes
-          CLAUDE_COMMENTS=$(gh api "repos/${{ github.repository }}/issues/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "claude[bot]") | .body] | join("\n")')
+          # Check Copilot review - Copilot leaves "Comment" reviews, not "Approve"
+          # If Copilot left inline comments, it found issues to address
+          # No comments = no issues found
+          COPILOT_COMMENTS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/comments" --jq '[.[] | select(.user.login == "copilot[bot]")] | length')
 
-          CLAUDE_APPROVED="false"
-          if echo "$CLAUDE_COMMENTS" | grep -q "No issues found. Checked for bugs and CLAUDE.md compliance"; then
-            echo "Claude review: No issues found"
-            CLAUDE_APPROVED="true"
+          COPILOT_OK="false"
+          if [ "$COPILOT_COMMENTS" -eq 0 ]; then
+            echo "Copilot review: No issues found (0 inline comments)"
+            COPILOT_OK="true"
           else
-            echo "Claude review: Issues found or not yet complete"
+            echo "Copilot review: Found $COPILOT_COMMENTS inline comments - issues need addressing"
           fi
-          echo "Claude approved: $CLAUDE_APPROVED"
+          echo "Copilot OK: $COPILOT_OK"
 
           # Check Unity Tests status (commit status, not check run)
           UNITY_STATUS=$(gh api repos/${{ github.repository }}/commits/$HEAD_SHA/status --jq '.statuses[] | select(.context == "Unity Tests") | .state' | head -1)
@@ -77,11 +78,11 @@ jobs:
           fi
 
           # Determine if we should approve
-          if [ "$CLAUDE_APPROVED" == "true" ] && [ "$UNITY_STATUS" == "success" ]; then
-            echo "All required checks passed and Claude found no issues!"
+          if [ "$COPILOT_OK" == "true" ] && [ "$UNITY_STATUS" == "success" ]; then
+            echo "All required checks passed and Copilot found no issues!"
             echo "should_approve=true" >> $GITHUB_OUTPUT
           else
-            echo "Required checks not yet passed or Claude found issues"
+            echo "Required checks not yet passed or Copilot found issues"
             echo "should_approve=false" >> $GITHUB_OUTPUT
           fi
 
@@ -111,6 +112,6 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.pr.outputs.number }}"
 
-          gh pr review $PR_NUMBER -R ${{ github.repository }} --approve --body "Auto-approved: Claude review found no issues and Unity Tests passed (or were skipped for non-code changes)."
+          gh pr review $PR_NUMBER -R ${{ github.repository }} --approve --body "Auto-approved: Copilot review found no issues and Unity Tests passed (or were skipped for non-code changes)."
 
           echo "PR #$PR_NUMBER approved!"
