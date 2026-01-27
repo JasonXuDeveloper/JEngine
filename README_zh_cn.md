@@ -69,21 +69,18 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.0.9)
+## 🎉 最新功能 (v1.0.10)
 
-- **ci**: add DCO sign-off check for pull requests ([#558](https://github.com/JasonXuDeveloper/JEngine/pull/558))
-- **ci**: include non-conventional commits in changelog ([#557](https://github.com/JasonXuDeveloper/JEngine/pull/557))
-- **ci**: add automated testing and release workflows ([#554](https://github.com/JasonXuDeveloper/JEngine/pull/554))
-- **ci**: use app token for releases and consistent CHANGE.md formatting ([#571](https://github.com/JasonXuDeveloper/JEngine/pull/571))
-- **ci**: revert 1.0.7 release and fix workflow bugs ([#570](https://github.com/JasonXuDeveloper/JEngine/pull/570))
-- **ci**: use pipe delimiter in sed to avoid URL slash conflict ([#569](https://github.com/JasonXuDeveloper/JEngine/pull/569))
-- **ci**: improve changelog with PR hyperlinks and proper contributors ([#568](https://github.com/JasonXuDeveloper/JEngine/pull/568))
-- **ci**: use awk for reliable README multiline replacement ([#567](https://github.com/JasonXuDeveloper/JEngine/pull/567))
-- **ci**: improve release workflow ([#566](https://github.com/JasonXuDeveloper/JEngine/pull/566))
-- **ci**: store regex in variable to fix bash parsing error ([#564](https://github.com/JasonXuDeveloper/JEngine/pull/564))
-- **ci**: use buildless mode for CodeQL Unity analysis ([#563](https://github.com/JasonXuDeveloper/JEngine/pull/563))
-- **ci**: configure CodeQL to scan only JEngine source code ([#562](https://github.com/JasonXuDeveloper/JEngine/pull/562))
-- **ci**: correct test artifact paths in unity-tests workflow ([#561](https://github.com/JasonXuDeveloper/JEngine/pull/561))
+- **ci**: migrate from Claude to GitHub Copilot code review ([#588](https://github.com/JasonXuDeveloper/JEngine/pull/588))
+- add CLA Assistant and Scorecard configuration ([#579](https://github.com/JasonXuDeveloper/JEngine/pull/579))
+- add OSS health improvements and automation ([#577](https://github.com/JasonXuDeveloper/JEngine/pull/577))
+- **core**: resolve SceneHandle ambiguous reference in Unity 6 ([#589](https://github.com/JasonXuDeveloper/JEngine/pull/589))
+- **ci**: add pull-requests write permission for Claude review comments ([#585](https://github.com/JasonXuDeveloper/JEngine/pull/585))
+- **ci**: fix auto-approve to check claude[bot] comment ([#583](https://github.com/JasonXuDeveloper/JEngine/pull/583))
+- **ci**: move write permissions to job level for Scorecard compliance ([#581](https://github.com/JasonXuDeveloper/JEngine/pull/581))
+- add auto-approve workflow and fix scorecard config ([#580](https://github.com/JasonXuDeveloper/JEngine/pull/580))
+- resolve remaining CodeQL security issues ([#573](https://github.com/JasonXuDeveloper/JEngine/pull/573))
+- address CodeQL security and code quality issues ([#572](https://github.com/JasonXuDeveloper/JEngine/pull/572))
 
 [📋 查看完整更新日志](CHANGE.md)
 

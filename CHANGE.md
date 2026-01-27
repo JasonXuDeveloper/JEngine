@@ -1,4 +1,18 @@
 ## All Versions
+## 1.0.10 (January 27 2026)
+
+- Migrate from Claude to GitHub Copilot code review ([#588](https://github.com/JasonXuDeveloper/JEngine/pull/588)) (ci)
+- add CLA Assistant and Scorecard configuration ([#579](https://github.com/JasonXuDeveloper/JEngine/pull/579))
+- add OSS health improvements and automation ([#577](https://github.com/JasonXuDeveloper/JEngine/pull/577))
+- Resolve SceneHandle ambiguous reference in Unity 6 ([#589](https://github.com/JasonXuDeveloper/JEngine/pull/589)) (core)
+- Add pull-requests write permission for Claude review comments ([#585](https://github.com/JasonXuDeveloper/JEngine/pull/585)) (ci)
+- Fix auto-approve to check claude[bot] comment ([#583](https://github.com/JasonXuDeveloper/JEngine/pull/583)) (ci)
+- Move write permissions to job level for Scorecard compliance ([#581](https://github.com/JasonXuDeveloper/JEngine/pull/581)) (ci)
+- add auto-approve workflow and fix scorecard config ([#580](https://github.com/JasonXuDeveloper/JEngine/pull/580))
+- resolve remaining CodeQL security issues ([#573](https://github.com/JasonXuDeveloper/JEngine/pull/573))
+- address CodeQL security and code quality issues ([#572](https://github.com/JasonXuDeveloper/JEngine/pull/572))
+
+
 ## 1.0.9 (January 25 2026)
 
 - Add DCO sign-off check for pull requests ([#558](https://github.com/JasonXuDeveloper/JEngine/pull/558)) (ci)
