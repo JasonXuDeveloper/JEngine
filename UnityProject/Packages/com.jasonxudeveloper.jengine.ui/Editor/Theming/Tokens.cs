@@ -89,36 +89,36 @@ namespace JEngine.UI.Editor.Theming
             // ===== SEMANTIC COLORS =====
             // All use neutral grayscale values, no vibrant colors
 
-            /// <summary>Primary button color</summary>
+            /// <summary>Primary button color - inverted between themes</summary>
             public static Color Primary => IsDarkTheme
-                ? FromHex("#E0E0E0")        // Light grey (neutral) - with black text
-                : FromHex("#374151");        // Medium-dark grey (original light theme color)
+                ? FromHex("#D0D0D0")        // Light grey in dark mode = same as light's Secondary
+                : FromHex("#374151");        // Medium-dark grey in light mode
 
             public static Color PrimaryHover => IsDarkTheme
-                ? FromHex("#ECECEC")        // Even lighter grey (neutral)
-                : FromHex("#4B5563");        // Slightly lighter (original)
+                ? FromHex("#9A9A9A")        // Dark mode = light's SecondaryHover (inverted)
+                : FromHex("#4B5563");        // Light mode slightly lighter
 
             public static Color PrimaryActive => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Medium-light grey (neutral)
-                : FromHex("#1F2937");        // Very dark grey (original)
+                ? FromHex("#6A6A6A")        // Dark mode = light's SecondaryActive (inverted)
+                : FromHex("#1F2937");        // Light mode much darker
 
             /// <summary>Primary button text color</summary>
             public static Color PrimaryText => IsDarkTheme
-                ? FromHex("#000000")        // Black text on light button in dark mode
+                ? FromHex("#111111")        // Black text on light button in dark mode
                 : FromHex("#FFFFFF");        // White text on dark button in light mode
 
-            /// <summary>Secondary button color</summary>
+            /// <summary>Secondary button color - inverted between themes</summary>
             public static Color Secondary => IsDarkTheme
-                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted from light's #D0D0D0
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
+                ? FromHex("#374151")        // Medium-dark grey in dark mode = same as light's Primary
+                : FromHex("#D0D0D0");        // Light grey in light mode
 
             public static Color SecondaryHover => IsDarkTheme
-                ? FromHex("#6A6A6A")        // Medium grey (neutral)
+                ? FromHex("#4B5563")        // Lighter on hover
                 : FromHex("#9A9A9A");        // Darker on hover
 
             public static Color SecondaryActive => IsDarkTheme
-                ? FromHex("#9A9A9A")        // Light-medium grey (neutral)
-                : FromHex("#6A6A6A");        // Much darker
+                ? FromHex("#1F2937")        // Darker on active
+                : FromHex("#6A6A6A");        // Much darker on active
 
             /// <summary>Secondary button text color</summary>
             public static Color SecondaryText => IsDarkTheme
