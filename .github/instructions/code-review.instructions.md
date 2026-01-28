@@ -36,6 +36,13 @@ For state accessed across Unity callbacks:
 - Hot update: `HotUpdate.Code`
 - **Exception**: `Assets/Scripts/` may contain user-level code without namespace (intentional for user customization)
 
+### 6. Performance Patterns
+Avoid LINQ in hot paths and UI code for performance:
+- Use `for`/`foreach` loops with inline null checks instead of `.Where()`
+- Use `Count > 0` or `Length > 0` instead of `.Any()`
+- Use array/list indexing instead of `.First()` / `.Last()`
+- LINQ allocates iterators and delegates - avoid in frequently called code
+
 ## Common Issues to Flag
 
 - Missing XML documentation on public APIs
