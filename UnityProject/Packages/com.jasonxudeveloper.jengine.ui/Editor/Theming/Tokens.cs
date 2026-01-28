@@ -48,169 +48,169 @@ namespace JEngine.UI.Editor.Theming
         public static class Colors
         {
             // ===== BACKGROUND LAYERS =====
-            // Dark theme: Near-black to dark greys (inverted from light)
+            // Dark theme: Pure neutral greys (inverted from light)
             // Light theme: Pure white to light greys
 
             /// <summary>Base layer - Deepest background</summary>
             public static Color BgBase => IsDarkTheme
-                ? FromHex("#0F1419")        // Near-black (darker than gray-900)
+                ? FromHex("#0A0A0A")        // Near-black (neutral grey)
                 : FromHex("#FFFFFF");        // Pure white
 
             /// <summary>Subtle layer - Secondary containers</summary>
             public static Color BgSubtle => IsDarkTheme
-                ? FromHex("#1F2937")        // Dark grey (gray-800)
+                ? FromHex("#1A1A1A")        // Very dark grey (neutral)
                 : FromHex("#F9FAFB");        // Very light grey (gray-50)
 
             /// <summary>Surface layer - Cards, panels, dropdowns (most common)</summary>
             public static Color BgSurface => IsDarkTheme
-                ? FromHex("#374151")        // Medium-dark grey (gray-700)
+                ? FromHex("#2A2A2A")        // Dark grey (neutral) - inverted from gray-200
                 : FromHex("#E5E7EB");        // Medium light grey (gray-200)
 
             /// <summary>Elevated layer - Hover states, important elements</summary>
             public static Color BgElevated => IsDarkTheme
-                ? FromHex("#4B5563")        // Lighter dark grey (gray-600)
+                ? FromHex("#3A3A3A")        // Medium-dark grey (neutral)
                 : FromHex("#E5E7EB");        // Medium light grey (gray-200)
 
             /// <summary>Overlay layer - Modals, dropdowns, tooltips</summary>
             public static Color BgOverlay => IsDarkTheme
-                ? FromHex("#6B7280")        // Medium grey (gray-500)
+                ? FromHex("#4A4A4A")        // Medium grey (neutral) - inverted from gray-300
                 : FromHex("#D1D5DB");        // Medium grey (gray-300)
 
             /// <summary>Hover state</summary>
             public static Color BgHover => IsDarkTheme
-                ? FromHex("#4B5563")        // gray-600
+                ? FromHex("#3A3A3A")        // Medium-dark grey (neutral)
                 : FromHex("#E5E7EB");        // gray-200
 
             // ===== SEMANTIC COLORS =====
-            // All use grayscale values, no vibrant colors
+            // All use neutral grayscale values, no vibrant colors
 
             /// <summary>Primary button color</summary>
             public static Color Primary => IsDarkTheme
-                ? FromHex("#D1D5DB")        // Light grey (gray-300) - inverted from light's gray-700
-                : FromHex("#374151");        // Medium-dark grey (gray-700)
+                ? FromHex("#C8C8C8")        // Light grey (neutral) - inverted from light's #373737
+                : FromHex("#374151");        // Medium-dark grey (original light theme color)
 
             public static Color PrimaryHover => IsDarkTheme
-                ? FromHex("#E5E7EB")        // Lighter grey (gray-200) - inverted from light's gray-600
-                : FromHex("#4B5563");        // gray-600
+                ? FromHex("#E0E0E0")        // Lighter grey (neutral)
+                : FromHex("#4B5563");        // Slightly lighter (original)
 
             public static Color PrimaryActive => IsDarkTheme
-                ? FromHex("#F3F4F6")        // Very light grey (gray-100) - inverted from light's gray-800
-                : FromHex("#1F2937");        // gray-800
+                ? FromHex("#F0F0F0")        // Very light grey (neutral)
+                : FromHex("#1F2937");        // Very dark grey (original)
 
             /// <summary>Secondary button color</summary>
             public static Color Secondary => IsDarkTheme
-                ? FromHex("#4B5563")        // Medium-dark grey (gray-600) - inverted from light's gray-300
-                : FromHex("#D1D5DB");        // Medium grey (gray-300)
+                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted from light's #D0D0D0
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             public static Color SecondaryHover => IsDarkTheme
-                ? FromHex("#6B7280")        // Medium grey (gray-500) - inverted from light's gray-400
-                : FromHex("#9CA3AF");        // gray-400
+                ? FromHex("#6A6A6A")        // Medium grey (neutral)
+                : FromHex("#9A9A9A");        // Darker on hover
 
             public static Color SecondaryActive => IsDarkTheme
-                ? FromHex("#9CA3AF")        // Light-medium grey (gray-400) - inverted from light's gray-500
-                : FromHex("#6B7280");        // gray-500
+                ? FromHex("#9A9A9A")        // Light-medium grey (neutral)
+                : FromHex("#6A6A6A");        // Much darker
 
             /// <summary>Success state - neutral grey</summary>
             public static Color Success => IsDarkTheme
-                ? FromHex("#F9FAFB")        // Very light grey (gray-50) - inverted from light's gray-900
-                : FromHex("#111827");        // Near-black (gray-900)
+                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted from #111111
+                : FromHex("#111111");        // Near-black (neutral)
 
             public static Color SuccessHover => IsDarkTheme
-                ? FromHex("#E5E7EB")        // gray-200 - inverted from light's gray-800
-                : FromHex("#1F2937");        // gray-800
+                ? FromHex("#E5E5E5")        // Light grey - inverted
+                : FromHex("#1F1F1F");        // Dark grey
 
             public static Color SuccessActive => IsDarkTheme
-                ? FromHex("#D1D5DB")        // gray-300 - inverted from light's gray-950
-                : FromHex("#030712");        // gray-950
+                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
+                : FromHex("#030303");        // Almost black
 
             /// <summary>Danger state - neutral grey</summary>
             public static Color Danger => IsDarkTheme
-                ? FromHex("#F9FAFB")        // Very light grey (gray-50) - inverted
-                : FromHex("#111827");        // Near-black (gray-900)
+                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted
+                : FromHex("#111111");        // Near-black (neutral)
 
             public static Color DangerHover => IsDarkTheme
-                ? FromHex("#E5E7EB")        // gray-200 - inverted
-                : FromHex("#1F2937");        // gray-800
+                ? FromHex("#E5E5E5")        // Light grey - inverted
+                : FromHex("#1F1F1F");        // Dark grey
 
             public static Color DangerActive => IsDarkTheme
-                ? FromHex("#D1D5DB")        // gray-300 - inverted
-                : FromHex("#030712");        // gray-950
+                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
+                : FromHex("#030303");        // Almost black
 
             /// <summary>Warning state - neutral grey</summary>
             public static Color Warning => IsDarkTheme
-                ? FromHex("#F9FAFB")        // Very light grey (gray-50) - inverted
-                : FromHex("#111827");        // Near-black (gray-900)
+                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted
+                : FromHex("#111111");        // Near-black (neutral)
 
             public static Color WarningHover => IsDarkTheme
-                ? FromHex("#E5E7EB")        // gray-200 - inverted
-                : FromHex("#1F2937");        // gray-800
+                ? FromHex("#E5E5E5")        // Light grey - inverted
+                : FromHex("#1F1F1F");        // Dark grey
 
             public static Color WarningActive => IsDarkTheme
-                ? FromHex("#D1D5DB")        // gray-300 - inverted
-                : FromHex("#030712");        // gray-950
+                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
+                : FromHex("#030303");        // Almost black
 
             // ===== TEXT HIERARCHY =====
-            // Dark theme: White to light greys (inverted)
+            // Dark theme: White to light greys (inverted, neutral)
             // Light theme: Black to dark greys
 
             /// <summary>Primary text - Highest contrast</summary>
             public static Color TextPrimary => IsDarkTheme
-                ? FromHex("#FFFFFF")        // Pure white - inverted from light's gray-900
-                : FromHex("#111827");        // Near-black (gray-900)
+                ? FromHex("#FFFFFF")        // Pure white - inverted from light's #111111
+                : FromHex("#111111");        // Near-black (neutral)
 
             /// <summary>Secondary text - Body text</summary>
             public static Color TextSecondary => IsDarkTheme
-                ? FromHex("#D1D5DB")        // Light grey (gray-300) - inverted from light's gray-700
-                : FromHex("#374151");        // Dark grey (gray-700)
+                ? FromHex("#D0D0D0")        // Light grey (neutral) - inverted from light's #373737
+                : FromHex("#373737");        // Dark grey (neutral)
 
             /// <summary>Muted text - Helper text</summary>
             public static Color TextMuted => IsDarkTheme
-                ? FromHex("#9CA3AF")        // Medium-light grey (gray-400) - inverted from light's gray-500
-                : FromHex("#6B7280");        // Medium grey (gray-500)
+                ? FromHex("#9A9A9A")        // Medium-light grey (neutral) - inverted from light's #6A6A6A
+                : FromHex("#6A6A6A");        // Medium grey (neutral)
 
             /// <summary>Main panel/page headers - Maximum impact</summary>
             public static Color TextHeader => IsDarkTheme
                 ? FromHex("#FFFFFF")        // Pure white
-                : FromHex("#111827");        // Near-black (gray-900)
+                : FromHex("#111111");        // Near-black (neutral)
 
             /// <summary>Section headers - Visual hierarchy</summary>
             public static Color TextSectionHeader => IsDarkTheme
-                ? FromHex("#E5E7EB")        // Light grey (gray-200) - inverted, no color
-                : FromHex("#111827");        // Near-black (gray-900)
+                ? FromHex("#E5E5E5")        // Light grey (neutral) - inverted, no color
+                : FromHex("#111111");        // Near-black (neutral)
 
             // ===== BORDERS =====
-            // Dark theme: Medium-dark greys (inverted)
+            // Dark theme: Medium-dark greys (inverted, neutral)
             // Light theme: Medium greys
 
             /// <summary>Light edge border</summary>
             public static Color BorderLight => IsDarkTheme
-                ? FromHex("#4B5563")        // gray-600 - inverted from light's gray-300
-                : FromHex("#D1D5DB");        // gray-300
+                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted from light's #D0D0D0
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             /// <summary>Dark edge border</summary>
             public static Color BorderDark => IsDarkTheme
-                ? FromHex("#4B5563")        // gray-600 - inverted
-                : FromHex("#D1D5DB");        // gray-300
+                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             /// <summary>Default border</summary>
             public static Color Border => IsDarkTheme
-                ? FromHex("#4B5563")        // gray-600 - inverted
-                : FromHex("#D1D5DB");        // gray-300
+                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             /// <summary>Focus border</summary>
             public static Color BorderFocus => IsDarkTheme
-                ? FromHex("#6B7280")        // gray-500 - inverted from light's gray-400
-                : FromHex("#9CA3AF");        // gray-400
+                ? FromHex("#6A6A6A")        // Medium grey (neutral) - inverted from light's #9A9A9A
+                : FromHex("#9A9A9A");        // Medium-light grey (neutral)
 
             /// <summary>Hover border</summary>
             public static Color BorderHover => IsDarkTheme
-                ? FromHex("#6B7280")        // gray-500 - inverted
-                : FromHex("#D1D5DB");        // gray-300
+                ? FromHex("#6A6A6A")        // Medium grey (neutral) - inverted
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             /// <summary>Subtle border for separators</summary>
             public static Color BorderSubtle => IsDarkTheme
-                ? FromHex("#374151")        // gray-700 - inverted
-                : FromHex("#D1D5DB");        // gray-300
+                ? FromHex("#2A2A2A")        // Dark grey (neutral) - inverted
+                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             // ===== STATUS COLORS =====
             // All use the same neutral grey values
