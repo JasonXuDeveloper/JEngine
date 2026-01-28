@@ -39,7 +39,7 @@ namespace JEngine.UI.Editor.Components.Feedback
         private int _currentLineCount;
 
         /// <summary>
-        /// Creates a new glassmorphic log view with darker background.
+        /// Creates a new log view with monochrome background.
         /// </summary>
         /// <param name="maxLines">Maximum number of lines to keep (0 = unlimited).</param>
         public JLogView(int maxLines = 100) : base("j-log-view")
@@ -48,10 +48,10 @@ namespace JEngine.UI.Editor.Components.Feedback
             _currentLineCount = 0;
 
             // Apply theme-aware background
-            // Dark mode: darker base layer
+            // Dark mode: subtle layer (not too dark)
             // Light mode: surface layer (grey)
             style.backgroundColor = Tokens.IsDarkTheme
-                ? Tokens.Colors.BgBase
+                ? Tokens.Colors.BgSubtle
                 : Tokens.Colors.BgSurface;
 
             // Standard borders
@@ -64,7 +64,7 @@ namespace JEngine.UI.Editor.Components.Feedback
             style.borderBottomWidth = 1;
             style.borderLeftWidth = 1;
 
-            // Glassmorphic border radius (8px)
+            // Border radius (8px)
             style.borderTopLeftRadius = Tokens.BorderRadius.MD;
             style.borderTopRightRadius = Tokens.BorderRadius.MD;
             style.borderBottomLeftRadius = Tokens.BorderRadius.MD;

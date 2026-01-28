@@ -38,7 +38,7 @@ namespace JEngine.UI.Editor.Components.Feedback
         private StatusType _status;
 
         /// <summary>
-        /// Creates a new glassmorphic status bar with colored accent.
+        /// Creates a new status bar with neutral monochrome styling.
         /// </summary>
         /// <param name="text">The status text.</param>
         /// <param name="status">The status type (Info, Success, Warning, Error).</param>
@@ -51,7 +51,7 @@ namespace JEngine.UI.Editor.Components.Feedback
             style.paddingBottom = Tokens.Spacing.MD;
             style.paddingLeft = Tokens.Spacing.Lg;
 
-            // Glassmorphic border radius (8px)
+            // Border radius (8px)
             style.borderTopLeftRadius = Tokens.BorderRadius.MD;
             style.borderTopRightRadius = Tokens.BorderRadius.MD;
             style.borderBottomLeftRadius = Tokens.BorderRadius.MD;
@@ -109,39 +109,22 @@ namespace JEngine.UI.Editor.Components.Feedback
 
             _status = status;
 
-            // Theme-aware colors
-            // Dark mode: Colored backgrounds with transparency
-            // Light mode: Neutral grey background, color only on border
+            // Monochrome design: neutral grey backgrounds in both themes
             Color bgColor;
             Color accentColor;
             string statusClass;
 
-            if (Tokens.IsDarkTheme)
+            // Monochrome design: neutral grey backgrounds and borders in both themes
+            var neutralBg = Tokens.Colors.BgSurface;
+            var neutralBorder = Tokens.Colors.Border;
+            (bgColor, accentColor, statusClass) = status switch
             {
-                // Dark mode: colored backgrounds
-                (bgColor, accentColor, statusClass) = status switch
-                {
-                    StatusType.Info => (new Color(0.23f, 0.51f, 0.97f, 0.2f), Tokens.Colors.StatusInfo, "j-status-bar--info"),
-                    StatusType.Success => (new Color(0.13f, 0.77f, 0.37f, 0.2f), Tokens.Colors.StatusSuccess, "j-status-bar--success"),
-                    StatusType.Warning => (new Color(0.96f, 0.62f, 0.04f, 0.2f), Tokens.Colors.StatusWarning, "j-status-bar--warning"),
-                    StatusType.Error => (new Color(0.94f, 0.27f, 0.27f, 0.2f), Tokens.Colors.StatusError, "j-status-bar--error"),
-                    _ => (new Color(0.23f, 0.51f, 0.97f, 0.2f), Tokens.Colors.StatusInfo, "j-status-bar--info")
-                };
-            }
-            else
-            {
-                // Light mode: neutral grey background and border (no color)
-                var neutralBg = Tokens.Colors.BgSurface;
-                var neutralBorder = Tokens.Colors.Border;
-                (bgColor, accentColor, statusClass) = status switch
-                {
-                    StatusType.Info => (neutralBg, neutralBorder, "j-status-bar--info"),
-                    StatusType.Success => (neutralBg, neutralBorder, "j-status-bar--success"),
-                    StatusType.Warning => (neutralBg, neutralBorder, "j-status-bar--warning"),
-                    StatusType.Error => (neutralBg, neutralBorder, "j-status-bar--error"),
-                    _ => (neutralBg, neutralBorder, "j-status-bar--info")
-                };
-            }
+                StatusType.Info => (neutralBg, neutralBorder, "j-status-bar--info"),
+                StatusType.Success => (neutralBg, neutralBorder, "j-status-bar--success"),
+                StatusType.Warning => (neutralBg, neutralBorder, "j-status-bar--warning"),
+                StatusType.Error => (neutralBg, neutralBorder, "j-status-bar--error"),
+                _ => (neutralBg, neutralBorder, "j-status-bar--info")
+            };
 
             AddToClassList(statusClass);
             style.backgroundColor = bgColor;
