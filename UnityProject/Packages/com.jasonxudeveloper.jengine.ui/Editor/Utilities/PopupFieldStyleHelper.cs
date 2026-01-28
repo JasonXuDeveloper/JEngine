@@ -151,7 +151,7 @@ namespace JEngine.UI.Editor.Utilities
         /// </summary>
         private static void ApplyInputStyles(VisualElement inputElement)
         {
-            inputElement.style.backgroundColor = Tokens.Colors.BgSurface;
+            inputElement.style.backgroundColor = Tokens.Colors.BgInput;
             inputElement.style.borderTopColor = Tokens.Colors.BorderSubtle;
             inputElement.style.borderRightColor = Tokens.Colors.BorderSubtle;
             inputElement.style.borderBottomColor = Tokens.Colors.BorderSubtle;
@@ -207,7 +207,7 @@ namespace JEngine.UI.Editor.Utilities
         private static void OnPopupFieldMouseLeave(MouseLeaveEvent evt)
         {
             var element = (VisualElement)evt.currentTarget;
-            element.style.backgroundColor = Tokens.Colors.BgSurface;
+            element.style.backgroundColor = Tokens.Colors.BgInput;
             element.style.borderTopColor = Tokens.Colors.BorderSubtle;
             element.style.borderRightColor = Tokens.Colors.BorderSubtle;
             element.style.borderBottomColor = Tokens.Colors.BorderSubtle;

@@ -81,7 +81,7 @@ namespace JEngine.UI.Editor.Components.Form
             var input = _objectField.Q(className: "unity-object-field__input");
             if (input != null)
             {
-                input.style.backgroundColor = Tokens.Colors.BgSurface;
+                input.style.backgroundColor = Tokens.Colors.BgInput;
                 input.style.borderTopColor = Tokens.Colors.BorderSubtle;
                 input.style.borderRightColor = Tokens.Colors.BorderSubtle;
                 input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
@@ -108,7 +108,7 @@ namespace JEngine.UI.Editor.Components.Form
 
                 input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
                 {
-                    element.style.backgroundColor = Tokens.Colors.BgSurface;
+                    element.style.backgroundColor = Tokens.Colors.BgInput;
                 }, input);
             }
 
@@ -233,7 +233,7 @@ namespace JEngine.UI.Editor.Components.Form
             var input = _objectField.Q(className: "unity-object-field__input");
             if (input != null)
             {
-                input.style.backgroundColor = Tokens.Colors.BgSurface;
+                input.style.backgroundColor = Tokens.Colors.BgInput;
                 input.style.borderTopColor = Tokens.Colors.BorderSubtle;
                 input.style.borderRightColor = Tokens.Colors.BorderSubtle;
                 input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
@@ -260,7 +260,7 @@ namespace JEngine.UI.Editor.Components.Form
 
                 input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
                 {
-                    element.style.backgroundColor = Tokens.Colors.BgSurface;
+                    element.style.backgroundColor = Tokens.Colors.BgInput;
                 }, input);
             }
 

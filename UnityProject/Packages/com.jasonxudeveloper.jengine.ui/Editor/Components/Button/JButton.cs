@@ -160,17 +160,16 @@ namespace JEngine.UI.Editor.Components.Button
             // Apply base color
             style.backgroundColor = _baseColor;
 
-            // Set text color based on variant and theme
-            // Secondary in light mode: black text (light background)
-            // All others: white text
-            if (variant == ButtonVariant.Secondary && !Tokens.IsDarkTheme)
+            // Set text color based on variant using theme tokens
+            style.color = variant switch
             {
-                style.color = Tokens.Colors.TextPrimary; // Black in light mode
-            }
-            else
-            {
-                style.color = Color.white; // White for all others
-            }
+                ButtonVariant.Primary => Tokens.Colors.PrimaryText,
+                ButtonVariant.Secondary => Tokens.Colors.SecondaryText,
+                ButtonVariant.Success => Tokens.Colors.PrimaryText,    // Same as primary
+                ButtonVariant.Danger => Tokens.Colors.PrimaryText,     // Same as primary
+                ButtonVariant.Warning => Tokens.Colors.PrimaryText,    // Same as primary
+                _ => Tokens.Colors.PrimaryText
+            };
 
             return this;
         }
