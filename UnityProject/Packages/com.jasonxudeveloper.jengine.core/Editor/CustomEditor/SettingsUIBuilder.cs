@@ -50,7 +50,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
             var packageNameField = new PopupField<string>()
             {
-                choices = packageChoices.Any() ? packageChoices : new List<string> { settings.packageName },
+                choices = packageChoices.Count > 0 ? packageChoices : new List<string> { settings.packageName },
                 value = settings.packageName
             };
             packageNameField.AddToClassList("form-control");

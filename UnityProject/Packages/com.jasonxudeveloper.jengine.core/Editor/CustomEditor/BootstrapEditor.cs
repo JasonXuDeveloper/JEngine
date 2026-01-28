@@ -170,7 +170,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
             var packageNameField = new PopupField<string>()
             {
-                choices = packageChoices.Any() ? packageChoices : new List<string> { _bootstrap.packageName },
+                choices = packageChoices.Count > 0 ? packageChoices : new List<string> { _bootstrap.packageName },
                 value = _bootstrap.packageName
             };
             packageNameField.AddToClassList("form-control");
@@ -188,7 +188,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var hotCodeChoices = EditorUtils.GetAvailableAsmdefFiles();
             var hotCodeField = new PopupField<string>()
             {
-                choices = hotCodeChoices.Any() ? hotCodeChoices : new List<string> { _bootstrap.hotCodeName },
+                choices = hotCodeChoices.Count > 0 ? hotCodeChoices : new List<string> { _bootstrap.hotCodeName },
                 value = _bootstrap.hotCodeName
             };
             hotCodeField.AddToClassList("form-control");
@@ -206,7 +206,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var hotSceneChoices = EditorUtils.GetAvailableHotScenes();
             var hotSceneField = new PopupField<string>()
             {
-                choices = hotSceneChoices.Any() ? hotSceneChoices : new List<string> { _bootstrap.selectedHotScene },
+                choices = hotSceneChoices.Count > 0 ? hotSceneChoices : new List<string> { _bootstrap.selectedHotScene },
                 value = _bootstrap.selectedHotScene
             };
             hotSceneField.AddToClassList("form-control");
@@ -224,7 +224,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var hotClassChoices = EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName);
             var hotClassField = new PopupField<string>()
             {
-                choices = hotClassChoices.Any() ? hotClassChoices : new List<string> { _bootstrap.hotUpdateClassName },
+                choices = hotClassChoices.Count > 0 ? hotClassChoices : new List<string> { _bootstrap.hotUpdateClassName },
                 value = _bootstrap.hotUpdateClassName
             };
             hotClassField.AddToClassList("form-control");
@@ -242,7 +242,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var hotMethodChoices = EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName);
             var hotMethodField = new PopupField<string>()
             {
-                choices = hotMethodChoices.Any()
+                choices = hotMethodChoices.Count > 0
                     ? hotMethodChoices
                     : new List<string> { _bootstrap.hotUpdateMethodName },
                 value = _bootstrap.hotUpdateMethodName
@@ -262,7 +262,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var aotChoices = EditorUtils.GetAvailableAOTDataFiles();
             var aotField = new PopupField<string>()
             {
-                choices = aotChoices.Any() ? aotChoices : new List<string> { _bootstrap.aotDllListFilePath },
+                choices = aotChoices.Count > 0 ? aotChoices : new List<string> { _bootstrap.aotDllListFilePath },
                 value = _bootstrap.aotDllListFilePath
             };
             aotField.AddToClassList("form-control");
@@ -287,7 +287,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var dynamicKeyChoices = EditorUtils.GetAvailableDynamicSecretKeys();
             var dynamicKeyField = new PopupField<string>()
             {
-                choices = dynamicKeyChoices.Any()
+                choices = dynamicKeyChoices.Count > 0
                     ? dynamicKeyChoices
                     : new List<string> { _bootstrap.dynamicSecretKeyPath },
                 value = _bootstrap.dynamicSecretKeyPath
@@ -532,7 +532,6 @@ namespace JEngine.Core.Editor.CustomEditor
 
             return group;
         }
-
 
         private StyleSheet CreateStyleSheet()
         {

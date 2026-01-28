@@ -268,7 +268,7 @@ namespace JEngine.UI.Editor.Internal
             // Package Name
             var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
             var packageNameField = new JDropdown(
-                packageChoices.Any() ? packageChoices : new List<string> { _bootstrap.packageName },
+                packageChoices.Count > 0 ? packageChoices : new List<string> { _bootstrap.packageName },
                 _bootstrap.packageName
             );
             packageNameField.OnValueChanged(value =>
@@ -281,7 +281,7 @@ namespace JEngine.UI.Editor.Internal
             // Hot Code Assembly
             var hotCodeChoices = EditorUtils.GetAvailableAsmdefFiles();
             var hotCodeField = new JDropdown(
-                hotCodeChoices.Any() ? hotCodeChoices : new List<string> { _bootstrap.hotCodeName },
+                hotCodeChoices.Count > 0 ? hotCodeChoices : new List<string> { _bootstrap.hotCodeName },
                 _bootstrap.hotCodeName
             );
             hotCodeField.OnValueChanged(value =>
@@ -294,7 +294,7 @@ namespace JEngine.UI.Editor.Internal
             // Hot Scene
             var hotSceneChoices = EditorUtils.GetAvailableHotScenes();
             var hotSceneField = new JDropdown(
-                hotSceneChoices.Any() ? hotSceneChoices : new List<string> { _bootstrap.selectedHotScene },
+                hotSceneChoices.Count > 0 ? hotSceneChoices : new List<string> { _bootstrap.selectedHotScene },
                 _bootstrap.selectedHotScene
             );
             hotSceneField.OnValueChanged(value =>
@@ -307,7 +307,7 @@ namespace JEngine.UI.Editor.Internal
             // Hot Update Entry Class
             var hotClassChoices = EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName);
             var hotClassField = new JDropdown(
-                hotClassChoices.Any() ? hotClassChoices : new List<string> { _bootstrap.hotUpdateClassName },
+                hotClassChoices.Count > 0 ? hotClassChoices : new List<string> { _bootstrap.hotUpdateClassName },
                 _bootstrap.hotUpdateClassName
             );
             hotClassField.OnValueChanged(value =>
@@ -320,7 +320,7 @@ namespace JEngine.UI.Editor.Internal
             // Hot Update Entry Method
             var hotMethodChoices = EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName);
             var hotMethodField = new JDropdown(
-                hotMethodChoices.Any() ? hotMethodChoices : new List<string> { _bootstrap.hotUpdateMethodName },
+                hotMethodChoices.Count > 0 ? hotMethodChoices : new List<string> { _bootstrap.hotUpdateMethodName },
                 _bootstrap.hotUpdateMethodName
             );
             hotMethodField.OnValueChanged(value =>
@@ -333,7 +333,7 @@ namespace JEngine.UI.Editor.Internal
             // AOT DLL List File
             var aotChoices = EditorUtils.GetAvailableAOTDataFiles();
             var aotField = new JDropdown(
-                aotChoices.Any() ? aotChoices : new List<string> { _bootstrap.aotDllListFilePath },
+                aotChoices.Count > 0 ? aotChoices : new List<string> { _bootstrap.aotDllListFilePath },
                 _bootstrap.aotDllListFilePath
             );
             aotField.OnValueChanged(value =>
@@ -353,7 +353,7 @@ namespace JEngine.UI.Editor.Internal
             // Dynamic Secret Key
             var dynamicKeyChoices = EditorUtils.GetAvailableDynamicSecretKeys();
             var dynamicKeyField = new JDropdown(
-                dynamicKeyChoices.Any() ? dynamicKeyChoices : new List<string> { _bootstrap.dynamicSecretKeyPath },
+                dynamicKeyChoices.Count > 0 ? dynamicKeyChoices : new List<string> { _bootstrap.dynamicSecretKeyPath },
                 _bootstrap.dynamicSecretKeyPath
             );
             dynamicKeyField.OnValueChanged(value =>

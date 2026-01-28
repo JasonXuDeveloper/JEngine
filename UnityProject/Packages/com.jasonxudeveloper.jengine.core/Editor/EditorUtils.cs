@@ -153,7 +153,7 @@ namespace JEngine.Core.Editor
                 {
                     return assembly.GetTypes()
                         .Where(t => t.IsClass && t.IsPublic)
-                        .Where(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static).Any())
+                        .Where(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static).Length > 0)
                         .Select(t => t.FullName)
                         .OrderBy(n => n)
                         .ToList();
@@ -225,7 +225,7 @@ namespace JEngine.Core.Editor
                                (path.Contains("Secret") || path.Contains("Obfuz") || path.Contains("Key")))
                 .ToList();
 
-            if (secretKeyFiles.Any())
+            if (secretKeyFiles.Count > 0)
             {
                 secretKeys.AddRange(secretKeyFiles);
             }

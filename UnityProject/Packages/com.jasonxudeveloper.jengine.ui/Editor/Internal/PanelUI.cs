@@ -179,7 +179,7 @@ namespace JEngine.UI.Editor.Internal
             // Package Name
             var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
             var packageNameField = new JDropdown(
-                packageChoices.Any() ? packageChoices : new List<string> { settings.packageName },
+                packageChoices.Count > 0 ? packageChoices : new List<string> { settings.packageName },
                 settings.packageName
             );
             packageNameField.OnValueChanged(value =>
