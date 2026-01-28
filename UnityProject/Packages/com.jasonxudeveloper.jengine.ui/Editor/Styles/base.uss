@@ -1,0 +1,77 @@
+/* base.uss
+ * Base reset and common styles for JEngine Editor UI
+ */
+
+/* Base container */
+.j-container {
+    background-color: var(--j-bg-base);
+    color: var(--j-text-primary);
+    padding: var(--j-spacing-lg);
+}
+
+/* Text styles */
+.j-text-primary {
+    color: var(--j-text-primary);
+}
+
+.j-text-secondary {
+    color: var(--j-text-secondary);
+}
+
+.j-text-muted {
+    color: var(--j-text-muted);
+}
+
+.j-text-header {
+    color: var(--j-text-header);
+}
+
+/* Font sizes */
+.j-text-xs {
+    font-size: var(--j-font-size-xs);
+}
+
+.j-text-sm {
+    font-size: var(--j-font-size-sm);
+}
+
+.j-text-base {
+    font-size: var(--j-font-size-base);
+}
+
+.j-text-md {
+    font-size: var(--j-font-size-md);
+}
+
+.j-text-lg {
+    font-size: var(--j-font-size-lg);
+}
+
+.j-text-xl {
+    font-size: var(--j-font-size-xl);
+}
+
+.j-text-title {
+    font-size: var(--j-font-size-title);
+}
+
+/* Text wrapping */
+.j-text-wrap {
+    white-space: normal;
+    -unity-text-overflow-position: end;
+}
+
+/* Scrollable container */
+.j-scroll-view {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.j-scroll-view > #unity-content-container {
+    padding: var(--j-spacing-md);
+}
+
+/* Hidden utility */
+.j-hidden {
+    display: none;
+}

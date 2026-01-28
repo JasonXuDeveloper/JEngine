@@ -44,7 +44,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var packageGroup = EditorUIUtils.CreateGroup("Package Settings");
 
             // Package Name field (dropdown or text field based on useDropdown)
-            var packageNameRow = EditorUIUtils.CreateFormRow("Package Name");
+            var packageNameRow = EditorUIUtils.CreateFormRow("Package");
 
             // Use PopupField for Panel (with available packages)
             var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
@@ -88,7 +88,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 settings.Save();
             })
             {
-                text = "Set to Current Active Target"
+                text = "Use Active"
             };
             setActiveButton.AddToClassList("form-control");
             EditorUIUtils.MakeActionButtonResponsive(setActiveButton);
@@ -118,7 +118,7 @@ namespace JEngine.Core.Editor.CustomEditor
             buildGroup.Add(clearCacheRow);
 
             // Use Asset Dependency DB Toggle
-            var useAssetDBRow = EditorUIUtils.CreateFormRow("Use Asset Dependency DB");
+            var useAssetDBRow = EditorUIUtils.CreateFormRow("Use Asset Depend DB");
             var useAssetDBToggle = new Toggle()
             {
                 value = settings.useAssetDependDB
@@ -137,7 +137,7 @@ namespace JEngine.Core.Editor.CustomEditor
             var manifestConfigFile = bundleConfig.ManifestConfigScriptableObject;
             var bundleConfigFile = bundleConfig.BundleConfigScriptableObject;
 
-            var encryptionRow = EditorUIUtils.CreateFormRow("Encryption Option");
+            var encryptionRow = EditorUIUtils.CreateFormRow("Encryption");
             var encryptionField = new EnumField(settings.encryptionOption);
 
             // Manifest Config Object Field
