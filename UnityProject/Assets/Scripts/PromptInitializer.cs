@@ -42,20 +42,17 @@ using JEngine.Core;
 using JEngine.UI;
 using UnityEngine;
 
-namespace JEngine
+/// <summary>
+/// Initializes the Prompt system to use MessageBox for dialogs.
+/// This runs automatically before any scene loads.
+/// </summary>
+public static class PromptInitializer
 {
-    /// <summary>
-    /// Initializes the Prompt system to use MessageBox for dialogs.
-    /// This runs automatically before any scene loads.
-    /// </summary>
-    public static class PromptInitializer
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Initialize()
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-            // Register MessageBox as the dialog provider for JEngine.Core
-            Prompt.ShowDialogAsync = MessageBox.Show;
-            Debug.Log("[JEngine] Prompt system initialized with MessageBox provider.");
-        }
+        // Register MessageBox as the dialog provider for JEngine.Core
+        Prompt.ShowDialogAsync = MessageBox.Show;
+        Debug.Log("[JEngine] Prompt system initialized with MessageBox provider.");
     }
 }
