@@ -160,6 +160,39 @@ public static bool Flag => _flag;
 3. Add menu items via `[MenuItem]` attribute
 4. Handle domain reloads if maintaining state
 
+### Creating New JEngine Packages
+
+When creating a new JEngine package:
+
+1. **Version**: Start at `0.0.0` (not `1.0.0`)
+2. **Naming**: Use `com.jasonxudeveloper.jengine.<name>` format
+3. **Location**: `Packages/com.jasonxudeveloper.jengine.<name>/`
+4. **Required files**:
+   - `package.json` - Package manifest with version `0.0.0`
+   - `Runtime/<Name>.asmdef` - Assembly definition
+   - `README.md` - Package documentation (optional)
+
+Example `package.json`:
+```json
+{
+  "name": "com.jasonxudeveloper.jengine.<name>",
+  "version": "0.0.0",
+  "displayName": "JEngine.<Name>",
+  "description": "Description here.",
+  "license": "MIT",
+  "unity": "2022.3",
+  "author": {
+    "name": "Jason Xu",
+    "email": "jason@xgamedev.com",
+    "url": "https://github.com/JasonXuDeveloper"
+  },
+  "dependencies": {}
+}
+```
+
+5. **CI Updates**: Add package path to `.github/workflows/pr-tests.yml` and release support to `.github/workflows/release.yml`
+6. **Scopes**: Add new scope to commit message conventions
+
 ## Code Review Checklist
 
 - [ ] Follows namespace conventions
@@ -199,6 +232,7 @@ All commits should follow the Conventional Commits specification to enable autom
 
 - `core` - Changes to JEngine.Core package
 - `util` - Changes to JEngine.Util package
+- `ui` - Changes to JEngine.UI package
 - `ci` - Changes to CI/CD workflows
 - `docs` - Changes to documentation
 
