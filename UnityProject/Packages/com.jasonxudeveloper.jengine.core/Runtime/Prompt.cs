@@ -49,7 +49,7 @@ namespace JEngine.Core
     /// </remarks>
     public static class Prompt
     {
-        private static volatile Func<string, string, string, string, UniTask<bool>> _showDialogAsync = DefaultShowDialog;
+        private static volatile Func<string, string, string, string, UniTask<bool>> _showDialogAsync;
 
         /// <summary>
         /// Gets or sets the dialog handler function.
@@ -65,7 +65,7 @@ namespace JEngine.Core
         /// </remarks>
         public static Func<string, string, string, string, UniTask<bool>> ShowDialogAsync
         {
-            get => _showDialogAsync;
+            get => _showDialogAsync ?? DefaultShowDialog;
             set => Interlocked.Exchange(ref _showDialogAsync, value ?? DefaultShowDialog);
         }
 
