@@ -34,7 +34,7 @@
 //    "com.jasonxudeveloper.jengine.ui": "1.0.0"
 //
 // If you don't need MessageBox dialogs, you can:
-// - Delete this script entirely (Bootstrap will log warnings and continue)
+// - Delete this script entirely (Bootstrap will log errors and continue)
 // - Implement your own custom dialog provider by assigning to Prompt.ShowDialogAsync
 // ============================================================================
 
@@ -42,17 +42,20 @@ using JEngine.Core;
 using JEngine.UI;
 using UnityEngine;
 
-/// <summary>
-/// Initializes the Prompt system to use MessageBox for dialogs.
-/// This runs automatically before any scene loads.
-/// </summary>
-public static class PromptInitializer
+namespace JEngine
 {
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void Initialize()
+    /// <summary>
+    /// Initializes the Prompt system to use MessageBox for dialogs.
+    /// This runs automatically before any scene loads.
+    /// </summary>
+    public static class PromptInitializer
     {
-        // Register MessageBox as the dialog provider for JEngine.Core
-        Prompt.ShowDialogAsync = MessageBox.Show;
-        Debug.Log("[JEngine] Prompt system initialized with MessageBox provider.");
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void Initialize()
+        {
+            // Register MessageBox as the dialog provider for JEngine.Core
+            Prompt.ShowDialogAsync = MessageBox.Show;
+            Debug.Log("[JEngine] Prompt system initialized with MessageBox provider.");
+        }
     }
 }
