@@ -1,0 +1,23 @@
+{
+    "name": "JEngine.UI.Editor",
+    "rootNamespace": "JEngine.UI.Editor",
+    "references": [
+        "JEngine.Core.Editor",
+        "JEngine.Core",
+        "JEngine.UI",
+        "UniTask",
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

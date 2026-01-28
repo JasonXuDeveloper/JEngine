@@ -1,0 +1,430 @@
+/* components.uss
+ * Component-specific styles for JEngine Editor UI
+ */
+
+/* ===========================
+   LAYOUT COMPONENTS
+   =========================== */
+
+/* JStack - vertical flex container */
+.j-stack {
+    flex-direction: column;
+}
+
+.j-stack--gap-xs {
+    margin-bottom: var(--j-spacing-xs);
+}
+
+.j-stack--gap-sm {
+    margin-bottom: var(--j-spacing-sm);
+}
+
+.j-stack--gap-md {
+    margin-bottom: var(--j-spacing-md);
+}
+
+.j-stack--gap-lg {
+    margin-bottom: var(--j-spacing-lg);
+}
+
+.j-stack--gap-xl {
+    margin-bottom: var(--j-spacing-xl);
+}
+
+.j-stack > * {
+    margin-bottom: var(--j-spacing-md);
+}
+
+/* Note: :last-child pseudo-class is not supported in Unity USS.
+   Child margins are handled programmatically in JStack.cs */
+
+/* JRow - horizontal flex container */
+.j-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.j-row--justify-start {
+    justify-content: flex-start;
+}
+
+.j-row--justify-center {
+    justify-content: center;
+}
+
+.j-row--justify-end {
+    justify-content: flex-end;
+}
+
+.j-row--justify-between {
+    justify-content: space-between;
+}
+
+.j-row--align-start {
+    align-items: flex-start;
+}
+
+.j-row--align-center {
+    align-items: center;
+}
+
+.j-row--align-end {
+    align-items: flex-end;
+}
+
+.j-row--align-stretch {
+    align-items: stretch;
+}
+
+.j-row--nowrap {
+    flex-wrap: nowrap;
+}
+
+.j-row > * {
+    margin-right: var(--j-spacing-md);
+}
+
+/* Note: :last-child pseudo-class is not supported in Unity USS.
+   Child margins are handled programmatically in JRow.cs */
+
+/* JCard - glassmorphic card with light reflection borders */
+.j-card {
+    /* Glass surface layer (60% opacity) */
+    background-color: var(--j-bg-surface);
+
+    /* Light reflection borders (top/left lighter) */
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-color: var(--j-border-light);    /* rgba(255,255,255,0.2) */
+    border-left-color: var(--j-border-light);
+    border-right-color: var(--j-border-dark);   /* rgba(0,0,0,0.2) */
+    border-bottom-color: var(--j-border-dark);
+
+    /* Softer corners for glass effect */
+    border-radius: var(--j-border-radius-lg);   /* 12px */
+
+    padding: var(--j-spacing-lg);
+    margin-bottom: var(--j-spacing-lg);
+
+    /* Smooth glassmorphic transitions */
+    transition-property: background-color, border-top-color, border-left-color, border-bottom-color, border-right-color, opacity;
+    transition-duration: var(--transition-glass);
+}
+
+.j-card:hover {
+    /* More opaque on hover (brings card forward) */
+    background-color: var(--j-bg-elevated);
+    border-top-color: var(--j-border-hover);    /* rgba(255,255,255,0.3) */
+    border-left-color: var(--j-border-hover);
+}
+
+/* JSection - glassmorphic card with header */
+.j-section {
+    /* Glass surface layer */
+    background-color: var(--j-bg-surface);
+
+    /* Light reflection borders */
+    border-top-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-top-color: var(--j-border-light);
+    border-left-color: var(--j-border-light);
+    border-right-color: var(--j-border-dark);
+    border-bottom-color: var(--j-border-dark);
+
+    border-radius: var(--j-border-radius-lg);
+    padding: var(--j-spacing-lg);
+    margin-bottom: var(--j-spacing-lg);
+
+    transition-property: background-color, border-color;
+    transition-duration: var(--transition-glass);
+}
+
+.j-section__header {
+    color: var(--j-text-header);               /* Glowing cyan header */
+    font-size: var(--j-font-size-xl);          /* Larger (18px) */
+    -unity-font-style: bold;
+    margin-bottom: var(--j-spacing-lg);
+    padding-bottom: var(--j-spacing-md);
+    border-bottom-color: var(--j-border-subtle);  /* Subtle separator */
+    border-bottom-width: 1px;
+}
+
+.j-section__content {
+    flex-direction: column;
+}
+
+/* ===========================
+   FORM COMPONENTS
+   =========================== */
+
+/* JFormField - label + control layout */
+.j-form-field {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--j-spacing-md);
+    min-height: var(--j-min-touch-target);
+}
+
+.j-form-field__label {
+    width: var(--j-form-label-width);
+    min-width: var(--j-form-label-width);
+    color: var(--j-text-secondary);
+    font-size: var(--j-font-size-base);
+    padding-right: var(--j-spacing-md);
+    flex-shrink: 0;
+}
+
+.j-form-field__control {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+/* Form control base styles */
+.j-form-field__control TextField,
+.j-form-field__control PopupField,
+.j-form-field__control EnumField,
+.j-form-field__control ObjectField {
+    margin: 0;
+}
+
+.j-form-field__control > TextField > #unity-text-input,
+.j-form-field__control > PopupField > * > .unity-base-popup-field__input,
+.j-form-field__control > EnumField > * > .unity-base-popup-field__input {
+    background-color: var(--j-bg-surface);
+    border-color: var(--j-border-color);
+    border-radius: var(--j-border-radius-sm);
+    color: var(--j-text-primary);
+    padding: var(--j-spacing-sm) var(--j-spacing-md);
+    min-height: var(--j-min-touch-target);
+}
+
+.j-form-field__control > TextField > #unity-text-input:focus,
+.j-form-field__control > PopupField > * > .unity-base-popup-field__input:focus,
+.j-form-field__control > EnumField > * > .unity-base-popup-field__input:focus {
+    border-color: var(--j-border-focus);
+}
+
+/* JFormSection - grouped form fields */
+.j-form-section {
+    margin-bottom: var(--j-spacing-lg);
+}
+
+.j-form-section__header {
+    color: var(--j-text-muted);
+    font-size: var(--j-font-size-sm);
+    -unity-font-style: bold;
+    margin-bottom: var(--j-spacing-md);
+}
+
+/* ===========================
+   BUTTON COMPONENTS
+   =========================== */
+
+/* JButton base */
+.j-button {
+    border-radius: var(--j-border-radius-md);
+    padding: var(--j-spacing-md) var(--j-spacing-xl);
+    min-height: var(--j-min-touch-target);
+    font-size: var(--j-font-size-base);
+    -unity-font-style: bold;
+    border-width: 0;
+    color: var(--j-text-primary);
+    transition-duration: var(--j-transition-normal);
+    transition-property: background-color;
+}
+
+.j-button:hover {
+    transition-duration: var(--j-transition-fast);
+}
+
+.j-button:disabled {
+    opacity: 0.5;
+}
+
+/* Button variants */
+.j-button--primary {
+    background-color: var(--j-color-primary);
+}
+
+.j-button--primary:hover {
+    background-color: var(--j-color-primary-hover);
+}
+
+.j-button--primary:active {
+    background-color: var(--j-color-primary-active);
+}
+
+.j-button--secondary {
+    background-color: var(--j-color-secondary);
+}
+
+.j-button--secondary:hover {
+    background-color: var(--j-color-secondary-hover);
+}
+
+.j-button--secondary:active {
+    background-color: var(--j-color-secondary-active);
+}
+
+.j-button--success {
+    background-color: var(--j-color-success);
+}
+
+.j-button--success:hover {
+    background-color: var(--j-color-success-hover);
+}
+
+.j-button--success:active {
+    background-color: var(--j-color-success-active);
+}
+
+.j-button--danger {
+    background-color: var(--j-color-danger);
+}
+
+.j-button--danger:hover {
+    background-color: var(--j-color-danger-hover);
+}
+
+.j-button--danger:active {
+    background-color: var(--j-color-danger-active);
+}
+
+.j-button--warning {
+    background-color: var(--j-color-warning);
+}
+
+.j-button--warning:hover {
+    background-color: var(--j-color-warning-hover);
+}
+
+.j-button--warning:active {
+    background-color: var(--j-color-warning-active);
+}
+
+/* JButtonGroup */
+.j-button-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.j-button-group > .j-button {
+    margin-right: var(--j-spacing-md);
+    margin-bottom: var(--j-spacing-sm);
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 120px;
+}
+
+/* Note: :last-child pseudo-class is not supported in Unity USS.
+   Child margins are handled programmatically in JButtonGroup.cs */
+
+/* JToggleButton */
+.j-toggle-button {
+    border-radius: var(--j-border-radius-md);
+    padding: var(--j-spacing-md) var(--j-spacing-xl);
+    min-height: var(--j-min-touch-target);
+    font-size: var(--j-font-size-base);
+    -unity-font-style: bold;
+    border-width: 0;
+    color: var(--j-text-primary);
+    transition-duration: var(--j-transition-normal);
+    transition-property: background-color;
+}
+
+/* ===========================
+   FEEDBACK COMPONENTS
+   =========================== */
+
+/* JStatusBar */
+.j-status-bar {
+    flex-direction: row;
+    align-items: center;
+    padding: var(--j-spacing-md) var(--j-spacing-lg);
+    border-radius: var(--j-border-radius-md);
+    margin-bottom: var(--j-spacing-md);
+}
+
+.j-status-bar--info {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-left-color: var(--j-status-info);
+    border-left-width: 3px;
+}
+
+.j-status-bar--success {
+    background-color: rgba(34, 197, 94, 0.2);
+    border-left-color: var(--j-status-success);
+    border-left-width: 3px;
+}
+
+.j-status-bar--warning {
+    background-color: rgba(245, 158, 11, 0.2);
+    border-left-color: var(--j-status-warning);
+    border-left-width: 3px;
+}
+
+.j-status-bar--error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border-left-color: var(--j-status-error);
+    border-left-width: 3px;
+}
+
+.j-status-bar__text {
+    color: var(--j-text-primary);
+    font-size: var(--j-font-size-base);
+}
+
+/* JLogView */
+.j-log-view {
+    background-color: var(--j-bg-base);
+    border-color: var(--j-border-color);
+    border-width: 1px;
+    border-radius: var(--j-border-radius-md);
+    min-height: 100px;
+    max-height: 300px;
+    padding: var(--j-spacing-md);
+}
+
+.j-log-view__scroll {
+    flex-grow: 1;
+}
+
+.j-log-view__entry {
+    font-size: var(--j-font-size-sm);
+    padding: var(--j-spacing-xs) 0;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    border-bottom-width: 1px;
+}
+
+.j-log-view__entry--info {
+    color: var(--j-text-secondary);
+}
+
+.j-log-view__entry--error {
+    color: var(--j-status-error);
+}
+
+/* JProgressBar */
+.j-progress-bar {
+    height: 8px;
+    background-color: var(--j-bg-surface);
+    border-radius: var(--j-border-radius-sm);
+    overflow: hidden;
+}
+
+.j-progress-bar__fill {
+    height: 100%;
+    background-color: var(--j-color-primary);
+    border-radius: var(--j-border-radius-sm);
+    transition-duration: var(--j-transition-normal);
+    transition-property: width;
+}
+
+.j-progress-bar__fill--success {
+    background-color: var(--j-color-success);
+}

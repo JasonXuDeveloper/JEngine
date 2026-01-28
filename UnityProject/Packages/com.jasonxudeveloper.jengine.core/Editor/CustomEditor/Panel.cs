@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.UIElements;
@@ -34,6 +35,16 @@ namespace JEngine.Core.Editor.CustomEditor
 {
     public class Panel : EditorWindow
     {
+        /// <summary>
+        /// Handler for creating panel content. If set, this is used instead of default UI.
+        /// Set by UI package via [InitializeOnLoad] to provide enhanced UI.
+        /// </summary>
+        /// <remarks>
+        /// Parameters: Panel instance, BuildManager, Settings.
+        /// Returns: VisualElement to use as panel content.
+        /// </remarks>
+        public static Func<Panel, BuildManager, Settings, VisualElement> CreatePanelContentHandler;
+
         private Settings _settings;
         private VisualElement _root;
         private Button _buildAllButton;
@@ -51,6 +62,19 @@ namespace JEngine.Core.Editor.CustomEditor
             // Initialize build manager
             _buildManager = new BuildManager(_settings, LogMessage);
 
+            // If UI package provides enhanced editor, use it
+            if (CreatePanelContentHandler != null)
+            {
+                _root.Add(CreatePanelContentHandler(this, _buildManager, _settings));
+                return;
+            }
+
+            // Otherwise use default implementation
+            CreateDefaultGUI();
+        }
+
+        private void CreateDefaultGUI()
+        {
             // Load stylesheets - Panel first, then Common to override
             var panelStyleSheet = StyleSheetLoader.LoadPackageStyleSheet<Panel>();
             if (panelStyleSheet != null)
@@ -352,71 +376,32 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private void BuildAll()
         {
-            if (_buildManager.IsBuilding) return;
-
-            SetBuildButtonsEnabled(false);
-            ClearLog();
-
-            _buildManager.StartBuildAll(
-                onComplete: () =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Build completed";
-                    EditorUtility.DisplayDialog("Build Successful", "Build completed successfully!", "OK");
-                },
-                onError: e =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Build failed";
-                    EditorUtility.DisplayDialog("Build Failed", $"Build failed with error:\n{e.Message}", "OK");
-                }
-            );
+            BuildHelper.ExecuteBuildAll(_buildManager, new BuildHelper.BuildCallbacks
+            {
+                SetButtonsEnabled = SetBuildButtonsEnabled,
+                ClearLog = ClearLog,
+                UpdateStatus = msg => _statusLabel.text = msg
+            });
         }
 
         private void BuildCodeOnly()
         {
-            if (_buildManager.IsBuilding) return;
-
-            SetBuildButtonsEnabled(false);
-            ClearLog();
-
-            _buildManager.StartBuildCodeOnly(
-                onComplete: () =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Code build completed";
-                    EditorUtility.DisplayDialog("Code Build Successful", "Code build completed successfully!", "OK");
-                },
-                onError: e =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Code build failed";
-                    EditorUtility.DisplayDialog("Code Build Failed", $"Code build failed with error:\n{e.Message}", "OK");
-                }
-            );
+            BuildHelper.ExecuteBuildCodeOnly(_buildManager, new BuildHelper.BuildCallbacks
+            {
+                SetButtonsEnabled = SetBuildButtonsEnabled,
+                ClearLog = ClearLog,
+                UpdateStatus = msg => _statusLabel.text = msg
+            });
         }
 
         private void BuildAssetsOnly()
         {
-            if (_buildManager.IsBuilding) return;
-
-            SetBuildButtonsEnabled(false);
-            ClearLog();
-
-            _buildManager.StartBuildAssetsOnly(
-                onComplete: () =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Assets build completed";
-                    EditorUtility.DisplayDialog("Assets Build Successful", "Assets build completed successfully!", "OK");
-                },
-                onError: e =>
-                {
-                    SetBuildButtonsEnabled(true);
-                    _statusLabel.text = "Assets build failed";
-                    EditorUtility.DisplayDialog("Assets Build Failed", $"Assets build failed with error:\n{e.Message}", "OK");
-                }
-            );
+            BuildHelper.ExecuteBuildAssetsOnly(_buildManager, new BuildHelper.BuildCallbacks
+            {
+                SetButtonsEnabled = SetBuildButtonsEnabled,
+                ClearLog = ClearLog,
+                UpdateStatus = msg => _statusLabel.text = msg
+            });
         }
 
         private void SetBuildButtonsEnabled(bool enabled)
@@ -427,17 +412,25 @@ namespace JEngine.Core.Editor.CustomEditor
         }
 
         /// <summary>
-        /// State machine update called every editor frame during build.
+        /// Logs a message to the panel's log view and updates status.
         /// </summary>
-        private void LogMessage(string message, bool isError = false)
+        /// <param name="message">The message to log.</param>
+        /// <param name="isError">Whether this is an error message.</param>
+        public void LogMessage(string message, bool isError = false)
         {
-            var logEntry = new Label(message);
-            logEntry.AddToClassList(isError ? "log-error" : "log-info");
+            // Only update UI elements if they exist (they won't exist when using enhanced PanelUI)
+            if (_logScrollView != null)
+            {
+                var logEntry = new Label(message);
+                logEntry.AddToClassList(isError ? "log-error" : "log-info");
+                _logScrollView.Add(logEntry);
+                _logScrollView.ScrollTo(logEntry);
+            }
 
-            _logScrollView.Add(logEntry);
-            _logScrollView.ScrollTo(logEntry);
-
-            _statusLabel.text = message;
+            if (_statusLabel != null)
+            {
+                _statusLabel.text = message;
+            }
 
             if (isError)
                 Debug.LogError(message);
@@ -447,8 +440,15 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private void ClearLog()
         {
-            _logScrollView.Clear();
-            _statusLabel.text = "Ready to build";
+            if (_logScrollView != null)
+            {
+                _logScrollView.Clear();
+            }
+
+            if (_statusLabel != null)
+            {
+                _statusLabel.text = "Ready to build";
+            }
         }
     }
 }

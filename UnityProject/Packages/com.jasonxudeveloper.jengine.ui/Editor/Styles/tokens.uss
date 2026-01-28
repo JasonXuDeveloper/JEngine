@@ -1,0 +1,159 @@
+/* tokens.uss
+ * Glassmorphic Design Tokens for JEngine Editor UI
+ * Features vibrant gradients, translucent glass layers, and glowing accents
+ * Inspired by modern glassmorphism, iOS 15+, Windows 11, and premium developer tools
+ */
+
+:root {
+    /* ===================================
+       GLASSMORPHIC COLOR PALETTE
+       =================================== */
+
+    /* Glass Layers - 5-level opacity system
+       Note: Actual glass colors set in C# with opacity, these are reference values */
+    --j-bg-base: rgba(51, 65, 85, 0.4);      /* 40% - Background elements */
+    --j-bg-subtle: rgba(51, 65, 85, 0.5);    /* 50% - Secondary containers */
+    --j-bg-surface: rgba(51, 65, 85, 0.6);   /* 60% - Cards, panels (default) */
+    --j-bg-elevated: rgba(71, 85, 105, 0.7); /* 70% - Hover states, important */
+    --j-bg-overlay: rgba(100, 116, 139, 0.8); /* 80% - Modals, dropdowns */
+    --j-bg-hover: rgba(71, 85, 105, 0.7);
+
+    /* Vibrant Accent Colors - Cyan (Primary) */
+    --j-color-cyan: #06B6D4;           /* cyan-500 */
+    --j-color-cyan-glow: rgba(6, 182, 212, 0.5);
+    --j-color-cyan-hover: #22D3EE;     /* cyan-400 */
+    --j-color-cyan-muted: #0891B2;     /* cyan-600 */
+
+    /* Accent aliases (primary = cyan) */
+    --j-color-accent: var(--j-color-cyan);
+    --j-color-accent-glow: var(--j-color-cyan-glow);
+    --j-color-accent-hover: var(--j-color-cyan-hover);
+    --j-color-accent-muted: var(--j-color-cyan-muted);
+
+    /* Primary = Accent */
+    --j-color-primary: var(--j-color-cyan);
+    --j-color-primary-hover: var(--j-color-cyan-hover);
+    --j-color-primary-active: #0E7490;  /* cyan-700 */
+
+    /* Secondary - Gray glass */
+    --j-color-secondary: rgba(71, 85, 105, 0.8);   /* slate-600 */
+    --j-color-secondary-hover: rgba(100, 116, 139, 0.85);
+    --j-color-secondary-active: rgba(51, 65, 85, 0.9);
+
+    /* Success - Emerald with glow */
+    --j-color-emerald: #10B981;        /* emerald-500 */
+    --j-color-emerald-glow: rgba(16, 185, 129, 0.5);
+    --j-color-success: var(--j-color-emerald);
+    --j-color-success-glow: var(--j-color-emerald-glow);
+    --j-color-success-hover: #34D399;  /* emerald-400 */
+    --j-color-success-active: #059669; /* emerald-600 */
+
+    /* Danger - Rose with glow */
+    --j-color-rose: #F43F5E;           /* rose-500 */
+    --j-color-rose-glow: rgba(244, 63, 94, 0.5);
+    --j-color-danger: var(--j-color-rose);
+    --j-color-danger-glow: var(--j-color-rose-glow);
+    --j-color-danger-hover: #FB7185;   /* rose-400 */
+    --j-color-danger-active: #E11D48;  /* rose-600 */
+
+    /* Warning - Amber with glow */
+    --j-color-amber: #F59E0B;          /* amber-500 */
+    --j-color-amber-glow: rgba(245, 158, 11, 0.5);
+    --j-color-warning: var(--j-color-amber);
+    --j-color-warning-glow: var(--j-color-amber-glow);
+    --j-color-warning-hover: #FBBF24;  /* amber-400 */
+    --j-color-warning-active: #D97706; /* amber-600 */
+
+    /* Text Hierarchy - High Contrast */
+    --j-text-primary: #FFFFFF;         /* Pure white for headings */
+    --j-text-secondary: #F1F5F9;       /* slate-100 for body text */
+    --j-text-muted: #CBD5E1;           /* slate-300 for helper text */
+    --j-text-header: #67E8F9;          /* cyan-300 with glow effect */
+
+    /* Glass Borders - Light Reflection */
+    --j-border-light: rgba(255, 255, 255, 0.2);  /* Top/left light edge */
+    --j-border-dark: rgba(0, 0, 0, 0.2);         /* Bottom/right shadow */
+    --j-border-color: rgba(255, 255, 255, 0.15); /* Default border */
+    --j-border-focus: var(--j-color-cyan);       /* Focus with cyan */
+    --j-border-focus-glow: var(--j-color-cyan-glow);
+    --j-border-hover: rgba(255, 255, 255, 0.3);  /* Brighter on hover */
+    --j-border-subtle: rgba(255, 255, 255, 0.05);
+
+    /* Status Colors */
+    --j-status-info: var(--j-color-cyan);
+    --j-status-success: var(--j-color-emerald);
+    --j-status-warning: var(--j-color-amber);
+    --j-status-error: var(--j-color-rose);
+
+    /* ===================================
+       TYPOGRAPHY
+       =================================== */
+    /* Font Families (Note: Unity USS doesn't support font-family, set in C#) */
+    --j-font-heading: "JetBrains Mono", monospace;
+    --j-font-body: "Inter", -apple-system, BlinkMacSystemFont, system-ui;
+    --j-font-code: "JetBrains Mono", monospace;
+
+    /* Font Sizes */
+    --j-font-size-xxs: 10px;   /* Metadata, timestamps */
+    --j-font-size-xs: 11px;    /* Secondary labels, hints */
+    --j-font-size-sm: 12px;    /* Default body text, form fields */
+    --j-font-size-base: 13px;  /* Primary body text */
+    --j-font-size-md: 14px;    /* Emphasis text */
+    --j-font-size-lg: 16px;    /* Section headers */
+    --j-font-size-xl: 18px;    /* Panel headers */
+    --j-font-size-xxl: 20px;   /* Main titles */
+    --j-font-size-title: 24px; /* Primary headlines */
+
+    /* Line Heights (Note: Unity uses absolute px values) */
+    --j-leading-tight: 16px;   /* For headings (1.25 ratio) */
+    --j-leading-base: 18px;    /* For body text (1.5 ratio) */
+    --j-leading-relaxed: 21px; /* For long-form (1.75 ratio) */
+
+    /* ===================================
+       SPACING (4px base unit)
+       =================================== */
+    --j-spacing-xxs: 2px;   /* Tight gaps, icon spacing */
+    --j-spacing-xs: 4px;    /* Compact form fields */
+    --j-spacing-sm: 8px;    /* Default element spacing */
+    --j-spacing-md: 12px;   /* Section padding */
+    --j-spacing-lg: 16px;   /* Card padding */
+    --j-spacing-xl: 20px;   /* Panel padding */
+    --j-spacing-xxl: 24px;  /* Major section gaps */
+    --j-spacing-xxxl: 32px; /* Panel header/footer spacing */
+
+    /* ===================================
+       EFFECTS
+       =================================== */
+    /* Border Radius - Softer for glass */
+    --j-border-radius-sm: 4px;  /* Small controls */
+    --j-border-radius-md: 8px;  /* Cards, buttons */
+    --j-border-radius-lg: 12px; /* Large panels */
+    --j-border-radius-xl: 16px; /* Modal overlays */
+
+    /* Transitions - Longer for glass effects */
+    --j-transition-fast: 150ms;      /* Quick interactions */
+    --j-transition-normal: 200ms;    /* Standard color changes */
+    --j-transition-glass: 300ms;     /* Glass effect transitions */
+    --j-transition-smooth: 400ms;    /* Smooth 3D transforms */
+
+    /* Glass Opacity Levels */
+    --glass-opacity-base: 0.4;     /* Background elements */
+    --glass-opacity-subtle: 0.5;   /* Secondary containers */
+    --glass-opacity-surface: 0.6;  /* Cards, panels (default) */
+    --glass-opacity-elevated: 0.7; /* Hover states, important */
+    --glass-opacity-overlay: 0.8;  /* Modals, dropdowns */
+
+    /* Shadow Depth (Note: Unity doesn't support box-shadow, use C# layers) */
+    --shadow-subtle: "0 2px 8px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.3)";
+    --shadow-medium: "0 4px 16px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.4)";
+    --shadow-strong: "0 8px 24px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.5)";
+
+    /* ===================================
+       LAYOUT
+       =================================== */
+    --j-form-label-width: 140px;
+    --j-form-label-min-width: 60px;
+    --j-min-touch-target: 28px;    /* Increased from 24px */
+    --j-min-control-width: 100px;  /* Increased from 80px */
+    --j-max-content-width: 1200px; /* Max panel width */
+}
