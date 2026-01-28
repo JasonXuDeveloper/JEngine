@@ -24,28 +24,55 @@
 //  THE SOFTWARE.
 
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace JEngine.Core
 {
     /// <summary>
-    /// User prompt/dialog abstraction. Configure ShowDialogAsync to customize behavior.
+    /// Provides an abstraction layer for displaying user prompts and dialogs.
+    /// This allows the core framework to request user input without depending on specific UI implementations.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// By default, dialogs log an error and return false. To enable actual dialogs,
+    /// assign a handler to <see cref="ShowDialogAsync"/> before Bootstrap runs.
+    /// </para>
+    /// <para>
+    /// Example using JEngine.UI.MessageBox:
+    /// <code>
+    /// [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    /// static void Init() => Prompt.ShowDialogAsync = MessageBox.Show;
+    /// </code>
+    /// </para>
+    /// </remarks>
     public static class Prompt
     {
+        private static volatile Func<string, string, string, string, UniTask<bool>> _showDialogAsync = DefaultShowDialog;
+
         /// <summary>
-        /// Shows a dialog to the user and returns the result.
-        /// Parameters: title, content, okText (null to hide), noText (null to hide)
-        /// Returns: true if OK clicked, false if No/Cancel clicked
-        /// Default: logs warning and returns true (continues execution).
+        /// Gets or sets the dialog handler function.
         /// </summary>
-        public static Func<string, string, string, string, UniTask<bool>> ShowDialogAsync = DefaultShowDialog;
+        /// <value>
+        /// A function that displays a dialog to the user.
+        /// Parameters: title, content, okText (null to hide OK button), noText (null to hide No button).
+        /// Returns: true if OK clicked, false if No/Cancel clicked.
+        /// </value>
+        /// <remarks>
+        /// This property is thread-safe. Assign before Bootstrap runs using
+        /// <c>[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]</c>.
+        /// </remarks>
+        public static Func<string, string, string, string, UniTask<bool>> ShowDialogAsync
+        {
+            get => _showDialogAsync;
+            set => Interlocked.Exchange(ref _showDialogAsync, value ?? DefaultShowDialog);
+        }
 
         private static UniTask<bool> DefaultShowDialog(string title, string content, string ok, string no)
         {
-            Debug.LogWarning($"[JEngine] Dialog provider not configured. {title}: {content}");
-            return UniTask.FromResult(true);
+            Debug.LogError($"[JEngine] Dialog provider not configured. Cannot display: {title}: {content}");
+            return UniTask.FromResult(false);
         }
     }
 }

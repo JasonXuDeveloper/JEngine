@@ -18,6 +18,7 @@
     "url": "https://github.com/JasonXuDeveloper"
   },
   "dependencies": {
-    "com.cysharp.unitask": "2.5.10"
+    "com.cysharp.unitask": "2.5.10",
+    "com.unity.textmeshpro": "3.0.6"
   }
 }
