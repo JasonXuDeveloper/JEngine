@@ -45,15 +45,15 @@ namespace JEngine.UI.Editor.Components.Form
 
         // Theme-aware colors
         private static Color TrackOffColor => Tokens.IsDarkTheme
-            ? new Color(0.24f, 0.24f, 0.30f, 1f)  // Dark grey in dark mode
-            : Tokens.Colors.Secondary;              // Medium grey (darker) in light mode
+            ? Tokens.Colors.Secondary               // Medium-dark grey (gray-600) in dark mode
+            : Tokens.Colors.Secondary;              // Medium grey (gray-300) in light mode
 
         private static Color TrackOnColor => Tokens.IsDarkTheme
-            ? Tokens.Colors.Accent                  // Cyan in dark mode
-            : Tokens.Colors.Primary;                // Dark grey in light mode
+            ? Tokens.Colors.Primary                 // Light grey (gray-300) in dark mode - inverted
+            : Tokens.Colors.Primary;                // Dark grey (gray-700) in light mode
 
         private static Color ThumbColor => Tokens.IsDarkTheme
-            ? new Color(0.88f, 0.88f, 0.88f, 1f)  // Light grey in dark mode
+            ? Tokens.Colors.TextPrimary             // White in dark mode
             : Color.white;                          // Pure white in light mode
 
         /// <summary>

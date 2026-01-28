@@ -106,7 +106,7 @@ namespace JEngine.UI.Editor.Theming
         }
 
         /// <summary>
-        /// Applies glassmorphic border with light reflection effect.
+        /// Applies borders with theme-appropriate colors.
         /// </summary>
         /// <param name="element">The element to apply borders to.</param>
         /// <param name="subtle">Use subtle borders if true.</param>
@@ -121,7 +121,7 @@ namespace JEngine.UI.Editor.Theming
             }
             else
             {
-                // Light reflection: top/left lighter, bottom/right darker
+                // Uniform borders using BorderLight/BorderDark (same in monochrome)
                 element.style.borderTopColor = Tokens.Colors.BorderLight;
                 element.style.borderLeftColor = Tokens.Colors.BorderLight;
                 element.style.borderBottomColor = Tokens.Colors.BorderDark;
@@ -158,9 +158,9 @@ namespace JEngine.UI.Editor.Theming
         }
 
         /// <summary>
-        /// Applies glassmorphic card style (surface + borders + transitions).
+        /// Applies card style (surface + borders + transitions).
         /// </summary>
-        /// <param name="element">The element to style as a glass card.</param>
+        /// <param name="element">The element to style as a card.</param>
         public static void ApplyGlassCard(VisualElement element)
         {
             ApplySurface(element);
