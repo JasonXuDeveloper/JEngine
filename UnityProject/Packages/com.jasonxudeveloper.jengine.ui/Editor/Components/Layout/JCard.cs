@@ -34,11 +34,11 @@ namespace JEngine.UI.Editor.Components.Layout
     public class JCard : JComponent
     {
         /// <summary>
-        /// Creates a new glassmorphic card container with light reflection borders.
+        /// Creates a new card container with subtle borders.
         /// </summary>
         public JCard() : base("j-card")
         {
-            // Apply glassmorphic card styling using JTheme helper
+            // Apply card styling using JTheme helper
             JTheme.ApplyGlassCard(this);
 
             // Set padding
