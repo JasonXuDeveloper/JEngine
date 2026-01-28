@@ -70,10 +70,7 @@ namespace JEngine.UI.Editor.Components.Form
             _objectField.style.marginBottom = 0;
             _objectField.style.height = 22;
 
-            _objectField.RegisterCallback<AttachToPanelEvent>(evt =>
-            {
-                ApplyInternalStyles();
-            });
+            _objectField.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
 
             Add(_objectField);
         }
@@ -104,15 +101,15 @@ namespace JEngine.UI.Editor.Components.Form
                 input.style.alignItems = Align.Center;
 
                 // Hover effect
-                input.RegisterCallback<MouseEnterEvent>(e =>
+                input.RegisterCallback<MouseEnterEvent, VisualElement>(static (_, element) =>
                 {
-                    input.style.backgroundColor = Tokens.Colors.BgHover;
-                });
+                    element.style.backgroundColor = Tokens.Colors.BgHover;
+                }, input);
 
-                input.RegisterCallback<MouseLeaveEvent>(e =>
+                input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
                 {
-                    input.style.backgroundColor = Tokens.Colors.BgSurface;
-                });
+                    element.style.backgroundColor = Tokens.Colors.BgSurface;
+                }, input);
             }
 
             // Style the object display container (icon + label)
@@ -177,6 +174,11 @@ namespace JEngine.UI.Editor.Components.Form
         {
             _objectField.RegisterValueChangedCallback(callback);
         }
+
+        private void OnAttachToPanel(AttachToPanelEvent evt)
+        {
+            ApplyInternalStyles();
+        }
     }
 
     /// <summary>
@@ -215,12 +217,14 @@ namespace JEngine.UI.Editor.Components.Form
             _objectField.style.marginBottom = 0;
             _objectField.style.height = 22;
 
-            _objectField.RegisterCallback<AttachToPanelEvent>(evt =>
-            {
-                ApplyInternalStyles();
-            });
+            _objectField.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
 
             Add(_objectField);
+        }
+
+        private void OnAttachToPanel(AttachToPanelEvent evt)
+        {
+            ApplyInternalStyles();
         }
 
         private void ApplyInternalStyles()
@@ -249,15 +253,15 @@ namespace JEngine.UI.Editor.Components.Form
                 input.style.alignItems = Align.Center;
 
                 // Hover effect
-                input.RegisterCallback<MouseEnterEvent>(e =>
+                input.RegisterCallback<MouseEnterEvent, VisualElement>(static (_, element) =>
                 {
-                    input.style.backgroundColor = Tokens.Colors.BgHover;
-                });
+                    element.style.backgroundColor = Tokens.Colors.BgHover;
+                }, input);
 
-                input.RegisterCallback<MouseLeaveEvent>(e =>
+                input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
                 {
-                    input.style.backgroundColor = Tokens.Colors.BgSurface;
-                });
+                    element.style.backgroundColor = Tokens.Colors.BgSurface;
+                }, input);
             }
 
             // Style the object display container (icon + label)

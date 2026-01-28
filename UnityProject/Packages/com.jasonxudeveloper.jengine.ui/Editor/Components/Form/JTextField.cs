@@ -62,10 +62,10 @@ namespace JEngine.UI.Editor.Components.Form
             style.alignSelf = Align.Center;
 
             // Access the internal input element and style it
-            _textField.RegisterCallback<AttachToPanelEvent>(evt =>
+            _textField.RegisterCallback<AttachToPanelEvent, JTextField>(static (_, field) =>
             {
-                ApplyInternalStyles();
-            });
+                field.ApplyInternalStyles();
+            }, this);
 
             // Apply container styles
             _textField.style.flexGrow = 1;
@@ -118,21 +118,21 @@ namespace JEngine.UI.Editor.Components.Form
                 textInput.style.fontSize = Tokens.FontSize.Sm;
 
                 // Focus state
-                _textField.RegisterCallback<FocusInEvent>(e =>
+                _textField.RegisterCallback<FocusInEvent, VisualElement>(static (_, input) =>
                 {
-                    textInput.style.borderTopColor = Tokens.Colors.BorderFocus;
-                    textInput.style.borderRightColor = Tokens.Colors.BorderFocus;
-                    textInput.style.borderBottomColor = Tokens.Colors.BorderFocus;
-                    textInput.style.borderLeftColor = Tokens.Colors.BorderFocus;
-                });
+                    input.style.borderTopColor = Tokens.Colors.BorderFocus;
+                    input.style.borderRightColor = Tokens.Colors.BorderFocus;
+                    input.style.borderBottomColor = Tokens.Colors.BorderFocus;
+                    input.style.borderLeftColor = Tokens.Colors.BorderFocus;
+                }, textInput);
 
-                _textField.RegisterCallback<FocusOutEvent>(e =>
+                _textField.RegisterCallback<FocusOutEvent, VisualElement>(static (_, input) =>
                 {
-                    textInput.style.borderTopColor = Tokens.Colors.BorderSubtle;
-                    textInput.style.borderRightColor = Tokens.Colors.BorderSubtle;
-                    textInput.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-                    textInput.style.borderLeftColor = Tokens.Colors.BorderSubtle;
-                });
+                    input.style.borderTopColor = Tokens.Colors.BorderSubtle;
+                    input.style.borderRightColor = Tokens.Colors.BorderSubtle;
+                    input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
+                    input.style.borderLeftColor = Tokens.Colors.BorderSubtle;
+                }, textInput);
             }
 
             // Hide the label if present

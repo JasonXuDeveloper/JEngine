@@ -94,7 +94,10 @@ namespace JEngine.UI.Editor.Components.Layout
             };
 
             // Apply gap using margin on children when added
-            RegisterCallback<AttachToPanelEvent>(evt => ApplyChildGaps(gapValue));
+            RegisterCallback<AttachToPanelEvent, (JStack stack, float gap)>(static (_, state) =>
+            {
+                state.stack.ApplyChildGaps(state.gap);
+            }, (this, gapValue));
         }
 
         private void ApplyChildGaps(float gapValue)
