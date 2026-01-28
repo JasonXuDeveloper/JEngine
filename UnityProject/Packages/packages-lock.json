@@ -42,7 +42,8 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.cysharp.unitask": "2.5.10"
+        "com.cysharp.unitask": "2.5.10",
+        "com.unity.textmeshpro": "3.0.6"
       }
     },
     "com.jasonxudeveloper.jengine.util": {
