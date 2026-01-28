@@ -1,5 +1,11 @@
 # JEngine Development Guidelines
 
+## Additional Rules
+
+@.claude/rules/coding-patterns.md
+@.claude/rules/commit-conventions.md
+@.claude/rules/package-creation.md
+
 ## Project Overview
 
 JEngine is a Unity framework for **runtime hot updates** in games. It enables developers to update game code and assets without requiring users to download new builds.

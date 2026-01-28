@@ -32,7 +32,9 @@ For state accessed across Unity callbacks:
 ### 5. Namespace Compliance
 - Runtime: `JEngine.Core.*`
 - Editor: `JEngine.Core.Editor.*`
-- No namespace = flag for review
+- UI package: `JEngine.UI`
+- Hot update: `HotUpdate.Code`
+- **Exception**: `Assets/Scripts/` may contain user-level code without namespace (intentional for user customization)
 
 ## Common Issues to Flag
 
