@@ -58,7 +58,7 @@ namespace JEngine.UI.Editor.Theming
 
             /// <summary>Subtle layer - Secondary containers</summary>
             public static Color BgSubtle => IsDarkTheme
-                ? FromHex("#1A1A1A")        // Very dark grey (neutral)
+                ? FromHex("#252525")        // Dark grey (neutral) - lighter for log view
                 : FromHex("#F9FAFB");        // Very light grey (gray-50)
 
             /// <summary>Surface layer - Cards, panels, dropdowns (most common)</summary>
@@ -81,21 +81,31 @@ namespace JEngine.UI.Editor.Theming
                 ? FromHex("#3A3A3A")        // Medium-dark grey (neutral)
                 : FromHex("#E5E7EB");        // gray-200
 
+            /// <summary>Input field background - lighter than surface in dark mode</summary>
+            public static Color BgInput => IsDarkTheme
+                ? FromHex("#353535")        // Lighter than BgSurface for contrast
+                : FromHex("#E5E7EB");        // Same as BgSurface in light mode (gray-200)
+
             // ===== SEMANTIC COLORS =====
             // All use neutral grayscale values, no vibrant colors
 
             /// <summary>Primary button color</summary>
             public static Color Primary => IsDarkTheme
-                ? FromHex("#C8C8C8")        // Light grey (neutral) - inverted from light's #373737
+                ? FromHex("#E0E0E0")        // Light grey (neutral) - with black text
                 : FromHex("#374151");        // Medium-dark grey (original light theme color)
 
             public static Color PrimaryHover => IsDarkTheme
-                ? FromHex("#E0E0E0")        // Lighter grey (neutral)
+                ? FromHex("#ECECEC")        // Even lighter grey (neutral)
                 : FromHex("#4B5563");        // Slightly lighter (original)
 
             public static Color PrimaryActive => IsDarkTheme
-                ? FromHex("#F0F0F0")        // Very light grey (neutral)
+                ? FromHex("#D0D0D0")        // Medium-light grey (neutral)
                 : FromHex("#1F2937");        // Very dark grey (original)
+
+            /// <summary>Primary button text color</summary>
+            public static Color PrimaryText => IsDarkTheme
+                ? FromHex("#000000")        // Black text on light button in dark mode
+                : FromHex("#FFFFFF");        // White text on dark button in light mode
 
             /// <summary>Secondary button color</summary>
             public static Color Secondary => IsDarkTheme
@@ -109,6 +119,11 @@ namespace JEngine.UI.Editor.Theming
             public static Color SecondaryActive => IsDarkTheme
                 ? FromHex("#9A9A9A")        // Light-medium grey (neutral)
                 : FromHex("#6A6A6A");        // Much darker
+
+            /// <summary>Secondary button text color</summary>
+            public static Color SecondaryText => IsDarkTheme
+                ? FromHex("#FFFFFF")        // White text on dark button in dark mode
+                : FromHex("#111111");        // Black text on light button in light mode
 
             /// <summary>Success state - neutral grey</summary>
             public static Color Success => IsDarkTheme
@@ -209,7 +224,7 @@ namespace JEngine.UI.Editor.Theming
 
             /// <summary>Subtle border for separators</summary>
             public static Color BorderSubtle => IsDarkTheme
-                ? FromHex("#2A2A2A")        // Dark grey (neutral) - inverted
+                ? FromHex("#454545")        // Lighter grey for visibility (neutral)
                 : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             // ===== STATUS COLORS =====

@@ -96,7 +96,7 @@ namespace JEngine.UI.Editor.Components.Form
             var textInput = _textField.Q(className: "unity-text-field__input");
             if (textInput != null)
             {
-                textInput.style.backgroundColor = Tokens.Colors.BgSurface;
+                textInput.style.backgroundColor = Tokens.Colors.BgInput;
                 textInput.style.borderTopColor = Tokens.Colors.BorderSubtle;
                 textInput.style.borderRightColor = Tokens.Colors.BorderSubtle;
                 textInput.style.borderBottomColor = Tokens.Colors.BorderSubtle;

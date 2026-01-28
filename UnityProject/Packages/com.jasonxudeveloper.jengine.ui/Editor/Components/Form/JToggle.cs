@@ -43,18 +43,12 @@ namespace JEngine.UI.Editor.Components.Form
         private bool _value;
         private Action<bool> _onValueChanged;
 
-        // Theme-aware colors
-        private static Color TrackOffColor => Tokens.IsDarkTheme
-            ? Tokens.Colors.Secondary               // Medium-dark grey (gray-600) in dark mode
-            : Tokens.Colors.Secondary;              // Medium grey (gray-300) in light mode
+        // Use same colors as buttons
+        private static Color TrackOffColor => Tokens.Colors.Secondary;     // Inactive = Secondary button color
+        private static Color TrackOnColor => Tokens.Colors.Primary;        // Active = Primary button color
 
-        private static Color TrackOnColor => Tokens.IsDarkTheme
-            ? Tokens.Colors.Primary                 // Light grey (gray-300) in dark mode - inverted
-            : Tokens.Colors.Primary;                // Dark grey (gray-700) in light mode
-
-        private static Color ThumbColor => Tokens.IsDarkTheme
-            ? Tokens.Colors.TextPrimary             // White in dark mode
-            : Color.white;                          // Pure white in light mode
+        // Thumb stays white in both themes
+        private static Color ThumbColor => Color.white;
 
         /// <summary>
         /// Creates a new styled toggle.
