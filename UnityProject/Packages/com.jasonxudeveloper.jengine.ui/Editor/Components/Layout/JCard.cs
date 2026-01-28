@@ -51,19 +51,8 @@ namespace JEngine.UI.Editor.Components.Layout
             style.marginBottom = Tokens.Spacing.Lg;
 
             // Register hover effect for elevated glass
-            RegisterCallback<MouseEnterEvent>(evt =>
-            {
-                style.backgroundColor = Tokens.Colors.BgElevated;
-                style.borderTopColor = Tokens.Colors.BorderHover;
-                style.borderLeftColor = Tokens.Colors.BorderHover;
-            });
-
-            RegisterCallback<MouseLeaveEvent>(evt =>
-            {
-                style.backgroundColor = Tokens.Colors.BgSurface;
-                style.borderTopColor = Tokens.Colors.BorderLight;
-                style.borderLeftColor = Tokens.Colors.BorderLight;
-            });
+            RegisterCallback<MouseEnterEvent>(OnMouseEnter);
+            RegisterCallback<MouseLeaveEvent>(OnMouseLeave);
         }
 
         /// <summary>
@@ -96,6 +85,21 @@ namespace JEngine.UI.Editor.Components.Layout
             style.paddingBottom = Tokens.Spacing.MD;
             style.paddingLeft = Tokens.Spacing.MD;
             return this;
+        }
+
+        // Static event handlers to avoid closure allocation
+        private void OnMouseEnter(MouseEnterEvent evt)
+        {
+            style.backgroundColor = Tokens.Colors.BgElevated;
+            style.borderTopColor = Tokens.Colors.BorderHover;
+            style.borderLeftColor = Tokens.Colors.BorderHover;
+        }
+
+        private void OnMouseLeave(MouseLeaveEvent evt)
+        {
+            style.backgroundColor = Tokens.Colors.BgSurface;
+            style.borderTopColor = Tokens.Colors.BorderLight;
+            style.borderLeftColor = Tokens.Colors.BorderLight;
         }
     }
 }

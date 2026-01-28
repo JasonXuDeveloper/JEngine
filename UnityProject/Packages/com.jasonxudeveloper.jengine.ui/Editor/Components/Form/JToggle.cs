@@ -115,15 +115,15 @@ namespace JEngine.UI.Editor.Components.Form
             RegisterCallback<ClickEvent>(OnClick);
 
             // Hover effect
-            RegisterCallback<MouseEnterEvent>(e =>
+            RegisterCallback<MouseEnterEvent, JToggle>(static (_, toggle) =>
             {
-                style.opacity = 0.9f;
-            });
+                toggle.style.opacity = 0.9f;
+            }, this);
 
-            RegisterCallback<MouseLeaveEvent>(e =>
+            RegisterCallback<MouseLeaveEvent, JToggle>(static (_, toggle) =>
             {
-                style.opacity = 1f;
-            });
+                toggle.style.opacity = 1f;
+            }, this);
         }
 
         private void OnClick(ClickEvent evt)

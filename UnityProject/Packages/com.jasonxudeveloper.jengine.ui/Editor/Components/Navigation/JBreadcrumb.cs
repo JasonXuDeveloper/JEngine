@@ -164,23 +164,8 @@ namespace JEngine.UI.Editor.Components.Navigation
                     JTheme.ApplyTransition(label);
 
                     // Hover effect for last item
-                    label.RegisterCallback<MouseEnterEvent>(evt =>
-                    {
-                        label.style.backgroundColor = Tokens.Colors.BgHover;
-                        label.style.borderTopColor = Tokens.Colors.BorderHover;
-                        label.style.borderBottomColor = Tokens.Colors.BorderHover;
-                        label.style.borderLeftColor = Tokens.Colors.BorderHover;
-                        label.style.borderRightColor = Tokens.Colors.BorderHover;
-                    });
-
-                    label.RegisterCallback<MouseLeaveEvent>(evt =>
-                    {
-                        label.style.backgroundColor = Tokens.Colors.BgElevated;
-                        label.style.borderTopColor = Tokens.Colors.Border;
-                        label.style.borderBottomColor = Tokens.Colors.Border;
-                        label.style.borderLeftColor = Tokens.Colors.Border;
-                        label.style.borderRightColor = Tokens.Colors.Border;
-                    });
+                    label.RegisterCallback<MouseEnterEvent, Label>(OnLastItemMouseEnter, label);
+                    label.RegisterCallback<MouseLeaveEvent, Label>(OnLastItemMouseLeave, label);
                 }
                 else
                 {
@@ -214,6 +199,25 @@ namespace JEngine.UI.Editor.Components.Navigation
         {
             var breadcrumb = new JBreadcrumb();
             return breadcrumb.SetPath(path);
+        }
+
+        // Static event handlers to avoid closure allocation
+        private static void OnLastItemMouseEnter(MouseEnterEvent evt, Label label)
+        {
+            label.style.backgroundColor = Tokens.Colors.BgHover;
+            label.style.borderTopColor = Tokens.Colors.BorderHover;
+            label.style.borderBottomColor = Tokens.Colors.BorderHover;
+            label.style.borderLeftColor = Tokens.Colors.BorderHover;
+            label.style.borderRightColor = Tokens.Colors.BorderHover;
+        }
+
+        private static void OnLastItemMouseLeave(MouseLeaveEvent evt, Label label)
+        {
+            label.style.backgroundColor = Tokens.Colors.BgElevated;
+            label.style.borderTopColor = Tokens.Colors.Border;
+            label.style.borderBottomColor = Tokens.Colors.Border;
+            label.style.borderLeftColor = Tokens.Colors.Border;
+            label.style.borderRightColor = Tokens.Colors.Border;
         }
     }
 }
