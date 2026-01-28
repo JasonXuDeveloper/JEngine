@@ -1,4 +1,25 @@
-# Commit Message Format
+# Git Workflow & Commit Conventions
+
+## Branching
+
+**Always create new branches from `master`** (the main branch), not from feature branches:
+
+```bash
+# Correct workflow
+git checkout master
+git pull origin master
+git checkout -b fix/my-fix
+
+# Wrong - creates branch from current branch which may not be master
+git checkout -b fix/my-fix
+```
+
+Before creating a PR branch, always:
+1. Switch to `master`
+2. Pull latest changes
+3. Then create the new branch
+
+## Commit Message Format
 
 All commits should follow the Conventional Commits specification to enable automatic changelog generation.
 
