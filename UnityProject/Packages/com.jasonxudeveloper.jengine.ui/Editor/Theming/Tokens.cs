@@ -243,15 +243,21 @@ namespace JEngine.UI.Editor.Theming
         }
 
         /// <summary>
-        /// Spacing values based on 8px grid.
+        /// Spacing values based on 4px grid.
         /// </summary>
         public static class Spacing
         {
+            /// <summary>Extra small spacing (2px).</summary>
             public const float Xs = 2f;
+            /// <summary>Small spacing (4px).</summary>
             public const float Sm = 4f;
+            /// <summary>Medium spacing (8px).</summary>
             public const float MD = 8f;
+            /// <summary>Large spacing (12px).</summary>
             public const float Lg = 12f;
+            /// <summary>Extra large spacing (16px).</summary>
             public const float Xl = 16f;
+            /// <summary>Extra extra large spacing (24px).</summary>
             public const float Xxl = 24f;
         }
 
@@ -260,22 +266,32 @@ namespace JEngine.UI.Editor.Theming
         /// </summary>
         public static class FontSize
         {
+            /// <summary>Extra small font (10px) - metadata, timestamps.</summary>
             public const float Xs = 10f;
+            /// <summary>Small font (11px) - secondary labels, hints.</summary>
             public const float Sm = 11f;
+            /// <summary>Base font (12px) - default body text.</summary>
             public const float Base = 12f;
+            /// <summary>Medium font (13px) - emphasis text.</summary>
             public const float MD = 13f;
+            /// <summary>Large font (14px) - section labels.</summary>
             public const float Lg = 14f;
+            /// <summary>Extra large font (16px) - section headers.</summary>
             public const float Xl = 16f;
+            /// <summary>Title font (18px) - panel headers.</summary>
             public const float Title = 18f;
         }
 
         /// <summary>
-        /// Border radius values.
+        /// Border radius values for rounded corners.
         /// </summary>
         public static class BorderRadius
         {
+            /// <summary>Small radius (3px) - subtle rounding.</summary>
             public const float Sm = 3f;
+            /// <summary>Medium radius (5px) - standard rounding.</summary>
             public const float MD = 5f;
+            /// <summary>Large radius (8px) - prominent rounding.</summary>
             public const float Lg = 8f;
         }
 
@@ -284,18 +300,24 @@ namespace JEngine.UI.Editor.Theming
         /// </summary>
         public static class Transition
         {
+            /// <summary>Fast transition (150ms) - micro-interactions.</summary>
             public const int Fast = 150;
+            /// <summary>Normal transition (200ms) - standard animations.</summary>
             public const int Normal = 200;
         }
 
         /// <summary>
-        /// Layout constants.
+        /// Layout constants for form fields and controls.
         /// </summary>
         public static class Layout
         {
+            /// <summary>Default form label width (140px).</summary>
             public const float FormLabelWidth = 140f;
+            /// <summary>Minimum form label width (60px).</summary>
             public const float FormLabelMinWidth = 60f;
+            /// <summary>Minimum touch target size (24px) for accessibility.</summary>
             public const float MinTouchTarget = 24f;
+            /// <summary>Minimum control width (80px).</summary>
             public const float MinControlWidth = 80f;
         }
     }
