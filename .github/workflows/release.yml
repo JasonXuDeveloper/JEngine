@@ -21,6 +21,15 @@ on:
         description: 'New Util version (e.g., 1.0.1)'
         required: false
         type: string
+      release_ui:
+        description: 'Release JEngine.UI?'
+        required: true
+        type: boolean
+        default: false
+      ui_version:
+        description: 'New UI version (e.g., 1.0.0)'
+        required: false
+        type: string
       manual_changelog:
         description: 'Manual changelog entries (optional)'
         required: false
@@ -37,6 +46,7 @@ jobs:
     outputs:
       core_version: ${{ steps.validate.outputs.core_version }}
       util_version: ${{ steps.validate.outputs.util_version }}
+      ui_version: ${{ steps.validate.outputs.ui_version }}
       release_tag: ${{ steps.validate.outputs.release_tag }}
       create_github_release: ${{ steps.validate.outputs.create_github_release }}
 
@@ -48,7 +58,7 @@ jobs:
         id: validate
         run: |
           # Check at least one package is selected
-          if [ "${{ inputs.release_core }}" != "true" ] && [ "${{ inputs.release_util }}" != "true" ]; then
+          if [ "${{ inputs.release_core }}" != "true" ] && [ "${{ inputs.release_util }}" != "true" ] && [ "${{ inputs.release_ui }}" != "true" ]; then
             echo "Error: At least one package must be selected for release"
             exit 1
           fi
@@ -65,9 +75,11 @@ jobs:
           # Get current versions from package.json
           CURRENT_CORE_VERSION=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.core/package.json)
           CURRENT_UTIL_VERSION=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json)
+          CURRENT_UI_VERSION=$(jq -r '.version' UnityProject/Packages/com.jasonxudeveloper.jengine.ui/package.json)
 
           echo "Current Core version: $CURRENT_CORE_VERSION"
           echo "Current Util version: $CURRENT_UTIL_VERSION"
+          echo "Current UI version: $CURRENT_UI_VERSION"
 
           # Validate Core version if releasing
           if [ "${{ inputs.release_core }}" == "true" ]; then
@@ -104,6 +116,24 @@ jobs:
             echo "util_version=${{ inputs.util_version }}" >> $GITHUB_OUTPUT
           else
             echo "util_version=$CURRENT_UTIL_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+          # Validate UI version if releasing
+          if [ "${{ inputs.release_ui }}" == "true" ]; then
+            if [ -z "${{ inputs.ui_version }}" ]; then
+              echo "Error: UI version is required when releasing UI package"
+              exit 1
+            fi
+            validate_version "${{ inputs.ui_version }}"
+
+            if [ "${{ inputs.ui_version }}" == "$CURRENT_UI_VERSION" ]; then
+              echo "Error: New UI version must be different from current version"
+              exit 1
+            fi
+
+            echo "ui_version=${{ inputs.ui_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "ui_version=$CURRENT_UI_VERSION" >> $GITHUB_OUTPUT
           fi
 
           # Release tag always follows Core version
@@ -276,13 +306,36 @@ jobs:
           # Build changelog
           CHANGELOG=""
 
-          # Add package release info (always show both versions for clarity)
-          if [ "${{ inputs.release_core }}" == "true" ] && [ "${{ inputs.release_util }}" == "true" ]; then
-            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }}, JEngine.Util v${{ needs.validate.outputs.util_version }}\n\n"
-          elif [ "${{ inputs.release_core }}" == "true" ]; then
-            CHANGELOG="${CHANGELOG}**Released**: JEngine.Core v${{ needs.validate.outputs.core_version }} (Util remains v${{ needs.validate.outputs.util_version }})\n\n"
+          # Add package release info
+          RELEASED_PACKAGES=""
+          UNCHANGED_PACKAGES=""
+
+          if [ "${{ inputs.release_core }}" == "true" ]; then
+            RELEASED_PACKAGES="${RELEASED_PACKAGES}JEngine.Core v${{ needs.validate.outputs.core_version }}, "
           else
-            CHANGELOG="${CHANGELOG}**Released**: JEngine.Util v${{ needs.validate.outputs.util_version }} (Core remains v${{ needs.validate.outputs.core_version }})\n\n"
+            UNCHANGED_PACKAGES="${UNCHANGED_PACKAGES}Core v${{ needs.validate.outputs.core_version }}, "
+          fi
+
+          if [ "${{ inputs.release_util }}" == "true" ]; then
+            RELEASED_PACKAGES="${RELEASED_PACKAGES}JEngine.Util v${{ needs.validate.outputs.util_version }}, "
+          else
+            UNCHANGED_PACKAGES="${UNCHANGED_PACKAGES}Util v${{ needs.validate.outputs.util_version }}, "
+          fi
+
+          if [ "${{ inputs.release_ui }}" == "true" ]; then
+            RELEASED_PACKAGES="${RELEASED_PACKAGES}JEngine.UI v${{ needs.validate.outputs.ui_version }}, "
+          else
+            UNCHANGED_PACKAGES="${UNCHANGED_PACKAGES}UI v${{ needs.validate.outputs.ui_version }}, "
+          fi
+
+          # Remove trailing comma and space
+          RELEASED_PACKAGES=$(echo "$RELEASED_PACKAGES" | sed 's/, $//')
+          UNCHANGED_PACKAGES=$(echo "$UNCHANGED_PACKAGES" | sed 's/, $//')
+
+          if [ -n "$UNCHANGED_PACKAGES" ]; then
+            CHANGELOG="${CHANGELOG}**Released**: ${RELEASED_PACKAGES} (${UNCHANGED_PACKAGES} unchanged)\n\n"
+          else
+            CHANGELOG="${CHANGELOG}**Released**: ${RELEASED_PACKAGES}\n\n"
           fi
 
           if [ -n "$BREAKING" ]; then
@@ -340,6 +393,14 @@ jobs:
             UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json > /tmp/package.json
           mv /tmp/package.json UnityProject/Packages/com.jasonxudeveloper.jengine.util/package.json
           echo "✅ Updated Util package.json to v${{ needs.validate.outputs.util_version }}"
+
+      - name: Update UI package.json
+        if: inputs.release_ui == true
+        run: |
+          jq '.version = "${{ needs.validate.outputs.ui_version }}"' \
+            UnityProject/Packages/com.jasonxudeveloper.jengine.ui/package.json > /tmp/package.json
+          mv /tmp/package.json UnityProject/Packages/com.jasonxudeveloper.jengine.ui/package.json
+          echo "✅ Updated UI package.json to v${{ needs.validate.outputs.ui_version }}"
 
       # Update README files (only when releasing Core)
       - name: Update README.md
@@ -554,13 +615,17 @@ jobs:
             echo "✅ **JEngine.Util**: v${{ needs.validate.outputs.util_version }}" >> $GITHUB_STEP_SUMMARY
           fi
 
+          if [ "${{ inputs.release_ui }}" == "true" ]; then
+            echo "✅ **JEngine.UI**: v${{ needs.validate.outputs.ui_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🏷️ **Git Tag**: ${{ needs.validate.outputs.release_tag }}" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ needs.validate.outputs.create_github_release }}" == "true" ]; then
             echo "📋 **GitHub Release**: Will be created" >> $GITHUB_STEP_SUMMARY
           else
-            echo "ℹ️ **GitHub Release**: Not created (Util-only update)" >> $GITHUB_STEP_SUMMARY
+            echo "ℹ️ **GitHub Release**: Not created (non-Core update)" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -605,6 +670,7 @@ jobs:
           ```bash
           openupm add com.jasonxudeveloper.jengine.core
           openupm add com.jasonxudeveloper.jengine.util
+          openupm add com.jasonxudeveloper.jengine.ui  # Optional: UI utilities
           ```
 
           ## 📖 Documentation
@@ -635,6 +701,10 @@ jobs:
 
           if [ "${{ inputs.release_util }}" == "true" ]; then
             echo "✅ **JEngine.Util**: v${{ needs.validate.outputs.util_version }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.release_ui }}" == "true" ]; then
+            echo "✅ **JEngine.UI**: v${{ needs.validate.outputs.ui_version }}" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY

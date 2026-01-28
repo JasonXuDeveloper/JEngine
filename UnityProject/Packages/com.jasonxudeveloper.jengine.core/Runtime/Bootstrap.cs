@@ -31,7 +31,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using JEngine.Core.Encrypt;
-using JEngine.Core.Misc;
 using JEngine.Core.Update;
 using Nino.Core;
 using Obfuz;
@@ -203,7 +202,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                await MessageBox.Show("Error", $"Initialization failed: {e.Message}", no: null);
+                await Prompt.ShowDialogAsync("Error", $"Initialization failed: {e.Message}", "OK", null);
                 Application.Quit();
             }
         }
@@ -235,9 +234,9 @@ namespace JEngine.Core
                         OnStatusUpdate = status => updateStatusText.text = GetStatusText(status),
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
-                            await MessageBox.Show("Notice",
+                            await Prompt.ShowDialogAsync("Notice",
                                 $"Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Start download?",
-                                "Download"),
+                                "Download", "Cancel"),
                         OnDownloadProgress = data =>
                         {
                             if (updateStatusText != null)
@@ -272,7 +271,7 @@ namespace JEngine.Core
                             if (downloadProgressBar != null)
                                 downloadProgressBar.value = 1f;
                         },
-                        OnError = async error => await MessageBox.Show("Warning", error.Message, no: null)
+                        OnError = async error => await Prompt.ShowDialogAsync("Warning", error.Message, "OK", null)
                     };
 
                     bool success = await UpdatePackage(package, packageInitCallbacks, encryptionOption);
@@ -328,8 +327,8 @@ namespace JEngine.Core
                         },
                         OnError = async exception =>
                         {
-                            await MessageBox.Show("Error", $"Scene loading failed: {exception.Message}",
-                                ok: "Retry");
+                            await Prompt.ShowDialogAsync("Error", $"Scene loading failed: {exception.Message}",
+                                "Retry", null);
                         }
                     };
                     downloadProgressBar.gameObject.SetActive(true);
@@ -342,7 +341,7 @@ namespace JEngine.Core
                 catch (Exception ex)
                 {
                     Debug.LogError($"Initialization failed with exception: {ex}");
-                    await MessageBox.Show("Error", $"Exception occurred during initialization: {ex.Message}");
+                    await Prompt.ShowDialogAsync("Error", $"Exception occurred during initialization: {ex.Message}", "OK", "Cancel");
                     // Continue the loop to retry
                 }
             }
@@ -353,7 +352,7 @@ namespace JEngine.Core
             Type type = hotUpdateAss.GetType(hotUpdateClassName);
             if (type == null)
             {
-                await MessageBox.Show("Error", "Code exception, please contact customer service", ok: null);
+                await Prompt.ShowDialogAsync("Error", "Code exception, please contact customer service", null, "OK");
                 Application.Quit();
                 return;
             }
@@ -361,7 +360,7 @@ namespace JEngine.Core
             var method = type.GetMethod(hotUpdateMethodName, BindingFlags.Public | BindingFlags.Static);
             if (method == null)
             {
-                await MessageBox.Show("Error", "Code exception, please contact customer service", ok: null);
+                await Prompt.ShowDialogAsync("Error", "Code exception, please contact customer service", null, "OK");
                 Application.Quit();
                 return;
             }
@@ -393,7 +392,7 @@ namespace JEngine.Core
             catch (Exception e)
             {
                 Debug.LogError($"Failed to invoke hot update method {hotUpdateMethodName}: {e}");
-                await MessageBox.Show("Error", $"Function call failed: {e.Message}", ok: "Exit", no: null);
+                await Prompt.ShowDialogAsync("Error", $"Function call failed: {e.Message}", "Exit", null);
                 Application.Quit();
             }
         }

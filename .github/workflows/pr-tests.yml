@@ -37,6 +37,7 @@ jobs:
             src:
               - 'UnityProject/Packages/com.jasonxudeveloper.jengine.core/**'
               - 'UnityProject/Packages/com.jasonxudeveloper.jengine.util/**'
+              - 'UnityProject/Packages/com.jasonxudeveloper.jengine.ui/**'
               - 'UnityProject/Assets/Tests/**'
               - '.github/workflows/unity-tests.yml'
               - '.github/workflows/pr-tests.yml'
@@ -105,7 +106,17 @@ jobs:
           files: coverage/**/TestCoverageResults*.xml
           flags: util
           name: jengine-util
-          fail_ci_if_error: false
+          fail_ci_if_error: true
+          verbose: true
+
+      - name: Upload coverage to Codecov (ui package)
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage/**/TestCoverageResults*.xml
+          flags: ui
+          name: jengine-ui
+          fail_ci_if_error: true
           verbose: true
 
   comment-results:

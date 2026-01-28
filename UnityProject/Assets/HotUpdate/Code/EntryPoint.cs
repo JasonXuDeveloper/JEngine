@@ -26,7 +26,6 @@
 using Cysharp.Threading.Tasks;
 using JEngine.Core;
 using JEngine.Core.Encrypt;
-using JEngine.Core.Misc;
 using JEngine.Core.Update;
 using Obfuz;
 using UnityEngine;
@@ -64,7 +63,7 @@ namespace HotUpdate.Code
                     {
                         OnStatusUpdate = static status => Debug.Log($"[AddOn1] Status: {GetStatusText(status)}"),
                         OnVersionUpdate = static version => Debug.Log($"[AddOn1] Version: {version}"),
-                        OnDownloadPrompt = static (count, size) => MessageBox.Show("Notice",
+                        OnDownloadPrompt = static (count, size) => Prompt.ShowDialogAsync("Notice",
                             $"[AddOn1] Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Continue?",
                             "Yes", "No"),
                         OnDownloadProgress = static data =>

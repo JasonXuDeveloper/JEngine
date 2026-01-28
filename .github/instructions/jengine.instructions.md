@@ -13,7 +13,9 @@ JEngine is a Unity hot update framework using HybridCLR for runtime C# execution
 ### Namespaces
 - Runtime code: `JEngine.Core` or `JEngine.Core.*`
 - Editor code: `JEngine.Core.Editor` or `JEngine.Core.Editor.*`
+- UI package: `JEngine.UI`
 - Hot update code: `HotUpdate.Code`
+- **Exception**: `Assets/Scripts/` may contain user-level code without namespace (for user customization)
 
 ### Async/Await
 Always use `UniTask` instead of `Task`:

@@ -1,0 +1,24 @@
+{
+  "name": "com.jasonxudeveloper.jengine.ui",
+  "version": "0.0.0",
+  "displayName": "JEngine.UI",
+  "description": "UI utilities for JEngine framework.",
+  "license": "MIT",
+  "unity": "2022.3",
+  "documentationUrl": "https://jengine.xgamedev.net/",
+  "changelogUrl": "https://github.com/JasonXuDeveloper/JEngine/blob/master/CHANGE.md",
+  "keywords": [
+    "UI",
+    "JEngine",
+    "Framework"
+  ],
+  "author": {
+    "name": "Jason Xu",
+    "email": "jason@xgamedev.com",
+    "url": "https://github.com/JasonXuDeveloper"
+  },
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10",
+    "com.unity.textmeshpro": "3.0.6"
+  }
+}

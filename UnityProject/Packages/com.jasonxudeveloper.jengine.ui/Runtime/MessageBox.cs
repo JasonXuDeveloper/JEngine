@@ -1,20 +1,20 @@
 // MessageBox.cs
-// 
+//
 //  Author:
 //        JasonXuDeveloper <jason@xgamedev.net>
-// 
+//
 //  Copyright (c) 2025 JEngine
-// 
+//
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 //  copies of the Software, and to permit persons to whom the Software is
 //  furnished to do so, subject to the following conditions:
-// 
+//
 //  The above copyright notice and this permission notice shall be included in
 //  all copies or substantial portions of the Software.
-// 
+//
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 //  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 //  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,13 +25,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace JEngine.Core.Misc
+[assembly: InternalsVisibleTo("JEngine.UI.Tests")]
+[assembly: InternalsVisibleTo("JEngine.UI.Editor.Tests")]
+
+namespace JEngine.UI
 {
     public class MessageBox
     {
@@ -105,6 +109,20 @@ namespace JEngine.Core.Misc
         private static readonly Stack<MessageBox> PooledMessageBoxes = new();
 
         private const int MaxPoolSize = 10;
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Test handler to override Show() behavior. When set, Show() delegates to this handler
+        /// instead of creating UI. Set to null to restore normal behavior.
+        /// Only available in Editor for testing purposes.
+        /// </summary>
+        internal static Func<string, string, string, string, UniTask<bool>> TestHandler;
+
+        /// <summary>
+        /// When true, simulates prefab being unavailable. Used for testing "no prefab" error handling.
+        /// </summary>
+        internal static bool SimulateNoPrefab;
+#endif
 
         private TextMeshProUGUI _content;
         private TextMeshProUGUI _textNo;
@@ -198,11 +216,28 @@ namespace JEngine.Core.Misc
         /// <remarks>If both buttons are null/empty, a default OK button will be shown to prevent unusable message box.</remarks>
         public static UniTask<bool> Show(string title, string content, string ok = "OK", string no = "Cancel")
         {
+#if UNITY_EDITOR
+            // Allow testing "no prefab" scenario
+            if (SimulateNoPrefab)
+            {
+                Debug.LogError("Cannot show MessageBox: Prefab is null");
+                return UniTask.FromResult(false);
+            }
+#endif
+
             if (Prefab == null)
             {
                 Debug.LogError("Cannot show MessageBox: Prefab is null");
                 return UniTask.FromResult(false);
             }
+
+#if UNITY_EDITOR
+            // Allow tests to override behavior without UI (checked after prefab validation)
+            if (TestHandler != null)
+            {
+                return TestHandler(title, content, ok, no);
+            }
+#endif
 
             try
             {

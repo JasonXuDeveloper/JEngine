@@ -37,6 +37,15 @@
         "com.tuyoogame.yooasset": "2.3.16"
       }
     },
+    "com.jasonxudeveloper.jengine.ui": {
+      "version": "file:com.jasonxudeveloper.jengine.ui",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.cysharp.unitask": "2.5.10",
+        "com.unity.textmeshpro": "3.0.6"
+      }
+    },
     "com.jasonxudeveloper.jengine.util": {
       "version": "file:com.jasonxudeveloper.jengine.util",
       "depth": 0,
