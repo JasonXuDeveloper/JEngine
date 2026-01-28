@@ -92,7 +92,7 @@ namespace JEngine.Core
                 // Call error callback
                 await callbacks.OnError(e);
                 // Switch back to previous scene
-                await SceneManager.LoadSceneAsync(previousSceneName);
+                await SceneManager.LoadSceneAsync(previousSceneName).ToUniTask();
 
                 return null;
             }
