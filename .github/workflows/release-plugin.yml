@@ -1,0 +1,58 @@
+name: Release Plugin
+
+on:
+  push:
+    paths:
+      - 'claude-plugin/**'
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  release-plugin:
+    runs-on: ubuntu-latest
+    # Skip if this is an automated version bump commit
+    if: "!contains(github.event.head_commit.message, 'chore(plugin): bump version')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump plugin version
+        id: bump
+        run: |
+          BUMP_TYPE="${{ github.event.inputs.bump_type || 'patch' }}"
+          CURRENT=$(jq -r '.version' claude-plugin/claude.json)
+
+          IFS='.' read -r major minor patch <<< "$CURRENT"
+          case $BUMP_TYPE in
+            major) NEW_VERSION="$((major+1)).0.0" ;;
+            minor) NEW_VERSION="$major.$((minor+1)).0" ;;
+            patch) NEW_VERSION="$major.$minor.$((patch+1))" ;;
+          esac
+
+          jq --arg v "$NEW_VERSION" '.version = $v' claude-plugin/claude.json > tmp.json
+          mv tmp.json claude-plugin/claude.json
+
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Bumped plugin version from $CURRENT to $NEW_VERSION"
+
+      - name: Commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add claude-plugin/claude.json
+          git commit -m "chore(plugin): bump version to ${{ steps.bump.outputs.version }}"
+          git tag "plugin-v${{ steps.bump.outputs.version }}"
+          git push origin master --tags

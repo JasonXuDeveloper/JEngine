@@ -5,6 +5,7 @@
 @.claude/rules/coding-patterns.md
 @.claude/rules/commit-conventions.md
 @.claude/rules/package-creation.md
+@.claude/rules/plugin-maintenance.md
 
 ## Project Overview
 
