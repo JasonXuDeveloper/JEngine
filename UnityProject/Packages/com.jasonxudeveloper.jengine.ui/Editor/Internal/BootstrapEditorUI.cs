@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using JEngine.Core;
 using JEngine.Core.Editor;
 using JEngine.Core.Encrypt;
@@ -254,13 +253,11 @@ namespace JEngine.UI.Editor.Internal
             var section = new JSection("Asset Settings");
 
             // Target Platform
-            var targetPlatformNames = EnumHelpers.GetEnumNames<TargetPlatform>();
-            var targetPlatformField = new JDropdown(targetPlatformNames, _bootstrap.targetPlatform.ToString());
+            var targetPlatformField = JDropdown<TargetPlatform>.ForEnum(_bootstrap.targetPlatform);
             targetPlatformField.OnValueChanged(value =>
             {
-                var enumValue = EnumHelpers.StringToEnum<TargetPlatform>(value);
                 var enumProperty = _serializedObject.FindProperty(nameof(_bootstrap.targetPlatform));
-                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(TargetPlatform)), enumValue);
+                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(TargetPlatform)), value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Platform", targetPlatformField));
@@ -365,10 +362,9 @@ namespace JEngine.UI.Editor.Internal
 
             // Encryption Option
             var bundleConfig = EncryptionMapping.GetBundleConfig(_bootstrap.encryptionOption);
-            var encryptionNames = EnumHelpers.GetEnumNames<EncryptionOption>();
-            var encryptionField = new JDropdown(encryptionNames, _bootstrap.encryptionOption.ToString());
+            var encryptionField = JDropdown<EncryptionOption>.ForEnum(_bootstrap.encryptionOption);
 
-            var manifestConfigField = new JObjectField(typeof(ScriptableObject), false);
+            var manifestConfigField = new JObjectField<ScriptableObject>(false);
             manifestConfigField.Value = bundleConfig.ManifestConfigScriptableObject;
             manifestConfigField.RegisterValueChangedCallback(_ =>
             {
@@ -376,7 +372,7 @@ namespace JEngine.UI.Editor.Internal
                 manifestConfigField.Value = config.ManifestConfigScriptableObject;
             });
 
-            var bundleConfigField = new JObjectField(typeof(ScriptableObject), false);
+            var bundleConfigField = new JObjectField<ScriptableObject>(false);
             bundleConfigField.Value = bundleConfig.BundleConfigScriptableObject;
             bundleConfigField.RegisterValueChangedCallback(_ =>
             {
@@ -386,12 +382,11 @@ namespace JEngine.UI.Editor.Internal
 
             encryptionField.OnValueChanged(value =>
             {
-                var enumValue = EnumHelpers.StringToEnum<EncryptionOption>(value);
                 var enumProperty = _serializedObject.FindProperty(nameof(_bootstrap.encryptionOption));
-                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(EncryptionOption)), enumValue);
+                enumProperty.enumValueIndex = Array.IndexOf(Enum.GetValues(typeof(EncryptionOption)), value);
                 _serializedObject.ApplyModifiedProperties();
 
-                var newConfig = EncryptionMapping.GetBundleConfig(enumValue);
+                var newConfig = EncryptionMapping.GetBundleConfig(value);
                 manifestConfigField.Value = newConfig.ManifestConfigScriptableObject;
                 bundleConfigField.Value = newConfig.BundleConfigScriptableObject;
             });
@@ -408,27 +403,27 @@ namespace JEngine.UI.Editor.Internal
             var section = new JSection("UI Settings");
 
             // Version Text
-            var versionField = new JObjectField(typeof(TextMeshProUGUI));
+            var versionField = new JObjectField<TextMeshProUGUI>();
             versionField.BindProperty(_serializedObject.FindProperty(nameof(_bootstrap.versionText)));
             section.Add(new JFormField("Version Text", versionField));
 
             // Update Status Text
-            var statusField = new JObjectField(typeof(TextMeshProUGUI));
+            var statusField = new JObjectField<TextMeshProUGUI>();
             statusField.BindProperty(_serializedObject.FindProperty(nameof(_bootstrap.updateStatusText)));
             section.Add(new JFormField("Update Status Text", statusField));
 
             // Download Progress Text
-            var progressTextField = new JObjectField(typeof(TextMeshProUGUI));
+            var progressTextField = new JObjectField<TextMeshProUGUI>();
             progressTextField.BindProperty(_serializedObject.FindProperty(nameof(_bootstrap.downloadProgressText)));
             section.Add(new JFormField("Progress Text", progressTextField));
 
             // Download Progress Bar
-            var progressBarField = new JObjectField(typeof(Slider));
+            var progressBarField = new JObjectField<Slider>();
             progressBarField.BindProperty(_serializedObject.FindProperty(nameof(_bootstrap.downloadProgressBar)));
             section.Add(new JFormField("Progress Bar", progressBarField));
 
             // Start Button
-            var startButtonField = new JObjectField(typeof(Button));
+            var startButtonField = new JObjectField<Button>();
             startButtonField.BindProperty(_serializedObject.FindProperty(nameof(_bootstrap.startButton)));
             section.Add(new JFormField("Start Button", startButtonField));
 

@@ -222,6 +222,42 @@
 }
 
 /* ===========================
+   DROPDOWN COMPONENTS
+   =========================== */
+
+/* JDropdown - styled popup field */
+.j-dropdown .unity-base-popup-field__input {
+    background-color: var(--j-bg-input);
+    border-color: var(--j-border-subtle);
+    border-width: 1px;
+    border-radius: var(--j-border-radius-sm);
+    color: var(--j-text-primary);
+    transition-duration: var(--j-transition-fast);
+    transition-property: background-color, border-color;
+}
+
+.j-dropdown .unity-base-popup-field__input:hover {
+    background-color: var(--j-bg-hover);
+    border-color: var(--j-border-color);
+}
+
+.j-dropdown .unity-base-popup-field__input:focus {
+    border-color: var(--j-border-focus);
+}
+
+.j-dropdown .unity-base-popup-field__text {
+    color: var(--j-text-primary);
+}
+
+.j-dropdown .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: var(--j-text-muted);
+}
+
+.j-dropdown .unity-base-field__label {
+    display: none;
+}
+
+/* ===========================
    BUTTON COMPONENTS
    =========================== */
 
@@ -427,4 +463,18 @@
 
 .j-progress-bar__fill--success {
     background-color: var(--j-color-success);
+}
+
+/* ===========================
+   CURSOR STYLES
+   =========================== */
+
+/* Text cursor for text input fields */
+.j-cursor-text {
+    cursor: text;
+}
+
+/* Pointer/link cursor for clickable elements */
+.j-cursor-pointer {
+    cursor: link;
 }

@@ -53,13 +53,8 @@ namespace JEngine.UI.Editor.Components.Form
                 value = initialValue
             };
 
-            // Style the container
-            style.flexGrow = 1;
-            style.flexShrink = 1;
-            style.minWidth = 50;
-            style.minHeight = 20;
-            style.maxHeight = 24;
-            style.alignSelf = Align.Center;
+            // Style the container using shared input styles
+            JTheme.ApplyInputContainerStyle(this);
 
             // Access the internal input element and style it
             _textField.RegisterCallback<AttachToPanelEvent, JTextField>(static (_, field) =>
@@ -92,55 +87,36 @@ namespace JEngine.UI.Editor.Components.Form
 
         private void ApplyInternalStyles()
         {
-            // Style the text input element
+            // Style the text input element using shared styles
             var textInput = _textField.Q(className: "unity-text-field__input");
             if (textInput != null)
             {
-                textInput.style.backgroundColor = Tokens.Colors.BgInput;
-                textInput.style.borderTopColor = Tokens.Colors.BorderSubtle;
-                textInput.style.borderRightColor = Tokens.Colors.BorderSubtle;
-                textInput.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-                textInput.style.borderLeftColor = Tokens.Colors.BorderSubtle;
-                textInput.style.borderTopWidth = 1;
-                textInput.style.borderRightWidth = 1;
-                textInput.style.borderBottomWidth = 1;
-                textInput.style.borderLeftWidth = 1;
-                textInput.style.borderTopLeftRadius = Tokens.BorderRadius.Sm;
-                textInput.style.borderTopRightRadius = Tokens.BorderRadius.Sm;
-                textInput.style.borderBottomLeftRadius = Tokens.BorderRadius.Sm;
-                textInput.style.borderBottomRightRadius = Tokens.BorderRadius.Sm;
-                textInput.style.color = Tokens.Colors.TextPrimary;
-                textInput.style.paddingLeft = Tokens.Spacing.MD;
-                textInput.style.paddingRight = Tokens.Spacing.MD;
-                textInput.style.paddingTop = Tokens.Spacing.Sm;
-                textInput.style.paddingBottom = Tokens.Spacing.Sm;
-                textInput.style.minHeight = 24;
+                JTheme.ApplyInputElementStyle(textInput);
                 textInput.style.fontSize = Tokens.FontSize.Sm;
 
-                // Focus state
-                _textField.RegisterCallback<FocusInEvent, VisualElement>(static (_, input) =>
-                {
-                    input.style.borderTopColor = Tokens.Colors.BorderFocus;
-                    input.style.borderRightColor = Tokens.Colors.BorderFocus;
-                    input.style.borderBottomColor = Tokens.Colors.BorderFocus;
-                    input.style.borderLeftColor = Tokens.Colors.BorderFocus;
-                }, textInput);
+                // Hover state
+                textInput.RegisterCallback<MouseEnterEvent, VisualElement>(
+                    static (_, input) => JTheme.ApplyInputHoverState(input), textInput);
+                textInput.RegisterCallback<MouseLeaveEvent, VisualElement>(
+                    static (_, input) => JTheme.ApplyInputNormalState(input), textInput);
 
-                _textField.RegisterCallback<FocusOutEvent, VisualElement>(static (_, input) =>
+                // Focus state
+                _textField.RegisterCallback<FocusInEvent, VisualElement>(
+                    static (_, input) => JTheme.ApplyInputFocusState(input), textInput);
+                _textField.RegisterCallback<FocusOutEvent, VisualElement>(
+                    static (_, input) => JTheme.ApplyInputNormalState(input), textInput);
+
+                // Text cursor on input and its text element
+                JTheme.ApplyTextCursor(textInput);
+                var textElement = textInput.Q<TextElement>();
+                if (textElement != null)
                 {
-                    input.style.borderTopColor = Tokens.Colors.BorderSubtle;
-                    input.style.borderRightColor = Tokens.Colors.BorderSubtle;
-                    input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-                    input.style.borderLeftColor = Tokens.Colors.BorderSubtle;
-                }, textInput);
+                    JTheme.ApplyTextCursor(textElement);
+                }
             }
 
             // Hide the label if present
-            var label = _textField.Q<Label>();
-            if (label != null)
-            {
-                label.style.display = DisplayStyle.None;
-            }
+            JTheme.HideFieldLabel(_textField);
         }
 
         /// <summary>

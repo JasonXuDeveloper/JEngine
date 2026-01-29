@@ -109,7 +109,7 @@ namespace JEngine.UI.Editor.Components.Button
 
             // Font styling
             style.fontSize = Tokens.FontSize.Base;
-            style.unityFontStyleAndWeight = FontStyle.Bold;
+            style.unityFontStyleAndWeight = FontStyle.Normal;
 
             // No border for glassmorphic look
             style.borderTopWidth = 0;
@@ -124,6 +124,9 @@ namespace JEngine.UI.Editor.Components.Button
 
             // Smooth glassmorphic transitions
             JTheme.ApplyTransition(this);
+
+            // Pointer cursor for clickable element
+            JTheme.ApplyPointerCursor(this);
         }
 
         /// <summary>

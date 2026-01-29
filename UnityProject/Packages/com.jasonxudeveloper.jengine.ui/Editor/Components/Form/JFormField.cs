@@ -52,14 +52,14 @@ namespace JEngine.UI.Editor.Components.Form
             style.maxHeight = 28;
             style.overflow = Overflow.Hidden;
 
-            // Create label - compact
+            // Create label - compact, using shared tokens
             _label = new Label(labelText);
             _label.AddToClassList("j-form-field__label");
             _label.style.width = Tokens.Layout.FormLabelWidth;
             _label.style.minWidth = Tokens.Layout.FormLabelMinWidth;
             _label.style.maxWidth = 180;
             _label.style.color = Tokens.Colors.TextSecondary;
-            _label.style.fontSize = 11;
+            _label.style.fontSize = Tokens.FontSize.Sm;
             _label.style.paddingRight = Tokens.Spacing.Sm;
             _label.style.flexShrink = 1;
             _label.style.overflow = Overflow.Hidden;

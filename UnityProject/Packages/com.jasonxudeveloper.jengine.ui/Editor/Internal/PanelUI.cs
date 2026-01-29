@@ -23,10 +23,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using JEngine.Core.Editor;
 using JEngine.Core.Editor.CustomEditor;
 using JEngine.Core.Encrypt;
@@ -56,14 +54,12 @@ namespace JEngine.UI.Editor.Internal
         private static JStatusBar _statusBar;
         private static JLogView _logView;
         private static BuildManager _buildManager;
-        private static Panel _panel;
 
         /// <summary>
         /// Creates the enhanced Panel content.
         /// </summary>
         public static VisualElement CreateContent(Panel panel, BuildManager buildManager, Settings settings)
         {
-            _panel = panel;
             // Create our own BuildManager with logging to our _logView (will be created below)
             // We can't use the one from Panel because it logs to Panel's UI which doesn't exist when using PanelUI
             _buildManager = new BuildManager(settings, LogMessage);
@@ -102,7 +98,7 @@ namespace JEngine.UI.Editor.Internal
             content.Add(CreateHotUpdateScenesSection(settings));
 
             // Build Actions Section
-            content.Add(CreateBuildActionsSection(buildManager));
+            content.Add(CreateBuildActionsSection());
 
             // Status Section
             content.Add(CreateStatusSection());
@@ -143,7 +139,7 @@ namespace JEngine.UI.Editor.Internal
 
             // Startup Scene
             var currentScene = AssetDatabase.LoadAssetAtPath<SceneAsset>(settings.startUpScenePath);
-            var sceneField = new JObjectField(typeof(SceneAsset), false);
+            var sceneField = new JObjectField<SceneAsset>(false);
             sceneField.Value = currentScene;
             sceneField.RegisterValueChangedCallback(evt =>
             {
@@ -190,11 +186,10 @@ namespace JEngine.UI.Editor.Internal
             section.Add(new JFormField("Package", packageNameField));
 
             // Build Target
-            var buildTargetNames = EnumHelpers.GetEnumNames<BuildTarget>();
-            var buildTargetField = new JDropdown(buildTargetNames, settings.buildTarget.ToString());
+            var buildTargetField = JDropdown<BuildTarget>.ForEnum(settings.buildTarget);
             buildTargetField.OnValueChanged(value =>
             {
-                settings.buildTarget = EnumHelpers.StringToEnum<BuildTarget>(value);
+                settings.buildTarget = value;
                 settings.Save();
             });
             var buildTargetFormField = new JFormField("Build Target", buildTargetField);
@@ -204,7 +199,7 @@ namespace JEngine.UI.Editor.Internal
             var setActiveButton = new JButton("Use Active", () =>
             {
                 settings.buildTarget = EditorUserBuildSettings.activeBuildTarget;
-                buildTargetField.Value = settings.buildTarget.ToString();
+                buildTargetField.Value = settings.buildTarget;
                 settings.Save();
             }, ButtonVariant.Secondary);
             section.Add(new JFormField("", setActiveButton));
@@ -236,10 +231,9 @@ namespace JEngine.UI.Editor.Internal
 
             // Encryption Option
             var bundleConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
-            var encryptionNames = EnumHelpers.GetEnumNames<EncryptionOption>();
-            var encryptionField = new JDropdown(encryptionNames, settings.encryptionOption.ToString());
+            var encryptionField = JDropdown<EncryptionOption>.ForEnum(settings.encryptionOption);
 
-            var manifestConfigField = new JObjectField(typeof(ScriptableObject), false);
+            var manifestConfigField = new JObjectField<ScriptableObject>(false);
             manifestConfigField.Value = bundleConfig.ManifestConfigScriptableObject;
             manifestConfigField.RegisterValueChangedCallback(_ =>
             {
@@ -247,7 +241,7 @@ namespace JEngine.UI.Editor.Internal
                 manifestConfigField.Value = config.ManifestConfigScriptableObject;
             });
 
-            var bundleConfigField = new JObjectField(typeof(ScriptableObject), false);
+            var bundleConfigField = new JObjectField<ScriptableObject>(false);
             bundleConfigField.Value = bundleConfig.BundleConfigScriptableObject;
             bundleConfigField.RegisterValueChangedCallback(_ =>
             {
@@ -257,10 +251,10 @@ namespace JEngine.UI.Editor.Internal
 
             encryptionField.OnValueChanged(value =>
             {
-                settings.encryptionOption = EnumHelpers.StringToEnum<EncryptionOption>(value);
+                settings.encryptionOption = value;
                 settings.Save();
 
-                var newConfig = EncryptionMapping.GetBundleConfig(settings.encryptionOption);
+                var newConfig = EncryptionMapping.GetBundleConfig(value);
                 manifestConfigField.Value = newConfig.ManifestConfigScriptableObject;
                 bundleConfigField.Value = newConfig.BundleConfigScriptableObject;
             });
@@ -334,23 +328,23 @@ namespace JEngine.UI.Editor.Internal
                     // Action buttons - minimal style
                     var path = assetPath; // Capture for closure
 
-                    var openBtn = CreateIconButton("O", "Open scene", () =>
+                    var openBtn = new JIconButton("O", () =>
                     {
                         EditorSceneManager.OpenScene(path);
                         GUIUtility.ExitGUI();
-                    });
+                    }, "Open scene");
 
-                    var addBtn = CreateIconButton("+", "Load additive", () =>
+                    var addBtn = new JIconButton("+", () =>
                     {
                         EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
                         GUIUtility.ExitGUI();
-                    });
+                    }, "Load additive");
 
-                    var removeBtn = CreateIconButton("-", "Unload scene", () =>
+                    var removeBtn = new JIconButton("-", () =>
                     {
                         EditorSceneManager.CloseScene(SceneManager.GetSceneByPath(path), true);
                         GUIUtility.ExitGUI();
-                    });
+                    }, "Unload scene");
 
                     sceneRow.Add(openBtn);
                     sceneRow.Add(addBtn);
@@ -374,34 +368,6 @@ namespace JEngine.UI.Editor.Internal
             return section;
         }
 
-        private static VisualElement CreateIconButton(string text, string tooltip, Action onClick)
-        {
-            var btn = new Button(onClick);
-            btn.text = text;
-            btn.tooltip = tooltip;
-            btn.style.width = 22;
-            btn.style.height = 18;
-            btn.style.marginLeft = 2;
-            btn.style.paddingLeft = 0;
-            btn.style.paddingRight = 0;
-            btn.style.paddingTop = 0;
-            btn.style.paddingBottom = 0;
-            btn.style.fontSize = 10;
-            btn.style.backgroundColor = Color.clear;
-            btn.style.borderTopWidth = 0;
-            btn.style.borderRightWidth = 0;
-            btn.style.borderBottomWidth = 0;
-            btn.style.borderLeftWidth = 0;
-            btn.style.color = Tokens.Colors.TextMuted;
-            btn.style.unityTextAlign = TextAnchor.MiddleCenter;
-
-            // Hover effect (no closure - use evt.currentTarget)
-            btn.RegisterCallback<MouseEnterEvent>(OnIconButtonMouseEnter);
-            btn.RegisterCallback<MouseLeaveEvent>(OnIconButtonMouseLeave);
-
-            return btn;
-        }
-
         // Hover callbacks without closures
         private static void OnSceneRowMouseEnter(MouseEnterEvent evt)
         {
@@ -413,21 +379,7 @@ namespace JEngine.UI.Editor.Internal
             ((VisualElement)evt.currentTarget).style.backgroundColor = Color.clear;
         }
 
-        private static void OnIconButtonMouseEnter(MouseEnterEvent evt)
-        {
-            var btn = (VisualElement)evt.currentTarget;
-            btn.style.color = Tokens.Colors.TextPrimary;
-            btn.style.backgroundColor = Tokens.Colors.BgElevated;
-        }
-
-        private static void OnIconButtonMouseLeave(MouseLeaveEvent evt)
-        {
-            var btn = (VisualElement)evt.currentTarget;
-            btn.style.color = Tokens.Colors.TextMuted;
-            btn.style.backgroundColor = Color.clear;
-        }
-
-        private static VisualElement CreateBuildActionsSection(BuildManager buildManager)
+        private static VisualElement CreateBuildActionsSection()
         {
             var section = new JSection("Build Actions");
 

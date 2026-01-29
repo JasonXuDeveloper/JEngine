@@ -23,8 +23,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-using System;
 using JEngine.UI.Editor.Theming;
+using JEngine.UI.Editor.Utilities;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -36,154 +36,7 @@ namespace JEngine.UI.Editor.Components.Form
     /// <summary>
     /// A styled object field matching the JEngine dark theme.
     /// </summary>
-    public class JObjectField : VisualElement
-    {
-        private readonly ObjectField _objectField;
-
-        /// <summary>
-        /// Creates a new styled object field.
-        /// </summary>
-        /// <param name="objectType">The type of object to accept.</param>
-        /// <param name="allowSceneObjects">Whether to allow scene objects.</param>
-        public JObjectField(Type objectType, bool allowSceneObjects = true)
-        {
-            AddToClassList("j-object-field");
-
-            _objectField = new ObjectField
-            {
-                objectType = objectType,
-                allowSceneObjects = allowSceneObjects
-            };
-
-            // Style the container
-            style.flexGrow = 1;
-            style.flexShrink = 1;
-            style.minWidth = 80;
-            style.minHeight = 20;
-            style.maxHeight = 24;
-            style.alignSelf = Align.Center;
-
-            _objectField.style.flexGrow = 1;
-            _objectField.style.marginLeft = 0;
-            _objectField.style.marginRight = 0;
-            _objectField.style.marginTop = 0;
-            _objectField.style.marginBottom = 0;
-            _objectField.style.height = 22;
-
-            _objectField.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
-
-            Add(_objectField);
-        }
-
-        private void ApplyInternalStyles()
-        {
-            // Style the input container
-            var input = _objectField.Q(className: "unity-object-field__input");
-            if (input != null)
-            {
-                input.style.backgroundColor = Tokens.Colors.BgInput;
-                input.style.borderTopColor = Tokens.Colors.BorderSubtle;
-                input.style.borderRightColor = Tokens.Colors.BorderSubtle;
-                input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-                input.style.borderLeftColor = Tokens.Colors.BorderSubtle;
-                input.style.borderTopWidth = 1;
-                input.style.borderRightWidth = 1;
-                input.style.borderBottomWidth = 1;
-                input.style.borderLeftWidth = 1;
-                input.style.borderTopLeftRadius = Tokens.BorderRadius.Sm;
-                input.style.borderTopRightRadius = Tokens.BorderRadius.Sm;
-                input.style.borderBottomLeftRadius = Tokens.BorderRadius.Sm;
-                input.style.borderBottomRightRadius = Tokens.BorderRadius.Sm;
-                input.style.paddingLeft = Tokens.Spacing.Sm;
-                input.style.paddingRight = Tokens.Spacing.Sm;
-                input.style.minHeight = 22;
-                input.style.height = 22;
-                input.style.alignItems = Align.Center;
-
-                // Hover effect
-                input.RegisterCallback<MouseEnterEvent, VisualElement>(static (_, element) =>
-                {
-                    element.style.backgroundColor = Tokens.Colors.BgHover;
-                }, input);
-
-                input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
-                {
-                    element.style.backgroundColor = Tokens.Colors.BgInput;
-                }, input);
-            }
-
-            // Style the object display container (icon + label)
-            var display = _objectField.Q(className: "unity-object-field__display");
-            if (display != null)
-            {
-                display.style.alignItems = Align.Center;
-                display.style.height = 20;
-            }
-
-            // Style the object label - ensure vertical centering
-            var objectLabel = _objectField.Q(className: "unity-object-field-display__label");
-            if (objectLabel != null)
-            {
-                objectLabel.style.color = Tokens.Colors.TextPrimary;
-                objectLabel.style.fontSize = Tokens.FontSize.Sm;
-                objectLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-                objectLabel.style.alignSelf = Align.Center;
-            }
-
-            // Style the icon
-            var icon = _objectField.Q(className: "unity-object-field-display__icon");
-            if (icon != null)
-            {
-                icon.style.alignSelf = Align.Center;
-            }
-
-            // Hide the field label if present
-            var label = _objectField.Q<Label>(className: "unity-base-field__label");
-            if (label != null)
-            {
-                label.style.display = DisplayStyle.None;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the object value.
-        /// </summary>
-        public Object Value
-        {
-            get => _objectField.value;
-            set => _objectField.value = value;
-        }
-
-        /// <summary>
-        /// Gets the internal ObjectField.
-        /// </summary>
-        public ObjectField ObjectField => _objectField;
-
-        /// <summary>
-        /// Binds to a serialized property.
-        /// </summary>
-        public void BindProperty(SerializedProperty property)
-        {
-            _objectField.BindProperty(property);
-        }
-
-        /// <summary>
-        /// Registers a callback for value changes.
-        /// </summary>
-        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<Object>> callback)
-        {
-            _objectField.RegisterValueChangedCallback(callback);
-        }
-
-        private void OnAttachToPanel(AttachToPanelEvent evt)
-        {
-            ApplyInternalStyles();
-        }
-    }
-
-    /// <summary>
-    /// A generic styled object field matching the JEngine dark theme.
-    /// </summary>
+    /// <typeparam name="T">The type of object to accept.</typeparam>
     public class JObjectField<T> : VisualElement where T : Object
     {
         private readonly ObjectField _objectField;
@@ -202,20 +55,14 @@ namespace JEngine.UI.Editor.Components.Form
                 allowSceneObjects = allowSceneObjects
             };
 
-            // Style the container
-            style.flexGrow = 1;
-            style.flexShrink = 1;
-            style.minWidth = 80;
-            style.minHeight = 20;
-            style.maxHeight = 24;
-            style.alignSelf = Align.Center;
+            // Style the container using shared input styles
+            JTheme.ApplyInputContainerStyle(this);
 
             _objectField.style.flexGrow = 1;
             _objectField.style.marginLeft = 0;
             _objectField.style.marginRight = 0;
             _objectField.style.marginTop = 0;
             _objectField.style.marginBottom = 0;
-            _objectField.style.height = 22;
 
             _objectField.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
 
@@ -224,76 +71,78 @@ namespace JEngine.UI.Editor.Components.Form
 
         private void OnAttachToPanel(AttachToPanelEvent evt)
         {
+            // Apply stylesheets to enable USS cursor classes
+            StyleSheetManager.ApplyAllStyleSheets(this);
+
             ApplyInternalStyles();
+
+            // ObjectField may have elements added after initial attach
+            // Schedule a delayed re-application to catch any late additions
+            schedule.Execute(() => ApplyCursorToAllDescendants(_objectField)).ExecuteLater(50);
         }
 
         private void ApplyInternalStyles()
         {
-            // Style the input container
+            // Style the input container using shared styles
             var input = _objectField.Q(className: "unity-object-field__input");
             if (input != null)
             {
-                input.style.backgroundColor = Tokens.Colors.BgInput;
-                input.style.borderTopColor = Tokens.Colors.BorderSubtle;
-                input.style.borderRightColor = Tokens.Colors.BorderSubtle;
-                input.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-                input.style.borderLeftColor = Tokens.Colors.BorderSubtle;
-                input.style.borderTopWidth = 1;
-                input.style.borderRightWidth = 1;
-                input.style.borderBottomWidth = 1;
-                input.style.borderLeftWidth = 1;
-                input.style.borderTopLeftRadius = Tokens.BorderRadius.Sm;
-                input.style.borderTopRightRadius = Tokens.BorderRadius.Sm;
-                input.style.borderBottomLeftRadius = Tokens.BorderRadius.Sm;
-                input.style.borderBottomRightRadius = Tokens.BorderRadius.Sm;
-                input.style.paddingLeft = Tokens.Spacing.Sm;
-                input.style.paddingRight = Tokens.Spacing.Sm;
-                input.style.minHeight = 22;
-                input.style.height = 22;
+                JTheme.ApplyInputElementStyle(input);
                 input.style.alignItems = Align.Center;
+                input.style.justifyContent = Justify.FlexStart;
 
                 // Hover effect
-                input.RegisterCallback<MouseEnterEvent, VisualElement>(static (_, element) =>
-                {
-                    element.style.backgroundColor = Tokens.Colors.BgHover;
-                }, input);
-
-                input.RegisterCallback<MouseLeaveEvent, VisualElement>(static (_, element) =>
-                {
-                    element.style.backgroundColor = Tokens.Colors.BgInput;
-                }, input);
+                input.RegisterCallback<MouseEnterEvent, VisualElement>(
+                    static (_, element) => JTheme.ApplyInputHoverState(element), input);
+                input.RegisterCallback<MouseLeaveEvent, VisualElement>(
+                    static (_, element) => JTheme.ApplyInputNormalState(element), input);
             }
 
-            // Style the object display container (icon + label)
+            // Style the object display container (icon + label) - ensure vertical centering
             var display = _objectField.Q(className: "unity-object-field__display");
             if (display != null)
             {
+                display.style.flexDirection = FlexDirection.Row;
                 display.style.alignItems = Align.Center;
-                display.style.height = 20;
+                display.style.flexGrow = 1;
+                display.style.overflow = Overflow.Hidden;
             }
 
-            // Style the object label - ensure vertical centering
+            // Style the object label using shared text styles
             var objectLabel = _objectField.Q(className: "unity-object-field-display__label");
             if (objectLabel != null)
             {
-                objectLabel.style.color = Tokens.Colors.TextPrimary;
-                objectLabel.style.fontSize = Tokens.FontSize.Sm;
+                JTheme.ApplyInputTextStyle(objectLabel);
                 objectLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
-                objectLabel.style.alignSelf = Align.Center;
+                objectLabel.style.overflow = Overflow.Hidden;
+                objectLabel.style.textOverflow = TextOverflow.Ellipsis;
             }
 
-            // Style the icon
+            // Style the icon - ensure proper vertical alignment
             var icon = _objectField.Q(className: "unity-object-field-display__icon");
             if (icon != null)
             {
                 icon.style.alignSelf = Align.Center;
+                icon.style.flexShrink = 0;
             }
 
+            // Apply pointer cursor to ALL descendants of ObjectField
+            // This ensures we don't miss any internal Unity elements
+            ApplyCursorToAllDescendants(_objectField);
+
+            // Also apply to wrapper
+            JTheme.ApplyPointerCursor(this);
+
             // Hide the field label if present
-            var label = _objectField.Q<Label>(className: "unity-base-field__label");
-            if (label != null)
+            JTheme.HideFieldLabel(_objectField);
+        }
+
+        private void ApplyCursorToAllDescendants(VisualElement root)
+        {
+            JTheme.ApplyPointerCursor(root);
+            foreach (var child in root.Children())
             {
-                label.style.display = DisplayStyle.None;
+                ApplyCursorToAllDescendants(child);
             }
         }
 

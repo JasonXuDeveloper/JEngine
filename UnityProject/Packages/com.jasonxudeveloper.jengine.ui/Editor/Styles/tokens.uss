@@ -17,6 +17,7 @@
     --j-bg-elevated: rgba(71, 85, 105, 0.7); /* 70% - Hover states, important */
     --j-bg-overlay: rgba(100, 116, 139, 0.8); /* 80% - Modals, dropdowns */
     --j-bg-hover: rgba(71, 85, 105, 0.7);
+    --j-bg-input: rgba(42, 42, 42, 1);       /* Input background */
 
     /* Vibrant Accent Colors - Cyan (Primary) */
     --j-color-cyan: #06B6D4;           /* cyan-500 */

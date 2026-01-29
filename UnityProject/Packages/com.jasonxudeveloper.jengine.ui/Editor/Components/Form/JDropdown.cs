@@ -25,53 +25,85 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JEngine.UI.Editor.Theming;
 using JEngine.UI.Editor.Utilities;
 using UnityEngine.UIElements;
 
 namespace JEngine.UI.Editor.Components.Form
 {
     /// <summary>
-    /// A styled dropdown matching the JEngine dark theme.
+    /// A styled dropdown for string choices.
     /// </summary>
-    public class JDropdown : VisualElement
+    public class JDropdown : JDropdown<string>
     {
-        private readonly PopupField<string> _popupField;
-        private Action<string> _onValueChanged;
-        private bool _stylesApplied;
-
         /// <summary>
         /// Creates a new styled dropdown.
         /// </summary>
         /// <param name="choices">Available choices.</param>
         /// <param name="defaultValue">Default selected value.</param>
         public JDropdown(List<string> choices, string defaultValue = null)
+            : base(choices, defaultValue, v => v, v => v)
+        {
+        }
+    }
+
+    /// <summary>
+    /// A styled generic dropdown that works with any type including enums.
+    /// </summary>
+    /// <typeparam name="T">The type of values in the dropdown.</typeparam>
+    public class JDropdown<T> : VisualElement
+    {
+        private readonly PopupField<T> _popupField;
+        private Action<T> _onValueChanged;
+        private VisualElement _inputElement;
+
+        /// <summary>
+        /// Creates a new styled generic dropdown.
+        /// </summary>
+        /// <param name="choices">Available choices.</param>
+        /// <param name="defaultValue">Default selected value.</param>
+        /// <param name="formatSelectedValue">Function to format the selected value display.</param>
+        /// <param name="formatListItem">Function to format list item display.</param>
+        public JDropdown(
+            List<T> choices,
+            T defaultValue = default,
+            Func<T, string> formatSelectedValue = null,
+            Func<T, string> formatListItem = null)
         {
             AddToClassList("j-dropdown");
 
             // Ensure choices list is valid
             if (choices == null || choices.Count == 0)
             {
-                choices = new List<string> { "" };
+                throw new ArgumentException("Choices list cannot be null or empty", nameof(choices));
             }
 
             // Determine initial index
             int defaultIndex = 0;
-            if (!string.IsNullOrEmpty(defaultValue) && choices.Contains(defaultValue))
+            if (defaultValue != null && choices.Contains(defaultValue))
             {
                 defaultIndex = choices.IndexOf(defaultValue);
             }
 
-            _popupField = new PopupField<string>(choices, defaultIndex);
+            // Create popup field with optional formatters
+            if (formatSelectedValue != null || formatListItem != null)
+            {
+                _popupField = new PopupField<T>(
+                    choices,
+                    defaultIndex,
+                    formatSelectedValue ?? (v => v?.ToString() ?? ""),
+                    formatListItem ?? (v => v?.ToString() ?? ""));
+            }
+            else
+            {
+                _popupField = new PopupField<T>(choices, defaultIndex);
+            }
 
-            // Style the container
-            style.flexGrow = 1;
-            style.flexShrink = 1;
-            style.minWidth = 80;
-            style.minHeight = 20;
-            style.maxHeight = 24;
-            style.alignSelf = Align.Center;
+            // Style the container using shared input styles
+            JTheme.ApplyInputContainerStyle(this);
 
-            // Apply styles
+            // Apply styles to popup field
             _popupField.style.flexGrow = 1;
             _popupField.style.marginLeft = 0;
             _popupField.style.marginRight = 0;
@@ -80,31 +112,66 @@ namespace JEngine.UI.Editor.Components.Form
 
             Add(_popupField);
 
-            // Apply styles using GeometryChangedEvent (fires after layout)
-            _popupField.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            // Apply styles when attached to panel
+            _popupField.RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
         }
 
-        private void OnGeometryChanged(GeometryChangedEvent evt)
+        private void OnAttachToPanel(AttachToPanelEvent evt)
         {
-            // Apply styles only once
-            if (_stylesApplied) return;
+            // Apply stylesheets to enable USS :hover
+            StyleSheetManager.ApplyAllStyleSheets(this);
 
-            // Unregister to prevent multiple calls
-            _popupField.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+            // Also apply inline styles for theme token colors
+            ApplyInternalStyles();
+        }
 
-            // Use PopupFieldStyleHelper for reliable styling
-            PopupFieldStyleHelper.ApplyStylesToPopupField(
-                _popupField,
-                enableHoverEffects: true,
-                enableDebugLogging: false); // Set to true for debugging
+        private void ApplyInternalStyles()
+        {
+            // Style the input element using shared styles
+            _inputElement = _popupField.Q(className: "unity-base-popup-field__input");
+            JTheme.ApplyInputElementStyle(_inputElement);
 
-            _stylesApplied = true;
+            // Register hover on the wrapper (this) - PopupField internal elements have event issues
+            // Using PointerOverEvent/PointerOutEvent as alternative to MouseEnter/MouseLeave
+            RegisterCallback<PointerOverEvent>(OnPointerOver);
+            RegisterCallback<PointerOutEvent>(OnPointerOut);
+
+            // Style the arrow
+            var arrowElement = _popupField.Q(className: "unity-base-popup-field__arrow");
+            if (arrowElement != null)
+            {
+                arrowElement.style.unityBackgroundImageTintColor = Tokens.Colors.TextMuted;
+            }
+
+            // Style the text using shared styles
+            var textElement = _popupField.Q<TextElement>();
+            JTheme.ApplyInputTextStyle(textElement);
+
+            // Pointer cursor on all elements
+            JTheme.ApplyPointerCursor(this);
+            JTheme.ApplyPointerCursor(_popupField);
+            JTheme.ApplyPointerCursor(_inputElement);
+            if (textElement != null) JTheme.ApplyPointerCursor(textElement);
+            if (arrowElement != null) JTheme.ApplyPointerCursor(arrowElement);
+
+            // Hide the label if present
+            JTheme.HideFieldLabel(_popupField);
+        }
+
+        private void OnPointerOver(PointerOverEvent evt)
+        {
+            JTheme.ApplyInputHoverState(_inputElement);
+        }
+
+        private void OnPointerOut(PointerOutEvent evt)
+        {
+            JTheme.ApplyInputNormalState(_inputElement);
         }
 
         /// <summary>
         /// Gets or sets the selected value.
         /// </summary>
-        public string Value
+        public T Value
         {
             get => _popupField.value;
             set => _popupField.value = value;
@@ -113,12 +180,12 @@ namespace JEngine.UI.Editor.Components.Form
         /// <summary>
         /// Gets the internal PopupField for advanced operations.
         /// </summary>
-        public PopupField<string> PopupField => _popupField;
+        public PopupField<T> PopupField => _popupField;
 
         /// <summary>
         /// Gets or sets the choices.
         /// </summary>
-        public List<string> Choices
+        public List<T> Choices
         {
             get => _popupField.choices;
             set => _popupField.choices = value;
@@ -127,7 +194,7 @@ namespace JEngine.UI.Editor.Components.Form
         /// <summary>
         /// Registers a callback for value changes.
         /// </summary>
-        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<string>> callback)
+        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<T>> callback)
         {
             _popupField.RegisterValueChangedCallback(callback);
         }
@@ -135,11 +202,27 @@ namespace JEngine.UI.Editor.Components.Form
         /// <summary>
         /// Sets the value changed callback.
         /// </summary>
-        public JDropdown OnValueChanged(Action<string> callback)
+        public JDropdown<T> OnValueChanged(Action<T> callback)
         {
             _onValueChanged = callback;
             _popupField.RegisterValueChangedCallback(evt => _onValueChanged?.Invoke(evt.newValue));
             return this;
+        }
+
+        /// <summary>
+        /// Creates a dropdown for an enum type.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum type.</typeparam>
+        /// <param name="defaultValue">Default selected value.</param>
+        /// <returns>A new dropdown configured for the enum.</returns>
+        public static JDropdown<TEnum> ForEnum<TEnum>(TEnum defaultValue = default) where TEnum : Enum
+        {
+            var values = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
+            return new JDropdown<TEnum>(
+                values,
+                defaultValue,
+                v => v.ToString(),
+                v => v.ToString());
         }
     }
 }

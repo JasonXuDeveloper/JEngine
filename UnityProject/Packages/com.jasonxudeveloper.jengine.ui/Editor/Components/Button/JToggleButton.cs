@@ -103,10 +103,10 @@ namespace JEngine.UI.Editor.Components.Button
             style.borderTopRightRadius = Tokens.BorderRadius.Sm;
             style.borderBottomLeftRadius = Tokens.BorderRadius.Sm;
             style.borderBottomRightRadius = Tokens.BorderRadius.Sm;
-            style.paddingTop = 4;
-            style.paddingRight = 10;
-            style.paddingBottom = 4;
-            style.paddingLeft = 10;
+            style.paddingTop = Tokens.Spacing.Sm;
+            style.paddingRight = Tokens.Spacing.MD;
+            style.paddingBottom = Tokens.Spacing.Sm;
+            style.paddingLeft = Tokens.Spacing.MD;
             // Remove all margins (like JDropdown does)
             style.marginLeft = 0;
             style.marginRight = 0;
@@ -114,7 +114,7 @@ namespace JEngine.UI.Editor.Components.Button
             style.marginBottom = 0;
             style.minHeight = 22;
             style.maxHeight = 24;
-            style.fontSize = 11;
+            style.fontSize = Tokens.FontSize.Sm;
             style.unityFontStyleAndWeight = FontStyle.Normal;
             // No border for cleaner look
             style.borderTopWidth = 0;
@@ -126,6 +126,9 @@ namespace JEngine.UI.Editor.Components.Button
             style.overflow = Overflow.Hidden;
             style.textOverflow = TextOverflow.Ellipsis;
             style.whiteSpace = WhiteSpace.NoWrap;
+
+            // Pointer cursor for clickable element
+            JTheme.ApplyPointerCursor(this);
         }
 
         private void OnClicked()

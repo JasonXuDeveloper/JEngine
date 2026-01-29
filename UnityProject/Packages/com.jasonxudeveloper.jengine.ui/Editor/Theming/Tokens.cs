@@ -42,204 +42,180 @@ namespace JEngine.UI.Editor.Theming
         public static bool IsDarkTheme => EditorGUIUtility.isProSkin;
 
         /// <summary>
+        /// Base monochrome palette - the only place hex colors are defined.
+        /// All button/toggle colors use the same grey scale for consistency.
+        /// </summary>
+        private static class Palette
+        {
+            // Pure
+            public static readonly Color White = FromHex("#FFFFFF");
+            public static readonly Color Black = FromHex("#111111");
+
+            // Greys (light to dark) - used for all interactive elements
+            // Adjusted darker for better contrast
+            public static readonly Color Grey50 = FromHex("#F9FAFB");
+            public static readonly Color Grey100 = FromHex("#F9F9F9");
+            public static readonly Color Grey150 = FromHex("#EFF0F2");  // Hover state (between 100 and 200)
+            public static readonly Color Grey200 = FromHex("#E5E7EB");
+            public static readonly Color Grey300 = FromHex("#D1D5DB");
+            public static readonly Color Grey400 = FromHex("#D4D4D4");  // Light button color
+            public static readonly Color Grey500 = FromHex("#A0A0A0");  // Light button hover
+            public static readonly Color Grey600 = FromHex("#707070");  // Light button active
+            public static readonly Color Grey700 = FromHex("#424242");  // Dark button hover
+            public static readonly Color Grey800 = FromHex("#2E2E2E");  // Dark button color (darker)
+            public static readonly Color Grey840 = FromHex("#3A3A3A");  // Input hover (lighter than panel)
+            public static readonly Color Grey850 = FromHex("#323232");  // Panel/card background
+            public static readonly Color Grey875 = FromHex("#2C2C2C");  // Input background
+            public static readonly Color Grey900 = FromHex("#222222");  // Dark button active
+            public static readonly Color Grey925 = FromHex("#1C1C1C");  // BgSubtle, active states
+            public static readonly Color Grey950 = FromHex("#0A0A0A");
+
+            // Semantic text colors
+            public static readonly Color TextDark = FromHex("#373737");
+            public static readonly Color TextLight = FromHex("#E5E5E5");
+            public static readonly Color SuccessHoverLight = FromHex("#1F1F1F");
+            public static readonly Color SuccessActiveLight = FromHex("#030303");
+
+            public static Color FromHex(string hex)
+            {
+                if (ColorUtility.TryParseHtmlString(hex, out var color))
+                    return color;
+                return Color.magenta;
+            }
+        }
+
+        /// <summary>
         /// Monochrome color palette that adapts to Unity Editor theme.
         /// Dark theme is a clean grayscale inversion of the light theme.
         /// </summary>
         public static class Colors
         {
             // ===== BACKGROUND LAYERS =====
-            // Dark theme: Pure neutral greys (inverted from light)
-            // Light theme: Pure white to light greys
 
             /// <summary>Base layer - Deepest background</summary>
-            public static Color BgBase => IsDarkTheme
-                ? FromHex("#0A0A0A")        // Near-black (neutral grey)
-                : FromHex("#FFFFFF");        // Pure white
+            public static Color BgBase => IsDarkTheme ? Palette.Grey950 : Palette.White;
 
             /// <summary>Subtle layer - Secondary containers</summary>
-            public static Color BgSubtle => IsDarkTheme
-                ? FromHex("#252525")        // Dark grey (neutral) - lighter for log view
-                : FromHex("#F9FAFB");        // Very light grey (gray-50)
+            public static Color BgSubtle => IsDarkTheme ? Palette.Grey925 : Palette.Grey50;
 
             /// <summary>Surface layer - Cards, panels, dropdowns (most common)</summary>
-            public static Color BgSurface => IsDarkTheme
-                ? FromHex("#2A2A2A")        // Dark grey (neutral) - inverted from gray-200
-                : FromHex("#E5E7EB");        // Medium light grey (gray-200)
+            public static Color BgSurface => IsDarkTheme ? Palette.Grey850 : Palette.Grey200;
 
-            /// <summary>Elevated layer - Hover states, important elements</summary>
-            public static Color BgElevated => IsDarkTheme
-                ? FromHex("#3A3A3A")        // Medium-dark grey (neutral)
-                : FromHex("#E5E7EB");        // Medium light grey (gray-200)
+            /// <summary>Elevated layer - Hover states, important elements (lighter in light mode for contrast)</summary>
+            public static Color BgElevated => IsDarkTheme ? Palette.Grey800 : Palette.Grey100;
 
             /// <summary>Overlay layer - Modals, dropdowns, tooltips</summary>
-            public static Color BgOverlay => IsDarkTheme
-                ? FromHex("#4A4A4A")        // Medium grey (neutral) - inverted from gray-300
-                : FromHex("#D1D5DB");        // Medium grey (gray-300)
+            public static Color BgOverlay => IsDarkTheme ? Palette.Grey700 : Palette.Grey300;
 
-            /// <summary>Hover state</summary>
-            public static Color BgHover => IsDarkTheme
-                ? FromHex("#3A3A3A")        // Medium-dark grey (neutral)
-                : FromHex("#E5E7EB");        // gray-200
+            /// <summary>Hover state - lighter in dark mode, darker in light mode for visibility</summary>
+            public static Color BgHover => IsDarkTheme ? Palette.Grey840 : Palette.Grey300;
 
-            /// <summary>Input field background - lighter than surface in dark mode</summary>
-            public static Color BgInput => IsDarkTheme
-                ? FromHex("#353535")        // Lighter than BgSurface for contrast
-                : FromHex("#E5E7EB");        // Same as BgSurface in light mode (gray-200)
+            /// <summary>Input field background - more recessed than controls (darker in dark, lighter in light)</summary>
+            public static Color BgInput => IsDarkTheme ? Palette.Grey875 : Palette.Grey200;
 
-            // ===== SEMANTIC COLORS =====
-            // All use neutral grayscale values, no vibrant colors
+            // ===== PRIMARY (light button in dark, dark button in light) =====
+            // Perfect inversion: Primary dark = Secondary light, Primary light = Secondary dark
+            // Dark button color matches BgInput for unified control styling
 
             /// <summary>Primary button color - inverted between themes</summary>
-            public static Color Primary => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Light grey in dark mode = same as light's Secondary
-                : FromHex("#374151");        // Medium-dark grey in light mode
+            public static Color Primary => IsDarkTheme ? Palette.Grey400 : Palette.Grey900;
 
-            public static Color PrimaryHover => IsDarkTheme
-                ? FromHex("#9A9A9A")        // Dark mode = light's SecondaryHover (inverted)
-                : FromHex("#4B5563");        // Light mode slightly lighter
+            public static Color PrimaryHover => IsDarkTheme ? Palette.Grey500 : Palette.Grey700;
 
-            public static Color PrimaryActive => IsDarkTheme
-                ? FromHex("#6A6A6A")        // Dark mode = light's SecondaryActive (inverted)
-                : FromHex("#1F2937");        // Light mode much darker
+            public static Color PrimaryActive => IsDarkTheme ? Palette.Grey600 : Palette.Grey925;
 
             /// <summary>Primary button text color</summary>
-            public static Color PrimaryText => IsDarkTheme
-                ? FromHex("#111111")        // Black text on light button in dark mode
-                : FromHex("#FFFFFF");        // White text on dark button in light mode
+            public static Color PrimaryText => IsDarkTheme ? Palette.Black : Palette.White;
+
+            // ===== SECONDARY (dark button in dark, light button in light) =====
+            // Perfect inversion using same grey values as Primary
+            // Matches BgInput so all controls share the same color
 
             /// <summary>Secondary button color - inverted between themes</summary>
-            public static Color Secondary => IsDarkTheme
-                ? FromHex("#374151")        // Medium-dark grey in dark mode = same as light's Primary
-                : FromHex("#D0D0D0");        // Light grey in light mode
+            public static Color Secondary => IsDarkTheme ? Palette.Grey900 : Palette.Grey400;
 
-            public static Color SecondaryHover => IsDarkTheme
-                ? FromHex("#4B5563")        // Lighter on hover
-                : FromHex("#9A9A9A");        // Darker on hover
+            public static Color SecondaryHover => IsDarkTheme ? Palette.Grey800 : Palette.Grey500;
 
-            public static Color SecondaryActive => IsDarkTheme
-                ? FromHex("#1F2937")        // Darker on active
-                : FromHex("#6A6A6A");        // Much darker on active
+            public static Color SecondaryActive => IsDarkTheme ? Palette.Grey925 : Palette.Grey600;
 
             /// <summary>Secondary button text color</summary>
-            public static Color SecondaryText => IsDarkTheme
-                ? FromHex("#FFFFFF")        // White text on dark button in dark mode
-                : FromHex("#111111");        // Black text on light button in light mode
+            public static Color SecondaryText => IsDarkTheme ? Palette.White : Palette.Black;
+
+            // ===== SEMANTIC COLORS (all same in monochrome) =====
 
             /// <summary>Success state - neutral grey</summary>
-            public static Color Success => IsDarkTheme
-                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted from #111111
-                : FromHex("#111111");        // Near-black (neutral)
+            public static Color Success => IsDarkTheme ? Palette.Grey100 : Palette.Black;
 
-            public static Color SuccessHover => IsDarkTheme
-                ? FromHex("#E5E5E5")        // Light grey - inverted
-                : FromHex("#1F1F1F");        // Dark grey
+            public static Color SuccessHover => IsDarkTheme ? Palette.TextLight : Palette.SuccessHoverLight;
 
-            public static Color SuccessActive => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
-                : FromHex("#030303");        // Almost black
+            public static Color SuccessActive => IsDarkTheme ? Palette.Grey400 : Palette.SuccessActiveLight;
 
-            /// <summary>Danger state - neutral grey</summary>
-            public static Color Danger => IsDarkTheme
-                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted
-                : FromHex("#111111");        // Near-black (neutral)
+            /// <summary>Danger state - neutral grey (same as Success in monochrome)</summary>
+            public static Color Danger => Success;
 
-            public static Color DangerHover => IsDarkTheme
-                ? FromHex("#E5E5E5")        // Light grey - inverted
-                : FromHex("#1F1F1F");        // Dark grey
+            public static Color DangerHover => SuccessHover;
 
-            public static Color DangerActive => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
-                : FromHex("#030303");        // Almost black
+            public static Color DangerActive => SuccessActive;
 
-            /// <summary>Warning state - neutral grey</summary>
-            public static Color Warning => IsDarkTheme
-                ? FromHex("#F9F9F9")        // Very light grey (neutral) - inverted
-                : FromHex("#111111");        // Near-black (neutral)
+            /// <summary>Warning state - neutral grey (same as Success in monochrome)</summary>
+            public static Color Warning => Success;
 
-            public static Color WarningHover => IsDarkTheme
-                ? FromHex("#E5E5E5")        // Light grey - inverted
-                : FromHex("#1F1F1F");        // Dark grey
+            public static Color WarningHover => SuccessHover;
 
-            public static Color WarningActive => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Medium-light grey - inverted
-                : FromHex("#030303");        // Almost black
+            public static Color WarningActive => SuccessActive;
 
             // ===== TEXT HIERARCHY =====
-            // Dark theme: White to light greys (inverted, neutral)
-            // Light theme: Black to dark greys
 
             /// <summary>Primary text - Highest contrast</summary>
-            public static Color TextPrimary => IsDarkTheme
-                ? FromHex("#FFFFFF")        // Pure white - inverted from light's #111111
-                : FromHex("#111111");        // Near-black (neutral)
+            public static Color TextPrimary => IsDarkTheme ? Palette.White : Palette.Black;
 
             /// <summary>Secondary text - Body text</summary>
-            public static Color TextSecondary => IsDarkTheme
-                ? FromHex("#D0D0D0")        // Light grey (neutral) - inverted from light's #373737
-                : FromHex("#373737");        // Dark grey (neutral)
+            public static Color TextSecondary => IsDarkTheme ? Palette.Grey400 : Palette.TextDark;
 
             /// <summary>Muted text - Helper text</summary>
-            public static Color TextMuted => IsDarkTheme
-                ? FromHex("#9A9A9A")        // Medium-light grey (neutral) - inverted from light's #6A6A6A
-                : FromHex("#6A6A6A");        // Medium grey (neutral)
+            public static Color TextMuted => IsDarkTheme ? Palette.Grey500 : Palette.Grey600;
 
             /// <summary>Main panel/page headers - Maximum impact</summary>
-            public static Color TextHeader => IsDarkTheme
-                ? FromHex("#FFFFFF")        // Pure white
-                : FromHex("#111111");        // Near-black (neutral)
+            public static Color TextHeader => TextPrimary;
 
             /// <summary>Section headers - Visual hierarchy</summary>
-            public static Color TextSectionHeader => IsDarkTheme
-                ? FromHex("#E5E5E5")        // Light grey (neutral) - inverted, no color
-                : FromHex("#111111");        // Near-black (neutral)
+            public static Color TextSectionHeader => IsDarkTheme ? Palette.TextLight : Palette.Black;
 
             // ===== BORDERS =====
-            // Dark theme: Medium-dark greys (inverted, neutral)
-            // Light theme: Medium greys
-
-            /// <summary>Light edge border</summary>
-            public static Color BorderLight => IsDarkTheme
-                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted from light's #D0D0D0
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
-
-            /// <summary>Dark edge border</summary>
-            public static Color BorderDark => IsDarkTheme
-                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
 
             /// <summary>Default border</summary>
-            public static Color Border => IsDarkTheme
-                ? FromHex("#4A4A4A")        // Medium-dark grey (neutral) - inverted
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
+            public static Color Border => IsDarkTheme ? Palette.Grey700 : Palette.Grey400;
+
+            /// <summary>Light edge border</summary>
+            public static Color BorderLight => Border;
+
+            /// <summary>Dark edge border</summary>
+            public static Color BorderDark => Border;
 
             /// <summary>Focus border</summary>
-            public static Color BorderFocus => IsDarkTheme
-                ? FromHex("#6A6A6A")        // Medium grey (neutral) - inverted from light's #9A9A9A
-                : FromHex("#9A9A9A");        // Medium-light grey (neutral)
+            public static Color BorderFocus => IsDarkTheme ? Palette.Grey600 : Palette.Grey500;
 
             /// <summary>Hover border</summary>
-            public static Color BorderHover => IsDarkTheme
-                ? FromHex("#6A6A6A")        // Medium grey (neutral) - inverted
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
+            public static Color BorderHover => IsDarkTheme ? Palette.Grey600 : Palette.Grey400;
 
             /// <summary>Subtle border for separators</summary>
-            public static Color BorderSubtle => IsDarkTheme
-                ? FromHex("#454545")        // Lighter grey for visibility (neutral)
-                : FromHex("#D0D0D0");        // Medium grey (neutral)
+            public static Color BorderSubtle => IsDarkTheme ? Palette.FromHex("#454545") : Palette.Grey400;
 
-            // ===== STATUS COLORS =====
-            // All use the same neutral grey values
+            // ===== STATUS COLORS (aliases) =====
+
             public static Color StatusInfo => Primary;
             public static Color StatusSuccess => Success;
             public static Color StatusWarning => Warning;
             public static Color StatusError => Danger;
 
-            private static Color FromHex(string hex)
-            {
-                if (ColorUtility.TryParseHtmlString(hex, out var color))
-                    return color;
-                return Color.magenta;
-            }
+            // ===== TOGGLE THUMB =====
+            // Thumb always contrasts with track: OFF track=Secondary, ON track=Primary
+
+            /// <summary>Toggle thumb when off - contrasts with Secondary track</summary>
+            public static Color ToggleThumbOff => Primary;
+
+            /// <summary>Toggle thumb when on - contrasts with Primary track</summary>
+            public static Color ToggleThumbOn => Secondary;
         }
 
         /// <summary>

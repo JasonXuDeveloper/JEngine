@@ -43,12 +43,13 @@ namespace JEngine.UI.Editor.Components.Form
         private bool _value;
         private Action<bool> _onValueChanged;
 
-        // Use same colors as buttons
-        private static Color TrackOffColor => Tokens.Colors.Secondary;     // Inactive = Secondary button color
-        private static Color TrackOnColor => Tokens.Colors.Primary;        // Active = Primary button color
+        // Track colors (same as button colors)
+        private static Color TrackOffColor => Tokens.Colors.Secondary;
+        private static Color TrackOnColor => Tokens.Colors.Primary;
 
-        // Thumb stays white in both themes
-        private static Color ThumbColor => Color.white;
+        // Thumb colors (dynamic based on state and theme)
+        private static Color ThumbOffColor => Tokens.Colors.ToggleThumbOff;
+        private static Color ThumbOnColor => Tokens.Colors.ToggleThumbOn;
 
         /// <summary>
         /// Creates a new styled toggle.
@@ -95,12 +96,16 @@ namespace JEngine.UI.Editor.Components.Form
             _thumb.style.borderTopRightRadius = 7;
             _thumb.style.borderBottomLeftRadius = 7;
             _thumb.style.borderBottomRightRadius = 7;
-            _thumb.style.backgroundColor = ThumbColor;
-            // Smooth transition for thumb movement
-            _thumb.style.transitionProperty = new List<StylePropertyName> { new("left") };
+            // Smooth transition for thumb movement and color
+            _thumb.style.transitionProperty = new List<StylePropertyName> { new("left"), new("background-color") };
             _thumb.style.transitionDuration = new List<TimeValue> { new(150, TimeUnit.Millisecond) };
             _thumb.style.transitionTimingFunction = new List<EasingFunction> { new(EasingMode.EaseInOut) };
             Add(_thumb);
+
+            // Pointer cursor on all elements
+            JTheme.ApplyPointerCursor(this);
+            JTheme.ApplyPointerCursor(_track);
+            JTheme.ApplyPointerCursor(_thumb);
 
             // Apply initial state
             UpdateVisuals();
@@ -108,15 +113,17 @@ namespace JEngine.UI.Editor.Components.Form
             // Click handler
             RegisterCallback<ClickEvent>(OnClick);
 
-            // Hover effect
+            // Hover effect - change track color
             RegisterCallback<MouseEnterEvent, JToggle>(static (_, toggle) =>
             {
-                toggle.style.opacity = 0.9f;
+                toggle._track.style.backgroundColor = toggle._value
+                    ? Tokens.Colors.PrimaryHover
+                    : Tokens.Colors.SecondaryHover;
             }, this);
 
             RegisterCallback<MouseLeaveEvent, JToggle>(static (_, toggle) =>
             {
-                toggle.style.opacity = 1f;
+                toggle.UpdateVisuals();
             }, this);
         }
 
@@ -131,6 +138,7 @@ namespace JEngine.UI.Editor.Components.Form
         {
             _track.style.backgroundColor = _value ? TrackOnColor : TrackOffColor;
             _thumb.style.left = _value ? 20 : 2;
+            _thumb.style.backgroundColor = _value ? ThumbOnColor : ThumbOffColor;
         }
 
         /// <summary>
