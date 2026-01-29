@@ -18,6 +18,7 @@
 - **零/极低GC** - UniTask（无GC异步）+ Nino（高性能序列化）
 - **全平台支持** - iOS、Android、Windows、macOS、WebGL、微信、抖音、支付宝、TapTap
 - **安全更新** - 热更DLL混淆 + 资源（资产和DLL/PDB）支持XOR/AES/ChaCha20加密
+- **AI赋能** - AI[深度理解JEngine](claude-plugin/)，无缝融入开发流程，效率倍增
 - **商用验证** - 经个人和企业团队生产环境验证
 
 ## 概述
