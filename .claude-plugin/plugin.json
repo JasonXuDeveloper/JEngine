@@ -20,9 +20,9 @@
     "gc-optimization"
   ],
   "skills": [
-    "./skills/jaction",
-    "./skills/jobjectpool",
-    "./skills/messagebox",
-    "./skills/editor-ui"
+    "./.claude-plugin/skills/jaction",
+    "./.claude-plugin/skills/jobjectpool",
+    "./.claude-plugin/skills/messagebox",
+    "./.claude-plugin/skills/editor-ui"
   ]
 }
