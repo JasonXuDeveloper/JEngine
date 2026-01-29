@@ -49,10 +49,15 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 |------|------|--------|------|
 | **JEngine.Core** | 必需 | N/A | 支持运行时热更，附带安全且高性能的功能 |
 | **JEngine.Util** | 可选 | [![Util Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=util)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | 工具类库，包含JAction和JObjectPool |
+| **JEngine.UI** | 可选 | [![UI Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=ui)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | 运行时和编辑器UI工具类 |
 
 **JEngine.Util 功能:**
 - **JAction** - 零GC链式异步任务框架，提供流畅API、对象池、延迟、条件和循环功能
 - **JObjectPool** - 线程安全、无锁的通用对象池，使用CAS操作
+
+**JEngine.UI 功能:**
+- **MessageBox** - 零分配异步提示系统，支持UniTask集成和对象池，用于运行时UI
+- **编辑器UI** - 借鉴shadcn的现代化UI Toolkit框架，支持主题系统和Bootstrap/Panel UI集成
 
 ### 第三方包
 
