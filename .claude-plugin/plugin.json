@@ -1,0 +1,17 @@
+{
+  "name": "jengine",
+  "description": "AI guide for game development with JEngine Unity hot-update framework",
+  "version": "1.0.1",
+  "author": {
+    "name": "JasonXuDeveloper"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/JasonXuDeveloper/JEngine",
+  "keywords": ["unity", "hot-update", "hybridclr", "async", "unitask", "object-pool", "chainable-tasks", "editor-ui", "modal-dialog", "gc-optimization"],
+  "skills": [
+    "./skills/jaction",
+    "./skills/jobjectpool",
+    "./skills/messagebox",
+    "./skills/editor-ui"
+  ]
+}
