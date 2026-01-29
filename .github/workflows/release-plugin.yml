@@ -21,8 +21,10 @@ on:
 jobs:
   release-plugin:
     runs-on: ubuntu-latest
-    # Skip if this is an automated version bump commit (only applies to push events)
-    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message || '', 'chore(plugin): bump version')
+    # Only run on master branch, skip automated version bump commits
+    if: |
+      (github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch') &&
+      (github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message || '', 'chore(plugin): bump version'))
     steps:
       - uses: actions/checkout@v4
         with:
