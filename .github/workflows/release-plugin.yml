@@ -3,7 +3,7 @@ name: Release Plugin
 on:
   push:
     paths:
-      - 'claude-plugin/**'
+      - '.claude-plugin/**'
     branches:
       - master
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
         id: bump
         run: |
           BUMP_TYPE="${{ github.event.inputs.bump_type || 'patch' }}"
-          CURRENT=$(jq -r '.version' claude-plugin/claude.json)
+          CURRENT=$(jq -r '.version' .claude-plugin/plugin.json)
 
           IFS='.' read -r major minor patch <<< "$CURRENT"
           case $BUMP_TYPE in
@@ -53,8 +53,8 @@ jobs:
             patch) NEW_VERSION="$major.$minor.$((patch+1))" ;;
           esac
 
-          jq --arg v "$NEW_VERSION" '.version = $v' claude-plugin/claude.json > tmp.json
-          mv tmp.json claude-plugin/claude.json
+          jq --arg v "$NEW_VERSION" '.version = $v' .claude-plugin/plugin.json > tmp.json
+          mv tmp.json .claude-plugin/plugin.json
 
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Bumped plugin version from $CURRENT to $NEW_VERSION"
@@ -68,7 +68,7 @@ jobs:
           git config user.name "jengine-release-bot[bot]"
           git config user.email "257041894+jengine-release-bot[bot]@users.noreply.github.com"
 
-          git add claude-plugin/claude.json
+          git add .claude-plugin/plugin.json
 
           git commit -m "chore(plugin): bump version to ${{ steps.bump.outputs.version }}"
 
