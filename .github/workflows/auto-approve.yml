@@ -8,6 +8,9 @@ on:
   workflow_run:
     workflows: ["PR Tests"]
     types: [completed]
+  # Trigger when Copilot (or any reviewer) submits a review
+  pull_request_review:
+    types: [submitted]
 
 permissions: read-all
 
@@ -17,7 +20,8 @@ jobs:
     # Only run on pull requests, not pushes
     if: |
       github.event.check_suite.pull_requests[0] != null ||
-      github.event.workflow_run.pull_requests[0] != null
+      github.event.workflow_run.pull_requests[0] != null ||
+      github.event.pull_request != null
     permissions:
       pull-requests: write
 
@@ -27,6 +31,8 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" == "check_suite" ]; then
             PR_NUMBER="${{ github.event.check_suite.pull_requests[0].number }}"
+          elif [ "${{ github.event_name }}" == "pull_request_review" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
           else
             PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
           fi
