@@ -86,19 +86,12 @@ namespace JEngine.UI.Editor.Components.Form
                 defaultIndex = choices.IndexOf(defaultValue);
             }
 
-            // Create popup field with optional formatters
-            if (formatSelectedValue != null || formatListItem != null)
-            {
-                _popupField = new PopupField<T>(
-                    choices,
-                    defaultIndex,
-                    formatSelectedValue ?? (v => v?.ToString() ?? ""),
-                    formatListItem ?? (v => v?.ToString() ?? ""));
-            }
-            else
-            {
-                _popupField = new PopupField<T>(choices, defaultIndex);
-            }
+            // Create popup field with formatters (use ToString as default)
+            _popupField = new PopupField<T>(
+                choices,
+                defaultIndex,
+                formatSelectedValue ?? (v => v?.ToString() ?? ""),
+                formatListItem ?? (v => v?.ToString() ?? ""));
 
             // Style the container using shared input styles
             JTheme.ApplyInputContainerStyle(this);
