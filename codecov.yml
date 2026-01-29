@@ -22,6 +22,10 @@ flag_management:
       paths:
         - UnityProject/Packages/com.jasonxudeveloper.jengine.util/
       carryforward: true
+    - name: ui
+      paths:
+        - UnityProject/Packages/com.jasonxudeveloper.jengine.ui/
+      carryforward: true
     # Add future packages here as they become testable
     # - name: another-package
     #   paths:
@@ -30,9 +34,6 @@ flag_management:
 
 # Ignore files that shouldn't affect coverage
 ignore:
-  - "**/*Tests*/**"
-  - "**/*.Tests.cs"
-  - "**/Editor/**"
   - "**/Samples/**"
   # Ignore third-party packages (not JEngine's)
   - "UnityProject/Packages/com.code-philosophy.*/**"

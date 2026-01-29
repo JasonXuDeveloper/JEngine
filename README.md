@@ -47,10 +47,15 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 |---------|------|----------|-------------|
 | **JEngine.Core** | Required | N/A | Hot update support with secure, high-performance features |
 | **JEngine.Util** | Optional | [![Util Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=util)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | Utility classes including JAction and JObjectPool |
+| **JEngine.UI** | Optional | [![UI Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=ui)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | UI utilities for both runtime and editor |
 
 **JEngine.Util Features:**
 - **JAction** - Zero-GC chainable async task framework with fluent API, object pooling, delays, conditions, and loops
 - **JObjectPool** - Thread-safe, lock-free generic object pooling using CAS operations
+
+**JEngine.UI Features:**
+- **MessageBox** - Zero-allocation async prompt system with UniTask integration and object pooling for runtime UI
+- **Editor UI** - Shadcn-inspired modern UI Toolkit framework with theming support and Bootstrap/Panel UI integration
 
 ### Third-Party Packages
 
