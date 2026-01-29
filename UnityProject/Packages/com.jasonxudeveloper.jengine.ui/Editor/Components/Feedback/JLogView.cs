@@ -24,7 +24,6 @@
 //  THE SOFTWARE.
 
 using JEngine.UI.Editor.Theming;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace JEngine.UI.Editor.Components.Feedback
@@ -48,11 +47,8 @@ namespace JEngine.UI.Editor.Components.Feedback
             _currentLineCount = 0;
 
             // Apply theme-aware background
-            // Dark mode: subtle layer (not too dark)
-            // Light mode: surface layer (grey)
-            style.backgroundColor = Tokens.IsDarkTheme
-                ? Tokens.Colors.BgSubtle
-                : Tokens.Colors.BgSurface;
+            // Use input background for consistent control styling
+            style.backgroundColor = Tokens.Colors.BgInput;
 
             // Standard borders
             style.borderTopColor = Tokens.Colors.Border;
@@ -135,7 +131,7 @@ namespace JEngine.UI.Editor.Components.Feedback
             entry.style.fontSize = Tokens.FontSize.Sm;
             entry.style.paddingTop = Tokens.Spacing.Xs;
             entry.style.paddingBottom = Tokens.Spacing.Xs;
-            entry.style.borderBottomColor = new Color(1, 1, 1, 0.05f);
+            entry.style.borderBottomColor = Tokens.Colors.BorderSubtle;
             entry.style.borderBottomWidth = 1;
             entry.style.color = isError ? Tokens.Colors.StatusError : Tokens.Colors.TextSecondary;
             entry.style.whiteSpace = WhiteSpace.Normal;

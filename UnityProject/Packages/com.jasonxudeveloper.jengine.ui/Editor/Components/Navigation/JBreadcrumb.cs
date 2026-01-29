@@ -204,7 +204,8 @@ namespace JEngine.UI.Editor.Components.Navigation
         // Static event handlers to avoid closure allocation
         private static void OnLastItemMouseEnter(MouseEnterEvent evt, Label label)
         {
-            label.style.backgroundColor = Tokens.Colors.BgHover;
+            // Use BgSurface instead of BgHover to differentiate from row hover
+            label.style.backgroundColor = Tokens.Colors.BgSurface;
             label.style.borderTopColor = Tokens.Colors.BorderHover;
             label.style.borderBottomColor = Tokens.Colors.BorderHover;
             label.style.borderLeftColor = Tokens.Colors.BorderHover;

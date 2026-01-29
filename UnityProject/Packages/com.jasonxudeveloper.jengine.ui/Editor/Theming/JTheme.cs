@@ -24,6 +24,7 @@
 //  THE SOFTWARE.
 
 using System.Collections.Generic;
+using JEngine.UI.Editor.Utilities;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -220,6 +221,160 @@ namespace JEngine.UI.Editor.Theming
                 _ => Tokens.Colors.PrimaryActive
             };
         }
+
+        #region Shared Input Styles
+
+        /// <summary>
+        /// Applies common container styles to input wrapper elements (JTextField, JDropdown, JObjectField).
+        /// </summary>
+        /// <param name="container">The wrapper container element.</param>
+        public static void ApplyInputContainerStyle(VisualElement container)
+        {
+            container.style.flexGrow = 1;
+            container.style.flexShrink = 1;
+            container.style.minWidth = 50;
+            container.style.minHeight = 20;
+            container.style.maxHeight = 26;
+            container.style.alignSelf = Align.Center;
+        }
+
+        /// <summary>
+        /// Applies common styles to the internal input element of form controls.
+        /// </summary>
+        /// <param name="inputElement">The internal input element (unity-text-field__input, unity-base-popup-field__input, etc.).</param>
+        public static void ApplyInputElementStyle(VisualElement inputElement)
+        {
+            if (inputElement == null) return;
+
+            // Background and borders
+            inputElement.style.backgroundColor = Tokens.Colors.BgInput;
+            inputElement.style.borderTopColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderRightColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderBottomColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderLeftColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderTopWidth = 1;
+            inputElement.style.borderRightWidth = 1;
+            inputElement.style.borderBottomWidth = 1;
+            inputElement.style.borderLeftWidth = 1;
+            inputElement.style.borderTopLeftRadius = Tokens.BorderRadius.Sm;
+            inputElement.style.borderTopRightRadius = Tokens.BorderRadius.Sm;
+            inputElement.style.borderBottomLeftRadius = Tokens.BorderRadius.Sm;
+            inputElement.style.borderBottomRightRadius = Tokens.BorderRadius.Sm;
+
+            // Padding
+            inputElement.style.paddingLeft = Tokens.Spacing.MD;
+            inputElement.style.paddingRight = Tokens.Spacing.MD;
+            inputElement.style.paddingTop = Tokens.Spacing.Sm;
+            inputElement.style.paddingBottom = Tokens.Spacing.Sm;
+
+            // Size
+            inputElement.style.minHeight = 24;
+
+            // Text
+            inputElement.style.color = Tokens.Colors.TextPrimary;
+
+            // Transitions
+            ApplyTransition(inputElement);
+        }
+
+        /// <summary>
+        /// Applies common text styles to input text elements.
+        /// </summary>
+        /// <param name="textElement">The text element inside the input.</param>
+        public static void ApplyInputTextStyle(VisualElement textElement)
+        {
+            if (textElement == null) return;
+
+            textElement.style.color = Tokens.Colors.TextPrimary;
+            textElement.style.fontSize = Tokens.FontSize.Sm;
+        }
+
+        /// <summary>
+        /// Applies hover state to an input element.
+        /// </summary>
+        /// <param name="inputElement">The input element to apply hover state to.</param>
+        public static void ApplyInputHoverState(VisualElement inputElement)
+        {
+            if (inputElement == null) return;
+
+            inputElement.style.backgroundColor = Tokens.Colors.BgHover;
+            inputElement.style.borderTopColor = Tokens.Colors.Border;
+            inputElement.style.borderRightColor = Tokens.Colors.Border;
+            inputElement.style.borderBottomColor = Tokens.Colors.Border;
+            inputElement.style.borderLeftColor = Tokens.Colors.Border;
+        }
+
+        /// <summary>
+        /// Applies normal (non-hover) state to an input element.
+        /// </summary>
+        /// <param name="inputElement">The input element to apply normal state to.</param>
+        public static void ApplyInputNormalState(VisualElement inputElement)
+        {
+            if (inputElement == null) return;
+
+            inputElement.style.backgroundColor = Tokens.Colors.BgInput;
+            inputElement.style.borderTopColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderRightColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderBottomColor = Tokens.Colors.BorderSubtle;
+            inputElement.style.borderLeftColor = Tokens.Colors.BorderSubtle;
+        }
+
+        /// <summary>
+        /// Applies focus state to an input element.
+        /// </summary>
+        /// <param name="inputElement">The input element to apply focus state to.</param>
+        public static void ApplyInputFocusState(VisualElement inputElement)
+        {
+            if (inputElement == null) return;
+
+            inputElement.style.borderTopColor = Tokens.Colors.BorderFocus;
+            inputElement.style.borderRightColor = Tokens.Colors.BorderFocus;
+            inputElement.style.borderBottomColor = Tokens.Colors.BorderFocus;
+            inputElement.style.borderLeftColor = Tokens.Colors.BorderFocus;
+        }
+
+        /// <summary>
+        /// Hides the Unity field label element.
+        /// </summary>
+        /// <param name="field">The field containing the label.</param>
+        public static void HideFieldLabel(VisualElement field)
+        {
+            var label = field.Q<Label>(className: "unity-base-field__label");
+            if (label != null)
+            {
+                label.style.display = DisplayStyle.None;
+            }
+        }
+
+        #endregion
+
+        #region Cursor Styles
+
+        /// <summary>
+        /// Applies text cursor style (for text input fields).
+        /// Uses USS class - requires stylesheets to be loaded.
+        /// </summary>
+        /// <param name="element">The element to style.</param>
+        public static void ApplyTextCursor(VisualElement element)
+        {
+            if (element == null) return;
+            StyleSheetManager.ApplyAllStyleSheets(element);
+            element.AddToClassList("j-cursor-text");
+        }
+
+        /// <summary>
+        /// Applies pointer cursor style (for clickable elements like buttons).
+        /// Uses USS class - requires stylesheets to be loaded.
+        /// </summary>
+        /// <param name="element">The element to style.</param>
+        public static void ApplyPointerCursor(VisualElement element)
+        {
+            if (element == null) return;
+            StyleSheetManager.ApplyAllStyleSheets(element);
+            element.AddToClassList("j-cursor-pointer");
+        }
+
+        #endregion
     }
 
     /// <summary>
