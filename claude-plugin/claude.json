@@ -1,10 +1,12 @@
 {
   "name": "jengine",
   "displayName": "JEngine Framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI development guide for JEngine Unity hot-update framework",
   "author": "JasonXuDeveloper",
   "repository": "https://github.com/JasonXuDeveloper/JEngine",
-  "skills": ["skills/*/SKILL.md"],
+  "skills": [
+    "skills/*/SKILL.md"
+  ],
   "claudeMd": "CLAUDE.md"
 }
