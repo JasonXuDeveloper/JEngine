@@ -73,18 +73,20 @@ await JAction.Create()
     .ExecuteAsync();
 ```
 
-### State Parameter for Zero-Allocation
+### State Parameter for Zero-Allocation (Reference Types Only)
 ```csharp
-// CORRECT - no closure allocation (works with both reference and value types)
+// CORRECT - no closure allocation with reference types
 var data = new MyData();
 JAction.Create()
     .Do(static (MyData d) => d.Process(), data)
     .Execute();
 
-// Also works with value types without boxing
+// WARNING: State overloads DO NOT work with value types (int, float, struct, bool, etc.)
+// Value types get boxed when passed as generic parameters, defeating zero-allocation
+// For value types, use closures instead (allocation is acceptable):
 int count = 5;
 JAction.Create()
-    .Do(static (int c) => Debug.Log($"Count: {c}"), count)
+    .Do(() => Debug.Log($"Count: {count}"))  // Closure is fine for value types
     .Execute();
 ```
 
@@ -109,5 +111,6 @@ action.Cancel();
 ## Common Mistakes
 - NOT using `using var` after ExecuteAsync (memory leak, never returns to pool)
 - Using Execute() in production (blocks main thread, causes frame drops)
+- Using state overloads with value types (causes boxing - use closures instead)
 - Forgetting to call Execute() or ExecuteAsync() (nothing happens)
 - Code in .Do() runs atomically and cannot be interrupted - keep callbacks lightweight
