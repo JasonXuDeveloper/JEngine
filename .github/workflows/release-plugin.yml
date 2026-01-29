@@ -26,10 +26,19 @@ jobs:
       (github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch') &&
       (github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message || '', 'chore(plugin): bump version'))
     steps:
-      - uses: actions/checkout@v4
+      # Generate GitHub App token for authenticated commits (same as release.yml)
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Bump plugin version
         id: bump
@@ -50,11 +59,26 @@ jobs:
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Bumped plugin version from $CURRENT to $NEW_VERSION"
 
-      - name: Commit and tag
+      # Commit and push changes (identical pattern to release.yml)
+      - name: Commit and push changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Use GitHub's bot email format so the app avatar shows on commits
+          # The user ID (257041894) is from: gh api '/users/jengine-release-bot[bot]' --jq '.id'
+          # This is different from the App ID - it's the bot account's user ID
+          git config user.name "jengine-release-bot[bot]"
+          git config user.email "257041894+jengine-release-bot[bot]@users.noreply.github.com"
+
           git add claude-plugin/claude.json
+
           git commit -m "chore(plugin): bump version to ${{ steps.bump.outputs.version }}"
+
+          git push origin ${{ github.ref_name }}
+
+          echo "✅ Committed and pushed changes"
+
+      # Create Git tag
+      - name: Create Git tag
+        run: |
           git tag "plugin-v${{ steps.bump.outputs.version }}"
-          git push origin master --tags
+          git push origin "plugin-v${{ steps.bump.outputs.version }}"
+          echo "✅ Created and pushed tag plugin-v${{ steps.bump.outputs.version }}"
