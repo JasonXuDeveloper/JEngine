@@ -1,6 +1,6 @@
 ---
 name: jaction
-description: JAction chainable task system. Triggers on: sequential tasks, delays, timers, repeat loops, WaitUntil, async workflows, zero-allocation async
+description: JAction fluent chainable task system for Unity. Triggers on: sequential tasks, delay, timer, repeat loop, WaitUntil, WaitWhile, async workflow, zero-allocation async, coroutine alternative, scheduled action, timed event, polling condition, action sequence, ExecuteAsync
 ---
 
 # JAction - Chainable Task Execution

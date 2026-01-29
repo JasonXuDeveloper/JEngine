@@ -1,6 +1,6 @@
 ---
 name: editor-ui
-description: JEngine Editor UI components. Triggers on: custom inspector, editor window, Unity editor UI, UIElements, VisualElement, progress bar, status bar, breadcrumb, form field
+description: JEngine Editor UI component library with theming. Triggers on: custom inspector, editor window, Unity editor UI, UIElements, VisualElement, JButton, JStack, JCard, JTextField, JDropdown, design tokens, dark theme, light theme, editor styling, themed button, form layout, progress bar, status bar, toggle button, button group
 ---
 
 # JEngine Editor UI Components

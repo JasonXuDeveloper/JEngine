@@ -1,6 +1,6 @@
 ---
 name: messagebox
-description: MessageBox async dialogs. Triggers on: confirmation dialog, modal, prompt, alert, user confirmation, yes/no dialog
+description: MessageBox async modal dialogs for Unity with UniTask. Triggers on: confirmation dialog, modal popup, prompt, alert, user confirmation, yes/no dialog, OK/Cancel, async dialog, await user input, delete confirmation, save confirmation
 ---
 
 # MessageBox - Async Modal Dialogs

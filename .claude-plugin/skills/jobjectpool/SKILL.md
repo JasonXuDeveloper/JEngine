@@ -1,6 +1,6 @@
 ---
 name: jobjectpool
-description: JObjectPool thread-safe pooling. Triggers on: object pool, GC optimization, reusable instances, bullet pool, spawn pool, reduce garbage collection
+description: JObjectPool thread-safe object pooling for Unity. Triggers on: object pool, GC optimization, reusable instances, bullet pool, enemy pool, effect pool, spawn pool, reduce garbage collection, memory optimization, pool prewarm, Rent Return pattern, lock-free pool
 ---
 
 # JObjectPool - Thread-Safe Object Pooling
