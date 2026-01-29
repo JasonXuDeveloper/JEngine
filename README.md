@@ -18,7 +18,7 @@
 - **Zero/Minimal GC** - UniTask (GC-free async) + Nino (high-performance serialization)
 - **All Platforms** - iOS, Android, Windows, macOS, WebGL, WeChat, Douyin, Alipay, TapTap
 - **Secure Updates** - Obfuscate hot update DLL + encrypt resources (assets & DLL/PDB) with XOR/AES/ChaCha20
-- **AI-Ready** - AI coding assistants [automatically discover and apply](claude-plugin/) JEngine APIs as you code
+- **AI-Accelerated** - Intelligent AI [seamlessly integrated](claude-plugin/), deeply understands JEngine to boost productivity
 - **Commercial Ready** - Production-proven by individuals and enterprise teams
 
 ## Overview

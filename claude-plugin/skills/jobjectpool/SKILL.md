@@ -18,50 +18,46 @@ Thread-safe, lock-free generic object pooling for Unity using CAS operations. Wo
 ### Constructor
 ```csharp
 new JObjectPool<T>(
-    Func<T> createFunc = null,    // Factory (defaults to Activator.CreateInstance<T>())
-    Action<T> onRent = null,       // Called when renting
-    Action<T> onReturn = null      // Called when returning
+    int maxSize = 64,           // Maximum pooled objects (excess discarded)
+    Action<T> onRent = null,    // Called when renting (for initialization)
+    Action<T> onReturn = null   // Called when returning (for cleanup)
 )
 ```
+Note: `T` must be a reference type with a parameterless constructor (`where T : class, new()`).
 
 ### Methods
 - `.Rent()` - Get object from pool or create new
-- `.Return(T obj)` - Return object to pool
+- `.Return(T obj)` - Return object to pool (null values ignored)
 - `.Clear()` - Remove all pooled objects
-- `.Prewarm(int count)` - Pre-allocate objects
-- `.Count` - Current available count
+- `.Prewarm(int count)` - Pre-allocate objects (won't exceed maxSize)
+- `.Count` - Current available count (approximate, thread-safe)
 
 ### Static Access
-- `JObjectPool.Shared<T>()` - Global shared pool per type (simple objects only)
+- `JObjectPool.Shared<T>()` - Global shared pool per type (default config: maxSize=64)
 
 ## Patterns
 
 ### Basic Pool
 ```csharp
-var pool = new JObjectPool<Bullet>();
+var pool = new JObjectPool<Bullet>(maxSize: 100);
 var bullet = pool.Rent();
 // ... use bullet ...
 pool.Return(bullet);
 ```
 
-### With Custom Factory
+### With Initialization on Rent
 ```csharp
 var pool = new JObjectPool<Enemy>(
-    createFunc: () => new Enemy(defaultHealth: 100)
+    maxSize: 50,
+    onRent: static enemy => enemy.Reset()
 );
 ```
 
 ### Reset State on Return (RECOMMENDED)
 ```csharp
 var pool = new JObjectPool<List<int>>(
+    maxSize: 32,
     onReturn: static list => list.Clear()
-);
-```
-
-### Initialize on Rent
-```csharp
-var pool = new JObjectPool<Projectile>(
-    onRent: static p => p.Reset()
 );
 ```
 
@@ -73,21 +69,23 @@ pool.Prewarm(50);  // Pre-create during loading screen
 
 ### Shared Pool (Simple Objects)
 ```csharp
-// Good for simple reusable objects without custom initialization
+// Good for simple reusable objects without custom callbacks
 var sb = JObjectPool.Shared<StringBuilder>().Rent();
 sb.Append("Hello");
+sb.Clear();  // Clean up before returning
 JObjectPool.Shared<StringBuilder>().Return(sb);
 ```
 
 ## Best Practices
 1. **Pre-allocate during loading** to prevent in-game allocation spikes
 2. **Reset state on return** to prevent data leaks between reuses
-3. **Use custom pools** for complex objects requiring specific initialization
-4. **Use shared pools only** for simple value objects with default construction
+3. **Set appropriate maxSize** based on expected concurrent usage
+4. **Use shared pools** for simple objects without custom callbacks
 5. **Monitor pool Count** to optimize sizing
 
 ## Common Mistakes
 - Returning null to pool (ignored, but wasteful)
 - Not clearing object state on return (causes bugs from stale data)
 - Forgetting to return objects (pool becomes ineffective)
-- Using shared pool for complex objects needing initialization
+- Setting maxSize too low (causes frequent allocations)
+- Setting maxSize too high (wastes memory)
