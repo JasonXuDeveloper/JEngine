@@ -5,14 +5,23 @@ AI-powered development guide for JEngine Unity framework.
 ## Installation
 
 ```bash
-# Add JEngine marketplace (one-time, enables auto-updates)
+# Add JEngine marketplace (one-time)
 claude plugin marketplace add JasonXuDeveloper/JEngine
 
 # Install plugin
 claude plugin install jengine@jengine-marketplace
 ```
 
-Plugin updates automatically when Claude Code starts.
+## Enable Auto-Updates (Recommended)
+
+Third-party plugins require manual opt-in for auto-updates:
+
+1. Run `/plugin` in Claude Code
+2. Go to **Marketplaces** tab
+3. Select **jengine-marketplace**
+4. Toggle **Enable auto-update**
+
+Once enabled, plugin updates automatically when Claude Code starts.
 
 ## Features
 
