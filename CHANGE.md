@@ -1,4 +1,15 @@
 ## All Versions
+## 1.1.0 (January 29 2026)
+
+- Add Claude Code plugin for AI-assisted development ([#598](https://github.com/JasonXuDeveloper/JEngine/pull/598)) (docs)
+- Modernize editor UI with monochrome design system ([#592](https://github.com/JasonXuDeveloper/JEngine/pull/592)) (ui)
+- Correct skills paths to include .claude-plugin prefix ([#601](https://github.com/JasonXuDeveloper/JEngine/pull/601)) (plugin)
+- Restructure to .claude-plugin for Claude Code compatibility ([#600](https://github.com/JasonXuDeveloper/JEngine/pull/600)) (plugin)
+- Use JEngine Release Bot for plugin releases ([#599](https://github.com/JasonXuDeveloper/JEngine/pull/599)) (ci)
+- Resolve codecov coverage reporting and add UI package docs ([#597](https://github.com/JasonXuDeveloper/JEngine/pull/597)) (ci)
+- Convert AsyncOperation to UniTask for Unity 6 compatibility ([#595](https://github.com/JasonXuDeveloper/JEngine/pull/595)) (core)
+
+
 ## 1.0.10 (January 27 2026)
 
 - Migrate from Claude to GitHub Copilot code review ([#588](https://github.com/JasonXuDeveloper/JEngine/pull/588)) (ci)
