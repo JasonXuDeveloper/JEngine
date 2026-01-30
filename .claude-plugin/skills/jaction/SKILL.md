@@ -182,6 +182,7 @@ public static async UniTaskVoid ApplyDoT(IDamageable target, float damage, int t
 
 ### Wave Spawner (Async)
 ```csharp
+// Async methods cannot use ReadOnlySpan (ref struct), use array instead
 public async UniTask RunWaves(WaveConfig[] waves)
 {
     foreach (var wave in waves)
@@ -193,6 +194,23 @@ public async UniTask RunWaves(WaveConfig[] waves)
             .WaitUntil(() => ActiveEnemyCount == 0, timeout: 120f)
             .Delay(wave.DelayAfter)
             .ExecuteAsync();
+
+        if (action.Cancelled) break;
+    }
+}
+
+// Sync methods can use ReadOnlySpan for zero-allocation iteration
+public void RunWavesSync(ReadOnlySpan<WaveConfig> waves)
+{
+    foreach (ref readonly var wave in waves)
+    {
+        using var action = JAction.Create()
+            .Do(() => UI.ShowWaveStart(wave.Number))
+            .Delay(2f)
+            .Do(() => SpawnWave(wave))
+            .WaitUntil(() => ActiveEnemyCount == 0, timeout: 120f)
+            .Delay(wave.DelayAfter);
+        action.Execute();
 
         if (action.Cancelled) break;
     }

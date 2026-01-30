@@ -149,12 +149,14 @@ public sealed class ComboSystem : IDisposable
 
 ## Spawning Patterns
 
-### Wave Spawner (Async, Span)
+### Wave Spawner (Async)
 ```csharp
 public sealed class WaveSpawner
 {
     private readonly EnemySpawner _spawner;
 
+    // Use ReadOnlyMemory<T> for async (ReadOnlySpan<T> is a ref struct, invalid in async)
+    // Access .Span inside the loop for zero-allocation iteration
     public async UniTask RunWaves(ReadOnlyMemory<WaveConfig> waves, CancellationToken ct = default)
     {
         foreach (var wave in waves.Span)
