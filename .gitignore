@@ -29,3 +29,4 @@ UnityProject/Build/*
 .worktrees/
 .security-key
 logs/security/
+/UnityProject/CodeCoverage

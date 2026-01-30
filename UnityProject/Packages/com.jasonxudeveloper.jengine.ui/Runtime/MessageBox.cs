@@ -24,8 +24,8 @@
 //  THE SOFTWARE.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -106,7 +106,7 @@ namespace JEngine.UI
 
         private static GameObject _prefab;
 
-        private static readonly HashSet<MessageBox> ActiveMessageBoxes = new();
+        private static readonly List<MessageBox> ActiveMessageBoxes = new();
         private static readonly Stack<MessageBox> PooledMessageBoxes = new();
 
         private const int MaxPoolSize = 10;
@@ -145,7 +145,7 @@ namespace JEngine.UI
             if (ActiveMessageBoxes.Count == 0) return false;
 
             // Get the first message box (any will do for testing)
-            var target = ActiveMessageBoxes.First();
+            var target = ActiveMessageBoxes[0];
             target.HandleEvent(clickOk);
             return true;
         }
@@ -158,7 +158,7 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            var target = ActiveMessageBoxes.First();
+            var target = ActiveMessageBoxes[0];
             if (target._buttonOk == null || target._buttonNo == null)
                 return null;
 
@@ -173,7 +173,7 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            var target = ActiveMessageBoxes.First();
+            var target = ActiveMessageBoxes[0];
             return (
                 target._title?.text,
                 target._content?.text,
@@ -253,13 +253,22 @@ namespace JEngine.UI
 
         public static void CloseAll()
         {
-            // Create a copy to avoid modification during iteration
-            var activeBoxes = new MessageBox[ActiveMessageBoxes.Count];
-            ActiveMessageBoxes.CopyTo(activeBoxes);
+            var count = ActiveMessageBoxes.Count;
+            if (count == 0) return;
 
-            foreach (var messageBox in activeBoxes)
+            // Use ArrayPool to avoid allocation
+            var activeBoxes = ArrayPool<MessageBox>.Shared.Rent(count);
+            try
             {
-                messageBox.CancelAndClose();
+                ActiveMessageBoxes.CopyTo(activeBoxes, 0);
+                for (var i = 0; i < count; i++)
+                {
+                    activeBoxes[i].CancelAndClose();
+                }
+            }
+            finally
+            {
+                ArrayPool<MessageBox>.Shared.Return(activeBoxes, clearArray: true);
             }
         }
 
