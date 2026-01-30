@@ -16,7 +16,7 @@ using UnityEditor;
 namespace JEngine.Util.Internal
 {
     /// <summary>
-    /// Static runner that drives <see cref="JAction"/> execution on the main thread.
+    /// Static runner that drives <see cref="JActionExecutionContext"/> execution on the main thread.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -30,8 +30,8 @@ namespace JEngine.Util.Internal
     /// </remarks>
     internal static class JActionRunner
     {
-        private static readonly ConcurrentQueue<JAction> PendingQueue = new();
-        private static readonly List<JAction> ActiveActions = new(32);
+        private static readonly ConcurrentQueue<JActionExecutionContext> PendingQueue = new();
+        private static readonly List<JActionExecutionContext> ActiveContexts = new(32);
         private static bool _runtimeInitialized;
 
 #if UNITY_EDITOR
@@ -61,7 +61,7 @@ namespace JEngine.Util.Internal
             {
                 // Drain the queue
                 while (PendingQueue.TryDequeue(out _)) { }
-                ActiveActions.Clear();
+                ActiveContexts.Clear();
                 _runtimeInitialized = false;
             }
         }
@@ -106,57 +106,57 @@ namespace JEngine.Util.Internal
         }
 
         /// <summary>
-        /// Registers a <see cref="JAction"/> for main-thread execution.
+        /// Registers a <see cref="JActionExecutionContext"/> for main-thread execution.
         /// </summary>
-        /// <param name="action">The action to register. Null values are ignored.</param>
+        /// <param name="context">The context to register. Null values are ignored.</param>
         /// <remarks>
         /// Thread-safe and lock-free via ConcurrentQueue.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Register(JAction action)
+        public static void Register(JActionExecutionContext context)
         {
-            if (action == null) return;
-            PendingQueue.Enqueue(action);
+            if (context == null) return;
+            PendingQueue.Enqueue(context);
         }
 
         private static void Update()
         {
             // Drain pending queue into active list (single-threaded, no lock needed)
-            while (PendingQueue.TryDequeue(out var action))
+            while (PendingQueue.TryDequeue(out var context))
             {
-                ActiveActions.Add(action);
+                ActiveContexts.Add(context);
             }
 
-            if (ActiveActions.Count == 0) return;
+            if (ActiveContexts.Count == 0) return;
 
             // Process in reverse to allow safe removal during iteration
-            for (int i = ActiveActions.Count - 1; i >= 0; i--)
+            for (int i = ActiveContexts.Count - 1; i >= 0; i--)
             {
-                var action = ActiveActions[i];
-                if (action == null)
+                var context = ActiveContexts[i];
+                if (context == null)
                 {
-                    ActiveActions.RemoveAt(i);
+                    ActiveContexts.RemoveAt(i);
                     continue;
                 }
 
                 try
                 {
-                    if (action.Tick())
+                    if (context.Tick())
                     {
-                        ActiveActions.RemoveAt(i);
+                        ActiveContexts.RemoveAt(i);
                     }
                 }
                 catch (Exception e)
                 {
                     Debug.LogException(e);
-                    ActiveActions.RemoveAt(i);
+                    ActiveContexts.RemoveAt(i);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the approximate number of currently active JActions.
+        /// Gets the approximate number of currently active execution contexts.
         /// </summary>
-        public static int ActiveCount => ActiveActions.Count + PendingQueue.Count;
+        public static int ActiveCount => ActiveContexts.Count + PendingQueue.Count;
     }
 }

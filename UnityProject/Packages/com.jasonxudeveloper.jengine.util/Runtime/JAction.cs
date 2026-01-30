@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using JEngine.Util.Internal;
 using UnityEngine;
 
@@ -30,6 +30,7 @@ namespace JEngine.Util
     /// <item>Async/await support with <see cref="JActionAwaitable"/></item>
     /// <item>Time-based delays, frame delays, and conditional waits</item>
     /// <item>Repeat loops with conditions or fixed counts</item>
+    /// <item>Parallel execution mode for concurrent async executions</item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -55,9 +56,9 @@ namespace JEngine.Util
     ///
     /// Async/await pattern with auto-dispose:
     /// <code>
-    /// async Task MyAsyncMethod()
+    /// async UniTask MyAsyncMethod()
     /// {
-    ///     using var action = await JAction.Create()
+    ///     using var result = await JAction.Create()
     ///         .Do(() => Debug.Log("Start"))
     ///         .Delay(1f)
     ///         .Do(() => Debug.Log("End"))
@@ -80,12 +81,26 @@ namespace JEngine.Util
     ///
     /// Manual disposal (without using keyword):
     /// <code>
-    /// var action = JAction.Create()
+    /// var result = JAction.Create()
     ///     .Do(() => Debug.Log("Task"))
     ///     .Execute();
     ///
     /// // When done, dispose to return to pool
-    /// action.Dispose();
+    /// result.Dispose();
+    /// </code>
+    ///
+    /// Parallel execution:
+    /// <code>
+    /// var action = JAction.Create()
+    ///     .Parallel()
+    ///     .Do(() => Debug.Log("Start"))
+    ///     .DelayFrame(5)
+    ///     .Do(() => Debug.Log("End"));
+    ///
+    /// // Both run concurrently with separate execution contexts
+    /// var task1 = action.ExecuteAsync();
+    /// var task2 = action.ExecuteAsync();
+    /// await UniTask.WhenAll(task1.AsUniTask(), task2.AsUniTask());
     /// </code>
     /// </example>
     public sealed class JAction : IDisposable
@@ -108,44 +123,50 @@ namespace JEngine.Util
 
         #region Instance Fields
 
+        // Task list for building the action chain
         private readonly List<JActionTask> _tasks;
-        private int _currentTaskIndex;
-        internal bool IsExecuting;
-        private bool _cancelled;
+
+        // Configuration
         private bool _parallel;
         private bool _disposed;
-        private bool _blockingMode;
 
+        // Cancel callbacks (used when creating execution contexts)
         private Action _onCancel;
         private Delegate _onCancelDelegate;
         private IStateStorage _onCancelState;
 
-        internal Action ContinuationCallback;
-        private float _executeStartTime;
-        private float _timeoutEndTime;
+        // Active execution contexts (for Cancel() support)
+        private readonly List<JActionExecutionContext> _activeContexts = new(4);
 
-        private float _delayEndTime;
-        private int _delayEndFrame;
-        private int _repeatCounter;
-        private float _repeatLastTime;
-
-        // Async task state
-        private JActionAwaitable _pendingAwaitable;
-        private bool _awaitingAsync;
+        // Synchronous execution state (blocking mode doesn't use contexts)
+        private JActionExecutionContext _syncContext;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// Gets whether this JAction is currently executing.
+        /// Gets whether this JAction has any active executions.
         /// </summary>
-        public bool Executing => IsExecuting;
+        public bool Executing => _activeContexts.Count > 0 || (_syncContext != null && _syncContext.IsExecuting);
 
         /// <summary>
-        /// Gets whether this JAction has been cancelled.
+        /// Gets whether any active execution is cancelled.
+        /// For per-execution cancellation state, use the <see cref="JActionExecution.Cancelled"/>
+        /// property from the result of <see cref="ExecuteAsync"/>.
         /// </summary>
-        public bool Cancelled => _cancelled;
+        public bool Cancelled
+        {
+            get
+            {
+                if (_syncContext != null) return _syncContext.Cancelled;
+                for (int i = 0; i < _activeContexts.Count; i++)
+                {
+                    if (_activeContexts[i].Cancelled) return true;
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// Gets whether parallel execution mode is enabled.
@@ -179,7 +200,7 @@ namespace JEngine.Util
         /// <returns>A JAction instance from the pool or newly created.</returns>
         /// <example>
         /// <code>
-        /// var action = JAction.Create()
+        /// var result = JAction.Create()
         ///     .Do(() => Debug.Log("Hello"))
         ///     .Execute();
         /// </code>
@@ -637,6 +658,11 @@ namespace JEngine.Util
         /// Enables parallel execution mode, allowing multiple concurrent executions.
         /// </summary>
         /// <returns>This JAction for method chaining.</returns>
+        /// <remarks>
+        /// When parallel mode is enabled, each call to <see cref="ExecuteAsync"/> creates
+        /// a separate execution context, allowing multiple concurrent executions of the
+        /// same action chain.
+        /// </remarks>
         public JAction Parallel()
         {
             _parallel = true;
@@ -644,7 +670,7 @@ namespace JEngine.Util
         }
 
         /// <summary>
-        /// Registers a callback to be invoked when this JAction is cancelled.
+        /// Registers a callback to be invoked when an execution is cancelled.
         /// </summary>
         /// <param name="callback">The callback to invoke on cancellation.</param>
         /// <returns>This JAction for method chaining.</returns>
@@ -652,11 +678,11 @@ namespace JEngine.Util
         /// <code>
         /// var action = JAction.Create()
         ///     .Delay(10f)
-        ///     .OnCancel(() => Debug.Log("Cancelled!"))
-        ///     .Execute();
+        ///     .OnCancel(() => Debug.Log("Cancelled!"));
         ///
+        /// var handle = action.ExecuteAsync();
         /// // Later...
-        /// action.Cancel();  // Triggers the OnCancel callback
+        /// handle.Cancel();  // Triggers the OnCancel callback
         /// </code>
         /// </example>
         public JAction OnCancel(Action callback)
@@ -695,7 +721,7 @@ namespace JEngine.Util
         /// Maximum time in seconds to wait before cancelling.
         /// Use 0 or negative for no timeout (default).
         /// </param>
-        /// <returns>This JAction for method chaining or status checking.</returns>
+        /// <returns>A <see cref="JActionExecution"/> containing the execution result.</returns>
         /// <remarks>
         /// <para>
         /// This method blocks until all tasks complete or timeout is reached.
@@ -710,41 +736,44 @@ namespace JEngine.Util
         /// <example>
         /// <code>
         /// // Blocking execution with 5 second timeout
-        /// var action = JAction.Create()
+        /// using var result = JAction.Create()
         ///     .Do(() => Debug.Log("Step 1"))
         ///     .Delay(0.5f)
         ///     .Do(() => Debug.Log("Step 2"))
         ///     .Execute(timeout: 5f);
         ///
-        /// if (action.Cancelled)
+        /// if (result.Cancelled)
         ///     Debug.Log("Action timed out!");
         /// </code>
         /// </example>
-        public JAction Execute(float timeout = 0f)
+        public JActionExecution Execute(float timeout = 0f)
         {
-            if (IsExecuting && !_parallel)
+            if (Executing && !_parallel)
             {
                 Debug.LogWarning("[JAction] Already executing. Enable Parallel() for concurrent execution.");
-                return this;
+                return new JActionExecution(this, false);
             }
 
-            if (_tasks.Count == 0) return this;
+            if (_tasks.Count == 0) return new JActionExecution(this, false);
 
-            IsExecuting = true;
-            _cancelled = false;
-            _currentTaskIndex = 0;
-            _executeStartTime = Time.realtimeSinceStartup;
-            _blockingMode = true;
-            _timeoutEndTime = timeout > 0f ? _executeStartTime + timeout : 0f;
-            _awaitingAsync = false;
+            // Create execution context for synchronous execution
+            _syncContext = JActionExecutionContext.Rent();
+            _syncContext.Initialize(_tasks, _onCancel, _onCancelDelegate, _onCancelState, timeout, blockingMode: true);
 
-            // Spin until complete (timeout checked in Tick)
-            while (!Tick())
+            // Spin until complete
+            while (!_syncContext.Tick())
             {
                 // Intentionally empty - Tick() advances state each iteration
             }
 
-            return this;
+            // Capture cancelled state before returning context to pool
+            bool cancelled = _syncContext.Cancelled;
+
+            // Return context to pool
+            JActionExecutionContext.Return(_syncContext);
+            _syncContext = null;
+
+            return new JActionExecution(this, cancelled);
         }
 
         /// <summary>
@@ -753,7 +782,7 @@ namespace JEngine.Util
         /// <param name="timeout">
         /// Maximum time in seconds before cancelling. Use 0 or negative for no timeout (default).
         /// </param>
-        /// <returns>This JAction after execution completes, enabling the <c>using</c> pattern.</returns>
+        /// <returns>A <see cref="JActionExecutionHandle"/> that can be awaited or cancelled.</returns>
         /// <remarks>
         /// <para>
         /// Unlike <see cref="Execute"/>, this method returns immediately and processes
@@ -761,355 +790,67 @@ namespace JEngine.Util
         /// that require actual Unity frames to advance.
         /// </para>
         /// <para>
-        /// <b>Important:</b> Always await this method and use the <c>using</c> pattern
-        /// to ensure proper cleanup and pool return.
+        /// When <see cref="Parallel"/> mode is enabled, each call creates a separate
+        /// execution context. Each returned handle can be cancelled independently.
         /// </para>
         /// </remarks>
         /// <example>
         /// <code>
-        /// async Task PlaySequenceAsync()
+        /// async UniTask PlaySequenceAsync()
         /// {
-        ///     using var action = await JAction.Create()
+        ///     using var result = await JAction.Create()
         ///         .Do(() => Debug.Log("Step 1"))
         ///         .Delay(1f)
         ///         .Do(() => Debug.Log("Step 2"))
         ///         .ExecuteAsync(timeout: 5f);
+        ///
+        ///     if (result.Cancelled)
+        ///         Debug.Log("Execution was cancelled!");
         /// }
+        ///
+        /// // Cancelling specific executions in parallel mode:
+        /// var action = JAction.Create().Parallel().Delay(5f);
+        /// var handle1 = action.ExecuteAsync();
+        /// var handle2 = action.ExecuteAsync();
+        /// handle1.Cancel(); // Cancel only the first execution
+        /// var result1 = await handle1; // result1.Cancelled == true
+        /// var result2 = await handle2; // result2.Cancelled == false
         /// </code>
         /// </example>
-        public async ValueTask<JAction> ExecuteAsync(float timeout = 0f)
+        public JActionExecutionHandle ExecuteAsync(float timeout = 0f)
         {
-            StartAsync(timeout);
-            await new JActionAwaitable(this);
-            return this;
-        }
-
-        private void StartAsync(float timeout)
-        {
-            if (IsExecuting && !_parallel)
+            if (!_parallel && Executing)
             {
                 Debug.LogWarning("[JAction] Already executing. Enable Parallel() for concurrent execution.");
-                return;
+                return new JActionExecutionHandle(this, null);
             }
 
-            if (_tasks.Count == 0) return;
+            if (_tasks.Count == 0) return new JActionExecutionHandle(this, null);
 
-            IsExecuting = true;
-            _cancelled = false;
-            _currentTaskIndex = 0;
-            _executeStartTime = Time.realtimeSinceStartup;
-            _blockingMode = false;
-            _timeoutEndTime = timeout > 0f ? _executeStartTime + timeout : 0f;
-            _awaitingAsync = false;
+            // Create execution context
+            var context = JActionExecutionContext.Rent();
+            context.Initialize(_tasks, _onCancel, _onCancelDelegate, _onCancelState, timeout, blockingMode: false);
 
-            JActionRunner.Register(this);
+            // Track context for Cancel() support
+            _activeContexts.Add(context);
+
+            // Register with runner
+            JActionRunner.Register(context);
+
+            // Return handle that can be awaited or cancelled
+            return new JActionExecutionHandle(this, context);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool Tick()
+        /// <summary>
+        /// Removes an execution context from the active list.
+        /// Called internally when an execution completes.
+        /// </summary>
+        internal void RemoveActiveContext(JActionExecutionContext context)
         {
-            if (_cancelled)
+            if (context != null)
             {
-                OnExecutionComplete();
-                return true;
+                _activeContexts.Remove(context);
             }
-
-            // Check timeout (preemptive cancellation)
-            if (_timeoutEndTime > 0f && Time.realtimeSinceStartup >= _timeoutEndTime)
-            {
-                Cancel();
-                OnExecutionComplete();
-                return true;
-            }
-
-            if (_currentTaskIndex >= _tasks.Count)
-            {
-                OnExecutionComplete();
-                return true;
-            }
-
-            if (ProcessCurrentTask())
-            {
-                _currentTaskIndex++;
-            }
-
-            if (_currentTaskIndex >= _tasks.Count)
-            {
-                OnExecutionComplete();
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool ProcessCurrentTask()
-        {
-            if (_currentTaskIndex >= _tasks.Count) return true;
-
-            var task = _tasks[_currentTaskIndex];
-
-            return task.Type switch
-            {
-                JActionTaskType.Action => ProcessActionTask(task),
-                JActionTaskType.AsyncFunc => ProcessAsyncFuncTask(task),
-                JActionTaskType.Delay => ProcessDelayTask(task),
-                JActionTaskType.DelayFrame => ProcessDelayFrameTask(task),
-                JActionTaskType.WaitUntil => ProcessWaitUntilTask(task),
-                JActionTaskType.WaitWhile => ProcessWaitWhileTask(task),
-                JActionTaskType.RepeatWhile => ProcessRepeatWhileTask(task),
-                JActionTaskType.RepeatUntil => ProcessRepeatUntilTask(task),
-                JActionTaskType.Repeat => ProcessRepeatTask(task),
-                _ => true
-            };
-        }
-
-        private bool ProcessActionTask(JActionTask task)
-        {
-            try { task.InvokeAction(); }
-            catch (Exception e) { Debug.LogException(e); }
-            return true;
-        }
-
-        private bool ProcessAsyncFuncTask(JActionTask task)
-        {
-            if (!_awaitingAsync)
-            {
-                try
-                {
-                    _pendingAwaitable = task.InvokeAsyncFunc();
-                    _awaitingAsync = true;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                    return true;
-                }
-            }
-
-            if (_pendingAwaitable.GetAwaiter().IsCompleted)
-            {
-                _awaitingAsync = false;
-                _pendingAwaitable = default;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessDelayTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-            if (_delayEndTime <= 0)
-                _delayEndTime = currentTime + task.FloatParam1;
-            if (currentTime >= _delayEndTime)
-            {
-                _delayEndTime = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessDelayFrameTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-            int currentFrame = Time.frameCount;
-
-            if (_blockingMode)
-            {
-                if (_delayEndTime <= 0)
-                {
-                    float frameTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
-                    _delayEndTime = currentTime + (task.IntParam * frameTime);
-                }
-                if (currentTime >= _delayEndTime)
-                {
-                    _delayEndTime = 0;
-                    return true;
-                }
-                return false;
-            }
-
-            if (_delayEndFrame <= 0)
-                _delayEndFrame = currentFrame + task.IntParam;
-            if (currentFrame >= _delayEndFrame)
-            {
-                _delayEndFrame = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessWaitUntilTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-
-            if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-            {
-                if (currentTime - _repeatLastTime < task.FloatParam1)
-                    return false;
-            }
-            _repeatLastTime = currentTime;
-
-            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-            {
-                _repeatLastTime = 0;
-                return true;
-            }
-
-            try
-            {
-                if (task.InvokeCondition())
-                {
-                    _repeatLastTime = 0;
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                _repeatLastTime = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessWaitWhileTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-
-            if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-            {
-                if (currentTime - _repeatLastTime < task.FloatParam1)
-                    return false;
-            }
-            _repeatLastTime = currentTime;
-
-            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-            {
-                _repeatLastTime = 0;
-                return true;
-            }
-
-            try
-            {
-                if (!task.InvokeCondition())
-                {
-                    _repeatLastTime = 0;
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                _repeatLastTime = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessRepeatWhileTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-
-            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-            {
-                _repeatLastTime = 0;
-                return true;
-            }
-
-            try
-            {
-                if (!task.InvokeCondition())
-                {
-                    _repeatLastTime = 0;
-                    return true;
-                }
-
-                if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                {
-                    if (currentTime - _repeatLastTime < task.FloatParam1)
-                        return false;
-                }
-
-                _repeatLastTime = currentTime;
-                task.InvokeAction();
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                _repeatLastTime = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessRepeatUntilTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-
-            if (task.FloatParam2 > 0 && currentTime - _executeStartTime >= task.FloatParam2)
-            {
-                _repeatLastTime = 0;
-                return true;
-            }
-
-            try
-            {
-                if (task.InvokeCondition())
-                {
-                    _repeatLastTime = 0;
-                    return true;
-                }
-
-                if (task.FloatParam1 > 0 && _repeatLastTime > 0)
-                {
-                    if (currentTime - _repeatLastTime < task.FloatParam1)
-                        return false;
-                }
-
-                _repeatLastTime = currentTime;
-                task.InvokeAction();
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                _repeatLastTime = 0;
-                return true;
-            }
-            return false;
-        }
-
-        private bool ProcessRepeatTask(JActionTask task)
-        {
-            float currentTime = Time.realtimeSinceStartup;
-
-            if (_repeatCounter >= task.IntParam)
-            {
-                _repeatCounter = 0;
-                _repeatLastTime = 0;
-                return true;
-            }
-
-            if (task.FloatParam1 > 0 && _repeatCounter > 0)
-            {
-                if (currentTime - _repeatLastTime < task.FloatParam1)
-                    return false;
-            }
-
-            _repeatLastTime = currentTime;
-
-            try { task.InvokeAction(); }
-            catch (Exception e) { Debug.LogException(e); }
-
-            _repeatCounter++;
-            return _repeatCounter >= task.IntParam;
-        }
-
-        private void OnExecutionComplete()
-        {
-            IsExecuting = false;
-            var continuation = ContinuationCallback;
-            ContinuationCallback = null;
-            continuation?.Invoke();
         }
 
         #endregion
@@ -1117,29 +858,18 @@ namespace JEngine.Util
         #region Cancellation
 
         /// <summary>
-        /// Cancels the current execution and invokes the OnCancel callback if set.
+        /// Cancels all active executions and invokes OnCancel callbacks.
         /// </summary>
         /// <returns>This JAction for method chaining.</returns>
         public JAction Cancel()
         {
-            if (!IsExecuting) return this;
+            // Cancel sync context if active
+            _syncContext?.Cancel();
 
-            _cancelled = true;
-
-            try
+            // Cancel all async contexts
+            for (int i = _activeContexts.Count - 1; i >= 0; i--)
             {
-                if (_onCancel != null)
-                {
-                    _onCancel.Invoke();
-                }
-                else if (_onCancelDelegate != null && _onCancelState != null)
-                {
-                    _onCancelState.InvokeAction(_onCancelDelegate);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
+                _activeContexts[i].Cancel();
             }
 
             return this;
@@ -1156,10 +886,16 @@ namespace JEngine.Util
         /// <returns>This JAction for method chaining.</returns>
         public JAction Reset(bool force = false)
         {
-            if (IsExecuting && !force)
+            if (Executing && !force)
             {
                 Debug.LogWarning("[JAction] Cannot reset while executing. Use Reset(true) to force.");
                 return this;
+            }
+
+            // Cancel any active executions
+            if (force)
+            {
+                Cancel();
             }
 
             // Return state storage to pools before clearing
@@ -1169,24 +905,25 @@ namespace JEngine.Util
             }
             _tasks.Clear();
 
-            _currentTaskIndex = 0;
-            IsExecuting = false;
-            _cancelled = false;
             _parallel = false;
             _onCancel = null;
             _onCancelDelegate = null;
             _onCancelState?.Return();
             _onCancelState = null;
-            ContinuationCallback = null;
-            _delayEndTime = 0;
-            _delayEndFrame = 0;
-            _repeatCounter = 0;
-            _repeatLastTime = 0;
-            _executeStartTime = 0;
-            _timeoutEndTime = 0;
-            _blockingMode = false;
-            _awaitingAsync = false;
-            _pendingAwaitable = default;
+
+            // Return active execution contexts to pool before clearing
+            for (int i = 0; i < _activeContexts.Count; i++)
+            {
+                JActionExecutionContext.Return(_activeContexts[i]);
+            }
+            _activeContexts.Clear();
+
+            // Return sync execution context to pool
+            if (_syncContext != null)
+            {
+                JActionExecutionContext.Return(_syncContext);
+                _syncContext = null;
+            }
 
             return this;
         }
@@ -1202,7 +939,7 @@ namespace JEngine.Util
         {
             if (_disposed) return;
 
-            if (IsExecuting)
+            if (Executing)
             {
                 Cancel();
             }

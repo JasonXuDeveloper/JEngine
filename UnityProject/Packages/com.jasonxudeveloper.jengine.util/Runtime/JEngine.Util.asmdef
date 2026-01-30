@@ -1,7 +1,9 @@
 {
     "name": "JEngine.Util",
     "rootNamespace": "JEngine.Util",
-    "references": [],
+    "references": [
+        "UniTask"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

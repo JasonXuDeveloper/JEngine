@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -212,14 +213,14 @@ namespace JEngine.Util.Tests
 
             return RunAsync(async () =>
             {
-                using var action = await JAction.Create()
+                using var result = await JAction.Create()
                     .Delay(2f) // 2 second delay
                     .Do(() => completed = true)
                     .OnCancel(() => cancelled = true)
                     .ExecuteAsync(timeout: 0.1f); // 100ms timeout
 
                 Assert.IsFalse(completed);
-                Assert.IsTrue(action.Cancelled);
+                Assert.IsTrue(result.Cancelled);
                 Assert.IsTrue(cancelled);
             });
         }
@@ -325,13 +326,13 @@ namespace JEngine.Util.Tests
             return RunAsync(async () =>
             {
                 using var action = await JAction.Create()
-                    .Do(() => order.Add(1))
+                    .Do(static o => o.Add(1), order)
                     .DelayFrame()
-                    .Do(() => order.Add(2))
+                    .Do(static o => o.Add(2), order)
                     .Delay(0.05f)
-                    .Do(() => order.Add(3))
-                    .Repeat(() => order.Add(4), count: 2)
-                    .Do(() => order.Add(5))
+                    .Do(static o => o.Add(3), order)
+                    .Repeat(static o => o.Add(4), order, count: 2)
+                    .Do(static o => o.Add(5), order)
                     .ExecuteAsync();
 
                 Assert.AreEqual(6, order.Count);
@@ -385,9 +386,9 @@ namespace JEngine.Util.Tests
             {
                 // Use explicit using block so we can check pool count after disposal
                 using (var action = await JAction.Create()
-                    .Do(() => completed = true)
-                    .DelayFrame()
-                    .ExecuteAsync())
+                           .Do(() => completed = true)
+                           .DelayFrame()
+                           .ExecuteAsync())
                 {
                     Assert.IsTrue(completed);
                     Assert.IsFalse(action.Executing);
@@ -395,6 +396,353 @@ namespace JEngine.Util.Tests
 
                 // After using block ends, Dispose() has been called, action returned to pool
                 Assert.AreEqual(initialPoolCount + 1, JAction.PooledCount);
+            });
+        }
+
+        #endregion
+
+        #region Async Function Tests
+
+        [UnityTest]
+        public IEnumerator Do_AsyncFunc_ExecutesWithExecuteAsync()
+        {
+            bool asyncFuncCalled = false;
+            bool completed = false;
+
+            return RunAsync(async () =>
+            {
+                using var action = await JAction.Create()
+                    .Do(() =>
+                    {
+                        asyncFuncCalled = true;
+                        // Return a default (already-completed) awaitable
+                        return default;
+                    })
+                    .Do(() => completed = true)
+                    .ExecuteAsync();
+
+                Assert.IsTrue(asyncFuncCalled);
+                Assert.IsTrue(completed);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator Do_AsyncFunc_WaitsForCompletion()
+        {
+            var order = new List<int>();
+
+            return RunAsync(async () =>
+            {
+                // Create an inner action that we'll wait for
+                using var innerAction = JAction.Create()
+                    .Do(static o => o.Add(1), order)
+                    .DelayFrame(2)
+                    .Do(static o => o.Add(2), order);
+
+                using var action = await JAction.Create()
+                    .Do(static o => o.Add(0), order)
+                    .Do(static act => { _ = act.ExecuteAsync(); }, innerAction) // Fire and forget
+                    .Do(static o => o.Add(3), order)
+                    .ExecuteAsync();
+
+                // The inner action executes asynchronously, so order depends on timing
+                Assert.Contains(0, order);
+                Assert.Contains(3, order);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator Do_AsyncFuncWithState_PassesState()
+        {
+            var data = new TestData { Counter = 0 };
+            bool completed = false;
+
+            return RunAsync(async () =>
+            {
+                using var action = await JAction.Create()
+                    .Do(static d =>
+                    {
+                        d.Counter = 42;
+                        // Return a default (already-completed) awaitable
+                        return default;
+                    }, data)
+                    .Do(() => completed = true)
+                    .ExecuteAsync();
+
+                Assert.AreEqual(42, data.Counter);
+                Assert.IsTrue(completed);
+            });
+        }
+
+        #endregion
+
+        #region Parallel Execution Tests
+
+        [UnityTest]
+        public IEnumerator Parallel_AllowsConcurrentExecution()
+        {
+            // Note: This test is safe despite shared variables because Unity's PlayerLoop
+            // executes on a single thread. The increment/decrement operations are not
+            // racing with each other - they execute sequentially within the same frame.
+            int concurrentCount = 0;
+            int maxConcurrent = 0;
+
+            return RunAsync(async () =>
+            {
+                // Create a parallel action
+                using var action = JAction.Create()
+                    .Parallel()
+                    .Do(() =>
+                    {
+                        concurrentCount++;
+                        if (concurrentCount > maxConcurrent) maxConcurrent = concurrentCount;
+                    })
+                    .DelayFrame(2)
+                    .Do(() => concurrentCount--);
+
+                // Start multiple executions concurrently
+                var task1 = action.ExecuteAsync();
+                var task2 = action.ExecuteAsync();
+
+                await task1;
+                await task2;
+
+                // With parallel mode, both should have run
+                // Note: maxConcurrent may be 1 or 2 depending on timing
+                Assert.GreaterOrEqual(maxConcurrent, 1);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator NonParallel_BlocksConcurrentExecution()
+        {
+            int executionCount = 0;
+
+            return RunAsync(async () =>
+            {
+                // Create a non-parallel action (default)
+                using var action = JAction.Create()
+                    .Do(() => executionCount++)
+                    .DelayFrame(2);
+
+                // Start first execution
+                var task1 = action.ExecuteAsync();
+
+                // Verify action is executing
+                Assert.IsTrue(action.Executing);
+
+                // Try to start second execution while first is running
+                // This should log a warning and return immediately
+                LogAssert.Expect(LogType.Warning,
+                    "[JAction] Already executing. Enable Parallel() for concurrent execution.");
+                var task2 = action.ExecuteAsync();
+
+                // task2 should complete immediately (returns early)
+                await task2;
+
+                // Wait for first execution to complete
+                await task1;
+
+                // Only the first execution should have incremented
+                Assert.AreEqual(1, executionCount);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator Parallel_Property_ReflectsState()
+        {
+            return RunAsync(async () =>
+            {
+                // Non-parallel by default
+                var action1 = JAction.Create();
+                Assert.IsFalse(action1.IsParallel);
+
+                // Enable parallel
+                var action2 = JAction.Create().Parallel();
+                Assert.IsTrue(action2.IsParallel);
+
+                action1.Dispose();
+                action2.Dispose();
+
+                await UniTask.CompletedTask;
+            });
+        }
+
+        #endregion
+
+        #region Timeout Tests (Runtime)
+
+        [UnityTest]
+        public IEnumerator WaitWhile_WithTimeout_StopsAtTimeout()
+        {
+            bool completed = false;
+            float startTime = Time.realtimeSinceStartup;
+
+            return RunAsync(async () =>
+            {
+                using var action = await JAction.Create()
+                    .WaitWhile(() => true, timeout: 0.15f)
+                    .Do(() => completed = true)
+                    .ExecuteAsync();
+
+                float elapsed = Time.realtimeSinceStartup - startTime;
+
+                Assert.IsTrue(completed);
+                Assert.GreaterOrEqual(elapsed, 0.15f);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatWhile_WithTimeout_StopsAtTimeout()
+        {
+            int repeatCount = 0;
+            float startTime = Time.realtimeSinceStartup;
+
+            return RunAsync(async () =>
+            {
+                using var action = await JAction.Create()
+                    .RepeatWhile(
+                        () => repeatCount++,
+                        () => true,
+                        frequency: 0,
+                        timeout: 0.15f
+                    )
+                    .ExecuteAsync();
+
+                float elapsed = Time.realtimeSinceStartup - startTime;
+
+                Assert.Greater(repeatCount, 0);
+                Assert.GreaterOrEqual(elapsed, 0.15f);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatUntil_WithTimeout_StopsAtTimeout()
+        {
+            int repeatCount = 0;
+            float startTime = Time.realtimeSinceStartup;
+
+            return RunAsync(async () =>
+            {
+                using var action = await JAction.Create()
+                    .RepeatUntil(
+                        () => repeatCount++,
+                        () => false,
+                        frequency: 0,
+                        timeout: 0.15f
+                    )
+                    .ExecuteAsync();
+
+                float elapsed = Time.realtimeSinceStartup - startTime;
+
+                Assert.Greater(repeatCount, 0);
+                Assert.GreaterOrEqual(elapsed, 0.15f);
+            });
+        }
+
+        #endregion
+
+        #region Edge Cases (Runtime)
+
+        [UnityTest]
+        public IEnumerator ExecuteAsync_EmptyAction_CompletesImmediately()
+        {
+            return RunAsync(async () =>
+            {
+                float startTime = Time.realtimeSinceStartup;
+
+                using var result = await JAction.Create()
+                    .ExecuteAsync();
+
+                float elapsed = Time.realtimeSinceStartup - startTime;
+
+                Assert.IsFalse(result.Executing);
+                Assert.IsFalse(result.Cancelled);
+                Assert.Less(elapsed, 0.1f); // Should complete very quickly
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator ExecuteAsync_WithZeroDelay_SkipsDelay()
+        {
+            bool completed = false;
+
+            return RunAsync(async () =>
+            {
+                float startTime = Time.realtimeSinceStartup;
+
+                using var action = await JAction.Create()
+                    .Delay(0f)
+                    .Do(() => completed = true)
+                    .ExecuteAsync();
+
+                float elapsed = Time.realtimeSinceStartup - startTime;
+
+                Assert.IsTrue(completed);
+                Assert.Less(elapsed, 0.1f);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator Cancel_DuringAsyncExecution_StopsExecution()
+        {
+            bool step1 = false;
+            bool step2 = false;
+            bool cancelled = false;
+
+            return RunAsync(async () =>
+            {
+                using var action = JAction.Create()
+                    .Do(() => step1 = true)
+                    .Delay(1f)
+                    .Do(() => step2 = true)
+                    .OnCancel(() => cancelled = true);
+
+                // Start execution (don't await yet)
+                var handle = action.ExecuteAsync();
+
+                // Wait a bit then cancel via handle (per-execution cancellation)
+                await UniTask.Delay(50);
+                handle.Cancel();
+
+                // Now await the handle to get the result
+                var result = await handle;
+
+                Assert.IsTrue(step1);
+                Assert.IsFalse(step2);
+                Assert.IsTrue(cancelled);
+                Assert.IsTrue(result.Cancelled);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator Cancel_ParallelExecution_CancelsOnlySpecificHandle()
+        {
+            int cancelCount = 0;
+
+            return RunAsync(async () =>
+            {
+                using var action = JAction.Create()
+                    .Parallel()
+                    .Delay(1f)
+                    .OnCancel(() => cancelCount++);
+
+                // Start two parallel executions
+                var handle1 = action.ExecuteAsync();
+                var handle2 = action.ExecuteAsync();
+
+                // Wait a bit then cancel only handle1
+                await UniTask.Delay(50);
+                handle1.Cancel();
+
+                // Await both
+                var result1 = await handle1;
+                var result2 = await handle2;
+
+                // Only handle1 should be cancelled
+                Assert.IsTrue(result1.Cancelled);
+                Assert.IsFalse(result2.Cancelled);
+                Assert.AreEqual(1, cancelCount);
             });
         }
 

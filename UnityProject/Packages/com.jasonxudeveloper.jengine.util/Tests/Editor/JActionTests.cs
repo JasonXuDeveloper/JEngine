@@ -1,12 +1,221 @@
 // JActionTests.cs
 // EditMode unit tests for JAction (synchronous execution)
 
+using System;
 using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
 
 namespace JEngine.Util.Tests
 {
+    #region JObjectPool Tests
+
+    [TestFixture]
+    public class JObjectPoolTests
+    {
+        private class TestPoolItem
+        {
+            public int Value;
+            public bool WasRented;
+            public bool WasReturned;
+        }
+
+        [Test]
+        public void Shared_ReturnsSameInstanceForType()
+        {
+            var pool1 = JObjectPool.Shared<TestPoolItem>();
+            var pool2 = JObjectPool.Shared<TestPoolItem>();
+
+            Assert.AreSame(pool1, pool2);
+        }
+
+        [Test]
+        public void Shared_IsolatesBetweenTypes()
+        {
+            var pool1 = JObjectPool.Shared<TestPoolItem>();
+            var pool2 = JObjectPool.Shared<List<int>>();
+
+            // Can't directly compare different generic types, but we can verify
+            // they maintain separate state by checking they're both functional
+            Assert.IsNotNull(pool1);
+            Assert.IsNotNull(pool2);
+
+            // Rent from each - they should not interfere
+            var item1 = pool1.Rent();
+            var item2 = pool2.Rent();
+
+            Assert.IsInstanceOf<TestPoolItem>(item1);
+            Assert.IsInstanceOf<List<int>>(item2);
+
+            pool1.Return(item1);
+            pool2.Return(item2);
+        }
+
+        [Test]
+        public void Prewarm_CreatesSpecifiedCount()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            Assert.AreEqual(0, pool.Count);
+
+            pool.Prewarm(5);
+
+            Assert.AreEqual(5, pool.Count);
+        }
+
+        [Test]
+        public void Prewarm_RespectsMaxSize()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 3);
+
+            pool.Prewarm(10); // Request more than max
+
+            Assert.AreEqual(3, pool.Count); // Should cap at maxSize
+        }
+
+        [Test]
+        public void Return_IgnoresNull()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            Assert.DoesNotThrow(() => pool.Return(null));
+            Assert.AreEqual(0, pool.Count);
+        }
+
+        [Test]
+        public void Return_DiscardsWhenAtCapacity()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 2);
+
+            pool.Prewarm(2); // Fill to capacity
+            Assert.AreEqual(2, pool.Count);
+
+            var extraItem = new TestPoolItem();
+            pool.Return(extraItem); // Should be discarded
+
+            Assert.AreEqual(2, pool.Count); // Still at capacity
+        }
+
+        [Test]
+        public void OnRent_CallbackInvoked()
+        {
+            int rentCallCount = 0;
+            var pool = new JObjectPool<TestPoolItem>(
+                maxSize: 10,
+                onRent: item =>
+                {
+                    rentCallCount++;
+                    item.WasRented = true;
+                }
+            );
+
+            var item = pool.Rent();
+
+            Assert.AreEqual(1, rentCallCount);
+            Assert.IsTrue(item.WasRented);
+
+            pool.Return(item);
+        }
+
+        [Test]
+        public void OnReturn_CallbackInvoked()
+        {
+            int returnCallCount = 0;
+            var pool = new JObjectPool<TestPoolItem>(
+                maxSize: 10,
+                onReturn: item =>
+                {
+                    returnCallCount++;
+                    item.WasReturned = true;
+                }
+            );
+
+            var item = pool.Rent();
+            Assert.IsFalse(item.WasReturned);
+
+            pool.Return(item);
+
+            Assert.AreEqual(1, returnCallCount);
+            Assert.IsTrue(item.WasReturned);
+        }
+
+        [Test]
+        public void Rent_CreatesNewInstance_WhenPoolEmpty()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            Assert.AreEqual(0, pool.Count);
+
+            var item = pool.Rent();
+
+            Assert.IsNotNull(item);
+            Assert.IsInstanceOf<TestPoolItem>(item);
+        }
+
+        [Test]
+        public void Rent_ReusesPooledInstance()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            var item1 = pool.Rent();
+            item1.Value = 42;
+            pool.Return(item1);
+
+            var item2 = pool.Rent();
+
+            Assert.AreSame(item1, item2);
+            Assert.AreEqual(42, item2.Value); // Value preserved
+        }
+
+        [Test]
+        public void Clear_RemovesAllItems()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            pool.Prewarm(5);
+            Assert.AreEqual(5, pool.Count);
+
+            pool.Clear();
+
+            Assert.AreEqual(0, pool.Count);
+        }
+
+        [Test]
+        public void Count_ReflectsPoolState()
+        {
+            var pool = new JObjectPool<TestPoolItem>(maxSize: 10);
+
+            Assert.AreEqual(0, pool.Count);
+
+            var item1 = pool.Rent();
+            Assert.AreEqual(0, pool.Count); // Rented, not in pool
+
+            pool.Return(item1);
+            Assert.AreEqual(1, pool.Count);
+
+            var item2 = pool.Rent();
+            Assert.AreEqual(0, pool.Count); // Rented again
+
+            pool.Return(item2);
+            Assert.AreEqual(1, pool.Count);
+        }
+
+        [Test]
+        public void Constructor_WithDefaultMaxSize_Uses64()
+        {
+            var pool = new JObjectPool<TestPoolItem>();
+
+            // Fill beyond default size
+            pool.Prewarm(100);
+
+            // Default maxSize is 64
+            Assert.AreEqual(64, pool.Count);
+        }
+    }
+
+    #endregion
+
+    #region JAction Tests
+
     [TestFixture]
     public class JActionTests
     {
@@ -142,28 +351,18 @@ namespace JEngine.Util.Tests
         #region Cancel Tests
 
         [Test]
-        public void Cancel_InvokesOnCancelCallback()
+        public void Cancel_InvokesOnCancelCallback_WhenTimeoutExceeded()
         {
             bool cancelled = false;
 
+            // Use timeout to trigger cancellation
             using var action = JAction.Create()
-                .Do(() => { })
-                .OnCancel(() => cancelled = true);
+                .Delay(1f) // Long delay
+                .OnCancel(() => cancelled = true)
+                .Execute(timeout: 0.01f); // Short timeout triggers cancel
 
-            action.Execute();
-
-            cancelled = false;
-            using var action2 = JAction.Create()
-                .OnCancel(() => cancelled = true);
-
-            // Force executing state and cancel
-            typeof(JAction).GetField("IsExecuting",
-                BindingFlags.NonPublic |
-                BindingFlags.Instance)
-                ?.SetValue(action2, true);
-
-            action2.Cancel();
             Assert.IsTrue(cancelled);
+            Assert.IsTrue(action.Cancelled);
         }
 
         [Test]
@@ -171,18 +370,28 @@ namespace JEngine.Util.Tests
         {
             int result = 0;
 
+            // Use timeout to trigger cancellation with state callback
             using var action = JAction.Create()
-                .OnCancel(x => result = x, 42);
-
-            // Force executing state
-            typeof(JAction).GetField("IsExecuting",
-                BindingFlags.NonPublic |
-                BindingFlags.Instance)
-                ?.SetValue(action, true);
-
-            action.Cancel();
+                .Delay(1f) // Long delay
+                .OnCancel(x => result = x, 42)
+                .Execute(timeout: 0.01f); // Short timeout triggers cancel
 
             Assert.AreEqual(42, result);
+        }
+
+        [Test]
+        public void Cancel_NotExecuting_DoesNothing()
+        {
+            bool cancelled = false;
+
+            using var action = JAction.Create()
+                .Do(() => { })
+                .OnCancel(() => cancelled = true);
+
+            // Cancel without executing - should not invoke callback
+            action.Cancel();
+
+            Assert.IsFalse(cancelled);
         }
 
         #endregion
@@ -264,10 +473,10 @@ namespace JEngine.Util.Tests
         {
             int counter = 0;
 
-            using var action = JAction.Create()
-                .Do(() => counter++)
-                .Execute();
+            var action = JAction.Create()
+                .Do(() => counter++);
 
+            action.Execute();
             Assert.AreEqual(1, counter);
 
             action.Reset();
@@ -275,6 +484,8 @@ namespace JEngine.Util.Tests
                 .Execute();
 
             Assert.AreEqual(11, counter);
+
+            action.Dispose();
         }
 
         #endregion
@@ -333,25 +544,18 @@ namespace JEngine.Util.Tests
         }
 
         [Test]
-        public void Dispose_DuringExecution_CancelsFirst()
+        public void Dispose_CanBeCalledMultipleTimes()
         {
-            bool cancelled = false;
+            var action = JAction.Create()
+                .Do(() => { });
 
-            using var action = JAction.Create()
-                .Delay(1f)
-                .OnCancel(() => cancelled = true);
-
-            // Start execution
-            typeof(JAction).GetField("IsExecuting",
-                BindingFlags.NonPublic |
-                BindingFlags.Instance)
-                ?.SetValue(action, true);
-
-            // Dispose is called by using statement, which will cancel first
-            // We need to manually trigger for the assertion
-            action.Dispose();
-
-            Assert.IsTrue(cancelled);
+            // Multiple dispose calls should not throw
+            Assert.DoesNotThrow(() =>
+            {
+                action.Dispose();
+                action.Dispose();
+                action.Dispose();
+            });
         }
 
         [Test]
@@ -367,6 +571,192 @@ namespace JEngine.Util.Tests
             Assert.AreEqual(1, counter);
         }
 
+        [Test]
+        public void Delay_ZeroValue_SkipsDelay()
+        {
+            int counter = 0;
+
+            JAction.Create()
+                .Delay(0f) // Zero delay should be skipped
+                .Do(() => counter++)
+                .Execute();
+
+            Assert.AreEqual(1, counter);
+        }
+
+        [Test]
+        public void Delay_NegativeValue_SkipsDelay()
+        {
+            int counter = 0;
+
+            JAction.Create()
+                .Delay(-1f) // Negative delay should be skipped
+                .Do(() => counter++)
+                .Execute();
+
+            Assert.AreEqual(1, counter);
+        }
+
+        [Test]
+        public void DelayFrame_ZeroValue_SkipsDelay()
+        {
+            int counter = 0;
+
+            JAction.Create()
+                .DelayFrame(0) // Zero frames should be skipped
+                .Do(() => counter++)
+                .Execute();
+
+            Assert.AreEqual(1, counter);
+        }
+
+        [Test]
+        public void DelayFrame_NegativeValue_SkipsDelay()
+        {
+            int counter = 0;
+
+            JAction.Create()
+                .DelayFrame(-1) // Negative frames should be skipped
+                .Do(() => counter++)
+                .Execute();
+
+            Assert.AreEqual(1, counter);
+        }
+
+        [Test]
+        public void TaskCapacity_ThrowsWhenExceeded()
+        {
+            using var action = JAction.Create();
+
+            // Add 256 tasks (the max capacity)
+            for (int i = 0; i < 256; i++)
+            {
+                action.Do(() => { });
+            }
+
+            // The 257th task should throw
+            Assert.Throws<InvalidOperationException>(() => action.Do(() => { }));
+        }
+
+        [Test]
+        public void Reset_ClearsTasks()
+        {
+            int counter = 0;
+
+            using var action = JAction.Create()
+                .Do(() => counter++)
+                .Do(() => counter++);
+
+            // Reset should clear the tasks
+            action.Reset();
+
+            // Execute after reset - should do nothing (no tasks)
+            action.Execute();
+
+            Assert.AreEqual(0, counter);
+        }
+
+        [Test]
+        public void Reset_ClearsParallelMode()
+        {
+            using var action = JAction.Create()
+                .Parallel();
+
+            Assert.IsTrue(action.IsParallel);
+
+            action.Reset();
+
+            Assert.IsFalse(action.IsParallel);
+        }
+
+        #endregion
+
+        #region Timeout Tests for Conditional Operations
+
+        [Test]
+        public void WaitWhile_TimeoutStopsWaiting()
+        {
+            bool completed = false;
+            float startTime = UnityEngine.Time.realtimeSinceStartup;
+
+            // WaitWhile with a condition that's always true, but with timeout
+            JAction.Create()
+                .WaitWhile(() => true, frequency: 0, timeout: 0.1f)
+                .Do(() => completed = true)
+                .Execute();
+
+            float elapsed = UnityEngine.Time.realtimeSinceStartup - startTime;
+
+            Assert.IsTrue(completed);
+            Assert.GreaterOrEqual(elapsed, 0.1f); // Should have waited for timeout
+            Assert.Less(elapsed, 0.5f); // But not too long
+        }
+
+        [Test]
+        public void RepeatWhile_TimeoutStopsRepeating()
+        {
+            int repeatCount = 0;
+            float startTime = UnityEngine.Time.realtimeSinceStartup;
+
+            // RepeatWhile with a condition that's always true, but with timeout
+            JAction.Create()
+                .RepeatWhile(
+                    () => repeatCount++,
+                    () => true, // Always true
+                    frequency: 0,
+                    timeout: 0.1f
+                )
+                .Execute();
+
+            float elapsed = UnityEngine.Time.realtimeSinceStartup - startTime;
+
+            Assert.Greater(repeatCount, 0); // Should have run at least once
+            Assert.GreaterOrEqual(elapsed, 0.1f);
+            Assert.Less(elapsed, 0.5f);
+        }
+
+        [Test]
+        public void RepeatUntil_TimeoutStopsRepeating()
+        {
+            int repeatCount = 0;
+            float startTime = UnityEngine.Time.realtimeSinceStartup;
+
+            // RepeatUntil with a condition that's never true, but with timeout
+            JAction.Create()
+                .RepeatUntil(
+                    () => repeatCount++,
+                    () => false, // Never true
+                    frequency: 0,
+                    timeout: 0.1f
+                )
+                .Execute();
+
+            float elapsed = UnityEngine.Time.realtimeSinceStartup - startTime;
+
+            Assert.Greater(repeatCount, 0); // Should have run at least once
+            Assert.GreaterOrEqual(elapsed, 0.1f);
+            Assert.Less(elapsed, 0.5f);
+        }
+
+        [Test]
+        public void WaitUntil_TimeoutStopsWaiting()
+        {
+            bool completed = false;
+            float startTime = UnityEngine.Time.realtimeSinceStartup;
+
+            // WaitUntil with a condition that's never true, but with timeout
+            JAction.Create()
+                .WaitUntil(() => false, frequency: 0, timeout: 0.1f)
+                .Do(() => completed = true)
+                .Execute();
+
+            float elapsed = UnityEngine.Time.realtimeSinceStartup - startTime;
+
+            Assert.IsTrue(completed);
+            Assert.GreaterOrEqual(elapsed, 0.1f);
+            Assert.Less(elapsed, 0.5f);
+        }
+
         #endregion
 
         #region Complex Chaining
@@ -377,11 +767,11 @@ namespace JEngine.Util.Tests
             var order = new List<int>();
 
             JAction.Create()
-                .Do(() => order.Add(1))
+                .Do(static o => o.Add(1), order)
                 .Delay(0.01f)
-                .Do(() => order.Add(2))
-                .Repeat(() => order.Add(3), count: 2)
-                .Do(() => order.Add(4))
+                .Do(static o => o.Add(2), order)
+                .Repeat(static o => o.Add(3), order, count: 2)
+                .Do(static o => o.Add(4), order)
                 .Execute();
 
             Assert.AreEqual(5, order.Count);
@@ -525,4 +915,6 @@ namespace JEngine.Util.Tests
             public int Value;
         }
     }
+
+    #endregion
 }

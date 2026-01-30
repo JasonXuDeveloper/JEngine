@@ -5,6 +5,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using JEngine.Util.Internal;
 
 namespace JEngine.Util
 {
@@ -23,22 +24,22 @@ namespace JEngine.Util
     /// </remarks>
     public readonly struct JActionAwaitable
     {
-        /// <summary>The JAction instance being awaited.</summary>
-        public readonly JAction Action;
+        /// <summary>The execution context being awaited.</summary>
+        internal readonly JActionExecutionContext Context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JActionAwaitable"/> struct.
         /// </summary>
-        /// <param name="action">The JAction to await.</param>
+        /// <param name="context">The execution context to await.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public JActionAwaitable(JAction action) => Action = action;
+        internal JActionAwaitable(JActionExecutionContext context) => Context = context;
 
         /// <summary>
         /// Gets the awaiter for this awaitable.
         /// </summary>
         /// <returns>A <see cref="JActionAwaiter"/> instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public JActionAwaiter GetAwaiter() => new(Action);
+        public JActionAwaiter GetAwaiter() => new(Context);
     }
 
     /// <summary>
@@ -51,27 +52,27 @@ namespace JEngine.Util
     /// </remarks>
     public readonly struct JActionAwaiter : ICriticalNotifyCompletion
     {
-        /// <summary>The JAction instance being awaited.</summary>
-        public readonly JAction Action;
+        /// <summary>The execution context being awaited.</summary>
+        internal readonly JActionExecutionContext Context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JActionAwaiter"/> struct.
         /// </summary>
-        /// <param name="action">The JAction to await.</param>
+        /// <param name="context">The execution context to await.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public JActionAwaiter(JAction action) => Action = action;
+        internal JActionAwaiter(JActionExecutionContext context) => Context = context;
 
         /// <summary>
-        /// Gets whether the <see cref="JAction"/> has completed execution.
+        /// Gets whether the execution has completed.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the action is null, disposed, or has finished executing;
+        /// <c>true</c> if the context is null or has finished executing;
         /// <c>false</c> if still in progress.
         /// </value>
         public bool IsCompleted
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Action == null || !Action.IsExecuting;
+            get => Context == null || !Context.IsExecuting;
         }
 
         /// <summary>
@@ -94,12 +95,12 @@ namespace JEngine.Util
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnCompleted(Action continuation)
         {
-            if (Action == null || !Action.IsExecuting)
+            if (Context == null || !Context.IsExecuting)
             {
                 continuation?.Invoke();
                 return;
             }
-            Action.ContinuationCallback = continuation;
+            Context.ContinuationCallback = continuation;
         }
 
         /// <summary>
