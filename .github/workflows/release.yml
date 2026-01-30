@@ -181,6 +181,15 @@ jobs:
           echo "Coverage directory structure:"
           find coverage -type f -name "*.xml" 2>/dev/null || echo "No XML files found"
 
+      - name: Fix coverage paths
+        run: |
+          # Unity test runner generates paths with /github/workspace/ prefix (Docker container path)
+          # Strip this prefix so Codecov can match paths to repository files
+          echo "Fixing coverage paths..."
+          find coverage -name "*.xml" -exec sed -i 's|/github/workspace/||g' {} \;
+          echo "Path fix complete. Sample paths after fix:"
+          grep -h "fullPath=" coverage/**/TestCoverageResults*.xml | head -5 || true
+
       - name: Upload coverage to Codecov (util package)
         uses: codecov/codecov-action@v4
         with:
