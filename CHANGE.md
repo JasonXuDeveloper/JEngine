@@ -1,4 +1,10 @@
 ## All Versions
+## 1.1.4 (January 30 2026)
+
+- Use using statement for JAction in Reset_AllowsReuse test ([#611](https://github.com/JasonXuDeveloper/JEngine/pull/611)) (util)
+- Reset error baseline after filtering YooAsset catalog errors ([#610](https://github.com/JasonXuDeveloper/JEngine/pull/610)) (core)
+
+
 ## 1.1.3 (January 30 2026)
 
 - Add JAction parallel execution and improve test coverage ([#607](https://github.com/JasonXuDeveloper/JEngine/pull/607)) (util)
