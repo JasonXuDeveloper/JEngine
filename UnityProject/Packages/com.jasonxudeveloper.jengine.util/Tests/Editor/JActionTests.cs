@@ -473,7 +473,7 @@ namespace JEngine.Util.Tests
         {
             int counter = 0;
 
-            var action = JAction.Create()
+            using var action = JAction.Create()
                 .Do(() => counter++);
 
             action.Execute();
@@ -484,8 +484,6 @@ namespace JEngine.Util.Tests
                 .Execute();
 
             Assert.AreEqual(11, counter);
-
-            action.Dispose();
         }
 
         #endregion
