@@ -106,7 +106,7 @@ jobs:
           echo "Fixing coverage paths..."
           find coverage -name "*.xml" -exec sed -i 's|/github/workspace/||g' {} \;
           echo "Path fix complete. Sample paths after fix:"
-          grep -h "fullPath=" coverage/**/TestCoverageResults*.xml | head -5 || true
+          find coverage -name "TestCoverageResults*.xml" -exec grep -h "fullPath=" {} \; | head -5 || true
 
       - name: Upload coverage to Codecov (util package)
         uses: codecov/codecov-action@v4
