@@ -393,7 +393,7 @@ public sealed class TooltipTrigger : IDisposable
 }
 ```
 
-### Typewriter Effect (with StringBuilder Pool)
+### Typewriter Effect (Zero-GC)
 ```csharp
 public sealed class TypewriterState
 {
@@ -411,8 +411,6 @@ public sealed class TypewriterState
     }
 }
 
-// Note: This pattern uses a closure for simplicity. For high-frequency usage,
-// consider wrapping StringBuilder in the state class to achieve full zero-GC.
 public static async UniTask TypeText(string content, float charDelay, Action<string> onUpdate)
 {
     var state = JObjectPool.Shared<TypewriterState>().Rent();
