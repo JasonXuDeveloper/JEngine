@@ -12,6 +12,12 @@ coverage:
         target: auto
         threshold: 1%
 
+# Fix Docker container path prefix in coverage reports
+# Unity test runner generates paths like /github/workspace/UnityProject/...
+# This strips the /github/workspace/ prefix to match repository structure
+fixes:
+  - "/github/workspace/::"
+
 # Flag management for per-package coverage tracking
 flag_management:
   default_rules:
