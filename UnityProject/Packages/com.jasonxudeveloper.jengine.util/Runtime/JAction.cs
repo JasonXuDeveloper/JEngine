@@ -910,8 +910,20 @@ namespace JEngine.Util
             _onCancelDelegate = null;
             _onCancelState?.Return();
             _onCancelState = null;
+
+            // Return active execution contexts to pool before clearing
+            for (int i = 0; i < _activeContexts.Count; i++)
+            {
+                JActionExecutionContext.Return(_activeContexts[i]);
+            }
             _activeContexts.Clear();
-            _syncContext = null;
+
+            // Return sync execution context to pool
+            if (_syncContext != null)
+            {
+                JActionExecutionContext.Return(_syncContext);
+                _syncContext = null;
+            }
 
             return this;
         }

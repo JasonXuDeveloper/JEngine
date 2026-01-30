@@ -143,16 +143,8 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return false;
 
-            // Get the most recent message box (any will do for testing)
-            MessageBox target = null;
-            foreach (var box in ActiveMessageBoxes)
-            {
-                target = box;
-                break;
-            }
-
-            if (target == null) return false;
-
+            // Get the first message box (any will do for testing)
+            var target = ActiveMessageBoxes[0];
             target.HandleEvent(clickOk);
             return true;
         }
@@ -165,14 +157,8 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            MessageBox target = null;
-            foreach (var box in ActiveMessageBoxes)
-            {
-                target = box;
-                break;
-            }
-
-            if (target == null || target._buttonOk == null || target._buttonNo == null)
+            var target = ActiveMessageBoxes[0];
+            if (target._buttonOk == null || target._buttonNo == null)
                 return null;
 
             return (target._buttonOk.gameObject.activeSelf, target._buttonNo.gameObject.activeSelf);
@@ -186,15 +172,7 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            MessageBox target = null;
-            foreach (var box in ActiveMessageBoxes)
-            {
-                target = box;
-                break;
-            }
-
-            if (target == null) return null;
-
+            var target = ActiveMessageBoxes[0];
             return (
                 target._title?.text,
                 target._content?.text,

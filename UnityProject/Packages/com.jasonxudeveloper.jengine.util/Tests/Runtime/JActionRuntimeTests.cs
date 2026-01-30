@@ -488,6 +488,9 @@ namespace JEngine.Util.Tests
         [UnityTest]
         public IEnumerator Parallel_AllowsConcurrentExecution()
         {
+            // Note: This test is safe despite shared variables because Unity's PlayerLoop
+            // executes on a single thread. The increment/decrement operations are not
+            // racing with each other - they execute sequentially within the same frame.
             int concurrentCount = 0;
             int maxConcurrent = 0;
 
@@ -580,7 +583,7 @@ namespace JEngine.Util.Tests
                 action1.Dispose();
                 action2.Dispose();
 
-                await Task.CompletedTask;
+                await UniTask.CompletedTask;
             });
         }
 

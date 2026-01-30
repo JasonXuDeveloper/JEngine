@@ -87,16 +87,9 @@ namespace JEngine.Util
         /// </summary>
         public async UniTask<JActionExecution> AsUniTask()
         {
-            await new JActionAwaitable(_context);
-            _action?.RemoveActiveContext(_context);
-
-            // Capture cancelled state before returning context to pool
-            bool cancelled = _context?.Cancelled ?? false;
-
-            // Return context to pool
-            JActionExecutionContext.Return(_context);
-
-            return new JActionExecution(_action, cancelled);
+            // Delegate to the handle's awaiter so that completion and cleanup
+            // are managed in a single, centralized location.
+            return await this;
         }
 
         /// <summary>
