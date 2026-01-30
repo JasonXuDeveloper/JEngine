@@ -1,4 +1,10 @@
 ## All Versions
+## 1.1.3 (January 30 2026)
+
+- Add JAction parallel execution and improve test coverage ([#607](https://github.com/JasonXuDeveloper/JEngine/pull/607)) (util)
+- Preprocess coverage paths before Codecov upload ([#606](https://github.com/JasonXuDeveloper/JEngine/pull/606)) (ci)
+
+
 ## 1.1.2 (January 30 2026)
 
 - Add Codecov upload to release workflow ([#605](https://github.com/JasonXuDeveloper/JEngine/pull/605)) (ci)

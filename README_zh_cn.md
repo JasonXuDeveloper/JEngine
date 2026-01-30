@@ -75,9 +75,10 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.1.2)
+## 🎉 最新功能 (v1.1.3)
 
-- **ci**: add Codecov upload to release workflow ([#605](https://github.com/JasonXuDeveloper/JEngine/pull/605))
+- **util**: add JAction parallel execution and improve test coverage ([#607](https://github.com/JasonXuDeveloper/JEngine/pull/607))
+- **ci**: preprocess coverage paths before Codecov upload ([#606](https://github.com/JasonXuDeveloper/JEngine/pull/606))
 
 [📋 查看完整更新日志](CHANGE.md)
 
