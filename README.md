@@ -73,9 +73,9 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.1.1)
+## 🎉 Latest Features (v1.1.2)
 
-- **ci**: resolve Codecov path mismatch causing unusable reports ([#603](https://github.com/JasonXuDeveloper/JEngine/pull/603))
+- **ci**: add Codecov upload to release workflow ([#605](https://github.com/JasonXuDeveloper/JEngine/pull/605))
 
 [📋 View Complete Changelog](CHANGE.md)
 

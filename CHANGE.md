@@ -1,4 +1,9 @@
 ## All Versions
+## 1.1.2 (January 30 2026)
+
+- Add Codecov upload to release workflow ([#605](https://github.com/JasonXuDeveloper/JEngine/pull/605)) (ci)
+
+
 ## 1.1.1 (January 30 2026)
 
 - Resolve Codecov path mismatch causing unusable reports ([#603](https://github.com/JasonXuDeveloper/JEngine/pull/603)) (ci)

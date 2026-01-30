@@ -75,9 +75,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.1.1)
+## 🎉 最新功能 (v1.1.2)
 
-- **ci**: resolve Codecov path mismatch causing unusable reports ([#603](https://github.com/JasonXuDeveloper/JEngine/pull/603))
+- **ci**: add Codecov upload to release workflow ([#605](https://github.com/JasonXuDeveloper/JEngine/pull/605))
 
 [📋 查看完整更新日志](CHANGE.md)
 
