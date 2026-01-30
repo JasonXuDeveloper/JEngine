@@ -627,17 +627,21 @@ namespace JEngine.Util.Tests
         public void TaskCapacity_ThrowsWhenExceeded()
         {
             var action = JAction.Create();
-
-            // Add 256 tasks (the max capacity)
-            for (int i = 0; i < 256; i++)
+            try
             {
-                action.Do(() => { });
+                // Add 256 tasks (the max capacity)
+                for (int i = 0; i < 256; i++)
+                {
+                    action.Do(() => { });
+                }
+
+                // The 257th task should throw
+                Assert.Throws<InvalidOperationException>(() => action.Do(() => { }));
             }
-
-            // The 257th task should throw
-            Assert.Throws<InvalidOperationException>(() => action.Do(() => { }));
-
-            action.Dispose();
+            finally
+            {
+                action.Dispose();
+            }
         }
 
         [Test]
@@ -648,15 +652,20 @@ namespace JEngine.Util.Tests
             var action = JAction.Create()
                 .Do(() => counter++)
                 .Do(() => counter++);
+            try
+            {
+                // Reset should clear the tasks
+                action.Reset();
 
-            // Reset should clear the tasks
-            action.Reset();
+                // Execute after reset - should do nothing (no tasks)
+                action.Execute();
 
-            // Execute after reset - should do nothing (no tasks)
-            action.Execute();
-
-            Assert.AreEqual(0, counter);
-            action.Dispose();
+                Assert.AreEqual(0, counter);
+            }
+            finally
+            {
+                action.Dispose();
+            }
         }
 
         [Test]
@@ -664,13 +673,18 @@ namespace JEngine.Util.Tests
         {
             var action = JAction.Create()
                 .Parallel();
+            try
+            {
+                Assert.IsTrue(action.IsParallel);
 
-            Assert.IsTrue(action.IsParallel);
+                action.Reset();
 
-            action.Reset();
-
-            Assert.IsFalse(action.IsParallel);
-            action.Dispose();
+                Assert.IsFalse(action.IsParallel);
+            }
+            finally
+            {
+                action.Dispose();
+            }
         }
 
         #endregion

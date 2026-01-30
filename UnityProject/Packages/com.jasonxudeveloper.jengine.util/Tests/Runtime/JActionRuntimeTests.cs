@@ -438,19 +438,23 @@ namespace JEngine.Util.Tests
                     .Do(static o => o.Add(1), order)
                     .DelayFrame(2)
                     .Do(static o => o.Add(2), order);
+                try
+                {
+                    using var action = await JAction.Create()
+                        .Do(static o => o.Add(0), order)
+                        .Do(static act => { _ = act.ExecuteAsync(); }, innerAction) // Fire and forget
+                        .Do(static o => o.Add(3), order)
+                        .ExecuteAsync();
 
-                using var action = await JAction.Create()
-                    .Do(static o => o.Add(0), order)
-                    .Do(static act => { _ = act.ExecuteAsync(); }, innerAction) // Fire and forget
-                    .Do(static o => o.Add(3), order)
-                    .ExecuteAsync();
-
-                // The inner action executes asynchronously, so order depends on timing
-                Assert.Contains(0, order);
-                Assert.Contains(3, order);
-
-                // Clean up inner action
-                innerAction.Dispose();
+                    // The inner action executes asynchronously, so order depends on timing
+                    Assert.Contains(0, order);
+                    Assert.Contains(3, order);
+                }
+                finally
+                {
+                    // Clean up inner action
+                    innerAction.Dispose();
+                }
             });
         }
 
@@ -499,19 +503,23 @@ namespace JEngine.Util.Tests
                     })
                     .DelayFrame(2)
                     .Do(() => concurrentCount--);
+                try
+                {
+                    // Start multiple executions concurrently
+                    var task1 = action.ExecuteAsync();
+                    var task2 = action.ExecuteAsync();
 
-                // Start multiple executions concurrently
-                var task1 = action.ExecuteAsync();
-                var task2 = action.ExecuteAsync();
+                    await task1;
+                    await task2;
 
-                await task1;
-                await task2;
-
-                // With parallel mode, both should have run
-                // Note: maxConcurrent may be 1 or 2 depending on timing
-                Assert.GreaterOrEqual(maxConcurrent, 1);
-
-                action.Dispose();
+                    // With parallel mode, both should have run
+                    // Note: maxConcurrent may be 1 or 2 depending on timing
+                    Assert.GreaterOrEqual(maxConcurrent, 1);
+                }
+                finally
+                {
+                    action.Dispose();
+                }
             });
         }
 
@@ -526,29 +534,33 @@ namespace JEngine.Util.Tests
                 var action = JAction.Create()
                     .Do(() => executionCount++)
                     .DelayFrame(2);
+                try
+                {
+                    // Start first execution
+                    var task1 = action.ExecuteAsync();
 
-                // Start first execution
-                var task1 = action.ExecuteAsync();
+                    // Verify action is executing
+                    Assert.IsTrue(action.Executing);
 
-                // Verify action is executing
-                Assert.IsTrue(action.Executing);
+                    // Try to start second execution while first is running
+                    // This should log a warning and return immediately
+                    LogAssert.Expect(LogType.Warning,
+                        "[JAction] Already executing. Enable Parallel() for concurrent execution.");
+                    var task2 = action.ExecuteAsync();
 
-                // Try to start second execution while first is running
-                // This should log a warning and return immediately
-                LogAssert.Expect(LogType.Warning,
-                    "[JAction] Already executing. Enable Parallel() for concurrent execution.");
-                var task2 = action.ExecuteAsync();
+                    // task2 should complete immediately (returns early)
+                    await task2;
 
-                // task2 should complete immediately (returns early)
-                await task2;
+                    // Wait for first execution to complete
+                    await task1;
 
-                // Wait for first execution to complete
-                await task1;
-
-                // Only the first execution should have incremented
-                Assert.AreEqual(1, executionCount);
-
-                action.Dispose();
+                    // Only the first execution should have incremented
+                    Assert.AreEqual(1, executionCount);
+                }
+                finally
+                {
+                    action.Dispose();
+                }
             });
         }
 
@@ -701,23 +713,27 @@ namespace JEngine.Util.Tests
                     .Delay(1f)
                     .Do(() => step2 = true)
                     .OnCancel(() => cancelled = true);
+                try
+                {
+                    // Start execution (don't await yet)
+                    var handle = action.ExecuteAsync();
 
-                // Start execution (don't await yet)
-                var handle = action.ExecuteAsync();
+                    // Wait a bit then cancel via handle (per-execution cancellation)
+                    await UniTask.Delay(50);
+                    handle.Cancel();
 
-                // Wait a bit then cancel via handle (per-execution cancellation)
-                await UniTask.Delay(50);
-                handle.Cancel();
+                    // Now await the handle to get the result
+                    var result = await handle;
 
-                // Now await the handle to get the result
-                var result = await handle;
-
-                Assert.IsTrue(step1);
-                Assert.IsFalse(step2);
-                Assert.IsTrue(cancelled);
-                Assert.IsTrue(result.Cancelled);
-
-                action.Dispose();
+                    Assert.IsTrue(step1);
+                    Assert.IsFalse(step2);
+                    Assert.IsTrue(cancelled);
+                    Assert.IsTrue(result.Cancelled);
+                }
+                finally
+                {
+                    action.Dispose();
+                }
             });
         }
 
@@ -732,25 +748,29 @@ namespace JEngine.Util.Tests
                     .Parallel()
                     .Delay(1f)
                     .OnCancel(() => cancelCount++);
+                try
+                {
+                    // Start two parallel executions
+                    var handle1 = action.ExecuteAsync();
+                    var handle2 = action.ExecuteAsync();
 
-                // Start two parallel executions
-                var handle1 = action.ExecuteAsync();
-                var handle2 = action.ExecuteAsync();
+                    // Wait a bit then cancel only handle1
+                    await UniTask.Delay(50);
+                    handle1.Cancel();
 
-                // Wait a bit then cancel only handle1
-                await UniTask.Delay(50);
-                handle1.Cancel();
+                    // Await both
+                    var result1 = await handle1;
+                    var result2 = await handle2;
 
-                // Await both
-                var result1 = await handle1;
-                var result2 = await handle2;
-
-                // Only handle1 should be cancelled
-                Assert.IsTrue(result1.Cancelled);
-                Assert.IsFalse(result2.Cancelled);
-                Assert.AreEqual(1, cancelCount);
-
-                action.Dispose();
+                    // Only handle1 should be cancelled
+                    Assert.IsTrue(result1.Cancelled);
+                    Assert.IsFalse(result2.Cancelled);
+                    Assert.AreEqual(1, cancelCount);
+                }
+                finally
+                {
+                    action.Dispose();
+                }
             });
         }
 
