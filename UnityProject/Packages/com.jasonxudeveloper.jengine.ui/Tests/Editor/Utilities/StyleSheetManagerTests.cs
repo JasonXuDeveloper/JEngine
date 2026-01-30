@@ -144,7 +144,7 @@ namespace JEngine.UI.Tests.Editor.Utilities
         public void ClearCache_ResetsTokensCache()
         {
             // Access to populate cache
-            var first = StyleSheetManager.Tokens;
+            _ = StyleSheetManager.Tokens;
 
             StyleSheetManager.ClearCache();
 
@@ -159,7 +159,7 @@ namespace JEngine.UI.Tests.Editor.Utilities
         [Test]
         public void ClearCache_ResetsBaseCache()
         {
-            var first = StyleSheetManager.Base;
+            _ = StyleSheetManager.Base;
             StyleSheetManager.ClearCache();
             var second = StyleSheetManager.Base;
 
@@ -169,7 +169,7 @@ namespace JEngine.UI.Tests.Editor.Utilities
         [Test]
         public void ClearCache_ResetsComponentsCache()
         {
-            var first = StyleSheetManager.Components;
+            _ = StyleSheetManager.Components;
             StyleSheetManager.ClearCache();
             var second = StyleSheetManager.Components;
 
