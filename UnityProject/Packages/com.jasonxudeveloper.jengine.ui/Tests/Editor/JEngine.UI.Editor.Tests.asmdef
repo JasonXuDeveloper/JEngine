@@ -3,6 +3,7 @@
     "rootNamespace": "JEngine.UI.Tests",
     "references": [
         "JEngine.UI",
+        "JEngine.UI.Editor",
         "UniTask",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
