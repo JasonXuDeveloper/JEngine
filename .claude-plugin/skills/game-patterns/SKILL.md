@@ -116,7 +116,7 @@ public sealed class ComboState
     public JAction ResetAction;
 }
 
-public sealed class ComboSystem
+public sealed class ComboSystem : IDisposable
 {
     private readonly ComboState _state = new();
 
@@ -125,6 +125,7 @@ public sealed class ComboSystem
     public void OnHit()
     {
         _state.ResetAction?.Cancel();
+        _state.ResetAction?.Dispose();
         _state.Count++;
 
         _state.ResetAction = JAction.Create()
@@ -132,6 +133,16 @@ public sealed class ComboSystem
             .Do(static s => s.Count = 0, _state);
 
         _ = _state.ResetAction.ExecuteAsync();
+    }
+
+    /// <summary>
+    /// Call from OnDestroy to prevent callbacks on destroyed objects.
+    /// </summary>
+    public void Dispose()
+    {
+        _state.ResetAction?.Cancel();
+        _state.ResetAction?.Dispose();
+        _state.ResetAction = null;
     }
 }
 ```
@@ -206,13 +217,20 @@ public sealed class RegenState
     public float Max;
     public float PerTick;
     public JAction Action;
+
+    public void Cleanup()
+    {
+        Action?.Cancel();
+        Action?.Dispose();
+        Action = null;
+    }
 }
 
 public static class RegenSystem
 {
     public static void Start(RegenState state, float hpPerSecond)
     {
-        state.Action?.Cancel();
+        state.Cleanup();
         state.PerTick = hpPerSecond * 0.1f;
 
         state.Action = JAction.Create()
@@ -225,7 +243,10 @@ public static class RegenSystem
         _ = state.Action.ExecuteAsync();
     }
 
-    public static void Stop(RegenState state) => state.Action?.Cancel();
+    /// <summary>
+    /// Stop regeneration. Call Cleanup() from OnDestroy to fully dispose.
+    /// </summary>
+    public static void Stop(RegenState state) => state.Cleanup();
 }
 ```
 
@@ -283,6 +304,12 @@ public sealed class BulletLifetimeState
 {
     public Bullet Bullet;
     public BulletManager Manager;
+
+    public void Reset()
+    {
+        Bullet = null;
+        Manager = null;
+    }
 }
 
 public static async UniTaskVoid FireWithLifetime(
@@ -301,11 +328,10 @@ public static async UniTaskVoid FireWithLifetime(
 
     using var action = await JAction.Create()
         .Delay(lifetime)
-        .Do(static s => s.Manager.Return(s.Bullet), state)
+        .Do(static s => s.Manager?.Return(s.Bullet), state)
         .ExecuteAsync();
 
-    state.Bullet = null;
-    state.Manager = null;
+    state.Reset();
     JObjectPool.Shared<BulletLifetimeState>().Return(state);
 }
 ```
@@ -319,14 +345,24 @@ public sealed class TooltipState
     public JAction Action;
     public Action ShowCallback;
     public Action HideCallback;
+
+    public void Reset()
+    {
+        Action = null;
+        ShowCallback = null;
+        HideCallback = null;
+    }
 }
 
-public sealed class TooltipTrigger
+public sealed class TooltipTrigger : IDisposable
 {
     private readonly TooltipState _state = new();
 
     public void OnPointerEnter(Action show, Action hide)
     {
+        _state.Action?.Cancel();
+        _state.Action?.Dispose();
+
         _state.ShowCallback = show;
         _state.HideCallback = hide;
 
@@ -340,20 +376,43 @@ public sealed class TooltipTrigger
     public void OnPointerExit()
     {
         _state.Action?.Cancel();
+        _state.Action?.Dispose();
+        _state.Action = null;
         _state.HideCallback?.Invoke();
+    }
+
+    /// <summary>
+    /// Call from OnDestroy to prevent callbacks on destroyed objects.
+    /// </summary>
+    public void Dispose()
+    {
+        _state.Action?.Cancel();
+        _state.Action?.Dispose();
+        _state.Reset();
     }
 }
 ```
 
-### Typewriter Effect (Zero-GC with StringBuilder Pool)
+### Typewriter Effect (with StringBuilder Pool)
 ```csharp
 public sealed class TypewriterState
 {
     public string FullText;
     public int CurrentIndex;
     public Action<string> OnUpdate;
+    public StringBuilder Builder;
+
+    public void Reset()
+    {
+        FullText = null;
+        CurrentIndex = 0;
+        OnUpdate = null;
+        Builder = null;
+    }
 }
 
+// Note: This pattern uses a closure for simplicity. For high-frequency usage,
+// consider wrapping StringBuilder in the state class to achieve full zero-GC.
 public static async UniTask TypeText(string content, float charDelay, Action<string> onUpdate)
 {
     var state = JObjectPool.Shared<TypewriterState>().Rent();
@@ -362,17 +421,19 @@ public static async UniTask TypeText(string content, float charDelay, Action<str
     state.FullText = content;
     state.CurrentIndex = 0;
     state.OnUpdate = onUpdate;
+    state.Builder = sb;
 
     using var action = await JAction.Create()
         .Repeat(
-            () =>
+            static s =>
             {
-                if (state.CurrentIndex < state.FullText.Length)
+                if (s.CurrentIndex < s.FullText.Length)
                 {
-                    sb.Append(state.FullText[state.CurrentIndex++]);
-                    state.OnUpdate?.Invoke(sb.ToString());
+                    s.Builder.Append(s.FullText[s.CurrentIndex++]);
+                    s.OnUpdate?.Invoke(s.Builder.ToString());
                 }
             },
+            state,
             count: content.Length,
             interval: charDelay)
         .ExecuteAsync();
@@ -380,8 +441,7 @@ public static async UniTask TypeText(string content, float charDelay, Action<str
     sb.Clear();
     JObjectPool.Shared<StringBuilder>().Return(sb);
 
-    state.FullText = null;
-    state.OnUpdate = null;
+    state.Reset();
     JObjectPool.Shared<TypewriterState>().Return(state);
 }
 ```

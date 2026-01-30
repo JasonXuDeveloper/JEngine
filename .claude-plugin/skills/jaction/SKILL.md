@@ -168,7 +168,7 @@ public static async UniTaskVoid ApplyDoT(IDamageable target, float damage, int t
 
     using var action = await JAction.Create()
         .Repeat(
-            static s => s.Target.TakeDamage(s.DamagePerTick),
+            static s => s.Target?.TakeDamage(s.DamagePerTick),
             state,
             count: ticks,
             interval: interval)
@@ -182,9 +182,9 @@ public static async UniTaskVoid ApplyDoT(IDamageable target, float damage, int t
 
 ### Wave Spawner (Async)
 ```csharp
-public async UniTask RunWaves(ReadOnlySpan<WaveConfig> waves)
+public async UniTask RunWaves(WaveConfig[] waves)
 {
-    foreach (ref readonly var wave in waves)
+    foreach (var wave in waves)
     {
         using var action = await JAction.Create()
             .Do(() => UI.ShowWaveStart(wave.Number))
