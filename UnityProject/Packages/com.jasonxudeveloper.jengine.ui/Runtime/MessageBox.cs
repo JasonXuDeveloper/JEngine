@@ -124,6 +124,86 @@ namespace JEngine.UI
         internal static bool SimulateNoPrefab;
 #endif
 
+#if UNITY_INCLUDE_TESTS
+        /// <summary>
+        /// Test hook: Gets the pool state for verification in tests.
+        /// Returns (activeCount, pooledCount).
+        /// </summary>
+        internal static (int activeCount, int pooledCount) TestGetPoolState()
+        {
+            return (ActiveMessageBoxes.Count, PooledMessageBoxes.Count);
+        }
+
+        /// <summary>
+        /// Test hook: Simulates clicking a button on the most recently shown message box.
+        /// </summary>
+        /// <param name="clickOk">If true, simulates clicking OK; otherwise simulates clicking Cancel.</param>
+        /// <returns>True if a message box was found and the click was simulated.</returns>
+        internal static bool TestSimulateButtonClick(bool clickOk)
+        {
+            if (ActiveMessageBoxes.Count == 0) return false;
+
+            // Get the most recent message box (any will do for testing)
+            MessageBox target = null;
+            foreach (var box in ActiveMessageBoxes)
+            {
+                target = box;
+                break;
+            }
+
+            if (target == null) return false;
+
+            target.HandleEvent(clickOk);
+            return true;
+        }
+
+        /// <summary>
+        /// Test hook: Gets the button visibility state of the most recently shown message box.
+        /// </summary>
+        /// <returns>Tuple of (okButtonVisible, noButtonVisible), or null if no active boxes.</returns>
+        internal static (bool okVisible, bool noVisible)? TestGetButtonVisibility()
+        {
+            if (ActiveMessageBoxes.Count == 0) return null;
+
+            MessageBox target = null;
+            foreach (var box in ActiveMessageBoxes)
+            {
+                target = box;
+                break;
+            }
+
+            if (target == null || target._buttonOk == null || target._buttonNo == null)
+                return null;
+
+            return (target._buttonOk.gameObject.activeSelf, target._buttonNo.gameObject.activeSelf);
+        }
+
+        /// <summary>
+        /// Test hook: Gets the text content of the most recently shown message box.
+        /// </summary>
+        /// <returns>Tuple of (title, content, okText, noText), or null if no active boxes.</returns>
+        internal static (string title, string content, string okText, string noText)? TestGetContent()
+        {
+            if (ActiveMessageBoxes.Count == 0) return null;
+
+            MessageBox target = null;
+            foreach (var box in ActiveMessageBoxes)
+            {
+                target = box;
+                break;
+            }
+
+            if (target == null) return null;
+
+            return (
+                target._title?.text,
+                target._content?.text,
+                target._textOk?.text,
+                target._textNo?.text
+            );
+        }
+#endif
+
         private TextMeshProUGUI _content;
         private TextMeshProUGUI _textNo;
         private TextMeshProUGUI _textOk;

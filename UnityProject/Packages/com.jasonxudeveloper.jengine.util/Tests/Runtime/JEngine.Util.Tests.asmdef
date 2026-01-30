@@ -2,9 +2,10 @@
     "name": "JEngine.Util.Tests",
     "rootNamespace": "JEngine.Util.Tests",
     "references": [
-        "GUID:5c8e1f4d7a3b9e2c6f0d8a4b7e3c1f9d",
+        "JEngine.Util",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
