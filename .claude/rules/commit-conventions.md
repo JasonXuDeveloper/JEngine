@@ -99,3 +99,41 @@ git commit -s -m "feat(core): add new feature"
 ```
 
 This adds a `Signed-off-by` line certifying you have the right to submit the code under the project's license.
+
+## PR Code Review Handling
+
+When addressing code review comments on a PR:
+
+1. **Fix the issue** in code
+2. **Commit and push** the fix
+3. **Reply** to the review comment explaining the fix
+4. **Resolve the conversation** immediately after replying
+
+To resolve conversations via CLI:
+
+```bash
+# Get thread IDs
+gh api graphql -f query='
+{
+  repository(owner: "OWNER", name: "REPO") {
+    pullRequest(number: PR_NUMBER) {
+      reviewThreads(first: 20) {
+        nodes {
+          id
+          isResolved
+        }
+      }
+    }
+  }
+}'
+
+# Resolve a thread
+gh api graphql -f query='
+mutation {
+  resolveReviewThread(input: {threadId: "THREAD_ID"}) {
+    thread { isResolved }
+  }
+}'
+```
+
+**Important:** Always resolve conversations after fixing and replying - don't leave them open.
