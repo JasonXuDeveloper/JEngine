@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -144,7 +145,7 @@ namespace JEngine.UI
             if (ActiveMessageBoxes.Count == 0) return false;
 
             // Get the first message box (any will do for testing)
-            var target = ActiveMessageBoxes[0];
+            var target = ActiveMessageBoxes.First();
             target.HandleEvent(clickOk);
             return true;
         }
@@ -157,7 +158,7 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            var target = ActiveMessageBoxes[0];
+            var target = ActiveMessageBoxes.First();
             if (target._buttonOk == null || target._buttonNo == null)
                 return null;
 
@@ -172,7 +173,7 @@ namespace JEngine.UI
         {
             if (ActiveMessageBoxes.Count == 0) return null;
 
-            var target = ActiveMessageBoxes[0];
+            var target = ActiveMessageBoxes.First();
             return (
                 target._title?.text,
                 target._content?.text,
