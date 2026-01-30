@@ -188,7 +188,7 @@ jobs:
           files: coverage/**/TestCoverageResults*.xml
           flags: util
           name: jengine-util
-          fail_ci_if_error: false
+          fail_ci_if_error: true
           verbose: true
 
       - name: Upload coverage to Codecov (ui package)
@@ -198,7 +198,7 @@ jobs:
           files: coverage/**/TestCoverageResults*.xml
           flags: ui
           name: jengine-ui
-          fail_ci_if_error: false
+          fail_ci_if_error: true
           verbose: true
 
   prepare-release:
