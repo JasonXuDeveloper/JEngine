@@ -71,7 +71,7 @@ jobs:
           artifactsPath: artifacts/EditMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: EditMode Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+JEngine.*'
 
       # Run PlayMode tests
       - name: Run PlayMode tests
@@ -89,7 +89,7 @@ jobs:
           artifactsPath: artifacts/PlayMode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: PlayMode Test Results
-          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport'
+          coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+JEngine.*'
 
       # Upload test results as artifacts
       - name: Upload EditMode test results
