@@ -17,6 +17,9 @@ UnityProject/Build/*
 /UnityProject/HybridCLRData
 /UnityProject/UserSettings
 
+# Unity package settings (local preferences)
+/UnityProject/ProjectSettings/Packages/com.unity.testtools.codecoverage/Settings.json
+
 # Unity Test Framework temporary scenes
 /UnityProject/Assets/InitTestScene*.unity
 /UnityProject/Assets/InitTestScene*.unity.meta
