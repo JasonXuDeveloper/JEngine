@@ -363,6 +363,134 @@ enum JustifyContent { Start, Center, End, SpaceBetween }
 enum AlignItems { Start, Center, End, Stretch }
 ```
 
+## Game Development Examples
+
+### Settings Panel
+```csharp
+public class GameSettingsWindow : EditorWindow
+{
+    private JToggle _vsyncToggle;
+    private JDropdown<int> _fpsDropdown;
+    private JProgressBar _volumeSlider;
+
+    [MenuItem("Game/Settings")]
+    public static void ShowWindow() => GetWindow<GameSettingsWindow>("Game Settings");
+
+    public void CreateGUI()
+    {
+        var root = new JStack(GapSize.MD);
+        root.style.paddingTop = Tokens.Spacing.Lg;
+        root.style.paddingRight = Tokens.Spacing.Lg;
+        root.style.paddingBottom = Tokens.Spacing.Lg;
+        root.style.paddingLeft = Tokens.Spacing.Lg;
+
+        // Graphics Section
+        var graphics = new JSection("Graphics")
+            .Add(
+                new JFormField("VSync", _vsyncToggle = new JToggle(true)),
+                new JFormField("Target FPS", _fpsDropdown = new JDropdown<int>(
+                    new() { 30, 60, 120, -1 },
+                    defaultValue: 60,
+                    formatSelectedValue: static fps => fps == -1 ? "Unlimited" : $"{fps} FPS",
+                    formatListItem: static fps => fps == -1 ? "Unlimited" : $"{fps} FPS")));
+
+        // Audio Section
+        var audio = new JSection("Audio")
+            .Add(new JFormField("Master Volume", _volumeSlider = new JProgressBar(0.8f)
+                .WithHeight(20)));
+
+        // Actions
+        var actions = new JButtonGroup(
+            new JButton("Apply", ApplySettings, ButtonVariant.Primary),
+            new JButton("Reset", ResetSettings, ButtonVariant.Secondary));
+
+        root.Add(graphics, audio, actions);
+        rootVisualElement.Add(root);
+    }
+}
+```
+
+### Build Tool Window
+```csharp
+public class BuildToolWindow : EditorWindow
+{
+    private JLogView _logView;
+    private JProgressBar _progress;
+    private JStatusBar _status;
+
+    public void CreateGUI()
+    {
+        var root = new JStack(GapSize.MD);
+
+        // Build Configuration
+        var config = new JSection("Build Configuration")
+            .Add(
+                new JFormField("Platform", JDropdown<BuildTarget>.ForEnum(BuildTarget.StandaloneWindows64)),
+                new JFormField("Development", new JToggle(false)),
+                new JFormField("Output", new JTextField("", "Select output folder...")));
+
+        // Progress Section
+        var progressSection = new JSection("Progress")
+            .Add(
+                _progress = new JProgressBar(0f).WithSuccessOnComplete(),
+                _status = new JStatusBar("Ready", StatusType.Info));
+
+        // Log Output
+        _logView = new JLogView(200).WithMinHeight(200).WithMaxHeight(400);
+
+        // Actions
+        var actions = new JButtonGroup(
+            new JButton("Build", StartBuild, ButtonVariant.Primary),
+            new JButton("Clean", CleanBuild, ButtonVariant.Warning),
+            new JButton("Cancel", CancelBuild, ButtonVariant.Danger));
+
+        root.Add(config, progressSection, _logView, actions);
+        rootVisualElement.Add(root);
+    }
+
+    private void UpdateProgress(float value, string message)
+    {
+        _progress.Progress = value;
+        _status.Text = message;
+        _logView.LogInfo(message);
+    }
+}
+```
+
+### Asset Browser Panel
+```csharp
+public class AssetBrowserPanel : EditorWindow
+{
+    public void CreateGUI()
+    {
+        var root = new JStack(GapSize.MD);
+
+        // Navigation
+        var nav = new JRow()
+            .Add(
+                new JIconButton("\u2190", GoBack, "Back"),
+                new JIconButton("\u2192", GoForward, "Forward"),
+                new JIconButton("\u2191", GoUp, "Parent"),
+                JBreadcrumb.FromPath("Assets", "Prefabs", "Characters"))
+            .WithAlign(AlignItems.Center);
+
+        // Toolbar
+        var toolbar = new JRow()
+            .Add(
+                new JTextField("", "Search assets..."),
+                new JDropdown<string>(new() { "All", "Prefabs", "Materials", "Textures" }),
+                new JToggleButton("Grid", "List", true))
+            .WithJustify(JustifyContent.SpaceBetween);
+
+        // Status
+        var status = new JStatusBar("24 items", StatusType.Info);
+
+        root.Add(nav, toolbar, status);
+        rootVisualElement.Add(root);
+    }
+}
+```
+
 ## Example: Complete Editor Window
 
 ```csharp
@@ -408,4 +536,61 @@ public class MyEditorWindow : EditorWindow
         rootVisualElement.Add(root);
     }
 }
+```
+
+## Troubleshooting
+
+### Theme Not Updating
+- **Problem:** Colors don't change when switching Unity theme
+- **Solution:** Token colors are evaluated at component creation time. Recreate components or use `schedule.Execute()` to refresh on theme change:
+```csharp
+rootVisualElement.schedule.Execute(() => {
+    // Recreate or update component colors
+    myCard.style.backgroundColor = Tokens.Colors.BgSurface;
+}).Every(1000);
+```
+
+### Binding Not Working
+- **Problem:** SerializedProperty binding doesn't update UI
+- **Solution:** Ensure the property path is correct and call `Bind()` on the root:
+```csharp
+var textField = new JTextField();
+textField.BindProperty(serializedObject.FindProperty("myField"));
+rootVisualElement.Bind(serializedObject);
+```
+
+### Component Not Visible
+- **Problem:** Added component doesn't appear
+- **Check:**
+  - Parent has `flexGrow = 1` if using flex layout
+  - Component has non-zero width/height
+  - Parent visibility is not hidden
+
+### Buttons Not Responding
+- **Problem:** Click events not firing
+- **Solution:** Ensure callback is not null and component is enabled:
+```csharp
+var btn = new JButton("Click", () => Debug.Log("Clicked"));
+btn.SetEnabled(true);  // Ensure enabled
+```
+
+### Layout Issues
+- **Problem:** Components overlap or have wrong size
+- **Solution:** Use JStack for vertical, JRow for horizontal layouts:
+```csharp
+// Wrong: direct Add to root
+rootVisualElement.Add(component1);
+rootVisualElement.Add(component2);  // May overlap
+
+// Correct: use layout container
+var stack = new JStack();
+stack.Add(component1, component2);
+rootVisualElement.Add(stack);
+```
+
+### Performance with Many Components
+- **Problem:** Editor window slow with many items
+- **Solution:** Use virtualization for large lists, limit JLogView maxLines:
+```csharp
+var log = new JLogView(maxLines: 100);  // Limit entries
 ```

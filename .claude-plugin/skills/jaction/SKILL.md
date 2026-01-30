@@ -14,6 +14,11 @@ Fluent API for composing complex action sequences in Unity with automatic object
 - Game timers and scheduled events
 - Zero-GC async operations
 
+## Properties
+- `.Executing` - Returns true if currently executing
+- `.Cancelled` - Returns true if execution was cancelled
+- `.IsParallel` - Returns true if parallel mode enabled
+
 ## Core API
 
 ### Execution Methods
@@ -22,24 +27,30 @@ Fluent API for composing complex action sequences in Unity with automatic object
 
 ### Action Execution
 - `.Do(Action)` - Execute synchronous action
-- `.Do(Action<T>, T state)` - Execute with state parameter (zero-allocation for reference types)
+- `.Do<TState>(Action<TState>, TState)` - Execute with state (zero-alloc for reference types)
 - `.Do(Func<JActionAwaitable>)` - Execute async action
-- `.Do(Func<T, JActionAwaitable>, T state)` - Async with state
+- `.Do<TState>(Func<TState, JActionAwaitable>, TState)` - Async with state
 
 ### Delays & Waits
 - `.Delay(float seconds)` - Wait specified seconds
 - `.DelayFrame(int frames)` - Wait specified frame count
-- `.WaitUntil(Func<bool>)` - Wait until condition true
-- `.WaitWhile(Func<bool>)` - Wait while condition true
+- `.WaitUntil(Func<bool>, frequency, timeout)` - Wait until condition true
+- `.WaitUntil<TState>(Func<TState, bool>, TState, frequency, timeout)` - With state
+- `.WaitWhile(Func<bool>, frequency, timeout)` - Wait while condition true
+- `.WaitWhile<TState>(Func<TState, bool>, TState, frequency, timeout)` - With state
 
 ### Loops
-- `.Repeat(Action, int count, float interval)` - Repeat N times with interval
-- `.RepeatWhile(Action, Func<bool>, float frequency, float timeout)` - Repeat while condition
-- `.RepeatUntil(Action, Func<bool>, float frequency, float timeout)` - Repeat until condition
+- `.Repeat(Action, count, interval)` - Repeat N times
+- `.Repeat<TState>(Action<TState>, TState, count, interval)` - With state
+- `.RepeatWhile(Action, Func<bool>, frequency, timeout)` - Repeat while condition
+- `.RepeatWhile<TState>(Action<TState>, Func<TState, bool>, TState, frequency, timeout)` - With state
+- `.RepeatUntil(Action, Func<bool>, frequency, timeout)` - Repeat until condition
+- `.RepeatUntil<TState>(Action<TState>, Func<TState, bool>, TState, frequency, timeout)` - With state
 
 ### Configuration
-- `.Parallel()` - Enable concurrent action execution
+- `.Parallel()` - Enable concurrent execution
 - `.OnCancel(Action)` - Register cancellation callback
+- `.OnCancel<TState>(Action<TState>, TState)` - With state
 
 ### Lifecycle
 - `.Cancel()` - Stop execution
@@ -107,6 +118,147 @@ var task = action.ExecuteAsync();
 // Later...
 action.Cancel();
 ```
+
+## Game Patterns
+
+All patterns use `ExecuteAsync()` for non-blocking execution.
+
+### Cooldown Timer (Zero-GC)
+```csharp
+public sealed class AbilityState
+{
+    public bool CanUse = true;
+}
+
+public class AbilitySystem
+{
+    private readonly AbilityState _state = new();
+    private readonly float _cooldown;
+
+    public async UniTaskVoid TryUseAbility()
+    {
+        if (!_state.CanUse) return;
+        _state.CanUse = false;
+
+        PerformAbility();
+
+        // Zero-GC: static lambda + reference type state
+        using var action = await JAction.Create()
+            .Delay(_cooldown)
+            .Do(static s => s.CanUse = true, _state)
+            .ExecuteAsync();
+    }
+}
+```
+
+### Damage Over Time (Zero-GC)
+```csharp
+public sealed class DoTState
+{
+    public IDamageable Target;
+    public float DamagePerTick;
+}
+
+public static async UniTaskVoid ApplyDoT(IDamageable target, float damage, int ticks, float interval)
+{
+    // Rent state from pool to avoid allocation
+    var state = JObjectPool.Shared<DoTState>().Rent();
+    state.Target = target;
+    state.DamagePerTick = damage;
+
+    using var action = await JAction.Create()
+        .Repeat(
+            static s => s.Target?.TakeDamage(s.DamagePerTick),
+            state,
+            count: ticks,
+            interval: interval)
+        .ExecuteAsync();
+
+    // Return state to pool
+    state.Target = null;
+    JObjectPool.Shared<DoTState>().Return(state);
+}
+```
+
+### Wave Spawner (Async)
+```csharp
+// Async methods cannot use ReadOnlySpan (ref struct), use array instead
+public async UniTask RunWaves(WaveConfig[] waves)
+{
+    foreach (var wave in waves)
+    {
+        using var action = await JAction.Create()
+            .Do(() => UI.ShowWaveStart(wave.Number))
+            .Delay(2f)
+            .Do(() => SpawnWave(wave))
+            .WaitUntil(() => ActiveEnemyCount == 0, timeout: 120f)
+            .Delay(wave.DelayAfter)
+            .ExecuteAsync();
+
+        if (action.Cancelled) break;
+    }
+}
+
+// Sync methods can use ReadOnlySpan for zero-allocation iteration
+public void RunWavesSync(ReadOnlySpan<WaveConfig> waves)
+{
+    foreach (ref readonly var wave in waves)
+    {
+        using var action = JAction.Create()
+            .Do(() => UI.ShowWaveStart(wave.Number))
+            .Delay(2f)
+            .Do(() => SpawnWave(wave))
+            .WaitUntil(() => ActiveEnemyCount == 0, timeout: 120f)
+            .Delay(wave.DelayAfter);
+        action.Execute();
+
+        if (action.Cancelled) break;
+    }
+}
+```
+
+### Health Regeneration (Zero-GC)
+```csharp
+public sealed class RegenState
+{
+    public float Health;
+    public float MaxHealth;
+    public float HpPerTick;
+}
+
+public static async UniTaskVoid StartRegen(RegenState state)
+{
+    using var action = await JAction.Create()
+        .RepeatWhile(
+            static s => s.Health = MathF.Min(s.Health + s.HpPerTick, s.MaxHealth),
+            static s => s.Health < s.MaxHealth,
+            state,
+            frequency: 0.1f)
+        .ExecuteAsync();
+}
+```
+
+## Troubleshooting
+
+### Nothing Happens
+- **Forgot ExecuteAsync:** Must call `.ExecuteAsync()` at the end
+- **Already disposed:** Don't reuse a JAction after Dispose()
+
+### Memory Leak
+- **Missing `using var`:** Always use `using var action = await ...ExecuteAsync()`
+- **Infinite loop:** Set timeouts on WaitUntil/WaitWhile in production
+
+### Frame Drops
+- **Using Execute():** Switch to ExecuteAsync() for non-blocking
+- **Heavy callbacks:** Keep .Do() callbacks lightweight
+
+### Unexpected Behavior
+- **Value type state:** State overloads box value types; wrap in reference type
+- **Check Cancelled:** After timeout, check `action.Cancelled` before continuing
+
+### GC Allocations
+- **Closures:** Use static lambdas with state parameters
+- **State must be reference type:** Value types get boxed
 
 ## Common Mistakes
 - NOT using `using var` after ExecuteAsync (memory leak, never returns to pool)
