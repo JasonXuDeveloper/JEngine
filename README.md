@@ -73,15 +73,9 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.1.0)
+## 🎉 Latest Features (v1.1.1)
 
-- **docs**: add Claude Code plugin for AI-assisted development ([#598](https://github.com/JasonXuDeveloper/JEngine/pull/598))
-- **ui**: modernize editor UI with monochrome design system ([#592](https://github.com/JasonXuDeveloper/JEngine/pull/592))
-- **plugin**: correct skills paths to include .claude-plugin prefix ([#601](https://github.com/JasonXuDeveloper/JEngine/pull/601))
-- **plugin**: restructure to .claude-plugin for Claude Code compatibility ([#600](https://github.com/JasonXuDeveloper/JEngine/pull/600))
-- **ci**: use JEngine Release Bot for plugin releases ([#599](https://github.com/JasonXuDeveloper/JEngine/pull/599))
-- **ci**: resolve codecov coverage reporting and add UI package docs ([#597](https://github.com/JasonXuDeveloper/JEngine/pull/597))
-- **core**: convert AsyncOperation to UniTask for Unity 6 compatibility ([#595](https://github.com/JasonXuDeveloper/JEngine/pull/595))
+- **ci**: resolve Codecov path mismatch causing unusable reports ([#603](https://github.com/JasonXuDeveloper/JEngine/pull/603))
 
 [📋 View Complete Changelog](CHANGE.md)
 

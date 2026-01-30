@@ -1,4 +1,9 @@
 ## All Versions
+## 1.1.1 (January 30 2026)
+
+- Resolve Codecov path mismatch causing unusable reports ([#603](https://github.com/JasonXuDeveloper/JEngine/pull/603)) (ci)
+
+
 ## 1.1.0 (January 29 2026)
 
 - Add Claude Code plugin for AI-assisted development ([#598](https://github.com/JasonXuDeveloper/JEngine/pull/598)) (docs)
