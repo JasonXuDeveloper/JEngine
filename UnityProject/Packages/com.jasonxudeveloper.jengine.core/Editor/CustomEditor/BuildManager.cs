@@ -237,6 +237,10 @@ namespace JEngine.Core.Editor.CustomEditor
                     CheckForErrorsExcluding("Step 3/4 failed - HybridCLR generation failed",
                         "Create package main catalog file failed");
 
+                    // Reset error baseline after filtering excluded errors
+                    // so subsequent steps don't see the ignored YooAsset catalog errors
+                    _errorCountAtStart = GetUnityErrorCount();
+
                     _currentStep = BuildStep.GeneratePolymorphicCodes;
                     break;
 
