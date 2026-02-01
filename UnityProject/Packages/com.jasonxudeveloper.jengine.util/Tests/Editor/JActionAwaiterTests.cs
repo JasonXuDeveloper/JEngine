@@ -218,7 +218,9 @@ namespace JEngine.Util.Tests
             Assert.IsFalse(invoked);
 
             // Wait for completion by polling (don't use await handle - it overwrites OnCompleted callback)
-            await UniTask.WaitUntil(() => invoked || !handle.Executing);
+            // Use timeout to avoid hanging indefinitely if there's a regression
+            using var cts = new System.Threading.CancellationTokenSource(System.TimeSpan.FromSeconds(5));
+            await UniTask.WaitUntil(() => invoked || !handle.Executing, cancellationToken: cts.Token);
 
             // Callback should have been invoked
             Assert.IsTrue(invoked);
@@ -284,8 +286,9 @@ namespace JEngine.Util.Tests
             // Not invoked immediately (still executing)
             Assert.IsFalse(invoked);
 
-            // Wait for completion by polling
-            await UniTask.WaitUntil(() => invoked || !handle.Executing);
+            // Wait for completion by polling with timeout to avoid hanging indefinitely
+            using var cts = new System.Threading.CancellationTokenSource(System.TimeSpan.FromSeconds(5));
+            await UniTask.WaitUntil(() => invoked || !handle.Executing, cancellationToken: cts.Token);
 
             // Callback should have been invoked
             Assert.IsTrue(invoked);
@@ -391,8 +394,9 @@ namespace JEngine.Util.Tests
 
             var handle = action.ExecuteAsync();
 
-            // Wait for first step
-            await UniTask.WaitUntil(() => step1);
+            // Wait for first step with timeout to avoid hanging indefinitely
+            using var cts = new System.Threading.CancellationTokenSource(System.TimeSpan.FromSeconds(5));
+            await UniTask.WaitUntil(() => step1, cancellationToken: cts.Token);
 
             handle.Cancel();
             await handle;
