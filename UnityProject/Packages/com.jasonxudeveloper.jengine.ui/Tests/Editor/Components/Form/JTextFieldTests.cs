@@ -2,6 +2,7 @@
 // EditMode unit tests for JTextField
 
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine.UIElements;
 using JEngine.UI.Editor.Components.Form;
 
@@ -260,6 +261,94 @@ namespace JEngine.UI.Tests.Editor.Components.Form
             Assert.AreEqual(0f, _textField.TextField.style.marginRight.value.value);
             Assert.AreEqual(0f, _textField.TextField.style.marginTop.value.value);
             Assert.AreEqual(0f, _textField.TextField.style.marginBottom.value.value);
+        }
+
+        #endregion
+
+        #region Child Composition Tests
+
+        [Test]
+        public void Constructor_HasSingleChild()
+        {
+            var field = new JTextField();
+
+            // The TextField should be the only child
+            Assert.AreEqual(1, field.childCount);
+            Assert.AreSame(field.TextField, field.ElementAt(0));
+        }
+
+        [Test]
+        public void Constructor_TextFieldIsChild()
+        {
+            Assert.IsTrue(_textField.Contains(_textField.TextField));
+        }
+
+        [Test]
+        public void Constructor_AppliesInputContainerStyle()
+        {
+            // Verify flexGrow and flexShrink are applied (from JTheme.ApplyInputContainerStyle)
+            Assert.AreEqual(1f, _textField.style.flexGrow.value);
+            Assert.AreEqual(1f, _textField.style.flexShrink.value);
+        }
+
+        #endregion
+
+        #region BindProperty Tests
+
+        [Test]
+        public void BindProperty_MethodExists()
+        {
+            // Verify the method exists and is accessible
+            Assert.IsNotNull((System.Action<SerializedProperty>)_textField.BindProperty);
+        }
+
+        #endregion
+
+        #region Placeholder Tests
+
+        [Test]
+        public void Constructor_WithNullPlaceholder_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => new JTextField("", null));
+        }
+
+        [Test]
+        public void Constructor_WithEmptyPlaceholder_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => new JTextField("value", ""));
+        }
+
+        [Test]
+        public void Constructor_WithLongPlaceholder_DoesNotThrow()
+        {
+            Assert.DoesNotThrow(() => new JTextField("", "This is a very long placeholder text"));
+        }
+
+        #endregion
+
+        #region Edge Cases
+
+        [Test]
+        public void Value_WithSpecialCharacters_Works()
+        {
+            _textField.Value = "Hello\nWorld\t!";
+            Assert.AreEqual("Hello\nWorld\t!", _textField.Value);
+        }
+
+        [Test]
+        public void Value_WithUnicode_Works()
+        {
+            _textField.Value = "日本語テスト 🎮";
+            Assert.AreEqual("日本語テスト 🎮", _textField.Value);
+        }
+
+        [Test]
+        public void SetReadOnly_And_SetMultiline_CanBeCombined()
+        {
+            _textField.SetReadOnly(true).SetMultiline(true);
+
+            Assert.IsTrue(_textField.TextField.isReadOnly);
+            Assert.IsTrue(_textField.TextField.multiline);
         }
 
         #endregion

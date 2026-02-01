@@ -123,6 +123,12 @@ namespace JEngine.UI
         /// When true, simulates prefab being unavailable. Used for testing "no prefab" error handling.
         /// </summary>
         internal static bool SimulateNoPrefab;
+
+        /// <summary>
+        /// When true, skips DontDestroyOnLoad call. Required for EditMode tests since
+        /// DontDestroyOnLoad only works in PlayMode.
+        /// </summary>
+        internal static bool SkipDontDestroyOnLoad;
 #endif
 
 #if UNITY_INCLUDE_TESTS
@@ -462,7 +468,12 @@ namespace JEngine.UI
 
             // Set initial state for animation and play it
             GameObject.transform.localScale = InitialScale;
-            Object.DontDestroyOnLoad(GameObject);
+#if UNITY_EDITOR
+            if (!SkipDontDestroyOnLoad)
+#endif
+            {
+                Object.DontDestroyOnLoad(GameObject);
+            }
         }
 
         private T GetComponent<T>(string path) where T : Component

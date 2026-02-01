@@ -3,7 +3,7 @@
   <assembly fullname="JEngine.Core">
     <type fullname="JEngine.Core.Bootstrap" preserve="all" />
     <type fullname="JEngine.Core.Encrypt.EncryptionOption" preserve="all" />
-    <type fullname="JEngine.Core.Misc.MessageBox" preserve="all" />
+    <type fullname="JEngine.Core.Prompt" preserve="all" />
     <type fullname="JEngine.Core.Update.PackageInitializationCallbacks" preserve="all" />
     <type fullname="JEngine.Core.Update.PackageInitializationStatus" preserve="all" />
     <type fullname="JEngine.Core.Update.SceneLoadCallbacks" preserve="all" />
@@ -60,6 +60,7 @@
     <type fullname="System.Exception" preserve="all" />
     <type fullname="System.Func`2" preserve="all" />
     <type fullname="System.Func`3" preserve="all" />
+    <type fullname="System.Func`5" preserve="all" />
     <type fullname="System.Int32" preserve="all" />
     <type fullname="System.Object" preserve="all" />
     <type fullname="System.Runtime.CompilerServices.AsyncStateMachineAttribute" preserve="all" />

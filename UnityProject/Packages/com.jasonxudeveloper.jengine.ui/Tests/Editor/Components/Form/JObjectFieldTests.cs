@@ -2,8 +2,9 @@
 // EditMode unit tests for JObjectField
 
 using NUnit.Framework;
-using UnityEngine;
+using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using JEngine.UI.Editor.Components.Form;
 
 namespace JEngine.UI.Tests.Editor.Components.Form
@@ -218,6 +219,45 @@ namespace JEngine.UI.Tests.Editor.Components.Form
             Assert.AreEqual(0f, _objectField.ObjectField.style.marginRight.value.value);
             Assert.AreEqual(0f, _objectField.ObjectField.style.marginTop.value.value);
             Assert.AreEqual(0f, _objectField.ObjectField.style.marginBottom.value.value);
+        }
+
+        #endregion
+
+        #region Child Composition Tests
+
+        [Test]
+        public void Constructor_HasSingleChild()
+        {
+            var field = new JObjectField<GameObject>();
+
+            // The ObjectField should be the only child
+            Assert.AreEqual(1, field.childCount);
+            Assert.AreSame(field.ObjectField, field.ElementAt(0));
+        }
+
+        [Test]
+        public void Constructor_ObjectFieldIsChild()
+        {
+            Assert.IsTrue(_objectField.Contains(_objectField.ObjectField));
+        }
+
+        [Test]
+        public void Constructor_AppliesInputContainerStyle()
+        {
+            // Verify flexGrow and flexShrink are applied (from JTheme.ApplyInputContainerStyle)
+            Assert.AreEqual(1f, _objectField.style.flexGrow.value);
+            Assert.AreEqual(1f, _objectField.style.flexShrink.value);
+        }
+
+        #endregion
+
+        #region BindProperty Tests
+
+        [Test]
+        public void BindProperty_MethodExists()
+        {
+            // Verify the method exists and is accessible
+            Assert.IsNotNull((System.Action<SerializedProperty>)_objectField.BindProperty);
         }
 
         #endregion
