@@ -4,6 +4,8 @@
     "references": [
         "JEngine.UI",
         "JEngine.UI.Editor",
+        "JEngine.Core",
+        "JEngine.Core.Editor",
         "UniTask",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"

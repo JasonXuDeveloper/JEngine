@@ -10,19 +10,21 @@ using UnityEngine.TestTools;
 namespace JEngine.UI.Tests
 {
     [TestFixture]
-    public class MessageBoxTests
+    public class MessageBoxTests : JEngineTestBase
     {
         [SetUp]
-        public void SetUp()
+        public override void BaseSetUp()
         {
+            base.BaseSetUp();
             MessageBox.Dispose();
             MessageBox.TestHandler = null;
             MessageBox.SimulateNoPrefab = false;
         }
 
         [TearDown]
-        public void TearDown()
+        public override void BaseTearDown()
         {
+            base.BaseTearDown();
             MessageBox.Dispose();
             MessageBox.TestHandler = null;
             MessageBox.SimulateNoPrefab = false;
