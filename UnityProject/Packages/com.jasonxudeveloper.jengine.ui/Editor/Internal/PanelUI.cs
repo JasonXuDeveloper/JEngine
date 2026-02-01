@@ -80,6 +80,9 @@ namespace JEngine.UI.Editor.Internal
             var scrollView = new ScrollView(ScrollViewMode.Vertical);
             scrollView.style.flexGrow = 1;
 
+            // Centered container for compact panel layout
+            var container = new JContainer(ContainerSize.Xs);
+
             var content = new JStack(GapSize.Sm);
 
             // Header
@@ -103,7 +106,8 @@ namespace JEngine.UI.Editor.Internal
             // Status Section
             content.Add(CreateStatusSection());
 
-            scrollView.Add(content);
+            container.Add(content);
+            scrollView.Add(container);
             root.Add(scrollView);
 
             return root;

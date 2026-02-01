@@ -2,8 +2,8 @@
  * Base reset and common styles for JEngine Editor UI
  */
 
-/* Base container */
-.j-container {
+/* Base panel styling */
+.j-panel-base {
     background-color: var(--j-bg-base);
     color: var(--j-text-primary);
     padding: var(--j-spacing-lg);

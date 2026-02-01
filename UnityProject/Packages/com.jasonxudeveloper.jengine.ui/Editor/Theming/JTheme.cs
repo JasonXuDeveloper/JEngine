@@ -411,4 +411,24 @@ namespace JEngine.UI.Editor.Theming
         Warning,
         Error
     }
+
+    /// <summary>
+    /// Container size options for max-width constraints.
+    /// Based on Tailwind CSS breakpoints.
+    /// </summary>
+    public enum ContainerSize
+    {
+        /// <summary>480px - Mobile-like, narrow inspectors.</summary>
+        Xs,
+        /// <summary>640px - Compact panels, side docks.</summary>
+        Sm,
+        /// <summary>768px - Standard inspector width.</summary>
+        Md,
+        /// <summary>1024px - Wide panels (default).</summary>
+        Lg,
+        /// <summary>1280px - Full-width editor windows.</summary>
+        Xl,
+        /// <summary>No max-width constraint (fluid).</summary>
+        Full
+    }
 }

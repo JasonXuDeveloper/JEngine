@@ -76,6 +76,9 @@ namespace JEngine.UI.Editor.Internal
             root.style.paddingRight = Tokens.Spacing.MD;
             root.style.paddingBottom = Tokens.Spacing.MD;
 
+            // Centered container for compact inspector layout
+            var container = new JContainer(ContainerSize.Xs);
+
             var content = new JStack(GapSize.Sm);
 
             // Header
@@ -98,7 +101,8 @@ namespace JEngine.UI.Editor.Internal
             // UI Settings
             content.Add(CreateUISettingsSection());
 
-            root.Add(content);
+            container.Add(content);
+            root.Add(container);
 
             // Register undo/redo callback
             Undo.undoRedoPerformed += OnUndoRedo;
@@ -131,6 +135,9 @@ namespace JEngine.UI.Editor.Internal
             // Rebuild the entire UI
             _currentRoot.Clear();
 
+            // Centered container for compact inspector layout
+            var container = new JContainer(ContainerSize.Xs);
+
             // Recreate content
             var content = new JStack(GapSize.Sm);
 
@@ -144,7 +151,8 @@ namespace JEngine.UI.Editor.Internal
             content.Add(CreateSecuritySettingsSection());
             content.Add(CreateUISettingsSection());
 
-            _currentRoot.Add(content);
+            container.Add(content);
+            _currentRoot.Add(container);
         }
 
         private static VisualElement CreateHeader()

@@ -81,6 +81,7 @@ Document all public APIs with XML comments.
 - Run tests via Unity Test Runner
 - Use `[UnityTest]` with `UniTask.ToCoroutine()` for async tests
 - Editor code should check `TestRunnerCallbacks.IsRunningTests`
+- **IMPORTANT**: Non-core packages (JEngine.UI, JEngine.Util) require unit tests for new/modified features
 
 ## Code Review Checklist
 
@@ -89,3 +90,4 @@ Document all public APIs with XML comments.
 - [ ] Uses UniTask for async (not Task)
 - [ ] Thread-safe where needed
 - [ ] Proper resource cleanup
+- [ ] Unit tests added for non-core package changes
