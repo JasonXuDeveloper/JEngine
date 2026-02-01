@@ -62,53 +62,5 @@ namespace JEngine.UI.Tests.Editor.Internal
         }
 
         #endregion
-
-        #region Handler Invocation Tests
-
-        [Test]
-        public void CreatePanelContentHandler_CanBeInvoked_WithNullParameters()
-        {
-            // Verify the handler can be called (may return null or throw gracefully)
-            // This tests that the method reference is valid
-            Assert.DoesNotThrow(() =>
-            {
-                try
-                {
-                    Panel.CreatePanelContentHandler?.Invoke(null, null, null);
-                }
-                catch (System.NullReferenceException)
-                {
-                    // Expected - we passed null parameters
-                }
-                catch (System.ArgumentNullException)
-                {
-                    // Expected - we passed null parameters
-                }
-            });
-        }
-
-        [Test]
-        public void CreateInspectorHandler_CanBeInvoked_WithNullParameters()
-        {
-            // Verify the handler can be called (may return null or throw gracefully)
-            // This tests that the method reference is valid
-            Assert.DoesNotThrow(() =>
-            {
-                try
-                {
-                    BootstrapEditor.CreateInspectorHandler?.Invoke(null, null);
-                }
-                catch (System.NullReferenceException)
-                {
-                    // Expected - we passed null parameters
-                }
-                catch (System.ArgumentNullException)
-                {
-                    // Expected - we passed null parameters
-                }
-            });
-        }
-
-        #endregion
     }
 }

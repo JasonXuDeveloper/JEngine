@@ -26,23 +26,25 @@ namespace JEngine.Util.Tests
             JAction.ClearPool();
         }
 
-        [Test]
-        public void ExecuteAsync_ReturnsHandle()
+        [UnityTest]
+        public IEnumerator ExecuteAsync_ReturnsHandle() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             Assert.IsNotNull(handle.Action);
-        }
+            await handle;
+        });
 
-        [Test]
-        public void ExecuteAsync_HandleHasCorrectAction()
+        [UnityTest]
+        public IEnumerator ExecuteAsync_HandleHasCorrectAction() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             Assert.AreSame(action, handle.Action);
-        }
+            await handle;
+        });
 
         [UnityTest]
         public IEnumerator ExecuteAsync_CanBeAwaited() => UniTask.ToCoroutine(async () =>
@@ -96,8 +98,8 @@ namespace JEngine.Util.Tests
 
         #region GetAwaiter Tests
 
-        [Test]
-        public void GetAwaiter_ReturnsAwaiterInstance()
+        [UnityTest]
+        public IEnumerator GetAwaiter_ReturnsAwaiterInstance() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
@@ -105,7 +107,8 @@ namespace JEngine.Util.Tests
             var awaiter = handle.GetAwaiter();
 
             Assert.IsInstanceOf<JActionExecutionAwaiter>(awaiter);
-        }
+            await handle;
+        });
 
         #endregion
 
@@ -221,15 +224,16 @@ namespace JEngine.Util.Tests
             Assert.IsTrue(invoked);
         });
 
-        [Test]
-        public void OnCompleted_NullContinuation_HandlesGracefully()
+        [UnityTest]
+        public IEnumerator OnCompleted_NullContinuation_HandlesGracefully() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
             var awaiter = handle.GetAwaiter();
 
             Assert.DoesNotThrow(() => awaiter.OnCompleted(null));
-        }
+            await handle;
+        });
 
         #endregion
 
@@ -252,15 +256,16 @@ namespace JEngine.Util.Tests
             Assert.IsTrue(invoked);
         });
 
-        [Test]
-        public void UnsafeOnCompleted_NullContinuation_HandlesGracefully()
+        [UnityTest]
+        public IEnumerator UnsafeOnCompleted_NullContinuation_HandlesGracefully() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
             var awaiter = handle.GetAwaiter();
 
             Assert.DoesNotThrow(() => awaiter.UnsafeOnCompleted(null));
-        }
+            await handle;
+        });
 
         #endregion
 

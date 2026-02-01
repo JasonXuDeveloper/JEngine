@@ -223,15 +223,14 @@ namespace JEngine.UI.Tests.Editor.Components.Form
 
         #endregion
 
-        #region Panel Attachment Tests
+        #region Child Composition Tests
 
         [Test]
-        public void OnAttachToPanel_RegistersCallback()
+        public void Constructor_HasSingleChild()
         {
-            // Verify the callback is registered (element should be configured)
             var field = new JObjectField<GameObject>();
 
-            // The ObjectField should be a child
+            // The ObjectField should be the only child
             Assert.AreEqual(1, field.childCount);
             Assert.AreSame(field.ObjectField, field.ElementAt(0));
         }
@@ -255,10 +254,9 @@ namespace JEngine.UI.Tests.Editor.Components.Form
         #region BindProperty Tests
 
         [Test]
-        public void BindProperty_NullProperty_DoesNotThrow()
+        public void BindProperty_MethodExists()
         {
-            // BindProperty with null should be handled gracefully by underlying field
-            // Note: May throw depending on Unity version, but we verify the method exists
+            // Verify the method exists and is accessible
             Assert.IsNotNull((System.Action<SerializedProperty>)_objectField.BindProperty);
         }
 

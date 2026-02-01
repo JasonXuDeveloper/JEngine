@@ -265,15 +265,14 @@ namespace JEngine.UI.Tests.Editor.Components.Form
 
         #endregion
 
-        #region Panel Attachment Tests
+        #region Child Composition Tests
 
         [Test]
-        public void OnAttachToPanel_RegistersCallback()
+        public void Constructor_HasSingleChild()
         {
-            // Verify the callback is registered
             var field = new JTextField();
 
-            // The TextField should be a child
+            // The TextField should be the only child
             Assert.AreEqual(1, field.childCount);
             Assert.AreSame(field.TextField, field.ElementAt(0));
         }

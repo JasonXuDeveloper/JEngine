@@ -698,10 +698,10 @@ namespace JEngine.UI.Tests
         [UnityTest]
         public IEnumerator CloseAll_WithRealPrefab_ClosesAllActive() => UniTask.ToCoroutine(async () =>
         {
-            // Show multiple boxes without awaiting
-            var task1 = MessageBox.Show("Test1", "Content1");
+            // Show multiple boxes without awaiting (use discard to suppress unused variable warning)
+            _ = MessageBox.Show("Test1", "Content1");
             await UniTask.Yield();
-            var task2 = MessageBox.Show("Test2", "Content2");
+            _ = MessageBox.Show("Test2", "Content2");
             await UniTask.Yield();
 
             Assert.AreEqual(2, MessageBox.ActiveCount);

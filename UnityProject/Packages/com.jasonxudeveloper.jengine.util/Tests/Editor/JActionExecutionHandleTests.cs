@@ -29,17 +29,18 @@ namespace JEngine.Util.Tests
 
         #region Action Property Tests
 
-        [Test]
-        public void Action_ReturnsAssociatedJAction()
+        [UnityTest]
+        public IEnumerator Action_ReturnsAssociatedJAction() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             Assert.AreSame(action, handle.Action);
-        }
+            await handle;
+        });
 
-        [Test]
-        public void Action_MultipleHandles_ReturnSameAction()
+        [UnityTest]
+        public IEnumerator Action_MultipleHandles_ReturnSameAction() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Parallel().Do(() => { });
             var handle1 = action.ExecuteAsync();
@@ -47,7 +48,9 @@ namespace JEngine.Util.Tests
 
             Assert.AreSame(action, handle1.Action);
             Assert.AreSame(action, handle2.Action);
-        }
+
+            await UniTask.WhenAll(handle1.AsUniTask(), handle2.AsUniTask());
+        });
 
         #endregion
 
@@ -154,8 +157,8 @@ namespace JEngine.Util.Tests
             Assert.DoesNotThrow(() => handle.Cancel());
         });
 
-        [Test]
-        public void Cancel_MultipleTimes_DoesNotThrow()
+        [UnityTest]
+        public IEnumerator Cancel_MultipleTimes_DoesNotThrow() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Delay(10f);
             var handle = action.ExecuteAsync();
@@ -166,7 +169,9 @@ namespace JEngine.Util.Tests
                 handle.Cancel();
                 handle.Cancel();
             });
-        }
+
+            await handle;
+        });
 
         [UnityTest]
         public IEnumerator Cancel_StopsExecution() => UniTask.ToCoroutine(async () =>
@@ -203,8 +208,8 @@ namespace JEngine.Util.Tests
 
         #region GetAwaiter Tests
 
-        [Test]
-        public void GetAwaiter_ReturnsAwaiter()
+        [UnityTest]
+        public IEnumerator GetAwaiter_ReturnsAwaiter() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
@@ -212,7 +217,8 @@ namespace JEngine.Util.Tests
             var awaiter = handle.GetAwaiter();
 
             Assert.IsInstanceOf<JActionExecutionAwaiter>(awaiter);
-        }
+            await handle;
+        });
 
         [UnityTest]
         public IEnumerator GetAwaiter_AfterCompletion_ReturnsCompletedAwaiter() => UniTask.ToCoroutine(async () =>
@@ -270,8 +276,8 @@ namespace JEngine.Util.Tests
 
         #region Implicit Operator Tests
 
-        [Test]
-        public void ImplicitOperator_ConvertsToJAction()
+        [UnityTest]
+        public IEnumerator ImplicitOperator_ConvertsToJAction() => UniTask.ToCoroutine(async () =>
         {
             var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
@@ -280,8 +286,9 @@ namespace JEngine.Util.Tests
 
             Assert.AreSame(action, converted);
 
+            await handle;
             action.Dispose();
-        }
+        });
 
         [Test]
         public void ImplicitOperator_DefaultHandle_ReturnsNull()
@@ -433,15 +440,16 @@ namespace JEngine.Util.Tests
             Assert.IsTrue(invoked);
         });
 
-        [Test]
-        public void OnCompleted_NullContinuation_HandlesGracefully()
+        [UnityTest]
+        public IEnumerator OnCompleted_NullContinuation_HandlesGracefully() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
             var awaiter = handle.GetAwaiter();
 
             Assert.DoesNotThrow(() => awaiter.OnCompleted(null));
-        }
+            await handle;
+        });
 
         #endregion
 
@@ -462,15 +470,16 @@ namespace JEngine.Util.Tests
             Assert.IsTrue(invoked);
         });
 
-        [Test]
-        public void UnsafeOnCompleted_NullContinuation_HandlesGracefully()
+        [UnityTest]
+        public IEnumerator UnsafeOnCompleted_NullContinuation_HandlesGracefully() => UniTask.ToCoroutine(async () =>
         {
             using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
             var awaiter = handle.GetAwaiter();
 
             Assert.DoesNotThrow(() => awaiter.UnsafeOnCompleted(null));
-        }
+            await handle;
+        });
 
         #endregion
     }
