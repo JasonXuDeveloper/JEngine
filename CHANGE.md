@@ -1,4 +1,9 @@
 ## All Versions
+## 1.1.5 (February 01 2026)
+
+- Add JContainer component with max-width constraints ([#613](https://github.com/JasonXuDeveloper/JEngine/pull/613)) (ui)
+
+
 ## 1.1.4 (January 30 2026)
 
 - Use using statement for JAction in Reset_AllowsReuse test ([#611](https://github.com/JasonXuDeveloper/JEngine/pull/611)) (util)

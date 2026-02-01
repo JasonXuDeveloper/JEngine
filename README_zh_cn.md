@@ -75,10 +75,9 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.1.4)
+## 🎉 最新功能 (v1.1.5)
 
-- **util**: use using statement for JAction in Reset_AllowsReuse test ([#611](https://github.com/JasonXuDeveloper/JEngine/pull/611))
-- **core**: reset error baseline after filtering YooAsset catalog errors ([#610](https://github.com/JasonXuDeveloper/JEngine/pull/610))
+- **ui**: add JContainer component with max-width constraints ([#613](https://github.com/JasonXuDeveloper/JEngine/pull/613))
 
 [📋 查看完整更新日志](CHANGE.md)
 
