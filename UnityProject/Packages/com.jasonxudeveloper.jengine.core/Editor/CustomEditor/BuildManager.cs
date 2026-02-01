@@ -234,11 +234,10 @@ namespace JEngine.Core.Editor.CustomEditor
                     UpdateProgress(0.3f, "Compiling and Obfuscating");
 
                     ExecuteMenuItem("HybridCLR/ObfuzExtension/GenerateAll", "Step 3/4");
-                    CheckForErrorsExcluding("Step 3/4 failed - HybridCLR generation failed",
-                        "Create package main catalog file failed");
+                    CheckForErrors("Step 3/4 failed - HybridCLR generation failed");
 
                     // Reset error baseline after filtering excluded errors
-                    // so subsequent steps don't see the ignored YooAsset catalog errors
+                    // so subsequent steps don't see the ignored errors
                     _errorCountAtStart = GetUnityErrorCount();
 
                     _currentStep = BuildStep.GeneratePolymorphicCodes;
@@ -451,38 +450,37 @@ namespace JEngine.Core.Editor.CustomEditor
             }
         }
 
+        // Error messages that should always be ignored during build
+        // These are Unity internal errors or known issues unrelated to the actual build process
+        private static readonly string[] IgnoredErrors =
+        {
+            "Bake Ambient Probe",  // Unity lighting error that occurs during editor operations
+            "catalog file failed",  // YooAsset catalog bug during HybridCLR generation (any package)
+        };
+
         private void CheckForErrors(string context)
         {
             int currentErrorCount = GetUnityErrorCount();
             if (currentErrorCount > _errorCountAtStart)
             {
-                throw new Exception($"{context}: {currentErrorCount - _errorCountAtStart} error(s) occurred. Check Unity Console for details.");
-            }
-        }
-
-        private void CheckForErrorsExcluding(string context, string excludeMessageContaining)
-        {
-            int currentErrorCount = GetUnityErrorCount();
-            if (currentErrorCount > _errorCountAtStart)
-            {
-                // Check if the new errors are only the excluded error
+                // Check if the new errors are only ignored errors
                 int newErrorCount = currentErrorCount - _errorCountAtStart;
-                int nonExcludedErrors = CountNonExcludedErrors(excludeMessageContaining, newErrorCount);
+                int realErrors = CountRealErrors(newErrorCount);
 
-                if (nonExcludedErrors > 0)
+                if (realErrors > 0)
                 {
-                    throw new Exception($"{context}: {nonExcludedErrors} error(s) occurred. Check Unity Console for details.");
+                    throw new Exception($"{context}: {realErrors} error(s) occurred. Check Unity Console for details.");
                 }
 
-                // If we have errors but they're all excluded, log a warning but continue
+                // If we have errors but they're all ignored, log a note but continue
                 if (newErrorCount > 0)
                 {
-                    Log($"Note: {newErrorCount} known error(s) ignored (YooAsset catalog bug)");
+                    Log($"Note: {newErrorCount} known error(s) ignored");
                 }
             }
         }
 
-        private int CountNonExcludedErrors(string excludeMessageContaining, int recentErrorCount)
+        private int CountRealErrors(int recentErrorCount)
         {
             try
             {
@@ -505,7 +503,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 int totalCount = (int)getCountMethod.Invoke(null, null);
                 startGettingEntriesMethod.Invoke(null, null);
 
-                int nonExcludedCount = 0;
+                int realErrorCount = 0;
                 int checkedErrors = 0;
 
                 // Check recent errors from the end of the log
@@ -528,27 +526,39 @@ namespace JEngine.Core.Editor.CustomEditor
                             if (messageField != null)
                             {
                                 string message = (string)messageField.GetValue(entry);
-                                if (!message.Contains(excludeMessageContaining))
+                                if (!IsIgnoredError(message))
                                 {
-                                    nonExcludedCount++;
+                                    realErrorCount++;
                                 }
                             }
                             else
                             {
-                                nonExcludedCount++;
+                                realErrorCount++;
                             }
                         }
                     }
                 }
 
                 endGettingEntriesMethod.Invoke(null, null);
-                return nonExcludedCount;
+                return realErrorCount;
             }
             catch
             {
                 // If reflection fails, assume all errors are real
                 return recentErrorCount;
             }
+        }
+
+        private static bool IsIgnoredError(string errorMessage)
+        {
+            foreach (var ignoredError in IgnoredErrors)
+            {
+                if (errorMessage.Contains(ignoredError))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private int GetUnityErrorCount()
