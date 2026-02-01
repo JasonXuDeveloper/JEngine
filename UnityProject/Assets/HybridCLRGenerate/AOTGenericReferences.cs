@@ -231,6 +231,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Func<object,System.ValueTuple<byte,byte>>
 	// System.Func<object,System.ValueTuple<byte,object>>
 	// System.Func<object,byte>
+	// System.Func<object,object,object,object,Cysharp.Threading.Tasks.UniTask<byte>>
 	// System.Func<object,object>
 	// System.Func<object>
 	// System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter<System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,System.ValueTuple<byte,byte>>>>>>>
