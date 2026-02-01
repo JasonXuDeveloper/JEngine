@@ -19,6 +19,7 @@ namespace JEngine.UI.Tests
             MessageBox.Dispose();
             MessageBox.TestHandler = null;
             MessageBox.SimulateNoPrefab = false;
+            MessageBox.SkipDontDestroyOnLoad = true; // Required for EditMode tests
         }
 
         [TearDown]
@@ -28,6 +29,7 @@ namespace JEngine.UI.Tests
             MessageBox.Dispose();
             MessageBox.TestHandler = null;
             MessageBox.SimulateNoPrefab = false;
+            MessageBox.SkipDontDestroyOnLoad = false;
         }
 
         #region Static State Tests
@@ -527,6 +529,240 @@ namespace JEngine.UI.Tests
 
             var (activeCount, _) = MessageBox.TestGetPoolState();
             Assert.AreEqual(0, activeCount);
+        });
+
+        #endregion
+
+        #region Real MessageBox Tests (with prefab)
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_IncreasesActiveCount() => UniTask.ToCoroutine(async () =>
+        {
+            // Don't set TestHandler - use real implementation
+            var initialActive = MessageBox.ActiveCount;
+
+            // Start showing (don't await - we need to interact with it)
+            var showTask = MessageBox.Show("Test Title", "Test Content");
+
+            // Give it a frame to create
+            await UniTask.Yield();
+
+            // Active count should have increased
+            Assert.Greater(MessageBox.ActiveCount, initialActive);
+
+            // Clean up by simulating OK click
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_ReturnsTrue_WhenOkClicked() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            MessageBox.TestSimulateButtonClick(true);
+            bool result = await showTask;
+
+            Assert.IsTrue(result);
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_ReturnsFalse_WhenNoClicked() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            MessageBox.TestSimulateButtonClick(false);
+            bool result = await showTask;
+
+            Assert.IsFalse(result);
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_SetsCorrectContent() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("My Title", "My Content", "Yes", "No");
+            await UniTask.Yield();
+
+            var content = MessageBox.TestGetContent();
+            Assert.IsNotNull(content);
+            Assert.AreEqual("My Title", content.Value.title);
+            Assert.AreEqual("My Content", content.Value.content);
+            Assert.AreEqual("Yes", content.Value.okText);
+            Assert.AreEqual("No", content.Value.noText);
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_BothButtonsVisible_ByDefault() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            var visibility = MessageBox.TestGetButtonVisibility();
+            Assert.IsNotNull(visibility);
+            Assert.IsTrue(visibility.Value.okVisible);
+            Assert.IsTrue(visibility.Value.noVisible);
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_HidesOkButton_WhenOkIsNull() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content", null, "Cancel");
+            await UniTask.Yield();
+
+            var visibility = MessageBox.TestGetButtonVisibility();
+            Assert.IsNotNull(visibility);
+            Assert.IsFalse(visibility.Value.okVisible);
+            Assert.IsTrue(visibility.Value.noVisible);
+
+            MessageBox.TestSimulateButtonClick(false);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_HidesNoButton_WhenNoIsNull() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content", "OK", null);
+            await UniTask.Yield();
+
+            var visibility = MessageBox.TestGetButtonVisibility();
+            Assert.IsNotNull(visibility);
+            Assert.IsTrue(visibility.Value.okVisible);
+            Assert.IsFalse(visibility.Value.noVisible);
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_DefaultsToOk_WhenBothButtonsNull() => UniTask.ToCoroutine(async () =>
+        {
+            // When both buttons are null/empty, should default to showing OK button
+            var showTask = MessageBox.Show("Test", "Content", null, null);
+            await UniTask.Yield();
+
+            var visibility = MessageBox.TestGetButtonVisibility();
+            Assert.IsNotNull(visibility);
+            Assert.IsTrue(visibility.Value.okVisible); // Should default to OK
+            Assert.IsFalse(visibility.Value.noVisible);
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_ReturnsToPool_AfterClose() => UniTask.ToCoroutine(async () =>
+        {
+            var initialPooled = MessageBox.PooledCount;
+
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+
+            // Should be in pool now
+            Assert.Greater(MessageBox.PooledCount, initialPooled);
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_ReusesPooledInstance() => UniTask.ToCoroutine(async () =>
+        {
+            // First show - creates new instance
+            var showTask1 = MessageBox.Show("Test1", "Content1");
+            await UniTask.Yield();
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask1;
+
+            int pooledAfterFirst = MessageBox.PooledCount;
+            Assert.Greater(pooledAfterFirst, 0);
+
+            // Second show - should reuse pooled instance
+            var showTask2 = MessageBox.Show("Test2", "Content2");
+            await UniTask.Yield();
+
+            // Pool count should have decreased (instance taken from pool)
+            Assert.Less(MessageBox.PooledCount, pooledAfterFirst);
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask2;
+        });
+
+        [UnityTest]
+        public IEnumerator CloseAll_WithRealPrefab_ClosesAllActive() => UniTask.ToCoroutine(async () =>
+        {
+            // Show multiple boxes without awaiting
+            var task1 = MessageBox.Show("Test1", "Content1");
+            await UniTask.Yield();
+            var task2 = MessageBox.Show("Test2", "Content2");
+            await UniTask.Yield();
+
+            Assert.AreEqual(2, MessageBox.ActiveCount);
+
+            MessageBox.CloseAll();
+
+            Assert.AreEqual(0, MessageBox.ActiveCount);
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_HandlesNullTitle() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show(null, "Content");
+            await UniTask.Yield();
+
+            var content = MessageBox.TestGetContent();
+            Assert.IsNotNull(content);
+            Assert.AreEqual("", content.Value.title); // Null converted to empty string
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Show_WithRealPrefab_HandlesNullContent() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Title", null);
+            await UniTask.Yield();
+
+            var content = MessageBox.TestGetContent();
+            Assert.IsNotNull(content);
+            Assert.AreEqual("", content.Value.content); // Null converted to empty string
+
+            MessageBox.TestSimulateButtonClick(true);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator TestSimulateButtonClick_ReturnsTrue_WhenActiveBoxExists() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            bool result = MessageBox.TestSimulateButtonClick(true);
+
+            Assert.IsTrue(result);
+            await showTask;
+        });
+
+        [UnityTest]
+        public IEnumerator Dispose_WithRealPrefab_ClearsActiveBoxes() => UniTask.ToCoroutine(async () =>
+        {
+            var showTask = MessageBox.Show("Test", "Content");
+            await UniTask.Yield();
+
+            Assert.Greater(MessageBox.ActiveCount, 0);
+
+            MessageBox.Dispose();
+
+            Assert.AreEqual(0, MessageBox.ActiveCount);
+            Assert.AreEqual(0, MessageBox.PooledCount);
         });
 
         #endregion

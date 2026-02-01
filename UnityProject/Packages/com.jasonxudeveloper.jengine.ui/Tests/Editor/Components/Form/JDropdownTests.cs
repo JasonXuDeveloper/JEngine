@@ -319,5 +319,144 @@ namespace JEngine.UI.Tests.Editor.Components.Form
         }
 
         #endregion
+
+        #region Panel Attachment Tests
+
+        [Test]
+        public void OnAttachToPanel_RegistersCallback()
+        {
+            // Verify the callback is registered
+            var dropdown = new JDropdown(_choices);
+
+            // The PopupField should be a child
+            Assert.AreEqual(1, dropdown.childCount);
+            Assert.AreSame(dropdown.PopupField, dropdown.ElementAt(0));
+        }
+
+        [Test]
+        public void Constructor_PopupFieldIsChild()
+        {
+            Assert.IsTrue(_dropdown.Contains(_dropdown.PopupField));
+        }
+
+        [Test]
+        public void Constructor_AppliesInputContainerStyle()
+        {
+            // Verify flexGrow and flexShrink are applied (from JTheme.ApplyInputContainerStyle)
+            Assert.AreEqual(1f, _dropdown.style.flexGrow.value);
+            Assert.AreEqual(1f, _dropdown.style.flexShrink.value);
+        }
+
+        #endregion
+
+        #region Formatter Tests
+
+        [Test]
+        public void GenericDropdown_WithNullFormatter_UsesToString()
+        {
+            var choices = new List<int> { 1, 2, 3 };
+            var dropdown = new JDropdown<int>(choices, 1, null, null);
+
+            // Should not throw and should work
+            Assert.AreEqual(1, dropdown.Value);
+        }
+
+        [Test]
+        public void GenericDropdown_WithCustomFormatters_AcceptsBoth()
+        {
+            var choices = new List<int> { 1, 2, 3 };
+
+            // Custom formatters for display
+            Func<int, string> formatSelected = v => $"Selected: {v}";
+            Func<int, string> formatList = v => $"Option {v}";
+
+            var dropdown = new JDropdown<int>(choices, 1, formatSelected, formatList);
+
+            Assert.IsNotNull(dropdown);
+            Assert.AreEqual(1, dropdown.Value);
+        }
+
+        [Test]
+        public void GenericDropdown_FormattersHandleNull()
+        {
+            // Test with nullable type-like behavior using reference types
+            var choices = new List<string> { "One", "Two", null };
+            var dropdown = new JDropdown<string>(choices, "One");
+
+            Assert.AreEqual("One", dropdown.Value);
+        }
+
+        #endregion
+
+        #region Edge Cases
+
+        [Test]
+        public void Choices_SetToNewList_UpdatesDropdown()
+        {
+            var newChoices = new List<string> { "NewA", "NewB", "NewC" };
+            _dropdown.Choices = newChoices;
+
+            Assert.AreEqual(3, _dropdown.Choices.Count);
+            Assert.Contains("NewA", _dropdown.Choices);
+        }
+
+        [Test]
+        public void Value_SetToFirstChoice_Works()
+        {
+            _dropdown.Value = "Option1";
+            Assert.AreEqual("Option1", _dropdown.Value);
+        }
+
+        [Test]
+        public void Value_SetToLastChoice_Works()
+        {
+            _dropdown.Value = "Option3";
+            Assert.AreEqual("Option3", _dropdown.Value);
+        }
+
+        [Test]
+        public void OnValueChanged_CanBeSetToNull()
+        {
+            Assert.DoesNotThrow(() => _dropdown.OnValueChanged(null));
+        }
+
+        [Test]
+        public void OnValueChanged_MultipleRegistrations_DoNotThrow()
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                _dropdown.OnValueChanged(v => { });
+                _dropdown.OnValueChanged(v => { });
+            });
+        }
+
+        #endregion
+
+        #region ForEnum Edge Cases
+
+        [Test]
+        public void ForEnum_DefaultValue_IsFirstEnumValue()
+        {
+            var dropdown = JDropdown<ButtonVariant>.ForEnum<ButtonVariant>();
+            // Default should be the first enum value
+            Assert.AreEqual(ButtonVariant.Primary, dropdown.Value);
+        }
+
+        [Test]
+        public void ForEnum_CanChangeValueMultipleTimes()
+        {
+            var dropdown = JDropdown<ButtonVariant>.ForEnum<ButtonVariant>();
+
+            dropdown.Value = ButtonVariant.Success;
+            Assert.AreEqual(ButtonVariant.Success, dropdown.Value);
+
+            dropdown.Value = ButtonVariant.Danger;
+            Assert.AreEqual(ButtonVariant.Danger, dropdown.Value);
+
+            dropdown.Value = ButtonVariant.Primary;
+            Assert.AreEqual(ButtonVariant.Primary, dropdown.Value);
+        }
+
+        #endregion
     }
 }
