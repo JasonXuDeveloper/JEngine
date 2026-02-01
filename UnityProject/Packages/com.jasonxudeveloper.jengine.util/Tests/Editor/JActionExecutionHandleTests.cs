@@ -240,12 +240,15 @@ namespace JEngine.Util.Tests
         public IEnumerator Dispose_ReturnsActionToPool() => UniTask.ToCoroutine(async () =>
         {
             int initialCount = JAction.PooledCount;
-            var action = JAction.Create().Do(() => { });
+            // Use using to ensure action is disposed even if ExecuteAsync throws
+            using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             await handle;
             handle.Dispose();
 
+            // Note: action.Dispose() is called twice (by handle.Dispose and using),
+            // but JAction.Dispose is idempotent so this is safe
             Assert.AreEqual(initialCount + 1, JAction.PooledCount);
         });
 
@@ -260,7 +263,8 @@ namespace JEngine.Util.Tests
         [UnityTest]
         public IEnumerator Dispose_MultipleTimes_DoesNotThrow() => UniTask.ToCoroutine(async () =>
         {
-            var action = JAction.Create().Do(() => { });
+            // Use using to ensure action is disposed even if ExecuteAsync throws
+            using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             await handle;
@@ -279,7 +283,8 @@ namespace JEngine.Util.Tests
         [UnityTest]
         public IEnumerator ImplicitOperator_ConvertsToJAction() => UniTask.ToCoroutine(async () =>
         {
-            var action = JAction.Create().Do(() => { });
+            // Use using to ensure action is disposed even if ExecuteAsync throws
+            using var action = JAction.Create().Do(() => { });
             var handle = action.ExecuteAsync();
 
             JAction converted = handle;
@@ -287,7 +292,6 @@ namespace JEngine.Util.Tests
             Assert.AreSame(action, converted);
 
             await handle;
-            action.Dispose();
         });
 
         [Test]
