@@ -3,6 +3,41 @@
  */
 
 /* ===========================
+   CONTAINER COMPONENT
+   =========================== */
+
+/* JContainer - responsive max-width container with horizontal centering */
+.j-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.j-container--xs {
+    max-width: 480px;
+}
+
+.j-container--sm {
+    max-width: 640px;
+}
+
+.j-container--md {
+    max-width: 768px;
+}
+
+.j-container--lg {
+    max-width: 1024px;
+}
+
+.j-container--xl {
+    max-width: 1280px;
+}
+
+.j-container--full {
+    max-width: none;
+}
+
+/* ===========================
    LAYOUT COMPONENTS
    =========================== */
 

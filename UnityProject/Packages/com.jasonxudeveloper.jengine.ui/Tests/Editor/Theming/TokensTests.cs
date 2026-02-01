@@ -465,6 +465,49 @@ namespace JEngine.UI.Tests.Editor.Theming
 
         #endregion
 
+        #region Container Token Tests
+
+        [Test]
+        public void Container_Xs_IsCorrectValue()
+        {
+            Assert.AreEqual(480f, Tokens.Container.Xs);
+        }
+
+        [Test]
+        public void Container_Sm_IsCorrectValue()
+        {
+            Assert.AreEqual(640f, Tokens.Container.Sm);
+        }
+
+        [Test]
+        public void Container_Md_IsCorrectValue()
+        {
+            Assert.AreEqual(768f, Tokens.Container.Md);
+        }
+
+        [Test]
+        public void Container_Lg_IsCorrectValue()
+        {
+            Assert.AreEqual(1024f, Tokens.Container.Lg);
+        }
+
+        [Test]
+        public void Container_Xl_IsCorrectValue()
+        {
+            Assert.AreEqual(1280f, Tokens.Container.Xl);
+        }
+
+        [Test]
+        public void Container_Hierarchy_IsIncreasing()
+        {
+            Assert.Less(Tokens.Container.Xs, Tokens.Container.Sm);
+            Assert.Less(Tokens.Container.Sm, Tokens.Container.Md);
+            Assert.Less(Tokens.Container.Md, Tokens.Container.Lg);
+            Assert.Less(Tokens.Container.Lg, Tokens.Container.Xl);
+        }
+
+        #endregion
+
         #region Color Alias Tests
 
         [Test]

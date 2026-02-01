@@ -9,7 +9,7 @@ namespace JEngine.UI.Tests
     /// <summary>
     /// Base class for all JEngine UI tests.
     /// Provides common setup that suppresses Unity internal errors
-    /// (like "Bake Ambient Probe") that occur during build operations.
+    /// that may occur during test operations.
     /// </summary>
     /// <remarks>
     /// Test classes should inherit from this base class and override
@@ -23,15 +23,14 @@ namespace JEngine.UI.Tests
 
         /// <summary>
         /// Setup method called before each test.
-        /// Suppresses Unity internal error logs that occur during build operations.
+        /// Suppresses Unity internal error logs that may occur during test operations.
         /// Override this method and call <c>base.BaseSetUp()</c> first.
         /// </summary>
         [SetUp]
         public virtual void BaseSetUp()
         {
-            // Suppress Unity internal errors that occur during build operations.
-            // These errors come from Unity's Enlighten lighting system and BuildPipeline,
-            // and cannot be prevented at the source. They don't indicate test failures.
+            // Suppress Unity internal errors that occur during test operations.
+            // This prevents tests from failing due to unrelated Unity internal issues.
             _previousIgnoreFailingMessages = LogAssert.ignoreFailingMessages;
             LogAssert.ignoreFailingMessages = true;
         }

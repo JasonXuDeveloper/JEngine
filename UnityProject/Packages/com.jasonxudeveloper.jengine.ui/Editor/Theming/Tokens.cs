@@ -296,5 +296,23 @@ namespace JEngine.UI.Editor.Theming
             /// <summary>Minimum control width (80px).</summary>
             public const float MinControlWidth = 80f;
         }
+
+        /// <summary>
+        /// Container max-width values based on Tailwind CSS breakpoints.
+        /// Used for responsive layout containers.
+        /// </summary>
+        public static class Container
+        {
+            /// <summary>Extra small container (480px) - Mobile-like, narrow inspectors.</summary>
+            public const float Xs = 480f;
+            /// <summary>Small container (640px) - Compact panels, side docks.</summary>
+            public const float Sm = 640f;
+            /// <summary>Medium container (768px) - Standard inspector width.</summary>
+            public const float Md = 768f;
+            /// <summary>Large container (1024px) - Wide panels (default).</summary>
+            public const float Lg = 1024f;
+            /// <summary>Extra large container (1280px) - Full-width editor windows.</summary>
+            public const float Xl = 1280f;
+        }
     }
 }

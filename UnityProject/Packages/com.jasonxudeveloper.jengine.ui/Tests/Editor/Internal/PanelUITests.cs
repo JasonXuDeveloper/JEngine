@@ -205,21 +205,19 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Category("Integration")]
         public IEnumerator BuildAllButton_Click_CompletesSuccessfully()
         {
-            // Ignore Unity internal error logs (e.g., "Bake Ambient Probe")
-            // These are filtered by BuildManager but Unity Test Framework still catches them
+            // MUST set this to prevent test failure from Unity internal errors like "Bake Ambient Probe"
             LogAssert.ignoreFailingMessages = true;
 
-            // Disable auto-baking to prevent "Bake Ambient Probe" errors when creating scenes
-#pragma warning disable 618
-            var oldGiWorkflowMode = Lightmapping.giWorkflowMode;
-            Lightmapping.giWorkflowMode = Lightmapping.GIWorkflowMode.OnDemand;
-#pragma warning restore 618
+            // Use the init scene which already has proper lighting setup
+            const string initScenePath = "Assets/Init.unity";
+            EditorSceneManager.OpenScene(initScenePath);
 
-            // Create a new empty scene to avoid dirty scene prompts from other tests
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            // Wait for Unity editor to stabilize after scene change
+            yield return null;
 
             // Clear build cache to avoid "output directory exists" error from previous test runs
             _settings.clearBuildCache = true;
+            _settings.startUpScenePath = initScenePath;
 
             // Track build completion state
             bool buildCompleted = false;
@@ -259,11 +257,6 @@ namespace JEngine.UI.Tests.Editor.Internal
                 elapsed += Time.deltaTime;
             }
 
-            // Restore old lighting mode
-#pragma warning disable 618
-            Lightmapping.giWorkflowMode = oldGiWorkflowMode;
-#pragma warning restore 618
-
             // Assert build completed successfully
             Assert.IsTrue(buildCompleted, $"Build did not complete within {timeout} seconds");
             Assert.IsTrue(buildSucceeded, $"Build failed with error: {buildError?.Message}");
@@ -292,21 +285,20 @@ namespace JEngine.UI.Tests.Editor.Internal
 
         private IEnumerator BuildAssetsOnlyTest(string packageName, EncryptionOption encryption)
         {
-            // Ignore Unity internal error logs
+            // MUST set this to prevent test failure from Unity internal errors like "Bake Ambient Probe"
             LogAssert.ignoreFailingMessages = true;
 
-            // Disable auto-baking to prevent "Bake Ambient Probe" errors when creating scenes
-#pragma warning disable 618
-            var oldGiWorkflowMode = Lightmapping.giWorkflowMode;
-            Lightmapping.giWorkflowMode = Lightmapping.GIWorkflowMode.OnDemand;
-#pragma warning restore 618
+            // Use the init scene which already has proper lighting setup
+            const string initScenePath = "Assets/Init.unity";
+            EditorSceneManager.OpenScene(initScenePath);
 
-            // Create a new empty scene to avoid dirty scene prompts
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            // Wait for Unity editor to stabilize after scene change
+            yield return null;
 
             // Configure settings for this test
             _settings.packageName = packageName;
             _settings.encryptionOption = encryption;
+            _settings.startUpScenePath = initScenePath;
             // Clear build cache to avoid "output directory exists" error from previous test runs
             _settings.clearBuildCache = true;
 
@@ -347,11 +339,6 @@ namespace JEngine.UI.Tests.Editor.Internal
                 yield return null;
                 elapsed += Time.deltaTime;
             }
-
-            // Restore old lighting mode
-#pragma warning disable 618
-            Lightmapping.giWorkflowMode = oldGiWorkflowMode;
-#pragma warning restore 618
 
             // Assert build completed successfully
             Assert.IsTrue(buildCompleted, $"Build did not complete within {timeout} seconds");
