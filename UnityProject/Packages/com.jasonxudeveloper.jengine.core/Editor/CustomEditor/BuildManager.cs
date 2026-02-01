@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using HybridCLR.Editor;
 using HybridCLR.Editor.Commands;
 using HybridCLR.Editor.Settings;
@@ -551,14 +552,7 @@ namespace JEngine.Core.Editor.CustomEditor
 
         private static bool IsIgnoredError(string errorMessage)
         {
-            foreach (var ignoredError in IgnoredErrors)
-            {
-                if (errorMessage.Contains(ignoredError))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return IgnoredErrors.Any(ignoredError => errorMessage.Contains(ignoredError));
         }
 
         private int GetUnityErrorCount()

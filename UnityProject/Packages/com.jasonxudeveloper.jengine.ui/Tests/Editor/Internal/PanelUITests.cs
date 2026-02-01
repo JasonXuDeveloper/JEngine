@@ -26,7 +26,6 @@ namespace JEngine.UI.Tests.Editor.Internal
     {
         private Settings _settings;
         private BuildManager _buildManager;
-        private Panel _panel;
 
         [SetUp]
         public override void BaseSetUp()
@@ -52,8 +51,6 @@ namespace JEngine.UI.Tests.Editor.Internal
             base.BaseTearDown();
             if (_settings != null)
                 UnityEngine.Object.DestroyImmediate(_settings);
-            if (_panel != null)
-                UnityEngine.Object.DestroyImmediate(_panel);
         }
 
         #region UI Creation Tests
@@ -61,7 +58,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ReturnsNonNullRoot()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             Assert.IsNotNull(root);
         }
@@ -69,7 +66,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_RootHasFlexGrow()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             Assert.AreEqual(1f, root.style.flexGrow.value);
         }
@@ -77,7 +74,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsScrollView()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var scrollView = root.Q<ScrollView>();
             Assert.IsNotNull(scrollView);
@@ -86,7 +83,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsJEngineSettingsSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "JEngine Settings");
             Assert.IsNotNull(section);
@@ -95,7 +92,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsPackageSettingsSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Package Settings");
             Assert.IsNotNull(section);
@@ -104,7 +101,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsBuildOptionsSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Options");
             Assert.IsNotNull(section);
@@ -113,7 +110,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsBuildActionsSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Actions");
             Assert.IsNotNull(section);
@@ -122,7 +119,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsStatusSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Status");
             Assert.IsNotNull(section);
@@ -131,7 +128,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void CreateContent_ContainsScenesSection()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Scenes");
             Assert.IsNotNull(section);
@@ -144,7 +141,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildAllButton_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Build All");
             Assert.IsNotNull(button);
@@ -153,7 +150,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildCodeOnlyButton_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Code Only");
             Assert.IsNotNull(button);
@@ -162,7 +159,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildAssetsOnlyButton_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Assets Only");
             Assert.IsNotNull(button);
@@ -171,7 +168,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildAllButton_IsJButton()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Build All");
             Assert.IsInstanceOf<JButton>(button);
@@ -180,7 +177,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildCodeOnlyButton_IsJButton()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Code Only");
             Assert.IsInstanceOf<JButton>(button);
@@ -189,7 +186,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildAssetsOnlyButton_IsJButton()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Assets Only");
             Assert.IsInstanceOf<JButton>(button);
@@ -198,7 +195,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildAllButton_HasLargerMinHeight()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var button = FindButtonByText(root, "Build All");
             Assert.AreEqual(32f, button.style.minHeight.value.value);
@@ -368,7 +365,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void StatusBar_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var statusBar = root.Q<JStatusBar>();
             Assert.IsNotNull(statusBar);
@@ -377,7 +374,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void StatusBar_InitialText_IsReadyToBuild()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var statusBar = root.Q<JStatusBar>();
             Assert.AreEqual("Ready to build", statusBar.Text);
@@ -386,7 +383,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void LogView_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var logView = root.Q<JLogView>();
             Assert.IsNotNull(logView);
@@ -399,7 +396,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void JumpToStartupToggle_ExistsInJEngineSettings()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "JEngine Settings");
             var toggle = section?.Q<JToggle>();
@@ -409,7 +406,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void ClearBuildCacheToggle_ExistsInBuildOptions()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Options");
             var toggles = section?.Query<JToggle>().ToList();
@@ -420,7 +417,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void UseAssetDependDBToggle_ExistsInBuildOptions()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Options");
             var toggles = section?.Query<JToggle>().ToList();
@@ -435,7 +432,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void PackageDropdown_ExistsInPackageSettings()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Package Settings");
             var dropdown = section?.Q<JDropdown>();
@@ -445,7 +442,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void BuildTargetDropdown_ExistsInPackageSettings()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Package Settings");
             var dropdowns = section?.Query(className: "j-dropdown").ToList();
@@ -456,7 +453,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void EncryptionDropdown_ExistsInBuildOptions()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Options");
             var dropdown = section?.Q(className: "j-dropdown");
@@ -471,7 +468,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_Xor_ShowsCorrectManifestConfig()
         {
             _settings.encryptionOption = EncryptionOption.Xor;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.Xor);
             Assert.IsNotNull(bundleConfig.ManifestConfigScriptableObject);
@@ -481,7 +478,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_Aes_ShowsCorrectManifestConfig()
         {
             _settings.encryptionOption = EncryptionOption.Aes;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.Aes);
             Assert.IsNotNull(bundleConfig.ManifestConfigScriptableObject);
@@ -491,7 +488,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_ChaCha20_ShowsCorrectManifestConfig()
         {
             _settings.encryptionOption = EncryptionOption.ChaCha20;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.ChaCha20);
             Assert.IsNotNull(bundleConfig.ManifestConfigScriptableObject);
@@ -501,7 +498,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_Xor_ShowsCorrectBundleConfig()
         {
             _settings.encryptionOption = EncryptionOption.Xor;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.Xor);
             Assert.IsNotNull(bundleConfig.BundleConfigScriptableObject);
@@ -511,7 +508,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_Aes_ShowsCorrectBundleConfig()
         {
             _settings.encryptionOption = EncryptionOption.Aes;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.Aes);
             Assert.IsNotNull(bundleConfig.BundleConfigScriptableObject);
@@ -521,7 +518,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void EncryptionDropdown_ChaCha20_ShowsCorrectBundleConfig()
         {
             _settings.encryptionOption = EncryptionOption.ChaCha20;
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            _ = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(EncryptionOption.ChaCha20);
             Assert.IsNotNull(bundleConfig.BundleConfigScriptableObject);
@@ -548,7 +545,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void MainPackage_UICreation_Succeeds()
         {
             _settings.packageName = "main";
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             Assert.IsNotNull(root);
             Assert.IsNotNull(FindButtonByText(root, "Build All"));
@@ -558,7 +555,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void Addon1Package_UICreation_Succeeds()
         {
             _settings.packageName = "addon1";
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             Assert.IsNotNull(root);
             Assert.IsNotNull(FindButtonByText(root, "Assets Only"));
@@ -568,7 +565,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         public void NonMainPackage_NoteLabel_Exists()
         {
             _settings.packageName = "addon1";
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Actions");
             var labels = section?.Query<Label>().ToList();
@@ -593,7 +590,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void Header_ContainsTitle()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var labels = root.Query<Label>().ToList();
             bool foundTitle = false;
@@ -612,7 +609,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void Header_ContainsSubtitle()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var labels = root.Query<Label>().ToList();
             bool foundSubtitle = false;
@@ -635,7 +632,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void StartupSceneField_Exists()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "JEngine Settings");
             var objectFields = section?.Query(className: "j-object-field").ToList();
@@ -646,7 +643,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         [Test]
         public void ManifestConfigField_ExistsInBuildOptions()
         {
-            var root = PanelUI.CreateContent(_panel, _buildManager, _settings);
+            var root = PanelUI.CreateContent(null, _buildManager, _settings);
 
             var section = FindSectionByTitle(root, "Build Options");
             var objectFields = section?.Query(className: "j-object-field").ToList();

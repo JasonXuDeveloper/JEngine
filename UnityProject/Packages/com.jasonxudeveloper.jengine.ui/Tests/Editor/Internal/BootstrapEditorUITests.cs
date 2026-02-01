@@ -389,7 +389,7 @@ namespace JEngine.UI.Tests.Editor.Internal
             _bootstrap.encryptionOption = option;
             _serializedObject.Update();
 
-            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+            _ = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
 
             var bundleConfig = EncryptionMapping.GetBundleConfig(option);
 
@@ -521,9 +521,9 @@ namespace JEngine.UI.Tests.Editor.Internal
         {
             Assert.DoesNotThrow(() =>
             {
-                var root1 = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
-                var root2 = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
-                var root3 = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+                _ = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+                _ = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+                _ = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
             });
         }
 
