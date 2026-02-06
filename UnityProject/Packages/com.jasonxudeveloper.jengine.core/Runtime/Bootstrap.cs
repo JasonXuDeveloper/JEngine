@@ -82,6 +82,9 @@ namespace JEngine.Core
 
         public Button startButton;
 
+        [Header("Text Settings")]
+        [SerializeField] private BootstrapText text = BootstrapText.Default;
+
 #if UNITY_EDITOR
         [Header("Development Settings")] [HideInInspector]
         public bool useEditorDevMode = true;
@@ -194,6 +197,11 @@ namespace JEngine.Core
             });
         }
 
+        private void Reset()
+        {
+            text = BootstrapText.Default;
+        }
+
         private async void Initialize()
         {
             try
@@ -202,7 +210,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                await Prompt.ShowDialogAsync("Error", $"Initialization failed: {e.Message}", "OK", null);
+                await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogInitFailed, e.Message), text.buttonOk, null);
                 Application.Quit();
             }
         }
@@ -214,7 +222,7 @@ namespace JEngine.Core
             {
                 try
                 {
-                    updateStatusText.text = "Initializing...";
+                    updateStatusText.text = text.initializing;
                     downloadProgressBar.gameObject.SetActive(false);
 
                     YooAssets.Destroy();
@@ -229,20 +237,23 @@ namespace JEngine.Core
                     YooAssets.SetDefaultPackage(package);
 
                     // Use the extracted common initialization function
+                    var t = text;
                     var packageInitCallbacks = new PackageInitializationCallbacks
                     {
-                        OnStatusUpdate = status => updateStatusText.text = GetStatusText(status),
+                        OnStatusUpdate = status => updateStatusText.text = GetStatusText(status, t),
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
-                            await Prompt.ShowDialogAsync("Notice",
-                                $"Need to download {count} files, total size {size / 1024f / 1024f:F2}MB. Start download?",
-                                "Download", "Cancel"),
+                            await Prompt.ShowDialogAsync(t.dialogTitleNotice,
+                                string.Format(t.dialogDownloadPrompt, count, $"{size / 1024f / 1024f:F2}"),
+                                t.buttonDownload, t.buttonCancel),
                         OnDownloadProgress = data =>
                         {
                             if (updateStatusText != null)
                             {
-                                updateStatusText.text =
-                                    $"Downloading file {data.CurrentDownloadCount}/{data.TotalDownloadCount} ({data.CurrentDownloadBytes / 1024f / 1024f:F2}MB/{data.TotalDownloadBytes / 1024f / 1024f:F2}MB)";
+                                updateStatusText.text = string.Format(t.dialogDownloadProgress,
+                                    data.CurrentDownloadCount, data.TotalDownloadCount,
+                                    $"{data.CurrentDownloadBytes / 1024f / 1024f:F2}",
+                                    $"{data.TotalDownloadBytes / 1024f / 1024f:F2}");
                             }
 
                             if (downloadProgressText != null)
@@ -258,20 +269,20 @@ namespace JEngine.Core
                         OnDownloadStart = () =>
                         {
                             downloadProgressBar.gameObject.SetActive(true);
-                            updateStatusText.text = "Downloading...";
+                            updateStatusText.text = t.downloading;
                             downloadProgressText.text = "";
                             downloadProgressBar.value = 0f;
                         },
                         OnDownloadComplete = () =>
                         {
                             if (updateStatusText != null)
-                                updateStatusText.text = "Download completed, loading...";
+                                updateStatusText.text = t.downloadCompletedLoading;
                             if (downloadProgressText != null)
                                 downloadProgressText.text = "100%";
                             if (downloadProgressBar != null)
                                 downloadProgressBar.value = 1f;
                         },
-                        OnError = async error => await Prompt.ShowDialogAsync("Warning", error.Message, "OK", null)
+                        OnError = async error => await Prompt.ShowDialogAsync(t.dialogTitleWarning, error.Message, t.buttonOk, null)
                     };
 
                     bool success = await UpdatePackage(package, packageInitCallbacks, encryptionOption);
@@ -281,14 +292,14 @@ namespace JEngine.Core
                     }
 
                     // First supplement metadata
-                    updateStatusText.text = "Loading code...";
+                    updateStatusText.text = text.loadingCode;
                     await LoadMetadataForAOTAssemblies();
                     // Set dynamic key
-                    updateStatusText.text = "Decrypting resources...";
+                    updateStatusText.text = text.decryptingResources;
                     await SetUpDynamicSecret();
 
                     // Load hot update DLL
-                    updateStatusText.text = "Loading code...";
+                    updateStatusText.text = text.loadingCode;
 #if UNITY_EDITOR
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
                     Assembly hotUpdateAss = null;
@@ -316,10 +327,10 @@ namespace JEngine.Core
 #endif
 
                     // Enter hot update scene
-                    updateStatusText.text = "Loading scene...";
+                    updateStatusText.text = text.loadingScene;
                     var sceneLoadCallbacks = new SceneLoadCallbacks
                     {
-                        OnStatusUpdate = status => updateStatusText.text = GetSceneLoadStatusText(status),
+                        OnStatusUpdate = status => updateStatusText.text = GetSceneLoadStatusText(status, t),
                         OnProgressUpdate = progress =>
                         {
                             downloadProgressText.text = $"{Mathf.RoundToInt(progress * 100)}%";
@@ -327,8 +338,9 @@ namespace JEngine.Core
                         },
                         OnError = async exception =>
                         {
-                            await Prompt.ShowDialogAsync("Error", $"Scene loading failed: {exception.Message}",
-                                "Retry", null);
+                            await Prompt.ShowDialogAsync(t.dialogTitleError,
+                                string.Format(t.dialogSceneLoadFailed, exception.Message),
+                                t.buttonRetry, null);
                         }
                     };
                     downloadProgressBar.gameObject.SetActive(true);
@@ -341,7 +353,7 @@ namespace JEngine.Core
                 catch (Exception ex)
                 {
                     Debug.LogError($"Initialization failed with exception: {ex}");
-                    await Prompt.ShowDialogAsync("Error", $"Exception occurred during initialization: {ex.Message}", "OK", "Cancel");
+                    await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogInitException, ex.Message), text.buttonOk, text.buttonCancel);
                     // Continue the loop to retry
                 }
             }
@@ -352,7 +364,7 @@ namespace JEngine.Core
             Type type = hotUpdateAss.GetType(hotUpdateClassName);
             if (type == null)
             {
-                await Prompt.ShowDialogAsync("Error", "Code exception, please contact customer service", null, "OK");
+                await Prompt.ShowDialogAsync(text.dialogTitleError, text.dialogCodeException, null, text.buttonOk);
                 Application.Quit();
                 return;
             }
@@ -360,7 +372,7 @@ namespace JEngine.Core
             var method = type.GetMethod(hotUpdateMethodName, BindingFlags.Public | BindingFlags.Static);
             if (method == null)
             {
-                await Prompt.ShowDialogAsync("Error", "Code exception, please contact customer service", null, "OK");
+                await Prompt.ShowDialogAsync(text.dialogTitleError, text.dialogCodeException, null, text.buttonOk);
                 Application.Quit();
                 return;
             }
@@ -392,7 +404,7 @@ namespace JEngine.Core
             catch (Exception e)
             {
                 Debug.LogError($"Failed to invoke hot update method {hotUpdateMethodName}: {e}");
-                await Prompt.ShowDialogAsync("Error", $"Function call failed: {e.Message}", "Exit", null);
+                await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogFunctionCallFailed, e.Message), text.buttonExit, null);
                 Application.Quit();
             }
         }
@@ -677,29 +689,29 @@ namespace JEngine.Core
             }
         }
 
-        private static string GetStatusText(PackageInitializationStatus status)
+        private static string GetStatusText(PackageInitializationStatus status, BootstrapText text)
         {
             return status switch
             {
-                PackageInitializationStatus.InitializingPackage => "Initializing resource package...",
-                PackageInitializationStatus.GettingVersion => "Getting resource package version...",
-                PackageInitializationStatus.UpdatingManifest => "Updating resource manifest...",
-                PackageInitializationStatus.CheckingUpdate => "Checking resources to download...",
-                PackageInitializationStatus.DownloadingResources => "Downloading resources...",
-                PackageInitializationStatus.Completed => "Resource package initialization completed",
-                PackageInitializationStatus.Failed => "Initialization failed",
-                _ => "Unknown status"
+                PackageInitializationStatus.InitializingPackage => text.initializingPackage,
+                PackageInitializationStatus.GettingVersion => text.gettingVersion,
+                PackageInitializationStatus.UpdatingManifest => text.updatingManifest,
+                PackageInitializationStatus.CheckingUpdate => text.checkingUpdate,
+                PackageInitializationStatus.DownloadingResources => text.downloadingResources,
+                PackageInitializationStatus.Completed => text.packageCompleted,
+                PackageInitializationStatus.Failed => text.initializationFailed,
+                _ => text.unknownPackageStatus
             };
         }
 
-        private static string GetSceneLoadStatusText(SceneLoadStatus status)
+        private static string GetSceneLoadStatusText(SceneLoadStatus status, BootstrapText text)
         {
             return status switch
             {
-                SceneLoadStatus.Loading => "Loading scene...",
-                SceneLoadStatus.Completed => "Scene loading completed",
-                SceneLoadStatus.Failed => "Scene loading failed",
-                _ => "Unknown status"
+                SceneLoadStatus.Loading => text.sceneLoading,
+                SceneLoadStatus.Completed => text.sceneCompleted,
+                SceneLoadStatus.Failed => text.sceneFailed,
+                _ => text.unknownSceneStatus
             };
         }
 

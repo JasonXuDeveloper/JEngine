@@ -155,6 +155,40 @@ namespace JEngine.UI.Tests.Editor.Internal
             Assert.IsNotNull(section);
         }
 
+        [Test]
+        public void CreateInspector_ContainsTextSettingsSection()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            Assert.IsNotNull(section);
+        }
+
+        [Test]
+        public void TextSettings_ContainsFormFields()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var formFields = section?.Query<JFormField>().ToList();
+
+            Assert.IsNotNull(formFields);
+            // Should have all 30 text fields
+            Assert.GreaterOrEqual(formFields.Count, 30);
+        }
+
+        [Test]
+        public void TextSettings_ContainsResetButton()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var buttons = section?.Query<JButton>().ToList();
+
+            Assert.IsNotNull(buttons);
+            Assert.GreaterOrEqual(buttons.Count, 1);
+        }
+
         #endregion
 
         #region JToggleButton Tests

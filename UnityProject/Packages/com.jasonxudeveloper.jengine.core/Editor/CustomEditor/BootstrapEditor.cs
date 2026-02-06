@@ -74,6 +74,9 @@ namespace JEngine.Core.Editor.CustomEditor
             // UI Settings Group
             CreateUISettingsGroup();
 
+            // Text Settings Group
+            CreateTextSettingsGroup();
+
             UpdateFallbackServerVisibility();
 
             return _root;
@@ -438,6 +441,53 @@ namespace JEngine.Core.Editor.CustomEditor
             uiGroup.Add(startButtonRow);
 
             _root.Add(uiGroup);
+        }
+
+        private void CreateTextSettingsGroup()
+        {
+            var textGroup = CreateGroup("Text Settings");
+
+            var textProperty = serializedObject.FindProperty("text");
+
+            // Iterate child properties directly — no foldout
+            var iterator = textProperty.Copy();
+            var endProperty = iterator.GetEndProperty();
+            iterator.NextVisible(true); // enter children
+            while (!SerializedProperty.EqualContents(iterator, endProperty))
+            {
+                var field = new PropertyField(iterator);
+                field.AddToClassList("form-control");
+                textGroup.Add(field);
+                if (!iterator.NextVisible(false))
+                    break;
+            }
+
+            // Reset to Defaults button
+            var resetRow = CreateFormRow("");
+            var resetButton = new UnityEngine.UIElements.Button(() =>
+            {
+                Undo.RecordObject(_bootstrap, "Reset Bootstrap Text to Defaults");
+                var textProp = serializedObject.FindProperty("text");
+                var defaults = BootstrapText.Default;
+                var fields = typeof(BootstrapText).GetFields(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var field in fields)
+                {
+                    var prop = textProp.FindPropertyRelative(field.Name);
+                    if (prop != null && prop.propertyType == SerializedPropertyType.String)
+                    {
+                        prop.stringValue = (string)field.GetValue(defaults);
+                    }
+                }
+                serializedObject.ApplyModifiedProperties();
+            });
+            resetButton.text = "Reset to Defaults";
+            resetButton.AddToClassList("form-control");
+            EditorUIUtils.MakeFormWidthButton(resetButton);
+            EditorUIUtils.SwitchButtonColor(resetButton, EditorUIUtils.ButtonType.Warning);
+            resetRow.Add(resetButton);
+            textGroup.Add(resetRow);
+
+            _root.Add(textGroup);
         }
 
 #if UNITY_EDITOR

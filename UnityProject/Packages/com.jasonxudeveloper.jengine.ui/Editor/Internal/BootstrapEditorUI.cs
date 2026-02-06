@@ -101,6 +101,9 @@ namespace JEngine.UI.Editor.Internal
             // UI Settings
             content.Add(CreateUISettingsSection());
 
+            // Text Settings
+            content.Add(CreateTextSettingsSection());
+
             container.Add(content);
             root.Add(container);
 
@@ -150,6 +153,7 @@ namespace JEngine.UI.Editor.Internal
             content.Add(CreateAssetSettingsSection());
             content.Add(CreateSecuritySettingsSection());
             content.Add(CreateUISettingsSection());
+            content.Add(CreateTextSettingsSection());
 
             container.Add(content);
             _currentRoot.Add(container);
@@ -436,6 +440,113 @@ namespace JEngine.UI.Editor.Internal
             section.Add(new JFormField("Start Button", startButtonField));
 
             return section;
+        }
+
+        private static VisualElement CreateTextSettingsSection()
+        {
+            var section = new JSection("Text Settings");
+
+            var textProperty = _serializedObject.FindProperty("text");
+
+            // Package Initialization Status
+            AddTextSubHeader(section, "Package Initialization Status");
+            AddTextField(section, textProperty, "initializingPackage", "Initializing");
+            AddTextField(section, textProperty, "gettingVersion", "Getting Version");
+            AddTextField(section, textProperty, "updatingManifest", "Updating Manifest");
+            AddTextField(section, textProperty, "checkingUpdate", "Checking Update");
+            AddTextField(section, textProperty, "downloadingResources", "Downloading");
+            AddTextField(section, textProperty, "packageCompleted", "Completed");
+            AddTextField(section, textProperty, "initializationFailed", "Failed");
+            AddTextField(section, textProperty, "unknownPackageStatus", "Unknown Status");
+
+            // Scene Load Status
+            AddTextSubHeader(section, "Scene Load Status");
+            AddTextField(section, textProperty, "sceneLoading", "Loading");
+            AddTextField(section, textProperty, "sceneCompleted", "Completed");
+            AddTextField(section, textProperty, "sceneFailed", "Failed");
+            AddTextField(section, textProperty, "unknownSceneStatus", "Unknown Status");
+
+            // Inline Status
+            AddTextSubHeader(section, "Inline Status");
+            AddTextField(section, textProperty, "initializing", "Initializing");
+            AddTextField(section, textProperty, "downloading", "Downloading");
+            AddTextField(section, textProperty, "downloadCompletedLoading", "Download Done");
+            AddTextField(section, textProperty, "loadingCode", "Loading Code");
+            AddTextField(section, textProperty, "decryptingResources", "Decrypting");
+            AddTextField(section, textProperty, "loadingScene", "Loading Scene");
+
+            // Dialog Titles
+            AddTextSubHeader(section, "Dialog Titles");
+            AddTextField(section, textProperty, "dialogTitleError", "Error Title");
+            AddTextField(section, textProperty, "dialogTitleWarning", "Warning Title");
+            AddTextField(section, textProperty, "dialogTitleNotice", "Notice Title");
+
+            // Dialog Buttons
+            AddTextSubHeader(section, "Dialog Buttons");
+            AddTextField(section, textProperty, "buttonOk", "OK");
+            AddTextField(section, textProperty, "buttonCancel", "Cancel");
+            AddTextField(section, textProperty, "buttonDownload", "Download");
+            AddTextField(section, textProperty, "buttonRetry", "Retry");
+            AddTextField(section, textProperty, "buttonExit", "Exit");
+
+            // Dialog Content
+            AddTextSubHeader(section, "Dialog Content (Format Strings)");
+            AddTextField(section, textProperty, "dialogInitFailed", "Init Failed");
+            AddTextField(section, textProperty, "dialogDownloadPrompt", "Download Prompt");
+            AddTextField(section, textProperty, "dialogDownloadProgress", "Download Progress");
+            AddTextField(section, textProperty, "dialogSceneLoadFailed", "Scene Failed");
+            AddTextField(section, textProperty, "dialogInitException", "Init Exception");
+            AddTextField(section, textProperty, "dialogCodeException", "Code Exception");
+            AddTextField(section, textProperty, "dialogFunctionCallFailed", "Call Failed");
+
+            // Reset to Defaults button
+            var resetButton = new JButton("Reset to Defaults", () =>
+            {
+                Undo.RecordObject(_bootstrap, "Reset Bootstrap Text to Defaults");
+                var textProp = _serializedObject.FindProperty("text");
+                var defaults = BootstrapText.Default;
+                var fields = typeof(BootstrapText).GetFields(
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                foreach (var field in fields)
+                {
+                    var prop = textProp.FindPropertyRelative(field.Name);
+                    if (prop != null && prop.propertyType == SerializedPropertyType.String)
+                    {
+                        prop.stringValue = (string)field.GetValue(defaults);
+                    }
+                }
+                _serializedObject.ApplyModifiedProperties();
+            }, ButtonVariant.Warning);
+            section.Add(resetButton);
+
+            return section;
+        }
+
+        private static void AddTextSubHeader(JSection section, string title)
+        {
+            var header = new Label(title);
+            header.style.fontSize = Tokens.FontSize.Sm;
+            header.style.color = Tokens.Colors.TextMuted;
+            header.style.unityFontStyleAndWeight = FontStyle.Bold;
+            header.style.marginTop = Tokens.Spacing.MD;
+            header.style.marginBottom = Tokens.Spacing.Xs;
+            header.style.paddingBottom = Tokens.Spacing.Xs;
+            header.style.borderBottomWidth = 1;
+            header.style.borderBottomColor = Tokens.Colors.BorderSubtle;
+            section.Add(header);
+        }
+
+        private static void AddTextField(JSection section, SerializedProperty parentProperty,
+            string fieldName, string label)
+        {
+            var prop = parentProperty.FindPropertyRelative(fieldName);
+            var textField = new JTextField(prop.stringValue);
+            textField.RegisterValueChangedCallback(evt =>
+            {
+                prop.stringValue = evt.newValue;
+                _serializedObject.ApplyModifiedProperties();
+            });
+            section.Add(new JFormField(label, textField));
         }
 
         private static void UpdateFallbackVisibility()
