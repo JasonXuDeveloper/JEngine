@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using JEngine.Core.Encrypt;
 using UnityEngine;
 
 namespace YooAsset
@@ -30,18 +31,43 @@ namespace YooAsset
             {
                 string packageName = subDirectory.Name;
                 string pacakgeDirectory = subDirectory.FullName;
-                try
+                if (!TryCreateCatalogFile(packageName, pacakgeDirectory))
                 {
-                    bool result = CatalogTools.CreateCatalogFile(null, packageName, pacakgeDirectory); //TODO 自行处理解密
-                    if (result == false)
-                    {
-                        Debug.LogError($"Create package {packageName} catalog file failed ! See the detail error in console !");
-                    }
+                    Debug.LogError($"Create package {packageName} catalog file failed ! See the detail error in console !");
                 }
-                catch (System.Exception ex)
+            }
+        }
+
+        private static bool TryCreateCatalogFile(string packageName, string packageDirectory)
+        {
+            // Try without decryption first (unencrypted manifests)
+            if (TryCreate(null, packageName, packageDirectory))
+                return true;
+
+            // Try each registered encryption method
+            foreach (var kvp in EncryptionMapping.Mapping)
+            {
+                var restore = kvp.Value.ManifestEncryptionConfig.Decryption;
+                if (TryCreate(restore, packageName, packageDirectory))
                 {
-                    Debug.LogError($"Create package {packageName} catalog file failed ! {ex.Message}");
+                    YooLogger.Log($"Package '{packageName}' catalog created using {kvp.Key} decryption.");
+                    return true;
                 }
+            }
+
+            return false;
+        }
+
+        private static bool TryCreate(IManifestRestoreServices services,
+            string packageName, string packageDirectory)
+        {
+            try
+            {
+                return CatalogTools.CreateCatalogFile(services, packageName, packageDirectory);
+            }
+            catch
+            {
+                return false;
             }
         }
     }
