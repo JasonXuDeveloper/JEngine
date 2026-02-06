@@ -41,7 +41,7 @@ namespace JEngine.UI.Editor.Components.Navigation
         private readonly List<Label> _tabButtons = new();
         private readonly List<VisualElement> _contentPanels = new();
         private int _selectedIndex = -1;
-        private int _maxTabsPerRow;
+        private readonly int _maxTabsPerRow;
 
         /// <summary>
         /// Creates a new tab view with a tab bar and content area.
@@ -202,7 +202,7 @@ namespace JEngine.UI.Editor.Components.Navigation
 
         private static void OnTabClicked(MouseDownEvent evt)
         {
-            if (evt.target is Label tab && tab.userData is int index)
+            if (evt.currentTarget is Label tab && tab.userData is int index)
             {
                 // Walk up to find the JTabView parent
                 var parent = tab.parent?.parent;
@@ -215,7 +215,7 @@ namespace JEngine.UI.Editor.Components.Navigation
 
         private void OnTabMouseEnter(MouseEnterEvent evt)
         {
-            if (evt.target is Label tab && tab.userData is int index && index != _selectedIndex)
+            if (evt.currentTarget is Label tab && tab.userData is int index && index != _selectedIndex)
             {
                 tab.style.backgroundColor = Tokens.Colors.BgHover;
             }
@@ -223,7 +223,7 @@ namespace JEngine.UI.Editor.Components.Navigation
 
         private void OnTabMouseLeave(MouseLeaveEvent evt)
         {
-            if (evt.target is Label tab && tab.userData is int index && index != _selectedIndex)
+            if (evt.currentTarget is Label tab && tab.userData is int index && index != _selectedIndex)
             {
                 tab.style.backgroundColor = StyleKeyword.None;
             }

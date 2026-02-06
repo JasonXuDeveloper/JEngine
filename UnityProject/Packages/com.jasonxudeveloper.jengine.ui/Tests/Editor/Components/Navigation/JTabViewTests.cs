@@ -570,7 +570,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             Assert.IsNotNull(method, "OnTabClicked method should exist");
 
             var evt = (MouseDownEvent)Activator.CreateInstance(typeof(MouseDownEvent), true);
-            evt.target = secondTab;
+            evt.currentTarget = secondTab;
             method.Invoke(null, new object[] { evt });
 
             Assert.AreEqual(1, _tabView.SelectedIndex);
@@ -585,7 +585,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
                 BindingFlags.NonPublic | BindingFlags.Static);
 
             var evt = (MouseDownEvent)Activator.CreateInstance(typeof(MouseDownEvent), true);
-            evt.target = new VisualElement();
+            evt.currentTarget = new VisualElement();
             method.Invoke(null, new object[] { evt });
 
             Assert.AreEqual(0, _tabView.SelectedIndex);
@@ -605,7 +605,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             Assert.IsNotNull(method, "OnTabMouseEnter method should exist");
 
             var evt = (MouseEnterEvent)Activator.CreateInstance(typeof(MouseEnterEvent), true);
-            evt.target = inactiveTab;
+            evt.currentTarget = inactiveTab;
             method.Invoke(_tabView, new object[] { evt });
 
             Assert.AreEqual(Tokens.Colors.BgHover, inactiveTab.style.backgroundColor.value);
@@ -624,7 +624,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             var method = typeof(JTabView).GetMethod("OnTabMouseEnter",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             var evt = (MouseEnterEvent)Activator.CreateInstance(typeof(MouseEnterEvent), true);
-            evt.target = activeTab;
+            evt.currentTarget = activeTab;
             method.Invoke(_tabView, new object[] { evt });
 
             Assert.AreEqual(expectedBg, activeTab.style.backgroundColor.value);

@@ -677,6 +677,13 @@ namespace JEngine.UI.Tests.Editor.Internal
             Assert.AreEqual("", result);
         }
 
+        [Test]
+        public void SafeFormat_NullTemplate_ReturnsEmpty()
+        {
+            var result = BootstrapText.SafeFormat(null, "arg");
+            Assert.AreEqual(string.Empty, result);
+        }
+
         #endregion
 
         #region BootstrapText Default Tests

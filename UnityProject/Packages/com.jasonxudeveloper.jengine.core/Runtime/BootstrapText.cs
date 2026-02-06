@@ -151,10 +151,15 @@ namespace JEngine.Core
 
         /// <summary>
         /// Safe wrapper around <see cref="string.Format(string, object[])"/> that falls back
-        /// to the raw template if the user-edited format string is malformed.
+        /// to a safe value if the user-edited format string is malformed or null.
         /// </summary>
         public static string SafeFormat(string template, params object[] args)
         {
+            if (string.IsNullOrEmpty(template))
+            {
+                return string.Empty;
+            }
+
             try
             {
                 return string.Format(template, args);
