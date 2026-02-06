@@ -484,7 +484,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             // (100 - 3*2) / 3 = 31.33...%
             var basis = tabButton.style.flexBasis; // StyleLength
             Assert.AreEqual(LengthUnit.Percent, basis.value.unit);
-            Assert.AreEqual((100f - 3f * 2f) / 3f, basis.value.value, 0.01f);
+            Assert.AreEqual((100f - (3f * 2f)) / 3f, basis.value.value, 0.01f);
         }
 
         [Test]
@@ -520,7 +520,7 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             var tabButton = bar[0] as Label;
 
             // (100 - 2*2) / 2 = 48%
-            Assert.AreEqual((100f - 2f * 2f) / 2f, tabButton.style.flexBasis.value.value, 0.01f);
+            Assert.AreEqual((100f - (2f * 2f)) / 2f, tabButton.style.flexBasis.value.value, 0.01f);
         }
 
         #endregion

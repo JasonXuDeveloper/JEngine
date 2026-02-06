@@ -125,7 +125,7 @@ namespace JEngine.UI.Editor.Components.Navigation
             if (_maxTabsPerRow > 0)
             {
                 // Reduce basis to account for per-tab margins; flexGrow fills remaining space
-                var percent = (100f - _maxTabsPerRow * 2f) / _maxTabsPerRow;
+                var percent = (100f - (_maxTabsPerRow * 2f)) / _maxTabsPerRow;
                 tabButton.style.flexBasis = new StyleLength(new Length(percent, LengthUnit.Percent));
                 tabButton.style.flexGrow = 1;
                 tabButton.style.flexShrink = 1;
