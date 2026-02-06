@@ -1,6 +1,7 @@
 // JTextFieldTests.cs
 // EditMode unit tests for JTextField
 
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -300,6 +301,33 @@ namespace JEngine.UI.Tests.Editor.Components.Form
         {
             // Verify the method exists and is accessible
             Assert.IsNotNull((System.Action<SerializedProperty>)_textField.BindProperty);
+        }
+
+        #endregion
+
+        #region Internal Styles Tests
+
+        [Test]
+        public void ApplyInternalStyles_DoesNotThrow()
+        {
+            var method = typeof(JTextField).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "ApplyInternalStyles method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_textField, null));
+        }
+
+        [Test]
+        public void ApplyInternalStyles_CanBeCalledMultipleTimes()
+        {
+            var method = typeof(JTextField).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.DoesNotThrow(() =>
+            {
+                method.Invoke(_textField, null);
+                method.Invoke(_textField, null);
+            });
         }
 
         #endregion

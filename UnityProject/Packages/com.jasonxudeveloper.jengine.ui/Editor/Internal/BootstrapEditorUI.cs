@@ -32,6 +32,7 @@ using JEngine.Core.Update;
 using JEngine.UI.Editor.Components.Button;
 using JEngine.UI.Editor.Components.Form;
 using JEngine.UI.Editor.Components.Layout;
+using JEngine.UI.Editor.Components.Navigation;
 using JEngine.UI.Editor.Theming;
 using JEngine.UI.Editor.Utilities;
 using TMPro;
@@ -101,6 +102,9 @@ namespace JEngine.UI.Editor.Internal
             // UI Settings
             content.Add(CreateUISettingsSection());
 
+            // Text Settings
+            content.Add(CreateTextSettingsSection());
+
             container.Add(content);
             root.Add(container);
 
@@ -150,6 +154,7 @@ namespace JEngine.UI.Editor.Internal
             content.Add(CreateAssetSettingsSection());
             content.Add(CreateSecuritySettingsSection());
             content.Add(CreateUISettingsSection());
+            content.Add(CreateTextSettingsSection());
 
             container.Add(content);
             _currentRoot.Add(container);
@@ -436,6 +441,105 @@ namespace JEngine.UI.Editor.Internal
             section.Add(new JFormField("Start Button", startButtonField));
 
             return section;
+        }
+
+        private static VisualElement CreateTextSettingsSection()
+        {
+            var section = new JSection("Text Settings");
+
+            var textProperty = _serializedObject.FindProperty("text");
+
+            // Package Initialization Status
+            var packageInitTab = new VisualElement();
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.initializingPackage), "Initializing");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.gettingVersion), "Getting Version");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.updatingManifest), "Updating Manifest");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.checkingUpdate), "Checking Update");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.downloadingResources), "Downloading");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.packageCompleted), "Completed");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.initializationFailed), "Failed");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.unknownPackageStatus), "Unknown Status");
+
+            // Scene Load Status
+            var sceneLoadTab = new VisualElement();
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneLoading), "Loading");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneCompleted), "Completed");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneFailed), "Failed");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.unknownSceneStatus), "Unknown Status");
+
+            // Inline Status
+            var inlineStatusTab = new VisualElement();
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.initializing), "Initializing");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.downloading), "Downloading");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.downloadCompletedLoading), "Download Done");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.loadingCode), "Loading Code");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.decryptingResources), "Decrypting");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.loadingScene), "Loading Scene");
+
+            // Dialog Titles
+            var dialogTitlesTab = new VisualElement();
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleError), "Error Title");
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleWarning), "Warning Title");
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleNotice), "Notice Title");
+
+            // Dialog Buttons
+            var dialogButtonsTab = new VisualElement();
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonOk), "OK");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonCancel), "Cancel");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonDownload), "Download");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonRetry), "Retry");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonExit), "Exit");
+
+            // Dialog Content
+            var dialogContentTab = new VisualElement();
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogInitFailed), "Init Failed");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogDownloadPrompt), "Download Prompt");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogDownloadProgress), "Download Progress");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogSceneLoadFailed), "Scene Failed");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogInitException), "Init Exception");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogCodeException), "Code Exception");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogFunctionCallFailed), "Call Failed");
+
+            var tabView = new JTabView(maxTabsPerRow: 3)
+                .AddTab("Package Init", packageInitTab)
+                .AddTab("Scene Load", sceneLoadTab)
+                .AddTab("Inline Status", inlineStatusTab)
+                .AddTab("Dialog Titles", dialogTitlesTab)
+                .AddTab("Dialog Buttons", dialogButtonsTab)
+                .AddTab("Dialog Content", dialogContentTab);
+
+            section.Add(tabView);
+
+            // Reset to Defaults button
+            var resetButton = new JButton("Reset to Defaults", () =>
+            {
+                Undo.RecordObject(_bootstrap, "Reset Bootstrap Text to Defaults");
+                var textProp = _serializedObject.FindProperty("text");
+                var defaults = BootstrapText.Default;
+                var fields = typeof(BootstrapText).GetFields(
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                foreach (var field in fields)
+                {
+                    var prop = textProp.FindPropertyRelative(field.Name);
+                    if (prop != null && prop.propertyType == SerializedPropertyType.String)
+                    {
+                        prop.stringValue = (string)field.GetValue(defaults);
+                    }
+                }
+                _serializedObject.ApplyModifiedProperties();
+            }, ButtonVariant.Warning);
+            section.Add(resetButton);
+
+            return section;
+        }
+
+        private static void AddTextField(VisualElement container, SerializedProperty parentProperty,
+            string fieldName, string label)
+        {
+            var prop = parentProperty.FindPropertyRelative(fieldName);
+            var textField = new JTextField();
+            textField.BindProperty(prop);
+            container.Add(new JFormField(label, textField));
         }
 
         private static void UpdateFallbackVisibility()

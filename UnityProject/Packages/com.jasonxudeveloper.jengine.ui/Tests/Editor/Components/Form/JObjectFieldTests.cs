@@ -1,6 +1,7 @@
 // JObjectFieldTests.cs
 // EditMode unit tests for JObjectField
 
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -258,6 +259,71 @@ namespace JEngine.UI.Tests.Editor.Components.Form
         {
             // Verify the method exists and is accessible
             Assert.IsNotNull((System.Action<SerializedProperty>)_objectField.BindProperty);
+        }
+
+        #endregion
+
+        #region Internal Styles Tests
+
+        [Test]
+        public void ApplyInternalStyles_DoesNotThrow()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "ApplyInternalStyles method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_objectField, null));
+        }
+
+        [Test]
+        public void ApplyInternalStyles_AppliesPointerCursorToWrapper()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_objectField, null);
+
+            Assert.IsTrue(_objectField.ClassListContains("j-cursor-pointer"));
+        }
+
+        [Test]
+        public void ApplyInternalStyles_CanBeCalledMultipleTimes()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.DoesNotThrow(() =>
+            {
+                method.Invoke(_objectField, null);
+                method.Invoke(_objectField, null);
+            });
+        }
+
+        [Test]
+        public void ApplyCursorToAllDescendants_DoesNotThrow()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("ApplyCursorToAllDescendants",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "ApplyCursorToAllDescendants method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_objectField, new object[] { _objectField.ObjectField }));
+        }
+
+        [Test]
+        public void ApplyCursorToAllDescendants_AppliesPointerCursorToRoot()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("ApplyCursorToAllDescendants",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_objectField, new object[] { _objectField.ObjectField });
+
+            Assert.IsTrue(_objectField.ObjectField.ClassListContains("j-cursor-pointer"));
+        }
+
+        [Test]
+        public void OnAttachToPanel_MethodExists()
+        {
+            var method = typeof(JObjectField<GameObject>).GetMethod("OnAttachToPanel",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnAttachToPanel method should exist");
         }
 
         #endregion

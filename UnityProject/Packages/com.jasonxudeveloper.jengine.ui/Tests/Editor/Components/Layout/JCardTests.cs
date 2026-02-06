@@ -1,6 +1,7 @@
 // JCardTests.cs
 // EditMode unit tests for JCard
 
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine.UIElements;
 using JEngine.UI.Editor.Components.Layout;
@@ -196,6 +197,56 @@ namespace JEngine.UI.Tests.Editor.Components.Layout
             Assert.AreEqual(Tokens.Spacing.MD, _card.style.paddingTop.value.value);
             Assert.AreEqual(0f, _card.style.marginBottom.value.value);
             Assert.AreEqual(1, _card.childCount);
+        }
+
+        #endregion
+
+        #region Hover Event Tests
+
+        [Test]
+        public void OnMouseEnter_SetsElevatedBackground()
+        {
+            var method = typeof(JCard).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnMouseEnter method should exist");
+
+            method.Invoke(_card, new object[] { null });
+
+            Assert.AreEqual(Tokens.Colors.BgElevated, _card.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseEnter_SetsHoverBorderColor()
+        {
+            var method = typeof(JCard).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_card, new object[] { null });
+
+            Assert.AreEqual(Tokens.Colors.BorderHover, _card.style.borderTopColor.value);
+            Assert.AreEqual(Tokens.Colors.BorderHover, _card.style.borderLeftColor.value);
+        }
+
+        [Test]
+        public void OnMouseLeave_RestoresSurfaceBackground()
+        {
+            var enter = typeof(JCard).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            enter.Invoke(_card, new object[] { null });
+
+            var leave = typeof(JCard).GetMethod("OnMouseLeave", BindingFlags.NonPublic | BindingFlags.Instance);
+            leave.Invoke(_card, new object[] { null });
+
+            Assert.AreEqual(Tokens.Colors.BgSurface, _card.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseLeave_RestoresLightBorderColor()
+        {
+            var enter = typeof(JCard).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            enter.Invoke(_card, new object[] { null });
+
+            var leave = typeof(JCard).GetMethod("OnMouseLeave", BindingFlags.NonPublic | BindingFlags.Instance);
+            leave.Invoke(_card, new object[] { null });
+
+            Assert.AreEqual(Tokens.Colors.BorderLight, _card.style.borderTopColor.value);
+            Assert.AreEqual(Tokens.Colors.BorderLight, _card.style.borderLeftColor.value);
         }
 
         #endregion

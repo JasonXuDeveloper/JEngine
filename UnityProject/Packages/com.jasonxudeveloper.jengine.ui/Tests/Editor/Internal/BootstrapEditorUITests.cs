@@ -12,6 +12,7 @@ using JEngine.Core.Update;
 using JEngine.UI.Editor.Components.Button;
 using JEngine.UI.Editor.Components.Form;
 using JEngine.UI.Editor.Components.Layout;
+using JEngine.UI.Editor.Components.Navigation;
 using JEngine.UI.Editor.Internal;
 using JEngine.UI.Tests;
 
@@ -153,6 +154,105 @@ namespace JEngine.UI.Tests.Editor.Internal
 
             var section = FindSectionByTitle(root, "UI Settings");
             Assert.IsNotNull(section);
+        }
+
+        [Test]
+        public void CreateInspector_ContainsTextSettingsSection()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            Assert.IsNotNull(section);
+        }
+
+        [Test]
+        public void TextSettings_ContainsExactFieldCount()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var formFields = section?.Query<JFormField>().ToList();
+
+            Assert.IsNotNull(formFields);
+            // Must match BootstrapText public instance field count exactly
+            var expectedCount = typeof(BootstrapText)
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                .Length;
+            Assert.AreEqual(expectedCount, formFields.Count);
+        }
+
+        [Test]
+        public void TextSettings_ContainsTabView()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var tabView = section?.Q<JTabView>();
+
+            Assert.IsNotNull(tabView);
+        }
+
+        [Test]
+        public void TextSettings_TabView_HasSixTabs()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var tabView = section?.Q<JTabView>();
+
+            Assert.IsNotNull(tabView);
+            Assert.AreEqual(6, tabView.TabCount);
+        }
+
+        [Test]
+        public void TextSettings_ContainsResetButton()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var buttons = section?.Query<JButton>().ToList();
+
+            Assert.IsNotNull(buttons);
+            Assert.AreEqual(1, buttons.Count);
+        }
+
+        [Test]
+        public void TextSettings_ResetLogic_RestoresDefaults()
+        {
+            // Modify a text value via serialized property
+            var textProp = _serializedObject.FindProperty("text");
+            var initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            initProp.stringValue = "Custom text";
+            _serializedObject.ApplyModifiedProperties();
+
+            // Verify value was changed
+            _serializedObject.Update();
+            textProp = _serializedObject.FindProperty("text");
+            initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            Assert.AreEqual("Custom text", initProp.stringValue);
+
+            // Apply reset logic (same as Reset button callback)
+            var defaults = BootstrapText.Default;
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            foreach (var field in fields)
+            {
+                var prop = textProp.FindPropertyRelative(field.Name);
+                if (prop != null && prop.propertyType == SerializedPropertyType.String)
+                {
+                    prop.stringValue = (string)field.GetValue(defaults);
+                }
+            }
+            _serializedObject.ApplyModifiedProperties();
+
+            // Verify all values were reset
+            _serializedObject.Update();
+            textProp = _serializedObject.FindProperty("text");
+            initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            Assert.AreEqual(BootstrapText.Default.initializing, initProp.stringValue);
+
+            var dlgProp = textProp.FindPropertyRelative(nameof(BootstrapText.dialogTitleError));
+            Assert.AreEqual(BootstrapText.Default.dialogTitleError, dlgProp.stringValue);
         }
 
         #endregion
@@ -536,6 +636,198 @@ namespace JEngine.UI.Tests.Editor.Internal
             Assert.IsNotNull(root1);
             Assert.IsNotNull(root2);
             Assert.AreNotSame(root1, root2);
+        }
+
+        #endregion
+
+        #region BootstrapText SafeFormat Tests
+
+        [Test]
+        public void SafeFormat_ValidTemplate_FormatsCorrectly()
+        {
+            var result = BootstrapText.SafeFormat("Hello {0}, you have {1} items", "World", 5);
+            Assert.AreEqual("Hello World, you have 5 items", result);
+        }
+
+        [Test]
+        public void SafeFormat_MalformedTemplate_ReturnsFallback()
+        {
+            var result = BootstrapText.SafeFormat("Bad format {0} {1} {2}", "only_one_arg");
+            Assert.AreEqual("Bad format {0} {1} {2}", result);
+        }
+
+        [Test]
+        public void SafeFormat_InvalidBraces_ReturnsFallback()
+        {
+            var result = BootstrapText.SafeFormat("Broken {", "arg");
+            Assert.AreEqual("Broken {", result);
+        }
+
+        [Test]
+        public void SafeFormat_NoPlaceholders_ReturnsTemplate()
+        {
+            var result = BootstrapText.SafeFormat("No placeholders here");
+            Assert.AreEqual("No placeholders here", result);
+        }
+
+        [Test]
+        public void SafeFormat_EmptyTemplate_ReturnsEmpty()
+        {
+            var result = BootstrapText.SafeFormat("", "arg");
+            Assert.AreEqual("", result);
+        }
+
+        [Test]
+        public void SafeFormat_NullTemplate_ReturnsEmpty()
+        {
+            var result = BootstrapText.SafeFormat(null, "arg");
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        #endregion
+
+        #region BootstrapText Default Tests
+
+        [Test]
+        public void Default_AllFieldsAreNonNull()
+        {
+            var defaults = BootstrapText.Default;
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (var field in fields)
+            {
+                var value = (string)field.GetValue(defaults);
+                Assert.IsNotNull(value, $"BootstrapText.Default.{field.Name} is null");
+                Assert.IsNotEmpty(value, $"BootstrapText.Default.{field.Name} is empty");
+            }
+        }
+
+        [Test]
+        public void Default_HasExpectedFieldCount()
+        {
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            Assert.AreEqual(33, fields.Length);
+        }
+
+        #endregion
+
+        #region Internal Callback Tests
+
+        [Test]
+        public void OnUndoRedo_RebuildUI_RootContainsContent()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnUndoRedo",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "OnUndoRedo method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(null, null));
+
+            // Verify root was rebuilt with content
+            Assert.IsTrue(root.childCount > 0);
+        }
+
+        [Test]
+        public void OnUndoRedo_WithNullRoot_DoesNotThrow()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            // Set _currentRoot to null to test early return
+            var rootField = typeof(BootstrapEditorUI).GetField("_currentRoot",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            rootField.SetValue(null, null);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnUndoRedo",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            Assert.DoesNotThrow(() => method.Invoke(null, null));
+        }
+
+        [Test]
+        public void OnUndoRedo_PreservesAllSections()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnUndoRedo",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, null);
+
+            // Verify all sections still exist after rebuild
+            Assert.IsNotNull(FindSectionByTitle(root, "Development Settings"));
+            Assert.IsNotNull(FindSectionByTitle(root, "Server Settings"));
+            Assert.IsNotNull(FindSectionByTitle(root, "Asset Settings"));
+            Assert.IsNotNull(FindSectionByTitle(root, "Security Settings"));
+            Assert.IsNotNull(FindSectionByTitle(root, "UI Settings"));
+            Assert.IsNotNull(FindSectionByTitle(root, "Text Settings"));
+        }
+
+        [Test]
+        public void OnDetachFromPanel_DoesNotThrow()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnDetachFromPanel",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "OnDetachFromPanel method should exist");
+
+            Undo.UndoRedoCallback callback = () => { };
+            Assert.DoesNotThrow(() => method.Invoke(null, new object[] { null, callback }));
+        }
+
+        [Test]
+        public void UpdateFallbackVisibility_WhenUseDefaultTrue_HidesFallback()
+        {
+            _bootstrap.useDefaultAsFallback = true;
+            _serializedObject.Update();
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("UpdateFallbackVisibility",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "UpdateFallbackVisibility method should exist");
+            method.Invoke(null, null);
+
+            var fallbackField = typeof(BootstrapEditorUI).GetField("_fallbackContainer",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            var fallbackContainer = (VisualElement)fallbackField.GetValue(null);
+
+            Assert.AreEqual(DisplayStyle.None, fallbackContainer.style.display.value);
+        }
+
+        [Test]
+        public void UpdateFallbackVisibility_WhenUseDefaultFalse_ShowsFallback()
+        {
+            _bootstrap.useDefaultAsFallback = false;
+            _serializedObject.Update();
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("UpdateFallbackVisibility",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, null);
+
+            var fallbackField = typeof(BootstrapEditorUI).GetField("_fallbackContainer",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            var fallbackContainer = (VisualElement)fallbackField.GetValue(null);
+
+            Assert.AreEqual(DisplayStyle.Flex, fallbackContainer.style.display.value);
+        }
+
+        [Test]
+        public void UpdateFallbackVisibility_WithNullContainer_DoesNotThrow()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            // Set _fallbackContainer to null
+            var field = typeof(BootstrapEditorUI).GetField("_fallbackContainer",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            field.SetValue(null, null);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("UpdateFallbackVisibility",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            Assert.DoesNotThrow(() => method.Invoke(null, null));
         }
 
         #endregion
