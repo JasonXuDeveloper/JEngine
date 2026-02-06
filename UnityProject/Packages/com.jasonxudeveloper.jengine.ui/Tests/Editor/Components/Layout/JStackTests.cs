@@ -1,6 +1,7 @@
 // JStackTests.cs
 // EditMode unit tests for JStack layout component
 
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine.UIElements;
 using JEngine.UI.Editor.Components.Layout;
@@ -245,6 +246,60 @@ namespace JEngine.UI.Tests.Editor.Components.Layout
             Assert.IsTrue(_stack.ClassListContains("j-stack--gap-lg"));
             Assert.AreEqual(5f, _stack.style.marginTop.value.value);
             Assert.AreEqual(2, _stack.childCount);
+        }
+
+        #endregion
+
+        #region ApplyChildGaps Tests
+
+        [Test]
+        public void ApplyChildGaps_SetsMarginOnChildren()
+        {
+            _stack.Add(new Label("1"), new Label("2"), new Label("3"));
+
+            var method = typeof(JStack).GetMethod("ApplyChildGaps",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "ApplyChildGaps method should exist");
+
+            method.Invoke(_stack, new object[] { 10f });
+
+            Assert.AreEqual(10f, _stack[0].style.marginBottom.value.value);
+            Assert.AreEqual(10f, _stack[1].style.marginBottom.value.value);
+            Assert.AreEqual(0f, _stack[2].style.marginBottom.value.value);
+        }
+
+        [Test]
+        public void ApplyChildGaps_SingleChild_ZeroMargin()
+        {
+            _stack.Add(new Label("1"));
+
+            var method = typeof(JStack).GetMethod("ApplyChildGaps",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_stack, new object[] { 10f });
+
+            Assert.AreEqual(0f, _stack[0].style.marginBottom.value.value);
+        }
+
+        [Test]
+        public void ApplyChildGaps_NoChildren_DoesNotThrow()
+        {
+            var method = typeof(JStack).GetMethod("ApplyChildGaps",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Assert.DoesNotThrow(() => method.Invoke(_stack, new object[] { 10f }));
+        }
+
+        [Test]
+        public void ApplyChildGaps_WithZeroGap_AllMarginsZero()
+        {
+            _stack.Add(new Label("1"), new Label("2"));
+
+            var method = typeof(JStack).GetMethod("ApplyChildGaps",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_stack, new object[] { 0f });
+
+            Assert.AreEqual(0f, _stack[0].style.marginBottom.value.value);
+            Assert.AreEqual(0f, _stack[1].style.marginBottom.value.value);
         }
 
         #endregion

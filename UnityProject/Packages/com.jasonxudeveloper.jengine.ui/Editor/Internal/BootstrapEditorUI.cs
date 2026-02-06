@@ -32,6 +32,7 @@ using JEngine.Core.Update;
 using JEngine.UI.Editor.Components.Button;
 using JEngine.UI.Editor.Components.Form;
 using JEngine.UI.Editor.Components.Layout;
+using JEngine.UI.Editor.Components.Navigation;
 using JEngine.UI.Editor.Theming;
 using JEngine.UI.Editor.Utilities;
 using TMPro;
@@ -449,55 +450,65 @@ namespace JEngine.UI.Editor.Internal
             var textProperty = _serializedObject.FindProperty("text");
 
             // Package Initialization Status
-            AddTextSubHeader(section, "Package Initialization Status");
-            AddTextField(section, textProperty, nameof(BootstrapText.initializingPackage), "Initializing");
-            AddTextField(section, textProperty, nameof(BootstrapText.gettingVersion), "Getting Version");
-            AddTextField(section, textProperty, nameof(BootstrapText.updatingManifest), "Updating Manifest");
-            AddTextField(section, textProperty, nameof(BootstrapText.checkingUpdate), "Checking Update");
-            AddTextField(section, textProperty, nameof(BootstrapText.downloadingResources), "Downloading");
-            AddTextField(section, textProperty, nameof(BootstrapText.packageCompleted), "Completed");
-            AddTextField(section, textProperty, nameof(BootstrapText.initializationFailed), "Failed");
-            AddTextField(section, textProperty, nameof(BootstrapText.unknownPackageStatus), "Unknown Status");
+            var packageInitTab = new VisualElement();
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.initializingPackage), "Initializing");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.gettingVersion), "Getting Version");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.updatingManifest), "Updating Manifest");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.checkingUpdate), "Checking Update");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.downloadingResources), "Downloading");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.packageCompleted), "Completed");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.initializationFailed), "Failed");
+            AddTextField(packageInitTab, textProperty, nameof(BootstrapText.unknownPackageStatus), "Unknown Status");
 
             // Scene Load Status
-            AddTextSubHeader(section, "Scene Load Status");
-            AddTextField(section, textProperty, nameof(BootstrapText.sceneLoading), "Loading");
-            AddTextField(section, textProperty, nameof(BootstrapText.sceneCompleted), "Completed");
-            AddTextField(section, textProperty, nameof(BootstrapText.sceneFailed), "Failed");
-            AddTextField(section, textProperty, nameof(BootstrapText.unknownSceneStatus), "Unknown Status");
+            var sceneLoadTab = new VisualElement();
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneLoading), "Loading");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneCompleted), "Completed");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.sceneFailed), "Failed");
+            AddTextField(sceneLoadTab, textProperty, nameof(BootstrapText.unknownSceneStatus), "Unknown Status");
 
             // Inline Status
-            AddTextSubHeader(section, "Inline Status");
-            AddTextField(section, textProperty, nameof(BootstrapText.initializing), "Initializing");
-            AddTextField(section, textProperty, nameof(BootstrapText.downloading), "Downloading");
-            AddTextField(section, textProperty, nameof(BootstrapText.downloadCompletedLoading), "Download Done");
-            AddTextField(section, textProperty, nameof(BootstrapText.loadingCode), "Loading Code");
-            AddTextField(section, textProperty, nameof(BootstrapText.decryptingResources), "Decrypting");
-            AddTextField(section, textProperty, nameof(BootstrapText.loadingScene), "Loading Scene");
+            var inlineStatusTab = new VisualElement();
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.initializing), "Initializing");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.downloading), "Downloading");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.downloadCompletedLoading), "Download Done");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.loadingCode), "Loading Code");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.decryptingResources), "Decrypting");
+            AddTextField(inlineStatusTab, textProperty, nameof(BootstrapText.loadingScene), "Loading Scene");
 
             // Dialog Titles
-            AddTextSubHeader(section, "Dialog Titles");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleError), "Error Title");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleWarning), "Warning Title");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleNotice), "Notice Title");
+            var dialogTitlesTab = new VisualElement();
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleError), "Error Title");
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleWarning), "Warning Title");
+            AddTextField(dialogTitlesTab, textProperty, nameof(BootstrapText.dialogTitleNotice), "Notice Title");
 
             // Dialog Buttons
-            AddTextSubHeader(section, "Dialog Buttons");
-            AddTextField(section, textProperty, nameof(BootstrapText.buttonOk), "OK");
-            AddTextField(section, textProperty, nameof(BootstrapText.buttonCancel), "Cancel");
-            AddTextField(section, textProperty, nameof(BootstrapText.buttonDownload), "Download");
-            AddTextField(section, textProperty, nameof(BootstrapText.buttonRetry), "Retry");
-            AddTextField(section, textProperty, nameof(BootstrapText.buttonExit), "Exit");
+            var dialogButtonsTab = new VisualElement();
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonOk), "OK");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonCancel), "Cancel");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonDownload), "Download");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonRetry), "Retry");
+            AddTextField(dialogButtonsTab, textProperty, nameof(BootstrapText.buttonExit), "Exit");
 
             // Dialog Content
-            AddTextSubHeader(section, "Dialog Content (Format Strings)");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogInitFailed), "Init Failed");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogDownloadPrompt), "Download Prompt");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogDownloadProgress), "Download Progress");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogSceneLoadFailed), "Scene Failed");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogInitException), "Init Exception");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogCodeException), "Code Exception");
-            AddTextField(section, textProperty, nameof(BootstrapText.dialogFunctionCallFailed), "Call Failed");
+            var dialogContentTab = new VisualElement();
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogInitFailed), "Init Failed");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogDownloadPrompt), "Download Prompt");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogDownloadProgress), "Download Progress");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogSceneLoadFailed), "Scene Failed");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogInitException), "Init Exception");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogCodeException), "Code Exception");
+            AddTextField(dialogContentTab, textProperty, nameof(BootstrapText.dialogFunctionCallFailed), "Call Failed");
+
+            var tabView = new JTabView(maxTabsPerRow: 3)
+                .AddTab("Package Init", packageInitTab)
+                .AddTab("Scene Load", sceneLoadTab)
+                .AddTab("Inline Status", inlineStatusTab)
+                .AddTab("Dialog Titles", dialogTitlesTab)
+                .AddTab("Dialog Buttons", dialogButtonsTab)
+                .AddTab("Dialog Content", dialogContentTab);
+
+            section.Add(tabView);
 
             // Reset to Defaults button
             var resetButton = new JButton("Reset to Defaults", () =>
@@ -522,27 +533,13 @@ namespace JEngine.UI.Editor.Internal
             return section;
         }
 
-        private static void AddTextSubHeader(JSection section, string title)
-        {
-            var header = new Label(title);
-            header.style.fontSize = Tokens.FontSize.Sm;
-            header.style.color = Tokens.Colors.TextMuted;
-            header.style.unityFontStyleAndWeight = FontStyle.Bold;
-            header.style.marginTop = Tokens.Spacing.MD;
-            header.style.marginBottom = Tokens.Spacing.Xs;
-            header.style.paddingBottom = Tokens.Spacing.Xs;
-            header.style.borderBottomWidth = 1;
-            header.style.borderBottomColor = Tokens.Colors.BorderSubtle;
-            section.Add(header);
-        }
-
-        private static void AddTextField(JSection section, SerializedProperty parentProperty,
+        private static void AddTextField(VisualElement container, SerializedProperty parentProperty,
             string fieldName, string label)
         {
             var prop = parentProperty.FindPropertyRelative(fieldName);
             var textField = new JTextField();
             textField.BindProperty(prop);
-            section.Add(new JFormField(label, textField));
+            container.Add(new JFormField(label, textField));
         }
 
         private static void UpdateFallbackVisibility()

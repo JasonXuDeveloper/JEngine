@@ -43,8 +43,19 @@ Avoid LINQ in hot paths and UI code for performance:
 - Use array/list indexing instead of `.First()` / `.Last()`
 - LINQ allocates iterators and delegates - avoid in frequently called code
 
+### 7. Unit Test Coverage
+New features and new logic in non-core packages (JEngine.UI, JEngine.Util, and any future packages) MUST include unit tests:
+- Target **93%+ code coverage** for all new/modified code
+- **Applies to**: All `Packages/com.jasonxudeveloper.jengine.*` packages **except** `jengine.core`
+- Prefer **EditMode tests** (`Tests/Editor/`) for most logic
+- Use **PlayMode tests** (`Tests/Runtime/`) when runtime behavior requires it (MonoBehaviour lifecycle, scene loading, etc.) — these must run **non-interactively** (no user input, no manual scene setup)
+- Cover: constructors, public API, fluent chaining, edge cases, event handlers
+- Use reflection to test private methods (e.g. `OnAttachToPanel`, hover handlers) when they contain meaningful logic
+- Verify tests exercise both happy paths and error/boundary conditions
+
 ## Common Issues to Flag
 
+- Missing or insufficient unit tests for new features
 - Missing XML documentation on public APIs
 - Direct `Debug.Log` (should use proper logging)
 - `Task` instead of `UniTask`

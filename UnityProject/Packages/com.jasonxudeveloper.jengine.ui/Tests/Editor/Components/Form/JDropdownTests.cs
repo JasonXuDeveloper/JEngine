@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using JEngine.UI.Editor.Components.Form;
 using JEngine.UI.Editor.Theming;
@@ -454,6 +455,70 @@ namespace JEngine.UI.Tests.Editor.Components.Form
 
             dropdown.Value = ButtonVariant.Primary;
             Assert.AreEqual(ButtonVariant.Primary, dropdown.Value);
+        }
+
+        #endregion
+
+        #region Internal Styles Tests
+
+        [Test]
+        public void ApplyInternalStyles_DoesNotThrow()
+        {
+            var method = typeof(JDropdown<string>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "ApplyInternalStyles method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_dropdown, null));
+        }
+
+        [Test]
+        public void ApplyInternalStyles_AppliesPointerCursorToWrapper()
+        {
+            var method = typeof(JDropdown<string>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_dropdown, null);
+
+            Assert.IsTrue(_dropdown.ClassListContains("j-cursor-pointer"));
+        }
+
+        [Test]
+        public void OnPointerOver_AfterApplyStyles_DoesNotThrow()
+        {
+            // First call ApplyInternalStyles to set up _inputElement
+            var applyMethod = typeof(JDropdown<string>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            applyMethod.Invoke(_dropdown, null);
+
+            var method = typeof(JDropdown<string>).GetMethod("OnPointerOver",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnPointerOver method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_dropdown, new object[] { null }));
+        }
+
+        [Test]
+        public void OnPointerOut_AfterApplyStyles_DoesNotThrow()
+        {
+            // First call ApplyInternalStyles to set up _inputElement
+            var applyMethod = typeof(JDropdown<string>).GetMethod("ApplyInternalStyles",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            applyMethod.Invoke(_dropdown, null);
+
+            var method = typeof(JDropdown<string>).GetMethod("OnPointerOut",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnPointerOut method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_dropdown, new object[] { null }));
+        }
+
+        [Test]
+        public void OnAttachToPanel_DoesNotThrow()
+        {
+            var method = typeof(JDropdown<string>).GetMethod("OnAttachToPanel",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnAttachToPanel method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(_dropdown, new object[] { null }));
         }
 
         #endregion

@@ -409,5 +409,160 @@ namespace JEngine.UI.Tests.Editor.Components.Button
         }
 
         #endregion
+
+        #region Event Handler Tests
+
+        [Test]
+        public void OnMouseEnter_WhenEnabled_SetsHoverColor()
+        {
+            var method = typeof(JButton).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.IsNotNull(method, "OnMouseEnter method should exist");
+
+            method.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonHoverColor(ButtonVariant.Primary);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseEnter_WhenDisabled_DoesNotChangeColor()
+        {
+            var expected = JTheme.GetButtonColor(ButtonVariant.Primary);
+            _button.SetEnabled(false);
+
+            var method = typeof(JButton).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseLeave_RestoresBaseColor()
+        {
+            var enter = typeof(JButton).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            enter.Invoke(_button, new object[] { null });
+
+            var leave = typeof(JButton).GetMethod("OnMouseLeave", BindingFlags.NonPublic | BindingFlags.Instance);
+            leave.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonColor(ButtonVariant.Primary);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseDown_WhenEnabled_SetsActiveColor()
+        {
+            var method = typeof(JButton).GetMethod("OnMouseDown", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonActiveColor(ButtonVariant.Primary);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseDown_WhenDisabled_DoesNotChangeColor()
+        {
+            var expected = JTheme.GetButtonColor(ButtonVariant.Primary);
+            _button.SetEnabled(false);
+
+            var method = typeof(JButton).GetMethod("OnMouseDown", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseUp_WhenEnabled_SetsHoverColor()
+        {
+            var method = typeof(JButton).GetMethod("OnMouseUp", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonHoverColor(ButtonVariant.Primary);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseUp_WhenDisabled_DoesNotChangeColor()
+        {
+            var expected = JTheme.GetButtonColor(ButtonVariant.Primary);
+            _button.SetEnabled(false);
+
+            var method = typeof(JButton).GetMethod("OnMouseUp", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnFocusIn_AddsFocusBorder()
+        {
+            var method = typeof(JButton).GetMethod("OnFocusIn", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            Assert.AreEqual(1f, _button.style.borderTopWidth.value);
+            Assert.AreEqual(1f, _button.style.borderRightWidth.value);
+            Assert.AreEqual(1f, _button.style.borderBottomWidth.value);
+            Assert.AreEqual(1f, _button.style.borderLeftWidth.value);
+        }
+
+        [Test]
+        public void OnFocusIn_SetsFocusBorderColor()
+        {
+            var method = typeof(JButton).GetMethod("OnFocusIn", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            var focusColor = Tokens.IsDarkTheme
+                ? Tokens.Colors.BorderFocus
+                : Tokens.Colors.BorderSubtle;
+            Assert.AreEqual(focusColor, _button.style.borderTopColor.value);
+        }
+
+        [Test]
+        public void OnFocusOut_RemovesFocusBorder()
+        {
+            var focusIn = typeof(JButton).GetMethod("OnFocusIn", BindingFlags.NonPublic | BindingFlags.Instance);
+            focusIn.Invoke(_button, new object[] { null });
+
+            var focusOut = typeof(JButton).GetMethod("OnFocusOut", BindingFlags.NonPublic | BindingFlags.Instance);
+            focusOut.Invoke(_button, new object[] { null });
+
+            Assert.AreEqual(0f, _button.style.borderTopWidth.value);
+            Assert.AreEqual(0f, _button.style.borderRightWidth.value);
+            Assert.AreEqual(0f, _button.style.borderBottomWidth.value);
+            Assert.AreEqual(0f, _button.style.borderLeftWidth.value);
+        }
+
+        [Test]
+        public void OnClick_DoesNotThrow()
+        {
+            var method = typeof(JButton).GetMethod("OnClick", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.DoesNotThrow(() => method.Invoke(_button, new object[] { null }));
+        }
+
+        [Test]
+        public void OnMouseEnter_AfterVariantChange_UsesNewHoverColor()
+        {
+            _button.SetVariant(ButtonVariant.Danger);
+
+            var method = typeof(JButton).GetMethod("OnMouseEnter", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonHoverColor(ButtonVariant.Danger);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        [Test]
+        public void OnMouseDown_AfterVariantChange_UsesNewActiveColor()
+        {
+            _button.SetVariant(ButtonVariant.Success);
+
+            var method = typeof(JButton).GetMethod("OnMouseDown", BindingFlags.NonPublic | BindingFlags.Instance);
+            method.Invoke(_button, new object[] { null });
+
+            var expected = JTheme.GetButtonActiveColor(ButtonVariant.Success);
+            Assert.AreEqual(expected, _button.style.backgroundColor.value);
+        }
+
+        #endregion
     }
 }
