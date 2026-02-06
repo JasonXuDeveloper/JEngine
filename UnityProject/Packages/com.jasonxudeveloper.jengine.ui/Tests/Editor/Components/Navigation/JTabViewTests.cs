@@ -16,6 +16,21 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
     {
         private JTabView _tabView;
 
+        /// <summary>
+        /// Sets <c>currentTarget</c> on a UIElements event via reflection,
+        /// since the setter is internal. Returns false if the property or
+        /// setter is not available (e.g. Unity API changes across versions).
+        /// </summary>
+        private static bool TrySetCurrentTarget(object evt, IEventHandler handler)
+        {
+            var prop = evt.GetType().GetProperty("currentTarget",
+                BindingFlags.Public | BindingFlags.Instance);
+            var setter = prop?.GetSetMethod(true);
+            if (setter == null) return false;
+            setter.Invoke(evt, new object[] { handler });
+            return true;
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -570,7 +585,11 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             Assert.IsNotNull(method, "OnTabClicked method should exist");
 
             var evt = (MouseDownEvent)Activator.CreateInstance(typeof(MouseDownEvent), true);
-            evt.currentTarget = secondTab;
+            if (!TrySetCurrentTarget(evt, secondTab))
+            {
+                Assert.Inconclusive("currentTarget setter not available in this Unity version");
+                return;
+            }
             method.Invoke(null, new object[] { evt });
 
             Assert.AreEqual(1, _tabView.SelectedIndex);
@@ -585,7 +604,11 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
                 BindingFlags.NonPublic | BindingFlags.Static);
 
             var evt = (MouseDownEvent)Activator.CreateInstance(typeof(MouseDownEvent), true);
-            evt.currentTarget = new VisualElement();
+            if (!TrySetCurrentTarget(evt, new VisualElement()))
+            {
+                Assert.Inconclusive("currentTarget setter not available in this Unity version");
+                return;
+            }
             method.Invoke(null, new object[] { evt });
 
             Assert.AreEqual(0, _tabView.SelectedIndex);
@@ -605,7 +628,11 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             Assert.IsNotNull(method, "OnTabMouseEnter method should exist");
 
             var evt = (MouseEnterEvent)Activator.CreateInstance(typeof(MouseEnterEvent), true);
-            evt.currentTarget = inactiveTab;
+            if (!TrySetCurrentTarget(evt, inactiveTab))
+            {
+                Assert.Inconclusive("currentTarget setter not available in this Unity version");
+                return;
+            }
             method.Invoke(_tabView, new object[] { evt });
 
             Assert.AreEqual(Tokens.Colors.BgHover, inactiveTab.style.backgroundColor.value);
@@ -624,7 +651,11 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             var method = typeof(JTabView).GetMethod("OnTabMouseEnter",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             var evt = (MouseEnterEvent)Activator.CreateInstance(typeof(MouseEnterEvent), true);
-            evt.currentTarget = activeTab;
+            if (!TrySetCurrentTarget(evt, activeTab))
+            {
+                Assert.Inconclusive("currentTarget setter not available in this Unity version");
+                return;
+            }
             method.Invoke(_tabView, new object[] { evt });
 
             Assert.AreEqual(expectedBg, activeTab.style.backgroundColor.value);
@@ -643,14 +674,18 @@ namespace JEngine.UI.Tests.Editor.Components.Navigation
             var enterMethod = typeof(JTabView).GetMethod("OnTabMouseEnter",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             var enterEvt = (MouseEnterEvent)Activator.CreateInstance(typeof(MouseEnterEvent), true);
-            enterEvt.target = inactiveTab;
+            if (!TrySetCurrentTarget(enterEvt, inactiveTab))
+            {
+                Assert.Inconclusive("currentTarget setter not available in this Unity version");
+                return;
+            }
             enterMethod.Invoke(_tabView, new object[] { enterEvt });
 
             // Then leave
             var leaveMethod = typeof(JTabView).GetMethod("OnTabMouseLeave",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             var leaveEvt = (MouseLeaveEvent)Activator.CreateInstance(typeof(MouseLeaveEvent), true);
-            leaveEvt.target = inactiveTab;
+            TrySetCurrentTarget(leaveEvt, inactiveTab);
             leaveMethod.Invoke(_tabView, new object[] { leaveEvt });
 
             Assert.AreEqual(StyleKeyword.None, inactiveTab.style.backgroundColor.keyword);
