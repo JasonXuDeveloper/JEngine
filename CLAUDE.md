@@ -6,6 +6,7 @@
 @.claude/rules/commit-conventions.md
 @.claude/rules/package-creation.md
 @.claude/rules/plugin-maintenance.md
+@.claude/rules/yooasset-extensions.md
 
 ## Project Overview
 
