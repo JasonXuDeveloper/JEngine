@@ -210,7 +210,7 @@ namespace JEngine.Core
             }
             catch (Exception e)
             {
-                await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogInitFailed, e.Message), text.buttonOk, null);
+                await Prompt.ShowDialogAsync(text.dialogTitleError, BootstrapText.SafeFormat(text.dialogInitFailed, e.Message), text.buttonOk, null);
                 Application.Quit();
             }
         }
@@ -244,13 +244,13 @@ namespace JEngine.Core
                         OnVersionUpdate = version => versionText.text = $"v{Application.version}.{version}",
                         OnDownloadPrompt = async (count, size) =>
                             await Prompt.ShowDialogAsync(t.dialogTitleNotice,
-                                string.Format(t.dialogDownloadPrompt, count, $"{size / 1024f / 1024f:F2}"),
+                                BootstrapText.SafeFormat(t.dialogDownloadPrompt, count, $"{size / 1024f / 1024f:F2}"),
                                 t.buttonDownload, t.buttonCancel),
                         OnDownloadProgress = data =>
                         {
                             if (updateStatusText != null)
                             {
-                                updateStatusText.text = string.Format(t.dialogDownloadProgress,
+                                updateStatusText.text = BootstrapText.SafeFormat(t.dialogDownloadProgress,
                                     data.CurrentDownloadCount, data.TotalDownloadCount,
                                     $"{data.CurrentDownloadBytes / 1024f / 1024f:F2}",
                                     $"{data.TotalDownloadBytes / 1024f / 1024f:F2}");
@@ -339,7 +339,7 @@ namespace JEngine.Core
                         OnError = async exception =>
                         {
                             await Prompt.ShowDialogAsync(t.dialogTitleError,
-                                string.Format(t.dialogSceneLoadFailed, exception.Message),
+                                BootstrapText.SafeFormat(t.dialogSceneLoadFailed, exception.Message),
                                 t.buttonRetry, null);
                         }
                     };
@@ -353,7 +353,7 @@ namespace JEngine.Core
                 catch (Exception ex)
                 {
                     Debug.LogError($"Initialization failed with exception: {ex}");
-                    await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogInitException, ex.Message), text.buttonOk, text.buttonCancel);
+                    await Prompt.ShowDialogAsync(text.dialogTitleError, BootstrapText.SafeFormat(text.dialogInitException, ex.Message), text.buttonOk, text.buttonCancel);
                     // Continue the loop to retry
                 }
             }
@@ -404,7 +404,7 @@ namespace JEngine.Core
             catch (Exception e)
             {
                 Debug.LogError($"Failed to invoke hot update method {hotUpdateMethodName}: {e}");
-                await Prompt.ShowDialogAsync(text.dialogTitleError, string.Format(text.dialogFunctionCallFailed, e.Message), text.buttonExit, null);
+                await Prompt.ShowDialogAsync(text.dialogTitleError, BootstrapText.SafeFormat(text.dialogFunctionCallFailed, e.Message), text.buttonExit, null);
                 Application.Quit();
             }
         }

@@ -165,7 +165,7 @@ namespace JEngine.UI.Tests.Editor.Internal
         }
 
         [Test]
-        public void TextSettings_ContainsFormFields()
+        public void TextSettings_ContainsExactFieldCount()
         {
             var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
 
@@ -173,8 +173,31 @@ namespace JEngine.UI.Tests.Editor.Internal
             var formFields = section?.Query<JFormField>().ToList();
 
             Assert.IsNotNull(formFields);
-            // Should have all 30 text fields
-            Assert.GreaterOrEqual(formFields.Count, 30);
+            // Must match BootstrapText public instance field count exactly
+            var expectedCount = typeof(BootstrapText)
+                .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                .Length;
+            Assert.AreEqual(expectedCount, formFields.Count);
+        }
+
+        [Test]
+        public void TextSettings_ContainsSubHeaders()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var section = FindSectionByTitle(root, "Text Settings");
+            var labels = section?.Query<Label>().ToList();
+
+            Assert.IsNotNull(labels);
+            bool foundPackageHeader = false;
+            bool foundDialogHeader = false;
+            foreach (var label in labels)
+            {
+                if (label.text == "Package Initialization Status") foundPackageHeader = true;
+                if (label.text == "Dialog Content (Format Strings)") foundDialogHeader = true;
+            }
+            Assert.IsTrue(foundPackageHeader);
+            Assert.IsTrue(foundDialogHeader);
         }
 
         [Test]
@@ -186,7 +209,46 @@ namespace JEngine.UI.Tests.Editor.Internal
             var buttons = section?.Query<JButton>().ToList();
 
             Assert.IsNotNull(buttons);
-            Assert.GreaterOrEqual(buttons.Count, 1);
+            Assert.AreEqual(1, buttons.Count);
+        }
+
+        [Test]
+        public void TextSettings_ResetLogic_RestoresDefaults()
+        {
+            // Modify a text value via serialized property
+            var textProp = _serializedObject.FindProperty("text");
+            var initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            initProp.stringValue = "Custom text";
+            _serializedObject.ApplyModifiedProperties();
+
+            // Verify value was changed
+            _serializedObject.Update();
+            textProp = _serializedObject.FindProperty("text");
+            initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            Assert.AreEqual("Custom text", initProp.stringValue);
+
+            // Apply reset logic (same as Reset button callback)
+            var defaults = BootstrapText.Default;
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            foreach (var field in fields)
+            {
+                var prop = textProp.FindPropertyRelative(field.Name);
+                if (prop != null && prop.propertyType == SerializedPropertyType.String)
+                {
+                    prop.stringValue = (string)field.GetValue(defaults);
+                }
+            }
+            _serializedObject.ApplyModifiedProperties();
+
+            // Verify all values were reset
+            _serializedObject.Update();
+            textProp = _serializedObject.FindProperty("text");
+            initProp = textProp.FindPropertyRelative(nameof(BootstrapText.initializing));
+            Assert.AreEqual(BootstrapText.Default.initializing, initProp.stringValue);
+
+            var dlgProp = textProp.FindPropertyRelative(nameof(BootstrapText.dialogTitleError));
+            Assert.AreEqual(BootstrapText.Default.dialogTitleError, dlgProp.stringValue);
         }
 
         #endregion
@@ -570,6 +632,72 @@ namespace JEngine.UI.Tests.Editor.Internal
             Assert.IsNotNull(root1);
             Assert.IsNotNull(root2);
             Assert.AreNotSame(root1, root2);
+        }
+
+        #endregion
+
+        #region BootstrapText SafeFormat Tests
+
+        [Test]
+        public void SafeFormat_ValidTemplate_FormatsCorrectly()
+        {
+            var result = BootstrapText.SafeFormat("Hello {0}, you have {1} items", "World", 5);
+            Assert.AreEqual("Hello World, you have 5 items", result);
+        }
+
+        [Test]
+        public void SafeFormat_MalformedTemplate_ReturnsFallback()
+        {
+            var result = BootstrapText.SafeFormat("Bad format {0} {1} {2}", "only_one_arg");
+            Assert.AreEqual("Bad format {0} {1} {2}", result);
+        }
+
+        [Test]
+        public void SafeFormat_InvalidBraces_ReturnsFallback()
+        {
+            var result = BootstrapText.SafeFormat("Broken {", "arg");
+            Assert.AreEqual("Broken {", result);
+        }
+
+        [Test]
+        public void SafeFormat_NoPlaceholders_ReturnsTemplate()
+        {
+            var result = BootstrapText.SafeFormat("No placeholders here");
+            Assert.AreEqual("No placeholders here", result);
+        }
+
+        [Test]
+        public void SafeFormat_EmptyTemplate_ReturnsEmpty()
+        {
+            var result = BootstrapText.SafeFormat("", "arg");
+            Assert.AreEqual("", result);
+        }
+
+        #endregion
+
+        #region BootstrapText Default Tests
+
+        [Test]
+        public void Default_AllFieldsAreNonNull()
+        {
+            var defaults = BootstrapText.Default;
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (var field in fields)
+            {
+                var value = (string)field.GetValue(defaults);
+                Assert.IsNotNull(value, $"BootstrapText.Default.{field.Name} is null");
+                Assert.IsNotEmpty(value, $"BootstrapText.Default.{field.Name} is empty");
+            }
+        }
+
+        [Test]
+        public void Default_HasExpectedFieldCount()
+        {
+            var fields = typeof(BootstrapText).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            Assert.AreEqual(33, fields.Length);
         }
 
         #endregion

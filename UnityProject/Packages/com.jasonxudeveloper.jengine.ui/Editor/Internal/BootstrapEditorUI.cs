@@ -450,54 +450,54 @@ namespace JEngine.UI.Editor.Internal
 
             // Package Initialization Status
             AddTextSubHeader(section, "Package Initialization Status");
-            AddTextField(section, textProperty, "initializingPackage", "Initializing");
-            AddTextField(section, textProperty, "gettingVersion", "Getting Version");
-            AddTextField(section, textProperty, "updatingManifest", "Updating Manifest");
-            AddTextField(section, textProperty, "checkingUpdate", "Checking Update");
-            AddTextField(section, textProperty, "downloadingResources", "Downloading");
-            AddTextField(section, textProperty, "packageCompleted", "Completed");
-            AddTextField(section, textProperty, "initializationFailed", "Failed");
-            AddTextField(section, textProperty, "unknownPackageStatus", "Unknown Status");
+            AddTextField(section, textProperty, nameof(BootstrapText.initializingPackage), "Initializing");
+            AddTextField(section, textProperty, nameof(BootstrapText.gettingVersion), "Getting Version");
+            AddTextField(section, textProperty, nameof(BootstrapText.updatingManifest), "Updating Manifest");
+            AddTextField(section, textProperty, nameof(BootstrapText.checkingUpdate), "Checking Update");
+            AddTextField(section, textProperty, nameof(BootstrapText.downloadingResources), "Downloading");
+            AddTextField(section, textProperty, nameof(BootstrapText.packageCompleted), "Completed");
+            AddTextField(section, textProperty, nameof(BootstrapText.initializationFailed), "Failed");
+            AddTextField(section, textProperty, nameof(BootstrapText.unknownPackageStatus), "Unknown Status");
 
             // Scene Load Status
             AddTextSubHeader(section, "Scene Load Status");
-            AddTextField(section, textProperty, "sceneLoading", "Loading");
-            AddTextField(section, textProperty, "sceneCompleted", "Completed");
-            AddTextField(section, textProperty, "sceneFailed", "Failed");
-            AddTextField(section, textProperty, "unknownSceneStatus", "Unknown Status");
+            AddTextField(section, textProperty, nameof(BootstrapText.sceneLoading), "Loading");
+            AddTextField(section, textProperty, nameof(BootstrapText.sceneCompleted), "Completed");
+            AddTextField(section, textProperty, nameof(BootstrapText.sceneFailed), "Failed");
+            AddTextField(section, textProperty, nameof(BootstrapText.unknownSceneStatus), "Unknown Status");
 
             // Inline Status
             AddTextSubHeader(section, "Inline Status");
-            AddTextField(section, textProperty, "initializing", "Initializing");
-            AddTextField(section, textProperty, "downloading", "Downloading");
-            AddTextField(section, textProperty, "downloadCompletedLoading", "Download Done");
-            AddTextField(section, textProperty, "loadingCode", "Loading Code");
-            AddTextField(section, textProperty, "decryptingResources", "Decrypting");
-            AddTextField(section, textProperty, "loadingScene", "Loading Scene");
+            AddTextField(section, textProperty, nameof(BootstrapText.initializing), "Initializing");
+            AddTextField(section, textProperty, nameof(BootstrapText.downloading), "Downloading");
+            AddTextField(section, textProperty, nameof(BootstrapText.downloadCompletedLoading), "Download Done");
+            AddTextField(section, textProperty, nameof(BootstrapText.loadingCode), "Loading Code");
+            AddTextField(section, textProperty, nameof(BootstrapText.decryptingResources), "Decrypting");
+            AddTextField(section, textProperty, nameof(BootstrapText.loadingScene), "Loading Scene");
 
             // Dialog Titles
             AddTextSubHeader(section, "Dialog Titles");
-            AddTextField(section, textProperty, "dialogTitleError", "Error Title");
-            AddTextField(section, textProperty, "dialogTitleWarning", "Warning Title");
-            AddTextField(section, textProperty, "dialogTitleNotice", "Notice Title");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleError), "Error Title");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleWarning), "Warning Title");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogTitleNotice), "Notice Title");
 
             // Dialog Buttons
             AddTextSubHeader(section, "Dialog Buttons");
-            AddTextField(section, textProperty, "buttonOk", "OK");
-            AddTextField(section, textProperty, "buttonCancel", "Cancel");
-            AddTextField(section, textProperty, "buttonDownload", "Download");
-            AddTextField(section, textProperty, "buttonRetry", "Retry");
-            AddTextField(section, textProperty, "buttonExit", "Exit");
+            AddTextField(section, textProperty, nameof(BootstrapText.buttonOk), "OK");
+            AddTextField(section, textProperty, nameof(BootstrapText.buttonCancel), "Cancel");
+            AddTextField(section, textProperty, nameof(BootstrapText.buttonDownload), "Download");
+            AddTextField(section, textProperty, nameof(BootstrapText.buttonRetry), "Retry");
+            AddTextField(section, textProperty, nameof(BootstrapText.buttonExit), "Exit");
 
             // Dialog Content
             AddTextSubHeader(section, "Dialog Content (Format Strings)");
-            AddTextField(section, textProperty, "dialogInitFailed", "Init Failed");
-            AddTextField(section, textProperty, "dialogDownloadPrompt", "Download Prompt");
-            AddTextField(section, textProperty, "dialogDownloadProgress", "Download Progress");
-            AddTextField(section, textProperty, "dialogSceneLoadFailed", "Scene Failed");
-            AddTextField(section, textProperty, "dialogInitException", "Init Exception");
-            AddTextField(section, textProperty, "dialogCodeException", "Code Exception");
-            AddTextField(section, textProperty, "dialogFunctionCallFailed", "Call Failed");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogInitFailed), "Init Failed");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogDownloadPrompt), "Download Prompt");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogDownloadProgress), "Download Progress");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogSceneLoadFailed), "Scene Failed");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogInitException), "Init Exception");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogCodeException), "Code Exception");
+            AddTextField(section, textProperty, nameof(BootstrapText.dialogFunctionCallFailed), "Call Failed");
 
             // Reset to Defaults button
             var resetButton = new JButton("Reset to Defaults", () =>
@@ -540,12 +540,8 @@ namespace JEngine.UI.Editor.Internal
             string fieldName, string label)
         {
             var prop = parentProperty.FindPropertyRelative(fieldName);
-            var textField = new JTextField(prop.stringValue);
-            textField.RegisterValueChangedCallback(evt =>
-            {
-                prop.stringValue = evt.newValue;
-                _serializedObject.ApplyModifiedProperties();
-            });
+            var textField = new JTextField();
+            textField.BindProperty(prop);
             section.Add(new JFormField(label, textField));
         }
 

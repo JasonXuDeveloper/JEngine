@@ -148,5 +148,21 @@ namespace JEngine.Core
             dialogCodeException = "Code exception, please contact customer service",
             dialogFunctionCallFailed = "Function call failed: {0}",
         };
+
+        /// <summary>
+        /// Safe wrapper around <see cref="string.Format(string, object[])"/> that falls back
+        /// to the raw template if the user-edited format string is malformed.
+        /// </summary>
+        public static string SafeFormat(string template, params object[] args)
+        {
+            try
+            {
+                return string.Format(template, args);
+            }
+            catch (FormatException)
+            {
+                return template;
+            }
+        }
     }
 }
