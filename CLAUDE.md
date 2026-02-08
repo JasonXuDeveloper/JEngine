@@ -92,3 +92,4 @@ Document all public APIs with XML comments.
 - [ ] Thread-safe where needed
 - [ ] Proper resource cleanup
 - [ ] Unit tests added for non-core package changes
+- [ ] Plugin skill docs updated for new/changed JEngine.Util or JEngine.UI APIs (see `.claude/rules/plugin-maintenance.md`)

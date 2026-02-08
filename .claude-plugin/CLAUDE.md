@@ -10,7 +10,7 @@ Unity framework for runtime hot updates. Unity 2022.3+, C#.
 
 ### JEngine.UI (com.jasonxudeveloper.jengine.ui)
 - **MessageBox**: Async modal dialogs with UniTask (runtime)
-- **Editor Components**: JButton, JTextField, JStack, JCard, etc. (editor)
+- **Editor Components**: JButton, JTextField, JStack, JCard, JTabView, etc. (editor)
 - **Design Tokens**: Theme-aware colors, spacing, typography
 
 ## Key Patterns
