@@ -22,9 +22,16 @@
 <tr>
 <td width="33%" valign="top">
 
+### 极致轻量
+
+核心包仅数个文件——导入即用，无需编写任何模板代码即可实现热更新。
+
+</td>
+<td width="33%" valign="top">
+
 ### 10倍+性能
 
-HybridCLR 原生运行标准 C#——性能是 ILRuntime 和 Lua 的 10 倍以上。无适配器、无跨域开销、无需学第二语言。
+HybridCLR 原生运行标准 C#——性能是 ILRuntime 和 Lua 的 10 倍以上。UniTask 无 GC 异步，Nino 零分配序列化。
 
 </td>
 <td width="33%" valign="top">
@@ -34,20 +41,13 @@ HybridCLR 原生运行标准 C#——性能是 ILRuntime 和 Lua 的 10 倍以�
 XOR、AES、ChaCha20 三种算法加密资源和 DLL。Obfuz 混淆热更代码。同类框架中独此一家。
 
 </td>
+</tr>
+<tr>
 <td width="33%" valign="top">
 
 ### 一键构建
 
 编译代码、生成 AOT 元数据、混淆、加密、打包资源——JEngine 面板一键搞定。
-
-</td>
-</tr>
-<tr>
-<td width="33%" valign="top">
-
-### 零GC分配
-
-UniTask 实现无 GC 异步。Nino 源码生成高性能序列化——由 JEngine 作者开发。
 
 </td>
 <td width="33%" valign="top">
@@ -82,9 +82,7 @@ iOS、Android、Windows、macOS、WebGL——以及微信、抖音、支付宝�
 
 ## 快速开始
 
-需要 **Unity 2022.3+**。核心包仅数个文件——无需编写任何模板代码即可实现热更新。
-
-参阅[快速上手指南](https://jengine.xgamedev.net/zh/)，几分钟即可跑通。
+需要 **Unity 2022.3+**。参阅[快速上手指南](https://jengine.xgamedev.net/zh/)，几分钟即可跑通。
 
 &nbsp;
 

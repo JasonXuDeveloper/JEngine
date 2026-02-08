@@ -22,9 +22,16 @@ Powered by HybridCLR with built-in encryption and obfuscation.<br>
 <tr>
 <td width="33%" valign="top">
 
+### Ultralight Core
+
+A handful of files — that's the entire core package. Drop it in and hot updates just work. No boilerplate code required.
+
+</td>
+<td width="33%" valign="top">
+
 ### 10x+ Performance
 
-HybridCLR runs standard C# natively — 10x+ faster than ILRuntime or Lua. No adapters, no cross-domain overhead, no second language to learn.
+HybridCLR runs standard C# natively — 10x+ faster than ILRuntime or Lua. UniTask for GC-free async, Nino for zero-allocation serialization.
 
 </td>
 <td width="33%" valign="top">
@@ -34,20 +41,13 @@ HybridCLR runs standard C# natively — 10x+ faster than ILRuntime or Lua. No ad
 Encrypt assets and DLLs with XOR, AES, or ChaCha20. Obfuscate hot update code with Obfuz. No other hot update framework ships this.
 
 </td>
+</tr>
+<tr>
 <td width="33%" valign="top">
 
 ### One-Click Build
 
 Compile code, generate AOT metadata, obfuscate, encrypt, and package resources — all from one button in the JEngine Panel.
-
-</td>
-</tr>
-<tr>
-<td width="33%" valign="top">
-
-### Zero Allocation
-
-UniTask for GC-free async/await. Nino for high-performance source-generated serialization — built by JEngine's author.
 
 </td>
 <td width="33%" valign="top">
@@ -82,9 +82,7 @@ First hot update framework with a [Claude Code plugin](.claude-plugin/). AI that
 
 ## Quick Start
 
-**Unity 2022.3+** required. The core package is just a handful of files — no boilerplate code needed to get hot updates running.
-
-Follow the [Getting Started Guide](https://jengine.xgamedev.net/) to be up and running in minutes.
+**Unity 2022.3+** required. Follow the [Getting Started Guide](https://jengine.xgamedev.net/) to be up and running in minutes.
 
 &nbsp;
 
