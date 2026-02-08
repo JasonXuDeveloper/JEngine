@@ -75,9 +75,11 @@ JEngine是针对Unity开发者设计的**开箱即用**的框架，封装了强�
 | **HybridCLR** | 运行时代码执行 | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | 运行时资源更新 | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 最新功能 (v1.1.5)
+## 🎉 最新功能 (v1.1.6)
 
-- **ui**: add JContainer component with max-width constraints ([#613](https://github.com/JasonXuDeveloper/JEngine/pull/613))
+- **core,ui**: add configurable Bootstrap text and JTabView component ([#624](https://github.com/JasonXuDeveloper/JEngine/pull/624))
+- **core**: bump Nino to fix Dictionary serialization in HybridCLR ([#627](https://github.com/JasonXuDeveloper/JEngine/pull/627))
+- **core**: auto-detect manifest decryption in PreprocessBuildCatalog ([#626](https://github.com/JasonXuDeveloper/JEngine/pull/626))
 
 [📋 查看完整更新日志](CHANGE.md)
 

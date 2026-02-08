@@ -1,4 +1,11 @@
 ## All Versions
+## 1.1.6 (February 08 2026)
+
+- Add configurable Bootstrap text and JTabView component ([#624](https://github.com/JasonXuDeveloper/JEngine/pull/624)) (core,ui)
+- Bump Nino to fix Dictionary serialization in HybridCLR ([#627](https://github.com/JasonXuDeveloper/JEngine/pull/627)) (core)
+- Auto-detect manifest decryption in PreprocessBuildCatalog ([#626](https://github.com/JasonXuDeveloper/JEngine/pull/626)) (core)
+
+
 ## 1.1.5 (February 01 2026)
 
 - Add JContainer component with max-width constraints ([#613](https://github.com/JasonXuDeveloper/JEngine/pull/613)) (ui)

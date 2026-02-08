@@ -73,9 +73,11 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 | **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
 | **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
 
-## 🎉 Latest Features (v1.1.5)
+## 🎉 Latest Features (v1.1.6)
 
-- **ui**: add JContainer component with max-width constraints ([#613](https://github.com/JasonXuDeveloper/JEngine/pull/613))
+- **core,ui**: add configurable Bootstrap text and JTabView component ([#624](https://github.com/JasonXuDeveloper/JEngine/pull/624))
+- **core**: bump Nino to fix Dictionary serialization in HybridCLR ([#627](https://github.com/JasonXuDeveloper/JEngine/pull/627))
+- **core**: auto-detect manifest decryption in PreprocessBuildCatalog ([#626](https://github.com/JasonXuDeveloper/JEngine/pull/626))
 
 [📋 View Complete Changelog](CHANGE.md)
 
