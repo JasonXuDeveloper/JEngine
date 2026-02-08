@@ -1,6 +1,6 @@
 ---
 name: editor-ui
-description: JEngine Editor UI component library with theming. Triggers on: custom inspector, editor window, Unity editor UI, UIElements, VisualElement, JButton, JStack, JCard, JTextField, JDropdown, design tokens, dark theme, light theme, editor styling, themed button, form layout, progress bar, status bar, toggle button, button group
+description: JEngine Editor UI component library with theming. Triggers on: custom inspector, editor window, Unity editor UI, UIElements, VisualElement, JButton, JStack, JCard, JTextField, JDropdown, JTabView, tab view, tabbed container, design tokens, dark theme, light theme, editor styling, themed button, form layout, progress bar, status bar, toggle button, button group
 ---
 
 # JEngine Editor UI Components
@@ -241,6 +241,28 @@ bc.SetPath("New", "Path");
 bc.Clear();
 ```
 
+### JTabView - Tabbed Container
+```csharp
+// Basic tab view
+var tabs = new JTabView()
+    .AddTab("General", generalContent)
+    .AddTab("Advanced", advancedContent)
+    .AddTab("Debug", debugContent);
+
+// Responsive: max 3 tabs per row before wrapping
+var responsiveTabs = new JTabView(maxTabsPerRow: 3)
+    .AddTab("Tab 1", content1)
+    .AddTab("Tab 2", content2);
+
+// Programmatic selection
+tabs.SelectTab(2);  // Select "Debug" tab
+
+// Read state
+int selected = tabs.SelectedIndex;  // -1 if no tabs
+int count = tabs.TabCount;
+int maxPerRow = tabs.MaxTabsPerRow;
+```
+
 ## Design Tokens
 
 The `Tokens` class provides named constants that adapt to Unity's dark/light theme.
@@ -365,7 +387,7 @@ enum AlignItems { Start, Center, End, Stretch }
 
 ## Game Development Examples
 
-### Settings Panel
+### Settings Panel (with Tabs)
 ```csharp
 public class GameSettingsWindow : EditorWindow
 {
@@ -384,8 +406,8 @@ public class GameSettingsWindow : EditorWindow
         root.style.paddingBottom = Tokens.Spacing.Lg;
         root.style.paddingLeft = Tokens.Spacing.Lg;
 
-        // Graphics Section
-        var graphics = new JSection("Graphics")
+        // Graphics tab content
+        var graphics = new JStack(GapSize.MD)
             .Add(
                 new JFormField("VSync", _vsyncToggle = new JToggle(true)),
                 new JFormField("Target FPS", _fpsDropdown = new JDropdown<int>(
@@ -394,17 +416,22 @@ public class GameSettingsWindow : EditorWindow
                     formatSelectedValue: static fps => fps == -1 ? "Unlimited" : $"{fps} FPS",
                     formatListItem: static fps => fps == -1 ? "Unlimited" : $"{fps} FPS")));
 
-        // Audio Section
-        var audio = new JSection("Audio")
+        // Audio tab content
+        var audio = new JStack(GapSize.MD)
             .Add(new JFormField("Master Volume", _volumeSlider = new JProgressBar(0.8f)
                 .WithHeight(20)));
+
+        // Tabbed settings
+        var tabs = new JTabView()
+            .AddTab("Graphics", graphics)
+            .AddTab("Audio", audio);
 
         // Actions
         var actions = new JButtonGroup(
             new JButton("Apply", ApplySettings, ButtonVariant.Primary),
             new JButton("Reset", ResetSettings, ButtonVariant.Secondary));
 
-        root.Add(graphics, audio, actions);
+        root.Add(tabs, actions);
         rootVisualElement.Add(root);
     }
 }
