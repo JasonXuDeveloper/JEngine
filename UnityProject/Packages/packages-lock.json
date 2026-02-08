@@ -33,7 +33,7 @@
       "source": "embedded",
       "dependencies": {
         "com.cysharp.unitask": "2.5.10",
-        "com.jasonxudeveloper.nino": "4.0.0-preview.137",
+        "com.jasonxudeveloper.nino": "4.0.0-preview.147",
         "com.tuyoogame.yooasset": "2.3.16"
       }
     },
@@ -53,7 +53,7 @@
       "dependencies": {}
     },
     "com.jasonxudeveloper.nino": {
-      "version": "4.0.0-preview.143",
+      "version": "4.0.0-preview.147",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
