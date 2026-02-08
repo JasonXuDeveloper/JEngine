@@ -2,76 +2,101 @@
 
 ![JEngine](https://socialify.git.ci/JasonXuDeveloper/JEngine/image?font=JetBrains+Mono&forks=1&issues=1&logo=https%3A%2F%2Fjengine.xgamedev.net%2Flogo.png&name=1&owner=1&pulls=1&stargazers=1&theme=Auto)
 
-[![Version](https://img.shields.io/github/v/release/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/releases) [![Tests](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml/badge.svg)](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml) [![License](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/blob/master/LICENSE) [![Last Commit](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/commits) [![Top Language](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine) [![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/JasonXuDeveloper/JEngine/badge)](https://securityscorecards.dev/viewer/?uri=github.com/JasonXuDeveloper/JEngine) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11830/badge)](https://www.bestpractices.dev/projects/11830) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/JasonXuDeveloper/JEngine)
+**Ship game updates without shipping a build.**
 
-**An out-of-the-box Unity framework for hot updatable games**
+Runtime hot updates for all platforms — push code, assets, and logic without rebuilding.<br>
+Powered by HybridCLR with built-in encryption and obfuscation.<br>
+1,000+ games shipped · 100+ companies in production · built-in Claude Code AI integration.
+
+[![Version](https://img.shields.io/github/v/release/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/releases) [![Tests](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml/badge.svg)](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml) [![License](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/blob/master/LICENSE) [![Last Commit](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/commits) [![Top Language](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine) [![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/JasonXuDeveloper/JEngine/badge)](https://securityscorecards.dev/viewer/?uri=github.com/JasonXuDeveloper/JEngine) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11830/badge)](https://www.bestpractices.dev/projects/11830) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/JasonXuDeveloper/JEngine)
 
 [Documentation](https://jengine.xgamedev.net/) | [中文文档](https://github.com/JasonXuDeveloper/JEngine/blob/master/README_zh_cn.md)
 
 </div>
 
-## Why JEngine?
+&nbsp;
 
-- **Lightweight** - Only core package (few files) required; add optional packages as needed
-- **One-Click Build** - JEngine Panel builds code + assets with obfuscation in one click
-- **10x+ Performance** - HybridCLR outperforms ILRuntime/Lua hot update solutions
-- **Zero/Minimal GC** - UniTask (GC-free async) + Nino (high-performance serialization)
-- **All Platforms** - iOS, Android, Windows, macOS, WebGL, WeChat, Douyin, Alipay, TapTap
-- **Secure Updates** - Obfuscate hot update DLL + encrypt resources (assets & DLL/PDB) with XOR/AES/ChaCha20
-- **AI-Accelerated** - Intelligent AI [seamlessly integrated](.claude-plugin/), deeply understands JEngine to boost productivity
-- **Commercial Ready** - Production-proven by individuals and enterprise teams
+## Why JEngine
 
-## Overview
+<table role="presentation">
+<tr>
+<td width="33%" valign="top">
 
-JEngine is a Unity framework that enables **runtime hot updates** for games. Designed for both beginners and professionals, it provides secure, high-performance features out of the box.
+### Ultralight Core
+
+A handful of files — that's the entire core package. Drop it in and hot updates just work. No boilerplate code required.
+
+</td>
+<td width="33%" valign="top">
+
+### 10x+ Performance
+
+HybridCLR runs standard C# natively — 10x+ faster than ILRuntime or Lua. UniTask for GC-free async, Nino for zero-allocation serialization.
+
+</td>
+<td width="33%" valign="top">
+
+### Built-in Security
+
+Encrypt assets and DLLs with XOR, AES, or ChaCha20. Obfuscate hot update code with Obfuz. No other hot update framework ships this.
+
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+
+### One-Click Build
+
+Compile code, generate AOT metadata, obfuscate, encrypt, and package resources — all from one button in the JEngine Panel.
+
+</td>
+<td width="33%" valign="top">
+
+### All Platforms
+
+iOS, Android, Windows, macOS, WebGL — plus WeChat, Douyin, Alipay, and TapTap mini-game platforms. YooAsset powers games with 1M+ DAU.
+
+</td>
+<td width="33%" valign="top">
+
+### AI-Powered Development
+
+First hot update framework with a [Claude Code plugin](.claude-plugin/). AI that understands JEngine patterns and writes idiomatic code for your game.
+
+</td>
+</tr>
+</table>
+
+&nbsp;
+
+## Before & After
+
+| Traditional Approach | With JEngine |
+|---------------------|--------------|
+| Learn Lua or TypeScript for hot update code | Standard C# — same language, same IDE, same debugging |
+| Register cross-domain adapters (ILRuntime) | Zero adapters — HybridCLR runs C# natively |
+| No built-in asset protection | XOR / AES / ChaCha20 encryption + code obfuscation |
+| Manual multi-step build pipeline | One-click build from JEngine Panel |
+
+&nbsp;
 
 ## Quick Start
 
-### Requirements
-- **Unity 2022.3+**
+**Unity 2022.3+** required. Follow the [Getting Started Guide](https://jengine.xgamedev.net/) to be up and running in minutes.
 
-### Branch Information
-
-| Branch | Status | Description |
-|--------|---------|-------------|
-| `master` | **Recommended** | Latest stable version with the most powerful features |
-| `0.8.x` | Legacy | Most popular 2023 version (no longer maintained) |
-| `0.7.x` | Legacy | Most popular 2022 version (no longer maintained) |
-| `0.6.x` | Legacy | Complete with full documentation (no longer maintained) |
-| `0.5.x` | Legacy | Used by some commercial projects (no longer maintained) |
+&nbsp;
 
 ## Packages
 
-### Official Packages
+| Package | Type | Description |
+|---------|------|-------------|
+| **JEngine.Core** | Required | Hot update runtime — bootstrap, encryption, resource management |
+| **JEngine.Util** | Optional | JAction (zero-GC async tasks) · JObjectPool (lock-free object pooling) |
+| **JEngine.UI** | Optional | MessageBox (async dialog prompts) · Editor UI (modern UI Toolkit components with theming) |
 
-| Package | Type | Coverage | Description |
-|---------|------|----------|-------------|
-| **JEngine.Core** | Required | N/A | Hot update support with secure, high-performance features |
-| **JEngine.Util** | Optional | [![Util Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=util)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | Utility classes including JAction and JObjectPool |
-| **JEngine.UI** | Optional | [![UI Coverage](https://codecov.io/gh/JasonXuDeveloper/JEngine/branch/master/graph/badge.svg?flag=ui)](https://codecov.io/gh/JasonXuDeveloper/JEngine) | UI utilities for both runtime and editor |
+Built on [HybridCLR](https://github.com/focus-creative-games/hybridclr) · [YooAsset](https://github.com/tuyoogame/YooAsset) · [UniTask](https://github.com/Cysharp/UniTask) · [Nino](https://github.com/JasonXuDeveloper/Nino) · [Obfuz](https://github.com/focus-creative-games/obfuz)
 
-**JEngine.Util Features:**
-- **JAction** - Zero-GC chainable async task framework with fluent API, object pooling, delays, conditions, and loops
-- **JObjectPool** - Thread-safe, lock-free generic object pooling using CAS operations
-
-**JEngine.UI Features:**
-- **MessageBox** - Zero-allocation async prompt system with UniTask integration and object pooling for runtime UI
-- **Editor UI** - Shadcn-inspired modern UI Toolkit framework with theming support and Bootstrap/Panel UI integration
-
-### Third-Party Packages
-
-| Package | Description | Link |
-|---------|-------------|------|
-| **MetaJUI** | Customized UI framework for JEngine | [Repository](https://github.com/Meta404Dev/MetaJUI) |
-| **MetaExcelDataTool** | Excel table guide tool | [Repository](https://github.com/Meta404Dev/MetaExcelDataTool) |
-
-## Dependencies
-
-| Dependency | Description | Repository |
-|------------|-------------|------------|
-| **Obfuz** | Code obfuscation | [GitHub](https://github.com/focus-creative-games/obfuz) |
-| **HybridCLR** | Runtime code execution | [GitHub](https://github.com/focus-creative-games/hybridclr) |
-| **YooAssets** | Runtime resource updates | [GitHub](https://github.com/tuyoogame/YooAsset) |
+&nbsp;
 
 ## 🎉 Latest Features (v1.1.6)
 
@@ -81,38 +106,29 @@ JEngine is a Unity framework that enables **runtime hot updates** for games. Des
 
 [📋 View Complete Changelog](CHANGE.md)
 
-## Project Statistics
+&nbsp;
+
+## Community
 
 [![Stargazers over time](https://starchart.cc/JasonXuDeveloper/JEngine.svg)](https://starchart.cc/JasonXuDeveloper/JEngine)
 
-## Showcase
-
-> If your project uses JEngine, feel free to contact the author - we'd be happy to showcase your work here!
-
-| <img src="https://img.tapimg.com/market/lcs/b2d125432dffa4741c929ddceb3bf95f_360.png?imageMogr2/auto-orient/strip" alt="Alice's Dream Space" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/378c87731ce06ab8338977c90761a187_360.png?imageMogr2/auto-orient/strip" alt="Grinding Panic" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/0ac05aa58706032db05c5dbf1df77cf4_360.png?imageMogr2/auto-orient/strip" alt="Harvest Leeks" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/5c13a62dfeec50334f16e2f31db151e2_360.png?imageMogr2/auto-orient/strip" alt="MingMing Match" width="128" height="128" /> |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <p align="center">[Alice's Dream Space](https://www.taptap.com/app/224117)</p> | <p align="center">[Grinding Panic](https://www.taptap.com/app/225175)</p> | <p align="center">[Harvest Leeks](https://www.taptap.com/app/232558)</p> | <p align="center">[MingMing Match](https://www.taptap.com/app/233988)</p> |
-| <img src="https://img.tapimg.com/market/lcs/d561f17020081307ff08366233070d88_360.png?imageMogr2/auto-orient/strip" alt="Rabbit Restaurant" width="128" height="128" /> | <img src="https://media.9game.cn/gamebase/2022/6/29/a2fabeb2e1f4c048b58a7861d60affc3.png?x-oss-process=image/resize,w_256,m_lfit" alt="Cangyuan World" width="128" height="128" /> | <img src="https://img.tapimg.com/market/lcs/475635baa9a75856ea21a216a215f5b2_360.png?imageMogr2/auto-orient/strip" alt="Kz Spirit" width="128" height="128" /> | <img src="https://github.com/kkmjnh11110/MyResouse/blob/master/icon.PNG?raw=true" alt="Boundless Cinema" width="128" height="128" /> |
-| <p align="center">[Rabbit Restaurant](https://www.taptap.com/app/235127)</p> | <p align="center">[Cangyuan World](https://www.9game.cn/hongmengshijie/)</p> | <p align="center">[Kz Spirit](https://www.taptap.com/app/238569)</p> | <p align="center">[Boundless Cinema](https://apps.apple.com/us/app/id1506237271)</p> |
-
-## Contributors
-
 <img src="https://contrib.rocks/image?repo=JasonXuDeveloper/JEngine"/>
 
-## Recommendations
+&nbsp;
 
-Check out these other excellent Unity frameworks:
+## Related Projects
 
-- [IFramework](https://github.com/OnClick9927/IFramework) - Simple Unity Tools
-- [QFramework](https://github.com/liangxiegame/QFramework) - Your first K.I.S.S Unity 3D Framework
-- [TEngine](https://github.com/ALEXTANGXIAO/TEngine) - Unity framework solution
-- [BundleMaster](https://github.com/mister91jiao/BundleMaster) - Unity resource loading master
-- [Nino](https://github.com/JasonXuDeveloper/Nino) - Ultimate high-performance binary serialization library for C#.
+**JEngine Ecosystem:**
+- [MetaJUI](https://github.com/Meta404Dev/MetaJUI) — Customized UI framework for JEngine
+- [MetaExcelDataTool](https://github.com/Meta404Dev/MetaExcelDataTool) — Excel table guide tool
+
+**Other Great Unity Projects:**
+- [IFramework](https://github.com/OnClick9927/IFramework) · [QFramework](https://github.com/liangxiegame/QFramework) · [TEngine](https://github.com/ALEXTANGXIAO/TEngine) · [BundleMaster](https://github.com/mister91jiao/BundleMaster) · [Nino](https://github.com/JasonXuDeveloper/Nino)
 
 ---
 
 <div align="center">
 
-**If JEngine helps you, please give it a Star!**
+**If JEngine helps your project, give it a ⭐**
 
 </div>
