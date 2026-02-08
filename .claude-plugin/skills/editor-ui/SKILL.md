@@ -254,7 +254,7 @@ var responsiveTabs = new JTabView(maxTabsPerRow: 3)
     .AddTab("Tab 1", content1)
     .AddTab("Tab 2", content2);
 
-// Programmatic selection
+// Programmatic selection (zero-based index: 0=General, 1=Advanced, 2=Debug)
 tabs.SelectTab(2);  // Select "Debug" tab
 
 // Read state
