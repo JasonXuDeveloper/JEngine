@@ -82,9 +82,9 @@ iOS、Android、Windows、macOS、WebGL——以及微信、抖音、支付宝�
 
 ## 快速开始
 
-需要 **Unity 2022.3+**。
+需要 **Unity 2022.3+**。核心包仅数个文件——无需编写任何模板代码即可实现热更新。
 
-克隆本仓库或通过 Unity Package Manager 添加包。完整教程请参阅[快速上手指南](https://jengine.xgamedev.net/zh/)。
+参阅[快速上手指南](https://jengine.xgamedev.net/zh/)，几分钟即可跑通。
 
 &nbsp;
 

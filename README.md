@@ -82,9 +82,9 @@ First hot update framework with a [Claude Code plugin](.claude-plugin/). AI that
 
 ## Quick Start
 
-**Unity 2022.3+** required.
+**Unity 2022.3+** required. The core package is just a handful of files — no boilerplate code needed to get hot updates running.
 
-Clone this repository or add packages via the Unity Package Manager. See the [Getting Started Guide](https://jengine.xgamedev.net/) for a complete walkthrough.
+Follow the [Getting Started Guide](https://jengine.xgamedev.net/) to be up and running in minutes.
 
 &nbsp;
 
