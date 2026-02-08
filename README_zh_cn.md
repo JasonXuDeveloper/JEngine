@@ -10,7 +10,7 @@
 
 [![Version](https://img.shields.io/github/v/release/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/releases) [![Tests](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml/badge.svg)](https://github.com/JasonXuDeveloper/JEngine/actions/workflows/pr-tests.yml) [![License](https://img.shields.io/github/license/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/blob/master/LICENSE) [![Last Commit](https://img.shields.io/github/last-commit/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine/commits) [![Top Language](https://img.shields.io/github/languages/top/JasonXuDeveloper/JEngine)](https://github.com/JasonXuDeveloper/JEngine) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FJasonXuDeveloper%2FJEngine) [![CodeFactor](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine/badge)](https://www.codefactor.io/repository/github/jasonxudeveloper/jengine) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/JasonXuDeveloper/JEngine/badge)](https://securityscorecards.dev/viewer/?uri=github.com/JasonXuDeveloper/JEngine) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11830/badge)](https://www.bestpractices.dev/projects/11830) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/JasonXuDeveloper/JEngine)
 
-[快速开始](https://jengine.xgamedev.net/zh/) | [框架文档](https://jengine.xgamedev.net/zh/) | [English](https://github.com/JasonXuDeveloper/JEngine/blob/master/README.md) | [QQ群: 921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
+[框架文档](https://jengine.xgamedev.net/zh/) | [English](https://github.com/JasonXuDeveloper/JEngine/blob/master/README.md) | [QQ群: 921271552](https://jq.qq.com/?_wv=1027&k=cF4hODjW)
 
 </div>
 
@@ -18,7 +18,7 @@
 
 ## 为什么选择 JEngine
 
-<table>
+<table role="presentation">
 <tr>
 <td width="33%" valign="top">
 
