@@ -152,10 +152,9 @@ namespace JEngine.Core
             Debug.Log("SetUpDynamicSecret end");
         }
 
-        private async UniTask LoadMetadataForAOTAssemblies()
+        private void LoadMetadataForAOTAssemblies()
         {
-            var aotListHandle = YooAssets.LoadAssetAsync<TextAsset>(aotDllListFilePath);
-            await aotListHandle.Task;
+            var aotListHandle = YooAssets.LoadAssetSync<TextAsset>(aotDllListFilePath);
             TextAsset aotDataAsset = aotListHandle.GetAssetObject<TextAsset>();
             var aotDllList = NinoDeserializer.Deserialize<List<string>>(aotDataAsset.bytes);
             aotListHandle.Release();
@@ -168,8 +167,7 @@ namespace JEngine.Core
                     continue;
                 }
 
-                var handle = YooAssets.LoadAssetAsync<TextAsset>(aotDllName);
-                await handle.Task;
+                var handle = YooAssets.LoadAssetSync<TextAsset>(aotDllName);
                 byte[] dllBytes = handle.GetAssetObject<TextAsset>().bytes;
                 var err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, HomologousImageMode.SuperSet);
                 Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. ret:{err}");
@@ -293,7 +291,7 @@ namespace JEngine.Core
 
                     // First supplement metadata
                     updateStatusText.text = text.loadingCode;
-                    await LoadMetadataForAOTAssemblies();
+                    LoadMetadataForAOTAssemblies();
                     // Set dynamic key
                     updateStatusText.text = text.decryptingResources;
                     await SetUpDynamicSecret();
