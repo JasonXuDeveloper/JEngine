@@ -155,6 +155,13 @@ namespace JEngine.Core
         private void LoadMetadataForAOTAssemblies()
         {
             var aotListHandle = YooAssets.LoadAssetSync<TextAsset>(aotDllListFilePath);
+            if (aotListHandle.Status != EOperationStatus.Succeed)
+            {
+                Debug.LogError($"Failed to load AOT DLL list: {aotListHandle.LastError}");
+                aotListHandle.Release();
+                return;
+            }
+
             TextAsset aotDataAsset = aotListHandle.GetAssetObject<TextAsset>();
             var aotDllList = NinoDeserializer.Deserialize<List<string>>(aotDataAsset.bytes);
             aotListHandle.Release();
@@ -168,6 +175,13 @@ namespace JEngine.Core
                 }
 
                 var handle = YooAssets.LoadAssetSync<TextAsset>(aotDllName);
+                if (handle.Status != EOperationStatus.Succeed)
+                {
+                    Debug.LogError($"Failed to load AOT DLL {aotDllName}: {handle.LastError}");
+                    handle.Release();
+                    continue;
+                }
+
                 byte[] dllBytes = handle.GetAssetObject<TextAsset>().bytes;
                 var err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, HomologousImageMode.SuperSet);
                 Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. ret:{err}");
