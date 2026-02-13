@@ -152,10 +152,16 @@ namespace JEngine.Core
             Debug.Log("SetUpDynamicSecret end");
         }
 
-        private async UniTask LoadMetadataForAOTAssemblies()
+        private void LoadMetadataForAOTAssemblies()
         {
-            var aotListHandle = YooAssets.LoadAssetAsync<TextAsset>(aotDllListFilePath);
-            await aotListHandle.Task;
+            var aotListHandle = YooAssets.LoadAssetSync<TextAsset>(aotDllListFilePath);
+            if (aotListHandle.Status != EOperationStatus.Succeed)
+            {
+                Debug.LogError($"Failed to load AOT DLL list: {aotListHandle.LastError}");
+                aotListHandle.Release();
+                return;
+            }
+
             TextAsset aotDataAsset = aotListHandle.GetAssetObject<TextAsset>();
             var aotDllList = NinoDeserializer.Deserialize<List<string>>(aotDataAsset.bytes);
             aotListHandle.Release();
@@ -168,8 +174,14 @@ namespace JEngine.Core
                     continue;
                 }
 
-                var handle = YooAssets.LoadAssetAsync<TextAsset>(aotDllName);
-                await handle.Task;
+                var handle = YooAssets.LoadAssetSync<TextAsset>(aotDllName);
+                if (handle.Status != EOperationStatus.Succeed)
+                {
+                    Debug.LogError($"Failed to load AOT DLL {aotDllName}: {handle.LastError}");
+                    handle.Release();
+                    continue;
+                }
+
                 byte[] dllBytes = handle.GetAssetObject<TextAsset>().bytes;
                 var err = RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, HomologousImageMode.SuperSet);
                 Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. ret:{err}");
@@ -293,7 +305,7 @@ namespace JEngine.Core
 
                     // First supplement metadata
                     updateStatusText.text = text.loadingCode;
-                    await LoadMetadataForAOTAssemblies();
+                    LoadMetadataForAOTAssemblies();
                     // Set dynamic key
                     updateStatusText.text = text.decryptingResources;
                     await SetUpDynamicSecret();
