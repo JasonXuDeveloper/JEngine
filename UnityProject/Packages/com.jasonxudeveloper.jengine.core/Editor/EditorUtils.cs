@@ -36,6 +36,45 @@ namespace JEngine.Core.Editor
 {
     public static class EditorUtils
     {
+        /// <summary>
+        /// Sentinel shown in dropdowns when the stored value is missing or no longer in the
+        /// available choices (e.g. a YooAsset package was renamed). Guarantees >=2 entries and
+        /// gives the user an explicit "clear" option.
+        /// </summary>
+        public const string NoneDropdownOption = "None";
+
+        /// <summary>
+        /// Returns a new list with <see cref="NoneDropdownOption"/> prepended to the given
+        /// choices. Safe to call with a null choices list.
+        /// </summary>
+        public static List<string> WithNoneOption(IList<string> choices)
+        {
+            var options = new List<string> { NoneDropdownOption };
+            if (choices != null) options.AddRange(choices);
+            return options;
+        }
+
+        /// <summary>
+        /// Returns the value that should be displayed in a dropdown. Falls back to
+        /// <see cref="NoneDropdownOption"/> when the stored value is empty or no longer present
+        /// in the current options.
+        /// </summary>
+        public static string ResolveDropdownValue(string storedValue, List<string> options)
+        {
+            return string.IsNullOrEmpty(storedValue) || options == null || !options.Contains(storedValue)
+                ? NoneDropdownOption
+                : storedValue;
+        }
+
+        /// <summary>
+        /// Converts a dropdown selection into the value to persist. The sentinel
+        /// <see cref="NoneDropdownOption"/> is mapped to an empty string.
+        /// </summary>
+        public static string NormalizeDropdownSelection(string value)
+        {
+            return value == NoneDropdownOption ? string.Empty : value;
+        }
+
         public static List<string> GetAvailableYooAssetPackages()
         {
             var packages = new List<string>();

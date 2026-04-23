@@ -73,6 +73,20 @@ namespace JEngine.Core.Editor.CustomEditor
             CreateDefaultGUI();
         }
 
+        /// <summary>
+        /// Rebuilds the panel when it regains focus so dropdown choices (e.g. YooAsset
+        /// packages, hot scenes) reflect changes made in other editor windows. Skipped mid-build
+        /// to avoid losing <see cref="BuildManager"/> state or the log view contents.
+        /// </summary>
+        private void OnFocus()
+        {
+            if (_root == null) return;
+            if (_buildManager != null && _buildManager.IsBuilding) return;
+
+            _root.Clear();
+            CreateGUI();
+        }
+
         private void CreateDefaultGUI()
         {
             // Load stylesheets - Panel first, then Common to override
