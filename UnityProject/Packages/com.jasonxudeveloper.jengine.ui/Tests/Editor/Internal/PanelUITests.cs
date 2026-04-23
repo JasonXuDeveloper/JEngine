@@ -670,5 +670,64 @@ namespace JEngine.UI.Tests.Editor.Internal
         }
 
         #endregion
+
+        #region Panel.OnFocus Tests
+
+        [Test]
+        public void Panel_OnFocus_WithoutRoot_DoesNotThrow()
+        {
+            // Instantiate Panel without showing the window; _root is null, so OnFocus should
+            // early-return without touching anything.
+            var panel = ScriptableObject.CreateInstance<Panel>();
+            try
+            {
+                var method = typeof(Panel).GetMethod("OnFocus",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                Assert.IsNotNull(method, "Panel.OnFocus should exist");
+                Assert.DoesNotThrow(() => method.Invoke(panel, null));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(panel);
+            }
+        }
+
+        [Test]
+        public void Panel_OnFocus_DuringBuild_SkipsRebuild()
+        {
+            var panel = ScriptableObject.CreateInstance<Panel>();
+            try
+            {
+                // Stub a root and a BuildManager that reports "building" to exercise the guard.
+                var rootField = typeof(Panel).GetField("_root",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var stubRoot = new VisualElement();
+                stubRoot.Add(new Label("sentinel"));
+                rootField.SetValue(panel, stubRoot);
+
+                // Starting a build on a stub BuildManager will flip IsBuilding without actually
+                // invoking Unity build steps; the Update loop never runs in tests.
+                var bmField = typeof(Panel).GetField("_buildManager",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var bm = new BuildManager(_settings, (m, e) => { });
+                bm.StartBuildCodeOnly(() => { }, _ => { });
+                bmField.SetValue(panel, bm);
+
+                var method = typeof(Panel).GetMethod("OnFocus",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                method.Invoke(panel, null);
+
+                // Root should still contain the sentinel child - OnFocus must not rebuild
+                // while a build is in progress.
+                Assert.AreEqual(1, stubRoot.childCount,
+                    "OnFocus should skip rebuild when BuildManager.IsBuilding is true");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(panel);
+            }
+        }
+
+        #endregion
     }
 }

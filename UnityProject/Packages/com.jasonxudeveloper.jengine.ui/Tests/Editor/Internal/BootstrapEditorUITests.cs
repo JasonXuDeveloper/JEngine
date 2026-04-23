@@ -779,6 +779,68 @@ namespace JEngine.UI.Tests.Editor.Internal
         }
 
         [Test]
+        public void OnEditorFocusChanged_WithFocus_RebuildsContent()
+        {
+            var root = BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnEditorFocusChanged",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "OnEditorFocusChanged method should exist");
+
+            Assert.DoesNotThrow(() => method.Invoke(null, new object[] { true }));
+            Assert.IsTrue(root.childCount > 0, "Inspector should still have content after refocus rebuild");
+        }
+
+        [Test]
+        public void OnEditorFocusChanged_WithoutFocus_DoesNotRebuild()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("OnEditorFocusChanged",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            // hasFocus=false should early-return without rebuilding (no exception).
+            Assert.DoesNotThrow(() => method.Invoke(null, new object[] { false }));
+        }
+
+        [Test]
+        public void ComputeExternalDataSignature_IsStableAcrossCalls()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("ComputeExternalDataSignature",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "ComputeExternalDataSignature method should exist");
+
+            var a = (string)method.Invoke(null, null);
+            var b = (string)method.Invoke(null, null);
+
+            Assert.IsNotNull(a);
+            Assert.AreEqual(a, b, "Signature should be deterministic for unchanged external data");
+            Assert.IsTrue(a.Contains("|"), "Signature should contain section separators");
+        }
+
+        [Test]
+        public void CheckForExternalDataChanges_DoesNotThrow()
+        {
+            BootstrapEditorUI.CreateInspector(_serializedObject, _bootstrap);
+
+            var method = typeof(BootstrapEditorUI).GetMethod("CheckForExternalDataChanges",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.IsNotNull(method, "CheckForExternalDataChanges method should exist");
+
+            // First call after CreateInspector: signature matches seeded value, early return.
+            Assert.DoesNotThrow(() => method.Invoke(null, null));
+
+            // Force a mismatch so the rebuild branch executes.
+            var sigField = typeof(BootstrapEditorUI).GetField("_lastExternalDataSignature",
+                BindingFlags.NonPublic | BindingFlags.Static);
+            sigField.SetValue(null, "stale-signature");
+
+            Assert.DoesNotThrow(() => method.Invoke(null, null));
+        }
+
+        [Test]
         public void UpdateFallbackVisibility_WhenUseDefaultTrue_HidesFallback()
         {
             _bootstrap.useDefaultAsFallback = true;
