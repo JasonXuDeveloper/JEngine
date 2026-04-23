@@ -40,6 +40,9 @@ namespace JEngine.Core.Encrypt.Manifest
     {
         private readonly ChaCha20Config _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public ChaCha20ManifestProcess() : this(ChaCha20Config.Instance) { }
+
         public ChaCha20ManifestProcess(ChaCha20Config config)
         {
             _config = config;
@@ -59,6 +62,9 @@ namespace JEngine.Core.Encrypt.Manifest
     public class ChaCha20ManifestRestore : IManifestRestoreServices
     {
         private readonly ChaCha20Config _config;
+
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public ChaCha20ManifestRestore() : this(ChaCha20Config.Instance) { }
 
         public ChaCha20ManifestRestore(ChaCha20Config config)
         {

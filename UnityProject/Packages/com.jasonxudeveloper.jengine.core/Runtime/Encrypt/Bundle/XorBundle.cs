@@ -43,6 +43,9 @@ namespace JEngine.Core.Encrypt.Bundle
     {
         private readonly XorConfig _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public XorEncryptionServices() : this(XorConfig.Instance) { }
+
         public XorEncryptionServices(XorConfig config)
         {
             _config = config;

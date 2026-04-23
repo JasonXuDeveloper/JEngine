@@ -40,6 +40,9 @@ namespace JEngine.Core.Encrypt.Manifest
     {
         private readonly XorConfig _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public XorManifestProcess() : this(XorConfig.Instance) { }
+
         public XorManifestProcess(XorConfig config)
         {
             _config = config;
@@ -65,6 +68,9 @@ namespace JEngine.Core.Encrypt.Manifest
     public class XorManifestRestore : IManifestRestoreServices
     {
         private readonly XorConfig _config;
+
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public XorManifestRestore() : this(XorConfig.Instance) { }
 
         public XorManifestRestore(XorConfig config)
         {

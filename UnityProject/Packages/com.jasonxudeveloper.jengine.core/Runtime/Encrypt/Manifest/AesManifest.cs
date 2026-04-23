@@ -40,6 +40,9 @@ namespace JEngine.Core.Encrypt.Manifest
     {
         private readonly AesConfig _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public AesManifestProcess() : this(AesConfig.Instance) { }
+
         public AesManifestProcess(AesConfig config)
         {
             _config = config;
@@ -59,6 +62,9 @@ namespace JEngine.Core.Encrypt.Manifest
     public class AesManifestRestore : IManifestRestoreServices
     {
         private readonly AesConfig _config;
+
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public AesManifestRestore() : this(AesConfig.Instance) { }
 
         public AesManifestRestore(AesConfig config)
         {

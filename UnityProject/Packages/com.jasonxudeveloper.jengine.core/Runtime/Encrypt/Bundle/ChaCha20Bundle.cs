@@ -43,6 +43,9 @@ namespace JEngine.Core.Encrypt.Bundle
     {
         private readonly ChaCha20Config _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public ChaCha20EncryptionServices() : this(ChaCha20Config.Instance) { }
+
         public ChaCha20EncryptionServices(ChaCha20Config config)
         {
             _config = config;

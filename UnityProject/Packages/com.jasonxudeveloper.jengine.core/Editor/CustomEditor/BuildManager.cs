@@ -406,6 +406,7 @@ namespace JEngine.Core.Editor.CustomEditor
                 BuildTarget = _settings.buildTarget,
                 PackageName = _settings.packageName,
                 PackageVersion = packageVersion.ToString(),
+                EnableSharePackRule = true,
                 VerifyBuildingResult = true,
                 FileNameStyle = EFileNameStyle.HashName,
                 BuildinFileCopyOption = copyOption,

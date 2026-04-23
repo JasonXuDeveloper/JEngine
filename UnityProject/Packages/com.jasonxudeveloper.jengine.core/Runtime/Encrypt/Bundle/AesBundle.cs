@@ -43,6 +43,9 @@ namespace JEngine.Core.Encrypt.Bundle
     {
         private readonly AesConfig _config;
 
+        // Required by YooAsset's AssetBundleBuilder (Activator.CreateInstance with no args).
+        public AesEncryptionServices() : this(AesConfig.Instance) { }
+
         public AesEncryptionServices(AesConfig config)
         {
             _config = config;
