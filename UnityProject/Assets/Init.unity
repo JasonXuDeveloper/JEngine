@@ -858,6 +858,40 @@ MonoBehaviour:
   downloadProgressText: {fileID: 1384766990}
   downloadProgressBar: {fileID: 1847636611}
   startButton: {fileID: 1079429684}
+  text:
+    initializingPackage: Initializing resource package...
+    gettingVersion: Getting resource package version...
+    updatingManifest: Updating resource manifest...
+    checkingUpdate: Checking resources to download...
+    downloadingResources: Downloading resources...
+    packageCompleted: Resource package initialization completed
+    initializationFailed: Initialization failed
+    unknownPackageStatus: Unknown status
+    sceneLoading: Loading scene...
+    sceneCompleted: Scene loading completed
+    sceneFailed: Scene loading failed
+    unknownSceneStatus: Unknown status
+    initializing: Initializing...
+    downloading: Downloading...
+    downloadCompletedLoading: Download completed, loading...
+    loadingCode: Loading code...
+    decryptingResources: Decrypting resources...
+    loadingScene: Loading scene...
+    dialogTitleError: Error
+    dialogTitleWarning: Warning
+    dialogTitleNotice: Notice
+    buttonOk: OK
+    buttonCancel: Cancel
+    buttonDownload: Download
+    buttonRetry: Retry
+    buttonExit: Exit
+    dialogInitFailed: 'Initialization failed: {0}'
+    dialogDownloadPrompt: Need to download {0} files, total size {1}MB. Start download?
+    dialogDownloadProgress: Downloading file {0}/{1} ({2}MB/{3}MB)
+    dialogSceneLoadFailed: 'Scene loading failed: {0}'
+    dialogInitException: 'Exception occurred during initialization: {0}'
+    dialogCodeException: Code exception, please contact customer service
+    dialogFunctionCallFailed: 'Function call failed: {0}'
   useEditorDevMode: 0
 --- !u!1 &1033013693
 GameObject:

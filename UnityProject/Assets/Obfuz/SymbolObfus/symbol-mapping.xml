@@ -302,18 +302,18 @@
       <field signature="int $Obfuz$RVA_Value14" newName="$Pd" />
       <field signature="int $Obfuz$RVA_Value15" newName="$Kb" />
       <field signature="int $Obfuz$RVA_Value16" newName="$lb" />
-      <field signature="int $Obfuz$RVA_Value17" newName="$KC" />
+      <field signature="string $Obfuz$RVA_Value17" newName="$HA" />
       <field signature="int $Obfuz$RVA_Value18" newName="$lC" />
-      <field signature="int $Obfuz$RVA_Value19" newName="$LC" />
-      <field signature="int $Obfuz$RVA_Value20" newName="$fD" />
-      <field signature="int $Obfuz$RVA_Value21" newName="$Kc" />
+      <field signature="string $Obfuz$RVA_Value19" newName="$iA" />
+      <field signature="string $Obfuz$RVA_Value20" newName="$IA" />
+      <field signature="string $Obfuz$RVA_Value21" newName="$jA" />
       <field signature="int $Obfuz$RVA_Value22" newName="$Qd" />
-      <field signature="float $Obfuz$RVA_Value23" newName="$DC" />
-      <field signature="string $Obfuz$RVA_Value24" newName="$HC" />
-      <field signature="string $Obfuz$RVA_Value25" newName="$Rd" />
+      <field signature="int $Obfuz$RVA_Value23" newName="$JA" />
+      <field signature="int $Obfuz$RVA_Value24" newName="$kA" />
+      <field signature="int $Obfuz$RVA_Value25" newName="$KA" />
       <field signature="int $Obfuz$RVA_Value26" newName="$iC" />
       <field signature="int $Obfuz$RVA_Value27" newName="$MC" />
-      <field signature="int $Obfuz$RVA_Value28" newName="$sd" />
+      <field signature="float $Obfuz$RVA_Value28" newName="$lA" />
       <field signature="int $Obfuz$RVA_Value29" newName="$nC" />
       <field signature="int $Obfuz$RVA_Value30" newName="$NC" />
       <field signature="int $Obfuz$RVA_Value31" newName="$Sb" />
@@ -418,6 +418,8 @@
       <field signature="int $Obfuz$RVA_Value130" newName="$oD" />
       <field signature="int $Obfuz$RVA_Value131" newName="$OD" />
       <field signature="int $Obfuz$RVA_Value132" newName="$pD" />
+      <field signature="int $Obfuz$RVA_Value133" newName="$Kc" />
+      <field signature="int $Obfuz$RVA_Value134" newName="$DC" />
     </type>
     <type fullName="$Obfuz$ProxyCall" newFullName="$Q" status="Renamed">
       <method signature="[UniTask]Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_10462300(int)" newName="$cb" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_10462300(Int32)" newStackTraceSignature="$Q:$cb(Int32)" />
@@ -514,6 +516,7 @@
       <method signature="[UnityEngine.CoreModule]UnityEngine.SceneManagement.Scene $Obfuz$ProxyCall::@$Obfuz$Dispatch_22824_735318(int)" newName="$dc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_22824_735318(Int32)" newStackTraceSignature="$Q:$dc(Int32)" />
       <method signature="[UnityEngine.CoreModule]UnityEngine.TextAsset $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_3944058(object, int)" newName="$JD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_3944058(Object, Int32)" newStackTraceSignature="$Q:$JD(Object, Int32)" />
       <method signature="[UnityEngine.UI]UnityEngine.UI.Button/ButtonClickedEvent $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_10350119(object, int)" newName="$fc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_10350119(Object, Int32)" newStackTraceSignature="$Q:$fc(Object, Int32)" />
+      <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_11150_11965409(object, int)" newName="$fA" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_11150_11965409(Object, Int32)" newStackTraceSignature="$Q:$fA(Object, Int32)" />
       <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_20882_11965409(object, uint, int)" newName="$Fc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_20882_11965409(Object, UInt32, Int32)" newStackTraceSignature="$Q:$Fc(Object, UInt32, Int32)" />
       <method signature="[YooAsset]YooAsset.AssetHandle $Obfuz$ProxyCall::@$Obfuz$Dispatch_34824_11965409(object, object, uint, int)" newName="$gc" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_34824_11965409(Object, Object, UInt32, Int32)" newStackTraceSignature="$Q:$gc(Object, Object, UInt32, Int32)" />
       <method signature="[YooAsset]YooAsset.ClearCacheFilesOperation $Obfuz$ProxyCall::@$Obfuz$Dispatch_45707_10036602(object, int, object, int)" newName="$kD" oldStackTraceSignature="$Obfuz$ProxyCall:$Obfuz$Dispatch_45707_10036602(Object, Int32, Object, Int32)" newStackTraceSignature="$Q:$kD(Object, Int32, Object, Int32)" />
@@ -589,7 +592,7 @@
       <method signature="string JEngine.Core.Bootstrap::@GetPlatform()" newName="$a" oldStackTraceSignature="JEngine.Core.Bootstrap:GetPlatform()" newStackTraceSignature="JEngine.Core.Bootstrap:$a()" />
       <method signature="void JEngine.Core.Bootstrap::@SetInstance([JEngine.Core]JEngine.Core.Bootstrap)" newName="$h" oldStackTraceSignature="JEngine.Core.Bootstrap:SetInstance(Bootstrap)" newStackTraceSignature="JEngine.Core.Bootstrap:$h(Bootstrap)" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::SetUpDynamicSecret([JEngine.Core]JEngine.Core.Bootstrap)" newName="$A" oldStackTraceSignature="JEngine.Core.Bootstrap:SetUpDynamicSecret()" newStackTraceSignature="JEngine.Core.Bootstrap:$A()" />
-      <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::LoadMetadataForAOTAssemblies([JEngine.Core]JEngine.Core.Bootstrap)" newName="$b" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadMetadataForAOTAssemblies()" newStackTraceSignature="JEngine.Core.Bootstrap:$b()" />
+      <method signature="void JEngine.Core.Bootstrap::LoadMetadataForAOTAssemblies([JEngine.Core]JEngine.Core.Bootstrap)" newName="$b" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadMetadataForAOTAssemblies()" newStackTraceSignature="JEngine.Core.Bootstrap:$b()" />
       <method signature="void JEngine.Core.Bootstrap::Initialize([JEngine.Core]JEngine.Core.Bootstrap)" newName="$E" oldStackTraceSignature="JEngine.Core.Bootstrap:Initialize()" newStackTraceSignature="JEngine.Core.Bootstrap:$E()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::InitializeGame([JEngine.Core]JEngine.Core.Bootstrap)" newName="$B" oldStackTraceSignature="JEngine.Core.Bootstrap:InitializeGame()" newStackTraceSignature="JEngine.Core.Bootstrap:$B()" />
       <method signature="[UniTask]Cysharp.Threading.Tasks.UniTask JEngine.Core.Bootstrap::LoadHotCode([JEngine.Core]JEngine.Core.Bootstrap, System.Reflection.Assembly)" newName="$d" oldStackTraceSignature="JEngine.Core.Bootstrap:LoadHotCode(Assembly)" newStackTraceSignature="JEngine.Core.Bootstrap:$d(Assembly)" />
