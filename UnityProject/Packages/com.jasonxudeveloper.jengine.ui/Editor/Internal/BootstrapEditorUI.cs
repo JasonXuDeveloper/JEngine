@@ -54,6 +54,30 @@ namespace JEngine.UI.Editor.Internal
         private static VisualElement _fallbackContainer;
         private static VisualElement _currentRoot;
 
+        // Sentinel shown when the serialized value is missing or no longer present in the
+        // current choices (e.g. a YooAsset package was renamed). Guarantees the dropdown
+        // has >=2 entries and gives the user an explicit "clear" option.
+        private const string NoneOption = "None";
+
+        private static List<string> BuildOptionsWithNone(IList<string> choices)
+        {
+            var options = new List<string> { NoneOption };
+            if (choices != null) options.AddRange(choices);
+            return options;
+        }
+
+        private static string ResolveCurrentOption(string storedValue, List<string> options)
+        {
+            return string.IsNullOrEmpty(storedValue) || !options.Contains(storedValue)
+                ? NoneOption
+                : storedValue;
+        }
+
+        private static string NormalizeSelection(string value)
+        {
+            return value == NoneOption ? string.Empty : value;
+        }
+
         /// <summary>
         /// Creates the enhanced Bootstrap inspector.
         /// </summary>
@@ -276,79 +300,79 @@ namespace JEngine.UI.Editor.Internal
             section.Add(new JFormField("Platform", targetPlatformField));
 
             // Package Name
-            var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
+            var packageOptions = BuildOptionsWithNone(EditorUtils.GetAvailableYooAssetPackages());
             var packageNameField = new JDropdown(
-                packageChoices.Count > 0 ? packageChoices : new List<string> { _bootstrap.packageName },
-                _bootstrap.packageName
+                packageOptions,
+                ResolveCurrentOption(_bootstrap.packageName, packageOptions)
             );
             packageNameField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.packageName)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.packageName)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Package", packageNameField));
 
             // Hot Code Assembly
-            var hotCodeChoices = EditorUtils.GetAvailableAsmdefFiles();
+            var hotCodeOptions = BuildOptionsWithNone(EditorUtils.GetAvailableAsmdefFiles());
             var hotCodeField = new JDropdown(
-                hotCodeChoices.Count > 0 ? hotCodeChoices : new List<string> { _bootstrap.hotCodeName },
-                _bootstrap.hotCodeName
+                hotCodeOptions,
+                ResolveCurrentOption(_bootstrap.hotCodeName, hotCodeOptions)
             );
             hotCodeField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotCodeName)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.hotCodeName)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Code Assembly", hotCodeField));
 
             // Hot Scene
-            var hotSceneChoices = EditorUtils.GetAvailableHotScenes();
+            var hotSceneOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotScenes());
             var hotSceneField = new JDropdown(
-                hotSceneChoices.Count > 0 ? hotSceneChoices : new List<string> { _bootstrap.selectedHotScene },
-                _bootstrap.selectedHotScene
+                hotSceneOptions,
+                ResolveCurrentOption(_bootstrap.selectedHotScene, hotSceneOptions)
             );
             hotSceneField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.selectedHotScene)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.selectedHotScene)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Scene", hotSceneField));
 
             // Hot Update Entry Class
-            var hotClassChoices = EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName);
+            var hotClassOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName));
             var hotClassField = new JDropdown(
-                hotClassChoices.Count > 0 ? hotClassChoices : new List<string> { _bootstrap.hotUpdateClassName },
-                _bootstrap.hotUpdateClassName
+                hotClassOptions,
+                ResolveCurrentOption(_bootstrap.hotUpdateClassName, hotClassOptions)
             );
             hotClassField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateClassName)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateClassName)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Entry Class", hotClassField));
 
             // Hot Update Entry Method
-            var hotMethodChoices = EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName);
+            var hotMethodOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName));
             var hotMethodField = new JDropdown(
-                hotMethodChoices.Count > 0 ? hotMethodChoices : new List<string> { _bootstrap.hotUpdateMethodName },
-                _bootstrap.hotUpdateMethodName
+                hotMethodOptions,
+                ResolveCurrentOption(_bootstrap.hotUpdateMethodName, hotMethodOptions)
             );
             hotMethodField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateMethodName)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateMethodName)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Entry Method", hotMethodField));
 
             // AOT DLL List File
-            var aotChoices = EditorUtils.GetAvailableAOTDataFiles();
+            var aotOptions = BuildOptionsWithNone(EditorUtils.GetAvailableAOTDataFiles());
             var aotField = new JDropdown(
-                aotChoices.Count > 0 ? aotChoices : new List<string> { _bootstrap.aotDllListFilePath },
-                _bootstrap.aotDllListFilePath
+                aotOptions,
+                ResolveCurrentOption(_bootstrap.aotDllListFilePath, aotOptions)
             );
             aotField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.aotDllListFilePath)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.aotDllListFilePath)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("AOT DLL List", aotField));
@@ -361,14 +385,14 @@ namespace JEngine.UI.Editor.Internal
             var section = new JSection("Security Settings");
 
             // Dynamic Secret Key
-            var dynamicKeyChoices = EditorUtils.GetAvailableDynamicSecretKeys();
+            var dynamicKeyOptions = BuildOptionsWithNone(EditorUtils.GetAvailableDynamicSecretKeys());
             var dynamicKeyField = new JDropdown(
-                dynamicKeyChoices.Count > 0 ? dynamicKeyChoices : new List<string> { _bootstrap.dynamicSecretKeyPath },
-                _bootstrap.dynamicSecretKeyPath
+                dynamicKeyOptions,
+                ResolveCurrentOption(_bootstrap.dynamicSecretKeyPath, dynamicKeyOptions)
             );
             dynamicKeyField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.dynamicSecretKeyPath)).stringValue = value;
+                _serializedObject.FindProperty(nameof(_bootstrap.dynamicSecretKeyPath)).stringValue = NormalizeSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Secret Key", dynamicKeyField));
