@@ -773,8 +773,9 @@ namespace JEngine.UI.Tests.Editor.Internal
                 BindingFlags.NonPublic | BindingFlags.Static);
             Assert.IsNotNull(method, "OnDetachFromPanel method should exist");
 
-            Undo.UndoRedoCallback callback = () => { };
-            Assert.DoesNotThrow(() => method.Invoke(null, new object[] { null, callback }));
+            // Signature changed to take only the DetachFromPanelEvent (callbacks are now
+            // unregistered from statically-known handlers rather than via a user token).
+            Assert.DoesNotThrow(() => method.Invoke(null, new object[] { null }));
         }
 
         [Test]
