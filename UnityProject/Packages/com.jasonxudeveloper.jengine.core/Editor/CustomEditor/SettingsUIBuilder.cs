@@ -46,18 +46,26 @@ namespace JEngine.Core.Editor.CustomEditor
             // Package Name field (dropdown or text field based on useDropdown)
             var packageNameRow = EditorUIUtils.CreateFormRow("Package");
 
-            // Use PopupField for Panel (with available packages)
-            var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
+            // Use PopupField for Panel (with available packages). Prepend a "None" sentinel so
+            // the dropdown always has >=2 entries and renamed/missing packages surface as "None"
+            // instead of silently desyncing with the serialized value.
+            const string noneOption = "None";
+            var packageOptions = new List<string> { noneOption };
+            packageOptions.AddRange(EditorUtils.GetAvailableYooAssetPackages());
+            var currentPackage = string.IsNullOrEmpty(settings.packageName) ||
+                                 !packageOptions.Contains(settings.packageName)
+                ? noneOption
+                : settings.packageName;
             var packageNameField = new PopupField<string>()
             {
-                choices = packageChoices.Count > 0 ? packageChoices : new List<string> { settings.packageName },
-                value = settings.packageName
+                choices = packageOptions,
+                value = currentPackage
             };
             packageNameField.AddToClassList("form-control");
             EditorUIUtils.MakeTextResponsive(packageNameField);
             packageNameField.RegisterValueChangedCallback(evt =>
             {
-                settings.packageName = evt.newValue;
+                settings.packageName = evt.newValue == noneOption ? string.Empty : evt.newValue;
                 settings.Save();
             });
             packageNameRow.Add(packageNameField);
