@@ -177,14 +177,14 @@ namespace JEngine.UI.Editor.Internal
             var section = new JSection("Package Settings");
 
             // Package Name
-            var packageChoices = EditorUtils.GetAvailableYooAssetPackages();
+            var packageOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableYooAssetPackages());
             var packageNameField = new JDropdown(
-                packageChoices.Count > 0 ? packageChoices : new List<string> { settings.packageName },
-                settings.packageName
+                packageOptions,
+                EditorUtils.ResolveDropdownValue(settings.packageName, packageOptions)
             );
             packageNameField.OnValueChanged(value =>
             {
-                settings.packageName = value;
+                settings.packageName = EditorUtils.NormalizeDropdownSelection(value);
                 settings.Save();
             });
             section.Add(new JFormField("Package", packageNameField));

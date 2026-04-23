@@ -54,29 +54,9 @@ namespace JEngine.UI.Editor.Internal
         private static VisualElement _fallbackContainer;
         private static VisualElement _currentRoot;
 
-        // Sentinel shown when the serialized value is missing or no longer present in the
-        // current choices (e.g. a YooAsset package was renamed). Guarantees the dropdown
-        // has >=2 entries and gives the user an explicit "clear" option.
-        private const string NoneOption = "None";
-
-        private static List<string> BuildOptionsWithNone(IList<string> choices)
-        {
-            var options = new List<string> { NoneOption };
-            if (choices != null) options.AddRange(choices);
-            return options;
-        }
-
-        private static string ResolveCurrentOption(string storedValue, List<string> options)
-        {
-            return string.IsNullOrEmpty(storedValue) || !options.Contains(storedValue)
-                ? NoneOption
-                : storedValue;
-        }
-
-        private static string NormalizeSelection(string value)
-        {
-            return value == NoneOption ? string.Empty : value;
-        }
+        // Signature of the last-seen external data (available packages / scenes / etc.) so the
+        // inspector can detect renames and additions made in other windows and rebuild.
+        private static string _lastExternalDataSignature;
 
         /// <summary>
         /// Creates the enhanced Bootstrap inspector.
@@ -86,8 +66,9 @@ namespace JEngine.UI.Editor.Internal
             _serializedObject = serializedObject;
             _bootstrap = bootstrap;
 
-            // Unregister previous undo callback if exists
+            // Unregister previous callbacks if they exist (inspector may be recreated).
             Undo.undoRedoPerformed -= OnUndoRedo;
+            EditorApplication.focusChanged -= OnEditorFocusChanged;
 
             var root = new VisualElement();
             _currentRoot = root;
@@ -101,76 +82,34 @@ namespace JEngine.UI.Editor.Internal
             root.style.paddingRight = Tokens.Spacing.MD;
             root.style.paddingBottom = Tokens.Spacing.MD;
 
-            // Centered container for compact inspector layout
-            var container = new JContainer(ContainerSize.Xs);
+            BuildContent(root);
 
-            var content = new JStack(GapSize.Sm);
-
-            // Header
-            content.Add(CreateHeader());
-
-#if UNITY_EDITOR
-            // Development Settings
-            content.Add(CreateDevelopmentSettingsSection());
-#endif
-
-            // Server Settings
-            content.Add(CreateServerSettingsSection());
-
-            // Asset Settings
-            content.Add(CreateAssetSettingsSection());
-
-            // Security Settings
-            content.Add(CreateSecuritySettingsSection());
-
-            // UI Settings
-            content.Add(CreateUISettingsSection());
-
-            // Text Settings
-            content.Add(CreateTextSettingsSection());
-
-            container.Add(content);
-            root.Add(container);
-
-            // Register undo/redo callback
+            // Rebuild on undo/redo and on editor focus regained (picks up renames made in
+            // other windows like the AssetBundle Collector).
             Undo.undoRedoPerformed += OnUndoRedo;
+            EditorApplication.focusChanged += OnEditorFocusChanged;
 
-            // Cleanup callback when element is detached (no closure)
-            root.RegisterCallback<DetachFromPanelEvent, Undo.UndoRedoCallback>(OnDetachFromPanel, OnUndoRedo);
+            // Seed the signature and poll periodically so renames made in another Unity window
+            // (not just another app) propagate without the user having to reselect the asset.
+            _lastExternalDataSignature = ComputeExternalDataSignature();
+            root.schedule.Execute(CheckForExternalDataChanges).Every(500);
+
+            // Cleanup callback when element is detached.
+            root.RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
 
             return root;
         }
 
         /// <summary>
-        /// Called when element is detached from panel. Cleanup callback.
+        /// Builds the inspector content into the given root. Used by both initial create and
+        /// subsequent rebuilds (undo/redo, focus refresh).
         /// </summary>
-        private static void OnDetachFromPanel(DetachFromPanelEvent evt, Undo.UndoRedoCallback undoCallback)
+        private static void BuildContent(VisualElement root)
         {
-            Undo.undoRedoPerformed -= undoCallback;
-        }
-
-        /// <summary>
-        /// Called when undo/redo is performed. Rebuilds the inspector UI.
-        /// </summary>
-        private static void OnUndoRedo()
-        {
-            if (_currentRoot == null || _serializedObject == null || _bootstrap == null)
-                return;
-
-            // Update serialized object to reflect undo/redo changes
-            _serializedObject.Update();
-
-            // Rebuild the entire UI
-            _currentRoot.Clear();
-
-            // Centered container for compact inspector layout
             var container = new JContainer(ContainerSize.Xs);
-
-            // Recreate content
             var content = new JStack(GapSize.Sm);
 
             content.Add(CreateHeader());
-
 #if UNITY_EDITOR
             content.Add(CreateDevelopmentSettingsSection());
 #endif
@@ -181,7 +120,68 @@ namespace JEngine.UI.Editor.Internal
             content.Add(CreateTextSettingsSection());
 
             container.Add(content);
-            _currentRoot.Add(container);
+            root.Add(container);
+        }
+
+        private static void RebuildContent()
+        {
+            if (_currentRoot == null || _serializedObject == null || _bootstrap == null)
+                return;
+
+            _serializedObject.Update();
+            _currentRoot.Clear();
+            BuildContent(_currentRoot);
+        }
+
+        /// <summary>
+        /// Called when element is detached from panel. Cleanup callback.
+        /// </summary>
+        private static void OnDetachFromPanel(DetachFromPanelEvent evt)
+        {
+            Undo.undoRedoPerformed -= OnUndoRedo;
+            EditorApplication.focusChanged -= OnEditorFocusChanged;
+        }
+
+        private static void OnUndoRedo() => RebuildContent();
+
+        private static void OnEditorFocusChanged(bool hasFocus)
+        {
+            if (hasFocus) RebuildContent();
+        }
+
+        private static void CheckForExternalDataChanges()
+        {
+            if (_bootstrap == null) return;
+            var signature = ComputeExternalDataSignature();
+            if (signature == _lastExternalDataSignature) return;
+            _lastExternalDataSignature = signature;
+            RebuildContent();
+        }
+
+        /// <summary>
+        /// Concatenates the external data the dropdowns depend on (packages, asmdefs, scenes,
+        /// classes/methods for the current assembly, AOT files, dynamic keys) into a signature
+        /// string. When any of these change — e.g. a YooAsset package is renamed — the
+        /// inspector rebuilds so stale values fall back to "None".
+        /// </summary>
+        private static string ComputeExternalDataSignature()
+        {
+            var sb = new System.Text.StringBuilder();
+            AppendList(sb, EditorUtils.GetAvailableYooAssetPackages());
+            AppendList(sb, EditorUtils.GetAvailableAsmdefFiles());
+            AppendList(sb, EditorUtils.GetAvailableHotScenes());
+            AppendList(sb, EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName));
+            AppendList(sb, EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName));
+            AppendList(sb, EditorUtils.GetAvailableAOTDataFiles());
+            AppendList(sb, EditorUtils.GetAvailableDynamicSecretKeys());
+            return sb.ToString();
+        }
+
+        private static void AppendList(System.Text.StringBuilder sb, List<string> items)
+        {
+            sb.Append('|');
+            if (items == null) return;
+            foreach (var item in items) sb.Append(item).Append(';');
         }
 
         private static VisualElement CreateHeader()
@@ -300,79 +300,79 @@ namespace JEngine.UI.Editor.Internal
             section.Add(new JFormField("Platform", targetPlatformField));
 
             // Package Name
-            var packageOptions = BuildOptionsWithNone(EditorUtils.GetAvailableYooAssetPackages());
+            var packageOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableYooAssetPackages());
             var packageNameField = new JDropdown(
                 packageOptions,
-                ResolveCurrentOption(_bootstrap.packageName, packageOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.packageName, packageOptions)
             );
             packageNameField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.packageName)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.packageName)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Package", packageNameField));
 
             // Hot Code Assembly
-            var hotCodeOptions = BuildOptionsWithNone(EditorUtils.GetAvailableAsmdefFiles());
+            var hotCodeOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableAsmdefFiles());
             var hotCodeField = new JDropdown(
                 hotCodeOptions,
-                ResolveCurrentOption(_bootstrap.hotCodeName, hotCodeOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.hotCodeName, hotCodeOptions)
             );
             hotCodeField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotCodeName)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.hotCodeName)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Code Assembly", hotCodeField));
 
             // Hot Scene
-            var hotSceneOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotScenes());
+            var hotSceneOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableHotScenes());
             var hotSceneField = new JDropdown(
                 hotSceneOptions,
-                ResolveCurrentOption(_bootstrap.selectedHotScene, hotSceneOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.selectedHotScene, hotSceneOptions)
             );
             hotSceneField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.selectedHotScene)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.selectedHotScene)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Scene", hotSceneField));
 
             // Hot Update Entry Class
-            var hotClassOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName));
+            var hotClassOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableHotClasses(_bootstrap.hotCodeName));
             var hotClassField = new JDropdown(
                 hotClassOptions,
-                ResolveCurrentOption(_bootstrap.hotUpdateClassName, hotClassOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.hotUpdateClassName, hotClassOptions)
             );
             hotClassField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateClassName)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateClassName)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Entry Class", hotClassField));
 
             // Hot Update Entry Method
-            var hotMethodOptions = BuildOptionsWithNone(EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName));
+            var hotMethodOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableHotMethods(_bootstrap.hotCodeName, _bootstrap.hotUpdateClassName));
             var hotMethodField = new JDropdown(
                 hotMethodOptions,
-                ResolveCurrentOption(_bootstrap.hotUpdateMethodName, hotMethodOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.hotUpdateMethodName, hotMethodOptions)
             );
             hotMethodField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateMethodName)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.hotUpdateMethodName)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Entry Method", hotMethodField));
 
             // AOT DLL List File
-            var aotOptions = BuildOptionsWithNone(EditorUtils.GetAvailableAOTDataFiles());
+            var aotOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableAOTDataFiles());
             var aotField = new JDropdown(
                 aotOptions,
-                ResolveCurrentOption(_bootstrap.aotDllListFilePath, aotOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.aotDllListFilePath, aotOptions)
             );
             aotField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.aotDllListFilePath)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.aotDllListFilePath)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("AOT DLL List", aotField));
@@ -385,14 +385,14 @@ namespace JEngine.UI.Editor.Internal
             var section = new JSection("Security Settings");
 
             // Dynamic Secret Key
-            var dynamicKeyOptions = BuildOptionsWithNone(EditorUtils.GetAvailableDynamicSecretKeys());
+            var dynamicKeyOptions = EditorUtils.WithNoneOption(EditorUtils.GetAvailableDynamicSecretKeys());
             var dynamicKeyField = new JDropdown(
                 dynamicKeyOptions,
-                ResolveCurrentOption(_bootstrap.dynamicSecretKeyPath, dynamicKeyOptions)
+                EditorUtils.ResolveDropdownValue(_bootstrap.dynamicSecretKeyPath, dynamicKeyOptions)
             );
             dynamicKeyField.OnValueChanged(value =>
             {
-                _serializedObject.FindProperty(nameof(_bootstrap.dynamicSecretKeyPath)).stringValue = NormalizeSelection(value);
+                _serializedObject.FindProperty(nameof(_bootstrap.dynamicSecretKeyPath)).stringValue = EditorUtils.NormalizeDropdownSelection(value);
                 _serializedObject.ApplyModifiedProperties();
             });
             section.Add(new JFormField("Secret Key", dynamicKeyField));
